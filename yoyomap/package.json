@@ -13,7 +13,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
     "leaflet": "^1.9.4",
-    "next": "15.0.3",
+    "next": "15.5.15",
     "react": "19.0.0-rc-69d4b800-20241021",
     "react-dom": "19.0.0-rc-69d4b800-20241021",
     "react-leaflet": "^4.2.1",
