@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DMV Throwers · Yo-Yo & Skill Toy Club · Washington DC, Northern Virginia, Maryland</title>
+  <meta name="description" content="DMV Throwers is the Washington DC, Northern Virginia, and Maryland yo-yo and skill toy club. Free meetups every 3rd Sunday at Arlington Central Library. All ages and skill levels welcome."/>
+  <meta name="keywords" content="yo-yo club DC, yo-yo club Virginia, yo-yo club Maryland, DMV yo-yo, skill toy club Northern Virginia, kendama club DC, yo-yo Arlington Virginia, yoyo club Washington DC, DMV Throwers"/>
+  <meta property="og:title" content="DMV Throwers · Yo-Yo & Skill Toy Club · DC · VA · MD"/>
+  <meta property="og:description" content="Free yo-yo and skill toy meetups every 3rd Sunday in Arlington VA. All ages, all levels. Serving DC, Northern Virginia, and Maryland."/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://dmvthrowers.club/"/>
+  <meta name="robots" content="index, follow"/>
+  <meta name="geo.region" content="US-VA"/>
+  <link rel="canonical" href="https://dmvthrowers.club/"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SportsClub",
+    "name": "DMV Throwers Yo-Yo & Skill Toy Club",
+    "url": "https://dmvthrowers.club",
+    "description": "Free monthly yo-yo and skill toy meetups in Arlington VA. All ages and skill levels welcome. Serving DC, Maryland, and Virginia since 2021.",
+    "foundingDate": "2021",
+    "email": "contact@dmvthrowers.club",
+    "telephone": "+18502841613",
+    "sameAs": ["https://instagram.com/dmv_throwers","https://linktr.ee/dmvthrowers"],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1015 N Quincy St",
+      "addressLocality": "Arlington",
+      "addressRegion": "VA",
+      "postalCode": "22201",
+      "addressCountry": "US"
+    },
+    "areaServed": [
+      {"@type": "City", "name": "Washington, DC"},
+      {"@type": "State", "name": "Virginia"},
+      {"@type": "State", "name": "Maryland"}
+    ],
+    "isAccessibleForFree": true
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #D42B2B;
+      --red-dark: #b01f1f;
+      --navy: #1a2744;
+      --navy-deep: #0e1833;
+      --cream: #f5f0e8;
+      --cream-mid: #f0ebe0;
+      --border: #d4cebc;
+      --text-muted: #6a7a9a;
+      --text-body: #3a4a6a;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); }
+    #top-bar { background: var(--red); padding: 9px 24px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    #top-bar span { font-size: 0.72rem; color: white; letter-spacing: 0.14em; font-weight: 600; }
+    #top-bar a { font-size: 0.72rem; color: white; letter-spacing: 0.12em; font-weight: 700; text-decoration: underline; white-space: nowrap; }
+    nav { background: var(--cream); border-bottom: 1px solid var(--border); padding: 0 24px; position: sticky; top: 0; z-index: 200; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .nav-brand { display: flex; align-items: center; gap: 12px; cursor: pointer; text-decoration: none; }
+    .nav-brand-text-main { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.1rem; line-height: 1; color: var(--navy); }
+    .nav-brand-text-sub { font-size: 0.6rem; letter-spacing: 0.18em; color: var(--red); font-weight: 700; margin-top: 2px; }
+    .nav-links { display: flex; gap: 24px; align-items: center; }
+    .nav-link { cursor: pointer; letter-spacing: 0.12em; font-size: 0.72rem; font-weight: 600; padding: 6px 0; border-bottom: 2px solid transparent; transition: border-color 0.2s, color 0.2s; color: var(--navy); text-decoration: none; }
+    .nav-link:hover { border-bottom-color: var(--red); color: var(--red); }
+    .nav-vsyc { background: var(--navy); color: white !important; padding: 7px 14px !important; font-size: 0.68rem !important; font-weight: 700 !important; border-bottom: none !important; white-space: nowrap; transition: background 0.2s !important; }
+    .nav-vsyc:hover { background: var(--red) !important; border-bottom: none !important; }
+    .nav-donate { background: #13C3A3; color: white !important; padding: 7px 14px !important; font-size: 0.68rem !important; font-weight: 700 !important; border-bottom: none !important; white-space: nowrap; transition: background 0.2s !important; }
+    .nav-donate:hover { background: #0f9d84 !important; border-bottom: none !important; }
+    .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 8px; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); }
+    .mobile-menu { display: none; flex-direction: column; background: var(--cream); border-bottom: 1px solid var(--border); padding: 12px 24px 20px; gap: 16px; }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 0.85rem; letter-spacing: 0.12em; font-weight: 600; color: var(--navy); text-decoration: none; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .mobile-menu .mobile-vsyc { background: var(--navy); color: white; padding: 10px 16px; border-bottom: none; font-weight: 700; }
+    .mobile-menu .mobile-donate { background: #13C3A3; color: white; padding: 10px 16px; border-bottom: none; font-weight: 700; }
+    #hero { background: var(--navy); position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; }
+    .hero-dots { position: absolute; inset: 0; opacity: 0.06; background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px; }
+    .hero-inner { max-width: 1100px; margin: 0 auto; padding: 80px 24px; position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; width: 100%; }
+    .hero-tag { display: inline-block; background: var(--red); color: white; font-size: 0.65rem; letter-spacing: 0.18em; padding: 4px 12px; font-weight: 700; margin-bottom: 18px; }
+    .hero-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: clamp(3rem, 8vw, 5.5rem); color: white; line-height: 0.95; margin-bottom: 10px; }
+    .hero-subtitle { font-size: 0.78rem; letter-spacing: 0.22em; color: var(--red); font-weight: 700; margin-bottom: 22px; }
+    .hero-desc { font-size: 1.05rem; color: #c8d0e0; line-height: 1.7; max-width: 480px; margin-bottom: 32px; }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 14px 32px; font-weight: 700; letter-spacing: 0.1em; font-size: 0.82rem; text-decoration: none; cursor: pointer; border: none; transition: background 0.2s, transform 0.1s; font-family: 'DM Sans', sans-serif; }
+    .btn-red { background: var(--red); color: white; }
+    .btn-red:hover { background: var(--red-dark); transform: translateY(-1px); }
+    .btn-outline-white { background: transparent; border: 2px solid white; color: white; }
+    .btn-outline-white:hover { background: white; color: var(--navy); }
+    .hero-logo-wrap img { width: 240px; height: 240px; object-fit: contain; opacity: 0.9; filter: brightness(0) invert(1); }
+    .vsyc-section { background: var(--cream); padding: 48px 24px; }
+    .vsyc-banner { max-width: 1100px; margin: 0 auto; background: var(--navy); padding: 32px 36px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .vsyc-label { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--red); font-weight: 700; margin-bottom: 8px; }
+    .vsyc-title { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 1.6rem; color: white; }
+    .vsyc-sub { font-size: 0.9rem; color: #8090b8; margin-top: 6px; }
+    footer { background: var(--navy); padding: 40px 24px 24px; }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; margin-bottom: 28px; }
+    .footer-brand { display: flex; align-items: center; gap: 12px; }
+    .footer-link { color: #a0a8c0; font-size: 0.8rem; text-decoration: none; margin: 0 10px; transition: color 0.2s; }
+    .footer-link:hover { color: var(--red); }
+    .footer-bottom { border-top: 1px solid #2a3a5a; padding-top: 20px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .footer-copy { font-size: 0.75rem; color: #4a5a7a; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-logo-wrap { display: none; }
+      .vsyc-banner { flex-direction: column; }
+      .footer-top { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .hero-btns { flex-direction: column; }
+      #top-bar { justify-content: center; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="top-bar">
+  <span>NEXT MEET: APRIL 19 · ARLINGTON CENTRAL LIBRARY · ARLINGTON VA</span>
+  <a href="https://arlingtonva.libcal.com/event/15203836" target="_blank" rel="noreferrer">RSVP →</a>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="assets/images/logo.png" alt="DMV Throwers Logo" style="width:38px;height:38px;object-fit:contain;"/>
+      <div>
+        <div class="nav-brand-text-main">DMV THROWERS</div>
+        <div class="nav-brand-text-sub">YO-YO & SKILL TOY CLUB</div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="about.html" class="nav-link">ABOUT</a>
+      <a href="events.html" class="nav-link">EVENTS</a>
+      <a href="gallery.html" class="nav-link">GALLERY</a>
+      <a href="resources.html" class="nav-link">RESOURCES</a>
+      <a href="faq.html" class="nav-link">FAQ</a>
+      <a href="contact.html" class="nav-link">CONTACT</a>
+      <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noreferrer" class="nav-link nav-donate">☕ DONATE</a>
+      <a href="vsyc26.html" class="nav-link nav-vsyc">VSYC-26 →</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="about.html">ABOUT</a>
+  <a href="events.html">EVENTS</a>
+  <a href="gallery.html">GALLERY</a>
+  <a href="resources.html">RESOURCES</a>
+  <a href="faq.html">FAQ</a>
+  <a href="contact.html">CONTACT</a>
+  <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noreferrer" class="mobile-donate">☕ DONATE</a>
+  <a href="vsyc26.html" class="mobile-vsyc">VSYC-26 → VIRGINIA STATE YO-YO CONTEST</a>
+</div>
+
+<!-- HERO — clean, no nested sections inside -->
+<section id="hero">
+  <div class="hero-dots"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">EST. 2021 · DC / MD / VA</div>
+      <h1 class="hero-title">DMV<br/>THROWERS</h1>
+      <p class="hero-subtitle">YO-YO & SKILL TOY CLUB · DC · MD · VA</p>
+      <p class="hero-desc">The Mid-Atlantic's home for yo-yo enthusiasts, kendama players, and all skill toy fans in Washington DC, Northern Virginia, and Maryland. All ages, all levels, always free.</p>
+      <div class="hero-btns">
+        <a href="events.html" class="btn btn-red">VIEW UPCOMING EVENTS</a>
+        <a href="contact.html" class="btn btn-outline-white">JOIN THE CLUB</a>
+      </div>
+    </div>
+    <div class="hero-logo-wrap">
+      <img src="assets/images/logo.png" alt="DMV Throwers Yo-Yo and Skill Toy Club DC Virginia Maryland"/>
+    </div>
+  </div>
+</section>
+
+<!-- VSYC BANNER — proper sibling section, outside hero -->
+<div class="vsyc-section">
+  <div class="vsyc-banner">
+    <div>
+      <div class="vsyc-label">COMING SEPTEMBER 19, 2026</div>
+      <div class="vsyc-title">Virginia State YoYo Contest 2026</div>
+      <div class="vsyc-sub">VSYC-26 · Dulles Town Center · Sterling VA · 10 AM – 7 PM · Free to spectate</div>
+    </div>
+    <a href="vsyc26.html" class="btn btn-red">LEARN MORE →</a>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/images/logo.png" alt="DMV Throwers" style="width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;"/>
+        <div>
+          <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1rem;color:white;">DMV THROWERS</div>
+          <div style="font-size:0.6rem;letter-spacing:0.16em;color:#D42B2B;font-weight:700;">YO-YO & SKILL TOY CLUB · DC · VA · MD</div>
+        </div>
+      </div>
+      <div>
+        <a href="about.html" class="footer-link">About</a>
+        <a href="events.html" class="footer-link">Events</a>
+        <a href="gallery.html" class="footer-link">Gallery</a>
+        <a href="resources.html" class="footer-link">Resources</a>
+        <a href="faq.html" class="footer-link">FAQ</a>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="vsyc26.html" class="footer-link" style="color:#C9A84C;font-weight:700;">VSYC-26</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 DMV Throwers · Est. 2021 · Yo-Yo & Skill Toy Club · DC · Northern Virginia · Maryland</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-menu a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('mobile-menu').classList.remove('open'));
+  });
+</script>
+</body>
+</html>
