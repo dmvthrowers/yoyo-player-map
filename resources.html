@@ -59,6 +59,18 @@
     .footer-copy { font-size: 0.75rem; color: #4a5a7a; }
     @media (max-width: 768px) { .nav-links { display: none; } .hamburger { display: flex; } .resource-grid { grid-template-columns: 1fr; } .footer-top { flex-direction: column; align-items: flex-start; } }
     @media (max-width: 480px) { #top-bar { justify-content: center; text-align: center; } }
+  .logo-main { width:38px; height:38px; object-fit:contain; }
+  .resources-section-bg { background:white; }
+  .resources-desc-main { color:var(--text-muted); margin-bottom:8px; font-size:0.95rem; }
+  .support-outer { margin-top:48px; text-align:center; }
+  .support-inner { background:var(--navy); color:white; padding:32px; border-radius:8px; max-width:600px; margin:0 auto; }
+  .support-title { font-family:'Playfair Display',serif; font-weight:700; font-size:1.4rem; margin-bottom:16px; }
+  .support-desc { margin-bottom:20px; color:#a0b0d0; }
+  .support-btn { display:inline-block; background:#D42B2B; color:white; padding:12px 24px; font-weight:700; text-decoration:none; border-radius:4px; }
+  .logo-footer { width:34px; height:34px; object-fit:contain; filter:brightness(0) invert(1); opacity:0.8; }
+  .footer-brand-main { font-family:'Playfair Display',serif; font-weight:900; font-size:1rem; color:white; }
+  .footer-brand-sub { font-size:0.6rem; letter-spacing:0.16em; color:#D42B2B; font-weight:700; }
+  .footer-link-vsyc { color:#C9A84C; font-weight:700; }
   </style>
 </head>
 <body>
@@ -71,7 +83,7 @@
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <img src="assets/images/logo.png" alt="DMV Throwers Logo" style="width:38px;height:38px;object-fit:contain;"/>
+      <img src="assets/images/logo.png" alt="DMV Throwers Logo" class="logo-main"/>
       <div>
         <div class="nav-brand-text-main">DMV THROWERS</div>
         <div class="nav-brand-text-sub">YO-YO & SKILL TOY CLUB</div>
@@ -101,12 +113,12 @@
   <a href="vsyc26.html" class="mobile-vsyc">VSYC-26 → VIRGINIA STATE YO-YO CONTEST</a>
 </div>
 
-<section id="resources" style="background:white;">
+<section id="resources" class="resources-section-bg">
   <div class="section">
     <div class="red-tag">DOWNLOADS</div>
     <h2 class="section-title">Resources</h2>
     <div class="divider"></div>
-    <p style="color:var(--text-muted);margin-bottom:8px;font-size:0.95rem;">Free downloadable guides, worksheets, and materials for yo-yo players of all skill levels</p>
+    <p class="resources-desc-main">Free downloadable guides, worksheets, and materials for yo-yo players of all skill levels</p>
 
     <div class="resource-grid">
 
@@ -156,11 +168,11 @@
 
     </div>
 
-    <div style="margin-top:48px;text-align:center;">
-      <div style="background:var(--navy);color:white;padding:32px;border-radius:8px;max-width:600px;margin:0 auto;">
-        <h3 style="font-family:'Playfair Display',serif;font-weight:700;font-size:1.4rem;margin-bottom:16px;">Support Our Club</h3>
-        <p style="margin-bottom:20px;color:#a0b0d0;">Help us create more free resources and host better events across DC, Virginia, and Maryland</p>
-        <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#D42B2B;color:white;padding:12px 24px;font-weight:700;text-decoration:none;border-radius:4px;">☕ Buy Us a Coffee</a>
+    <div class="support-outer">
+      <div class="support-inner">
+        <h3 class="support-title">Support Our Club</h3>
+        <p class="support-desc">Help us create more free resources and host better events across DC, Virginia, and Maryland</p>
+        <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" class="support-btn">☕ Buy Us a Coffee</a>
       </div>
     </div>
   </div>
@@ -170,10 +182,10 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="assets/images/logo.png" alt="DMV Throwers" style="width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;"/>
+        <img src="assets/images/logo.png" alt="DMV Throwers" class="logo-footer"/>
         <div>
-          <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1rem;color:white;">DMV THROWERS</div>
-          <div style="font-size:0.6rem;letter-spacing:0.16em;color:#D42B2B;font-weight:700;">YO-YO & SKILL TOY CLUB</div>
+          <div class="footer-brand-main">DMV THROWERS</div>
+          <div class="footer-brand-sub">YO-YO & SKILL TOY CLUB</div>
         </div>
       </div>
       <div>
@@ -183,7 +195,7 @@
         <a href="resources.html" class="footer-link">Resources</a>
         <a href="faq.html" class="footer-link">FAQ</a>
         <a href="contact.html" class="footer-link">Contact</a>
-        <a href="vsyc26.html" class="footer-link" style="color:#C9A84C;font-weight:700;">VSYC-26</a>
+        <a href="vsyc26.html" class="footer-link footer-link-vsyc">VSYC-26</a>
       </div>
     </div>
     <div class="footer-bottom">

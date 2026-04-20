@@ -71,6 +71,14 @@
       .event-date, .event-day { text-align: left; }
       .footer-top { flex-direction: column; align-items: flex-start; }
     }
+    .logo-main { width:38px; height:38px; object-fit:contain; }
+    .events-section-bg { background:white; }
+    .events-desc-main { color:var(--text-muted); margin-bottom:32px; font-size:0.95rem; }
+    .btn-rsvp { margin-top:10px; padding:7px 18px; font-size:0.75rem; display:inline-block; }
+    .logo-footer { width:34px; height:34px; object-fit:contain; filter:brightness(0) invert(1); opacity:0.8; }
+    .footer-brand-main { font-family:'Playfair Display',serif; font-weight:900; font-size:1rem; color:white; }
+    .footer-brand-sub { font-size:0.6rem; letter-spacing:0.16em; color:#D42B2B; font-weight:700; }
+    .footer-link-vsyc { color:#C9A84C; font-weight:700; }
     @media (max-width: 480px) { #top-bar { justify-content: center; text-align: center; } }
   </style>
 </head>
@@ -78,13 +86,13 @@
 
 <div id="top-bar">
   <span>NEXT MEET: APRIL 19 · ARLINGTON CENTRAL LIBRARY · ARLINGTON VA</span>
-  <a href="https://arlingtonva.libcal.com/event/15203836" target="_blank" rel="noreferrer">RSVP →</a>
+  <a href="https://arlingtonva.libcal.com/event/15203836" target="_blank" rel="noopener noreferrer">RSVP →</a>
 </div>
 
 <nav>
   <div class="nav-inner">
     <a href="index.html" class="nav-brand">
-      <img src="assets/images/logo.png" alt="DMV Throwers Logo" style="width:38px;height:38px;object-fit:contain;"/>
+      <img src="assets/images/logo.png" alt="DMV Throwers Logo" class="logo-main"/>
       <div>
         <div class="nav-brand-text-main">DMV THROWERS</div>
         <div class="nav-brand-text-sub">YO-YO & SKILL TOY CLUB</div>
@@ -97,7 +105,7 @@
       <a href="resources.html" class="nav-link">RESOURCES</a>
       <a href="faq.html" class="nav-link">FAQ</a>
       <a href="contact.html" class="nav-link">CONTACT</a>
-      <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noreferrer" class="nav-link nav-donate">☕ DONATE</a>
+      <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" class="nav-link nav-donate">☕ DONATE</a>
       <a href="vsyc26.html" class="nav-link nav-vsyc">VSYC-26 →</a>
     </div>
     <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -110,16 +118,16 @@
   <a href="resources.html">RESOURCES</a>
   <a href="faq.html">FAQ</a>
   <a href="contact.html">CONTACT</a>
-  <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noreferrer" class="mobile-donate">☕ DONATE</a>
+  <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" class="mobile-donate">☕ DONATE</a>
   <a href="vsyc26.html" class="mobile-vsyc">VSYC-26 → VIRGINIA STATE YO-YO CONTEST</a>
 </div>
 
-<section id="events" style="background:white;">
+<section id="events" class="events-section-bg">
   <div class="section">
     <div class="red-tag">SCHEDULE</div>
     <h2 class="section-title">Upcoming Events</h2>
     <div class="divider"></div>
-    <p style="color:var(--text-muted);margin-bottom:32px;font-size:0.95rem;">
+    <p class="events-desc-main">
       Free monthly meetups · Every 3rd Sunday · 1–4 PM · Arlington Central Library, 1015 N Quincy St, Arlington VA 22201 · No registration required · Loaner yo-yos available
     </p>
 
@@ -134,7 +142,7 @@
         <div>
           <div class="event-date">April 19</div>
           <div class="event-day">Sunday · 1–4 PM</div>
-          <a href="https://arlingtonva.libcal.com/event/15203836" target="_blank" rel="noopener noreferrer" class="btn btn-red" style="margin-top:10px;padding:7px 18px;font-size:0.75rem;display:inline-block;">RSVP →</a>
+          <a href="https://arlingtonva.libcal.com/event/15203836" target="_blank" rel="noopener noreferrer" class="btn btn-red btn-rsvp">RSVP →</a>
         </div>
       </div>
     </div>
@@ -150,7 +158,7 @@
         <div>
           <div class="event-date">May 17</div>
           <div class="event-day">Sunday · 1–4 PM</div>
-          <a href="https://arlingtonva.libcal.com/event/15919319" target="_blank" rel="noopener noreferrer" class="btn btn-red" style="margin-top:10px;padding:7px 18px;font-size:0.75rem;display:inline-block;">RSVP →</a>
+          <a href="https://arlingtonva.libcal.com/event/15919319" target="_blank" rel="noopener noreferrer" class="btn btn-red btn-rsvp">RSVP →</a>
         </div>
       </div>
     </div>
@@ -166,7 +174,7 @@
         <div>
           <div class="event-date">June 21</div>
           <div class="event-day">Sunday · 1–4 PM</div>
-          <a href="https://arlingtonva.libcal.com/event/15919320" target="_blank" rel="noopener noreferrer" class="btn btn-red" style="margin-top:10px;padding:7px 18px;font-size:0.75rem;display:inline-block;">RSVP →</a>
+          <a href="https://arlingtonva.libcal.com/event/15919320" target="_blank" rel="noopener noreferrer" class="btn btn-red btn-rsvp">RSVP →</a>
         </div>
       </div>
     </div>
@@ -182,7 +190,7 @@
         <div>
           <div class="event-date">July 19</div>
           <div class="event-day">Sunday · 1–4 PM</div>
-          <a href="https://arlingtonva.libcal.com/event/15919321" target="_blank" rel="noopener noreferrer" class="btn btn-red" style="margin-top:10px;padding:7px 18px;font-size:0.75rem;display:inline-block;">RSVP →</a>
+          <a href="https://arlingtonva.libcal.com/event/15919321" target="_blank" rel="noopener noreferrer" class="btn btn-red btn-rsvp">RSVP →</a>
         </div>
       </div>
     </div>
@@ -198,7 +206,7 @@
         <div>
           <div class="event-date">August 16</div>
           <div class="event-day">Sunday · 1–4 PM</div>
-          <a href="https://arlingtonva.libcal.com/event/15919322" target="_blank" rel="noopener noreferrer" class="btn btn-red" style="margin-top:10px;padding:7px 18px;font-size:0.75rem;display:inline-block;">RSVP →</a>
+          <a href="https://arlingtonva.libcal.com/event/15919322" target="_blank" rel="noopener noreferrer" class="btn btn-red btn-rsvp">RSVP →</a>
         </div>
       </div>
     </div>
@@ -216,10 +224,10 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <img src="assets/images/logo.png" alt="DMV Throwers" style="width:34px;height:34px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;"/>
+        <img src="assets/images/logo.png" alt="DMV Throwers" class="logo-footer"/>
         <div>
-          <div style="font-family:'Playfair Display',serif;font-weight:900;font-size:1rem;color:white;">DMV THROWERS</div>
-          <div style="font-size:0.6rem;letter-spacing:0.16em;color:#D42B2B;font-weight:700;">YO-YO & SKILL TOY CLUB</div>
+          <div class="footer-brand-main">DMV THROWERS</div>
+          <div class="footer-brand-sub">YO-YO & SKILL TOY CLUB</div>
         </div>
       </div>
       <div>
@@ -229,7 +237,7 @@
         <a href="resources.html" class="footer-link">Resources</a>
         <a href="faq.html" class="footer-link">FAQ</a>
         <a href="contact.html" class="footer-link">Contact</a>
-        <a href="vsyc26.html" class="footer-link" style="color:#C9A84C;font-weight:700;">VSYC-26</a>
+        <a href="vsyc26.html" class="footer-link footer-link-vsyc">VSYC-26</a>
       </div>
     </div>
     <div class="footer-bottom">
