@@ -1,13 +1,16 @@
+import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
 
 function checkAdmin(req: NextRequest): boolean {
-  const token = req.headers.get('x-admin-token');
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) return false;
-  return !!token && token === expected;
+  const token = req.headers.get('x-admin-token') ?? '';
+  const expected = process.env.ADMIN_PASSWORD ?? '';
+  if (!token || !expected) return false;
+  const a = crypto.createHash('sha256').update(token).digest();
+  const b = crypto.createHash('sha256').update(expected).digest();
+  return crypto.timingSafeEqual(a, b);
 }
 
 export async function GET(req: NextRequest) {

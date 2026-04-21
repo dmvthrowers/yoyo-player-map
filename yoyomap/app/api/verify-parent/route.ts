@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +12,12 @@ export async function GET(req: NextRequest) {
   if (!token || !type) {
     return redirectTo(req, '/legal/privacy', { error: 'missing_token' });
   }
+
+  const allowed = await checkRateLimit(ip, 'verify_parent.attempt', 20, 60);
+  if (!allowed) {
+    return redirectTo(req, '/', { error: 'rate_limited' });
+  }
+  await logAudit('verify_parent.attempt', { meta: { ip, type } });
 
   const supabase = createAdminClient();
 

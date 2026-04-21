@@ -14,7 +14,6 @@ interface MapEntry {
   socials: Record<string, string>;
   lat: number;
   lng: number;
-  age_band: string;
 }
 
 async function getEntries(): Promise<MapEntry[]> {
@@ -22,7 +21,7 @@ async function getEntries(): Promise<MapEntry[]> {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
-      .select('id, display_name, city, region, country, bio, socials, lat, lng, age_band');
+      .select('id, display_name, city, region, country, bio, socials, lat, lng');
     if (error) {
       console.error('Failed to load map entries:', error);
       return [];
