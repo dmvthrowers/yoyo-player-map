@@ -7,12 +7,8 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 prose-styles">
-      <div className="mb-8 p-4 bg-cherry-pink border-2 border-brand-red text-sm">
-        <strong>⚠ DRAFT — not legally reviewed.</strong> This policy was drafted as a starting point. Before launch, DMV Throwers should have a lawyer or legal clinic review this for compliance with GDPR, CCPA/CPRA, COPPA, and Virginia privacy law (VCDPA). Last updated: April 2026.
-      </div>
-
       <h1 className="text-4xl mb-2">Privacy Policy</h1>
-      <p className="text-navy/70 mb-8">Effective date: [DATE]</p>
+      <p className="text-navy/70 mb-8">Effective date: April 20, 2026</p>
 
       <h2 className="text-2xl mt-8 mb-3">Who we are</h2>
       <p>

@@ -1,0 +1,6 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "cd yoyomap && npm run build",
+  "installCommand": "cd yoyomap && npm install",
+  "outputDirectory": "yoyomap/.next"
+}

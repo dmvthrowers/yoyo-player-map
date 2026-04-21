@@ -7,12 +7,8 @@ export const metadata = {
 export default function TermsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-12">
-      <div className="mb-8 p-4 bg-cherry-pink border-2 border-brand-red text-sm">
-        <strong>⚠ DRAFT — not legally reviewed.</strong> These terms were drafted as a starting point. Before launch, DMV Throwers should have a lawyer review and adapt them. Last updated: April 2026.
-      </div>
-
       <h1 className="text-4xl mb-2">Terms of Service</h1>
-      <p className="text-navy/70 mb-8">Effective date: [DATE]</p>
+      <p className="text-navy/70 mb-8">Effective date: April 20, 2026</p>
 
       <h2 className="text-2xl mt-8 mb-3">1. Acceptance</h2>
       <p>
