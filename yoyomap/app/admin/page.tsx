@@ -22,7 +22,7 @@ interface AdminData {
   };
 }
 
-export default function AdminPage() {
+const AdminPage = () => {
   const [pass, setPass] = useState('');
   const [authed, setAuthed] = useState(false);
   const [data, setData] = useState<AdminData | null>(null);
@@ -108,7 +108,8 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-4xl mb-6">Admin</h1>
+      <h1 className="text-3xl font-display text-brand-red mb-4">Admin Dashboard</h1>
+      <p className="text-navy/80 mb-6">Manage entries and settings for the YoYo Map.</p>
 
       <div className="grid md:grid-cols-6 gap-3 mb-8 text-center">
         <Stat label="Total" value={data.stats.total} />

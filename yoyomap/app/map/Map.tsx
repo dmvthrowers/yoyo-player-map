@@ -1,8 +1,7 @@
 'use client';
 
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-import { useState } from 'react';
-import L from 'leaflet';
+import { useState, memo } from 'react';
 
 // Fix default icon paths (Next.js webpack + Leaflet quirk). We use CircleMarker
 // instead of default icon markers since they match the brand better and don't
@@ -20,6 +19,25 @@ interface MapEntry {
   age_band: string;
 }
 
+const Marker = memo(({ entry }: { entry: MapEntry }) => (
+  <CircleMarker
+    center={[entry.lat, entry.lng]}
+    pathOptions={{
+      color: '#C8102E',
+      fillColor: '#C8102E',
+      fillOpacity: 0.6,
+      weight: 2,
+    }}
+    radius={8}
+  >
+    <Popup>
+      <EntryPopup entry={entry} />
+    </Popup>
+  </CircleMarker>
+));
+
+Marker.displayName = 'Marker';
+
 export default function Map({ entries }: { entries: MapEntry[] }) {
   // Center on the US by default
   const [center] = useState<[number, number]>([39.5, -98.35]);
@@ -31,22 +49,8 @@ export default function Map({ entries }: { entries: MapEntry[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {entries.map((e) => (
-        <CircleMarker
-          key={e.id}
-          center={[e.lat, e.lng]}
-          pathOptions={{
-            color: '#C8102E',
-            fillColor: '#C8102E',
-            fillOpacity: 0.6,
-            weight: 2,
-          }}
-          radius={8}
-        >
-          <Popup>
-            <EntryPopup entry={e} />
-          </Popup>
-        </CircleMarker>
+      {entries.map((entry) => (
+        <Marker key={entry.id} entry={entry} />
       ))}
     </MapContainer>
   );
