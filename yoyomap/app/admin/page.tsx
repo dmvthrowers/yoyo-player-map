@@ -205,3 +205,5 @@ function Stat({ label, value, color }: { label: string; value: number; color?: s
     </div>
   );
 }
+
+export default AdminPage;
