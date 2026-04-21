@@ -27,6 +27,11 @@ const Navigation = () => (
           </Link>
         </li>
       ))}
+      <li>
+        <a href="https://dmvthrowers.club/index.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">
+          DMV Throwers
+        </a>
+      </li>
     </ul>
   </nav>
 );
@@ -48,6 +53,16 @@ const Footer = () => (
               </Link>
             </li>
           ))}
+        </ul>
+      </div>
+      <div>
+        <p className="font-semibold uppercase tracking-wider text-xs mb-2">Project</p>
+        <ul className="space-y-1">
+          <li>
+            <a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">
+              GitHub Repo
+            </a>
+          </li>
         </ul>
       </div>
     </div>
