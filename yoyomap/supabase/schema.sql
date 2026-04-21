@@ -169,8 +169,10 @@ $$;
 -- =============================================================================
 -- Public view: what the map actually shows the world
 -- =============================================================================
--- This view intentionally EXCLUDES email, parent consent details, flags,
--- internal IDs from parent_consents, etc. Only what's safe to publish.
+-- This view intentionally EXCLUDES email, age_band, parent consent details,
+-- flags, internal IDs from parent_consents, etc. Only what's safe to publish.
+-- age_band is excluded because exposing minor status for named+located individuals
+-- raises COPPA/GDPR concerns.
 -- =============================================================================
 create or replace view public.map_entries as
 select
@@ -183,7 +185,6 @@ select
   e.socials,
   e.lat,
   e.lng,
-  e.age_band,
   e.created_at
 from public.entries e
 where e.is_visible = true

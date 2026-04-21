@@ -99,8 +99,6 @@ interface EntryData {
   country: string;
   bio: string | null;
   socials: Record<string, string>;
-  email: string;
-  age_band: string;
   is_visible: boolean;
 }
 

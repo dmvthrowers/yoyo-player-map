@@ -53,6 +53,11 @@ const Footer = () => (
               </Link>
             </li>
           ))}
+          <li>
+            <a href="https://vercel.com/kb/bulletin/vercel-april-2026-security-incident" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">
+              Security bulletin
+            </a>
+          </li>
         </ul>
       </div>
       <div>

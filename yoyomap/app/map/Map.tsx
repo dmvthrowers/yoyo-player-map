@@ -16,7 +16,6 @@ interface MapEntry {
   socials: Record<string, string>;
   lat: number;
   lng: number;
-  age_band: string;
 }
 
 const Marker = memo(({ entry }: { entry: MapEntry }) => (

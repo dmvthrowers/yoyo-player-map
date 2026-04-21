@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const supabase = createAdminClient();
   const { data: tok, error } = await supabase
     .from('verification_tokens')
-    .select('*, entries(id, display_name, city, region, country, bio, socials, email, age_band, is_visible, deleted_at)')
+    .select('*, entries(id, display_name, city, region, country, bio, socials, is_visible, deleted_at)')
     .eq('token', token)
     .eq('purpose', 'edit_link')
     .maybeSingle();
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   const entry = tok.entries as {
     id: string; display_name: string; city: string; region: string | null; country: string;
-    bio: string | null; socials: Record<string, string>; email: string; age_band: string;
+    bio: string | null; socials: Record<string, string>;
     is_visible: boolean; deleted_at: string | null;
   };
   if (!entry || entry.deleted_at) return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
@@ -38,8 +38,6 @@ export async function GET(req: NextRequest) {
       country: entry.country,
       bio: entry.bio,
       socials: entry.socials || {},
-      email: entry.email,
-      age_band: entry.age_band,
       is_visible: entry.is_visible,
     },
   });
