@@ -112,6 +112,32 @@ export async function sendManageEntryEmail(
   });
 }
 
+export async function sendReportNotificationEmail(
+  entryId: string,
+  reason: string,
+  details: string | null,
+  reporterEmail: string | null,
+  entryDisplayName: string | null
+): Promise<void> {
+  const to = process.env.ADMIN_NOTIFICATION_EMAIL || 'dmvthrowers@gmail.com';
+  const adminLink = `${APP_URL}/admin`;
+  const html = emailShell(
+    'New report submitted',
+    `<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">New report on YoYo Map</h2>
+     <p><strong>Entry:</strong> ${escapeHtml(entryDisplayName || '(unknown)')} <span style="color:#777;">(${escapeHtml(entryId)})</span></p>
+     <p><strong>Reason:</strong> ${escapeHtml(reason)}</p>
+     ${details ? `<p><strong>Details:</strong><br>${escapeHtml(details)}</p>` : ''}
+     <p><strong>Reporter:</strong> ${reporterEmail ? escapeHtml(reporterEmail) : '(anonymous)'}</p>
+     <p style="margin:20px 0;"><a href="${adminLink}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Open Admin Dashboard</a></p>`
+  );
+  await getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `[YoYo Map] Report: ${reason}`,
+    html,
+  });
+}
+
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 }
