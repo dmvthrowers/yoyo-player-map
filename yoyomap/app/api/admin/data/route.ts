@@ -39,7 +39,7 @@ export async function GET(req: NextRequest) {
     supabase
       .from('entries')
       .select(
-        'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at'
+        'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
       )
       .order('created_at', { ascending: false })
       .limit(500),
