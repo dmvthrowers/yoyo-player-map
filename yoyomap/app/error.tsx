@@ -25,7 +25,7 @@ export default function Error({
       <p className="text-[11px] uppercase tracking-widest text-brand-red font-bold mb-2">Something broke</p>
       <h1 className="font-display text-4xl text-navy mb-4">We hit a snag</h1>
       <p className="text-navy/80 mb-8">
-        This page failed to load. The error's been logged — try again, or head back to the map.
+        This page failed to load. The error&apos;s been logged — try again, or head back to the map.
       </p>
       <div className="flex flex-wrap gap-3 justify-center">
         <button onClick={reset} className="btn-primary">Try again</button>
