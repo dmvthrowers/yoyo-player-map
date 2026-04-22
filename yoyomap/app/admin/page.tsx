@@ -134,6 +134,63 @@ const AdminPage = () => {
     }
   }
 
+  async function regeocodeAll() {
+    if (
+      !confirm(
+        'Re-geocode every entry on the map?\n\nThis processes entries in batches of 10 (≈15s per batch due to Nominatim rate limits) and stops automatically when done or when a batch makes no progress. Pins will shift slightly because jitter is re-randomized.'
+      )
+    ) {
+      return;
+    }
+    setLoading(true);
+    let totalSucceeded = 0;
+    let totalFailed = 0;
+    const allFailures: Array<{ id: string; display_name: string; city: string; reason: string }> = [];
+    let batch = 0;
+
+    try {
+      while (true) {
+        batch += 1;
+        const res = await fetch('/api/admin/regeocode-all', {
+          method: 'POST',
+          headers: { 'x-admin-token': pass },
+        });
+        const body = await res.json().catch(() => null);
+        if (!res.ok || !body) {
+          setError(body?.error || 'Bulk re-geocode failed.');
+          break;
+        }
+
+        totalSucceeded += body.succeeded;
+        totalFailed += body.failed;
+        if (Array.isArray(body.failures)) allFailures.push(...body.failures);
+
+        setError(
+          `Batch ${batch}: ${body.succeeded} ok, ${body.failed} failed · ${body.remaining} remaining…`
+        );
+
+        // Done, or no progress (only unfixable entries left).
+        if (body.remaining === 0 || body.succeeded === 0) {
+          break;
+        }
+      }
+
+      const uniqueFailures = Array.from(new Map(allFailures.map((f) => [f.id, f])).values());
+      const summary =
+        `Re-geocode complete: ${totalSucceeded} updated, ${totalFailed} failed.` +
+        (uniqueFailures.length > 0
+          ? ` Unfixable: ${uniqueFailures.map((f) => `${f.display_name} (${f.city}) — ${f.reason}`).join('; ')}`
+          : '');
+      setError(summary);
+      if (uniqueFailures.length > 0) console.warn('Re-geocode failures:', uniqueFailures);
+      load(pass);
+    } catch {
+      setError('Network error during bulk re-geocode.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Filter entries based on selected filters
   const filteredEntries = useMemo(() => {
     if (!data) return [];
@@ -263,6 +320,16 @@ const AdminPage = () => {
             title="Email all unverified owners who are eligible (under the reminder cap, outside the cooldown window)."
           >
             Send all reminders
+          </button>
+
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs"
+            onClick={regeocodeAll}
+            disabled={loading}
+            title="One-time backfill: re-run geocoding for every entry that hasn't been re-geocoded yet. Uses the fixed structured-query geocoder that ignores county-centroid matches."
+          >
+            Re-geocode all
           </button>
 
           {/* Entity type filter */}
