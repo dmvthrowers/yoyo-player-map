@@ -25,11 +25,20 @@ export async function GET(req: NextRequest) {
   const e = entries || [];
   const stats = {
     total: e.length,
-    visible: e.filter((x) => x.is_visible && !x.deleted_at).length,
-    pending: e.filter((x) => !x.is_visible && !x.deleted_at && !x.is_flagged).length,
+    visible: e.filter((x) => x.is_visible && !x.deleted_at && !x.auto_hidden_by_reports).length,
+    pending: e.filter((x) => !x.is_visible && !x.deleted_at && !x.is_flagged && !x.auto_hidden_by_reports).length,
     flagged: e.filter((x) => x.is_flagged && !x.deleted_at).length,
+    autoHidden: e.filter((x) => x.auto_hidden_by_reports && !x.deleted_at).length,
     minors: e.filter((x) => x.age_band === '13-17' && !x.deleted_at).length,
     openReports: (reports || []).length,
+    // Entity type breakdown
+    byType: {
+      person: e.filter((x) => (x.entity_type === 'person' || !x.entity_type) && !x.deleted_at).length,
+      shop: e.filter((x) => x.entity_type === 'shop' && !x.deleted_at).length,
+      club: e.filter((x) => x.entity_type === 'club' && !x.deleted_at).length,
+    },
+    // Verified owners (shops only)
+    verifiedOwners: e.filter((x) => x.entity_type === 'shop' && x.verified_owner && !x.deleted_at).length,
   };
 
   return NextResponse.json({ entries: e, reports: reports || [], stats });

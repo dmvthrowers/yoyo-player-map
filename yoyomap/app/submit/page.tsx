@@ -3,21 +3,38 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
+type EntityType = '' | 'person' | 'shop' | 'club';
+
 interface FormState {
+  entityType: EntityType;
   displayName: string;
   email: string;
   city: string;
   region: string;
   country: string;
   bio: string;
+  // Person fields
   ageBand: '' | '13-17' | '18+';
+  parentName: string;
+  parentEmail: string;
+  relationship: '' | 'parent' | 'legal guardian';
+  // Shop fields
+  addressLine: string;
+  postalCode: string;
+  hours: string;
+  contactName: string;
+  authorizedRep: boolean;
+  // Club fields
+  clubMeetingInfo: string;
+  clubVenuePublic: boolean;
+  venueAddressLine: string;
+  venuePostalCode: string;
+  // Socials
   instagram: string;
   youtube: string;
   discord: string;
   website: string;
-  parentName: string;
-  parentEmail: string;
-  relationship: '' | 'parent' | 'legal guardian';
+  // Consent
   consentPrivacy: boolean;
   consentTerms: boolean;
   consentPublic: boolean;
@@ -25,6 +42,7 @@ interface FormState {
 }
 
 const initial: FormState = {
+  entityType: '',
   displayName: '',
   email: '',
   city: '',
@@ -32,59 +50,137 @@ const initial: FormState = {
   country: 'US',
   bio: '',
   ageBand: '',
+  parentName: '',
+  parentEmail: '',
+  relationship: '',
+  addressLine: '',
+  postalCode: '',
+  hours: '',
+  contactName: '',
+  authorizedRep: false,
+  clubMeetingInfo: '',
+  clubVenuePublic: false,
+  venueAddressLine: '',
+  venuePostalCode: '',
   instagram: '',
   youtube: '',
   discord: '',
   website: '',
-  parentName: '',
-  parentEmail: '',
-  relationship: '',
   consentPrivacy: false,
   consentTerms: false,
   consentPublic: false,
   honeypot: '',
 };
 
+const entityTypeInfo: Record<Exclude<EntityType, ''>, { title: string; description: string; icon: React.ReactNode }> = {
+  person: {
+    title: 'Person',
+    description: 'Individual yo-yo thrower. Your location will be blurred to ~10 miles for privacy.',
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="8" r="4" />
+        <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+      </svg>
+    ),
+  },
+  shop: {
+    title: 'Yo-Yo Shop',
+    description: 'Physical retail store. Your exact address will be shown on the map.',
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+  },
+  club: {
+    title: 'Yo-Yo Club',
+    description: 'Local meet-up group. Choose whether to show exact venue or general area.',
+    icon: (
+      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
+  },
+};
+
 export default function SubmitPage() {
   const [form, setForm] = useState<FormState>(initial);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<null | { ok: boolean; message: string; isMinor?: boolean }>(null);
-  const [status, setStatus] = useState('');
+  const [result, setResult] = useState<null | { ok: boolean; message: string; entityType?: EntityType; isMinor?: boolean }>(null);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  const isMinor = form.ageBand === '13-17';
+  const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSubmitting(true);
     setResult(null);
-    setStatus('Submitting...');
 
-    const payload = {
+    // Build payload based on entity type
+    const basePayload = {
+      entityType: form.entityType,
       displayName: form.displayName,
       email: form.email,
       city: form.city,
       region: form.region || undefined,
       country: form.country,
       bio: form.bio || undefined,
-      ageBand: form.ageBand,
       socials: {
         instagram: form.instagram || undefined,
         youtube: form.youtube || undefined,
         discord: form.discord || undefined,
         website: form.website || undefined,
       },
-      parentName: form.parentName || undefined,
-      parentEmail: form.parentEmail || undefined,
-      relationship: form.relationship || undefined,
       consentPrivacy: form.consentPrivacy,
       consentTerms: form.consentTerms,
       consentPublic: form.consentPublic,
       honeypot: form.honeypot,
     };
+
+    let payload;
+    switch (form.entityType) {
+      case 'person':
+        payload = {
+          ...basePayload,
+          ageBand: form.ageBand,
+          parentName: form.parentName || undefined,
+          parentEmail: form.parentEmail || undefined,
+          relationship: form.relationship || undefined,
+        };
+        break;
+      case 'shop':
+        payload = {
+          ...basePayload,
+          addressLine: form.addressLine,
+          postalCode: form.postalCode || undefined,
+          hours: form.hours || undefined,
+          contactName: form.contactName,
+          authorizedRep: form.authorizedRep,
+        };
+        break;
+      case 'club':
+        payload = {
+          ...basePayload,
+          clubMeetingInfo: form.clubMeetingInfo,
+          clubVenuePublic: form.clubVenuePublic,
+          venueAddressLine: form.venueAddressLine || undefined,
+          venuePostalCode: form.venuePostalCode || undefined,
+          contactName: form.contactName,
+          authorizedRep: form.authorizedRep,
+        };
+        break;
+      default:
+        setResult({ ok: false, message: 'Please select what type of entry you want to add.' });
+        setSubmitting(false);
+        return;
+    }
 
     try {
       const res = await fetch('/api/submit', {
@@ -96,16 +192,16 @@ export default function SubmitPage() {
       if (!res.ok) {
         setResult({ ok: false, message: data.error || 'Something went wrong. Please try again.' });
       } else {
-        setResult({ ok: true, message: data.message, isMinor });
+        setResult({ ok: true, message: data.message, entityType: form.entityType, isMinor });
       }
     } catch {
       setResult({ ok: false, message: 'Network error. Please try again.' });
     } finally {
       setSubmitting(false);
-      setStatus('');
     }
   }
 
+  // Success state
   if (result?.ok) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16">
@@ -123,20 +219,67 @@ export default function SubmitPage() {
     );
   }
 
+  // Entity type picker (step 1)
+  if (!form.entityType) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <div className="mb-8">
+          <p className="text-xs uppercase tracking-[0.3em] text-brand-red font-bold mb-2">Add to the Map</p>
+          <h1 className="text-4xl md:text-5xl mb-2">What are you adding?</h1>
+          <p className="text-navy/80">Choose the type of entry you want to create.</p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-3">
+          {(['person', 'shop', 'club'] as const).map((type) => {
+            const info = entityTypeInfo[type];
+            return (
+              <button
+                key={type}
+                onClick={() => update('entityType', type)}
+                className="card text-left hover:border-brand-red transition-colors group"
+              >
+                <div className="text-brand-red mb-4 group-hover:scale-110 transition-transform">
+                  {info.icon}
+                </div>
+                <h2 className="text-xl font-bold mb-2">{info.title}</h2>
+                <p className="text-sm text-navy/70">{info.description}</p>
+              </button>
+            );
+          })}
+        </div>
+
+        <p className="text-center text-sm text-navy/60 mt-8">
+          Already listed? <Link href="/profile" className="text-brand-red underline">Manage your entry</Link>
+        </p>
+      </div>
+    );
+  }
+
+  // Form (step 2)
+  const entityInfo = entityTypeInfo[form.entityType];
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <div className="mb-8">
-        <p className="text-xs uppercase tracking-[0.3em] text-brand-red font-bold mb-2">Add Yourself</p>
-        <h1 className="text-4xl md:text-5xl mb-2">Join the Map</h1>
-        <p className="text-navy/80">
-          Takes under a minute. Your city-level location will be blurred to a ~10 mile radius.
-        </p>
+        <button
+          type="button"
+          onClick={() => update('entityType', '')}
+          className="text-sm text-brand-red flex items-center gap-1 mb-4 hover:underline"
+        >
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M19 12H5M12 19l-7-7 7-7" />
+          </svg>
+          Change type
+        </button>
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-brand-red">{entityInfo.icon}</span>
+          <h1 className="text-4xl md:text-5xl">Add {entityInfo.title}</h1>
+        </div>
+        <p className="text-navy/80">{entityInfo.description}</p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6" aria-labelledby="form-title">
-        <h2 id="form-title" className="text-lg font-semibold">Submit Your Information</h2>
-
-        {/* Honeypot — hidden from humans, bots will fill it */}
+      <form onSubmit={onSubmit} className="space-y-6">
+        {/* Honeypot */}
         <div className="hidden" aria-hidden="true">
           <label>Do not fill this field</label>
           <input
@@ -148,11 +291,16 @@ export default function SubmitPage() {
           />
         </div>
 
+        {/* Basic info - all types */}
         <div className="card space-y-4">
-          <h2 className="text-2xl">About you</h2>
+          <h2 className="text-2xl">
+            {form.entityType === 'person' ? 'About you' : 'Basic info'}
+          </h2>
 
           <div>
-            <label htmlFor="displayName" className="label">Display name *</label>
+            <label htmlFor="displayName" className="label">
+              {form.entityType === 'person' ? 'Display name' : form.entityType === 'shop' ? 'Shop name' : 'Club name'} *
+            </label>
             <input
               id="displayName"
               className="input"
@@ -160,13 +308,17 @@ export default function SubmitPage() {
               maxLength={40}
               value={form.displayName}
               onChange={(e) => update('displayName', e.target.value)}
-              placeholder="e.g. CaptnRogers"
+              placeholder={form.entityType === 'person' ? 'e.g. CaptnRogers' : form.entityType === 'shop' ? 'e.g. YoYo World' : 'e.g. DC Throwers'}
             />
-            <p className="text-xs text-navy/60 mt-1">Shown publicly. Use a handle, not your real name if you prefer.</p>
+            <p className="text-xs text-navy/60 mt-1">
+              {form.entityType === 'person' ? 'Shown publicly. Use a handle, not your real name if you prefer.' : 'Shown publicly on the map.'}
+            </p>
           </div>
 
           <div>
-            <label htmlFor="email" className="label">Email *</label>
+            <label htmlFor="email" className="label">
+              {form.entityType === 'person' ? 'Your email' : 'Contact email'} *
+            </label>
             <input
               id="email"
               className="input"
@@ -175,36 +327,61 @@ export default function SubmitPage() {
               value={form.email}
               onChange={(e) => update('email', e.target.value)}
             />
-            <p className="text-xs text-navy/60 mt-1">Never shown publicly. Used only to verify and let you edit later.</p>
+            <p className="text-xs text-navy/60 mt-1">
+              Never shown publicly. Used to verify and let you manage your listing.
+              {form.entityType === 'shop' && ' If this matches your website domain, you\'ll get a verified badge.'}
+            </p>
           </div>
 
-          <div>
-            <label className="label">Age *</label>
-            <div className="flex gap-3">
-              <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
-                <input
-                  type="radio"
-                  name="ageBand"
-                  checked={form.ageBand === '18+'}
-                  onChange={() => update('ageBand', '18+')}
-                />
-                <span className="text-sm font-semibold">18 or older</span>
-              </label>
-              <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
-                <input
-                  type="radio"
-                  name="ageBand"
-                  checked={form.ageBand === '13-17'}
-                  onChange={() => update('ageBand', '13-17')}
-                />
-                <span className="text-sm font-semibold">13 to 17</span>
-              </label>
+          {/* Person-specific: age band */}
+          {form.entityType === 'person' && (
+            <div>
+              <label className="label">Age *</label>
+              <div className="flex gap-3">
+                <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
+                  <input
+                    type="radio"
+                    name="ageBand"
+                    checked={form.ageBand === '18+'}
+                    onChange={() => update('ageBand', '18+')}
+                  />
+                  <span className="text-sm font-semibold">18 or older</span>
+                </label>
+                <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
+                  <input
+                    type="radio"
+                    name="ageBand"
+                    checked={form.ageBand === '13-17'}
+                    onChange={() => update('ageBand', '13-17')}
+                  />
+                  <span className="text-sm font-semibold">13 to 17</span>
+                </label>
+              </div>
+              <p className="text-xs text-navy/60 mt-1">You must be at least 13. Under 18 needs a parent or guardian to consent.</p>
             </div>
-            <p className="text-xs text-navy/60 mt-1">You must be at least 13. Under 18 needs a parent or guardian to consent.</p>
-          </div>
+          )}
+
+          {/* Shop/Club: contact name (internal) */}
+          {(form.entityType === 'shop' || form.entityType === 'club') && (
+            <div>
+              <label htmlFor="contactName" className="label">Your name (internal) *</label>
+              <input
+                id="contactName"
+                className="input"
+                required
+                maxLength={100}
+                value={form.contactName}
+                onChange={(e) => update('contactName', e.target.value)}
+                placeholder="e.g. John Smith"
+              />
+              <p className="text-xs text-navy/60 mt-1">Not shown publicly. Used for our records only.</p>
+            </div>
+          )}
 
           <div>
-            <label htmlFor="bio" className="label">Short bio (optional)</label>
+            <label htmlFor="bio" className="label">
+              {form.entityType === 'person' ? 'Short bio' : 'Description'} (optional)
+            </label>
             <textarea
               id="bio"
               className="input"
@@ -212,14 +389,49 @@ export default function SubmitPage() {
               rows={3}
               value={form.bio}
               onChange={(e) => update('bio', e.target.value)}
-              placeholder="What do you throw? What brands? Any tricks you're working on?"
+              placeholder={
+                form.entityType === 'person'
+                  ? 'What do you throw? What brands? Any tricks you\'re working on?'
+                  : form.entityType === 'shop'
+                  ? 'What brands do you carry? Any specialties?'
+                  : 'What styles do you throw? All skill levels welcome?'
+              }
             />
             <p className="text-xs text-navy/60 mt-1">{form.bio.length}/280 characters</p>
           </div>
         </div>
 
+        {/* Location - all types */}
         <div className="card space-y-4">
-          <h2 className="text-2xl">Where you are</h2>
+          <h2 className="text-2xl">Location</h2>
+
+          {/* Shop-specific: street address */}
+          {form.entityType === 'shop' && (
+            <>
+              <div>
+                <label htmlFor="addressLine" className="label">Street address *</label>
+                <input
+                  id="addressLine"
+                  className="input"
+                  required
+                  value={form.addressLine}
+                  onChange={(e) => update('addressLine', e.target.value)}
+                  placeholder="e.g. 123 Main Street"
+                />
+              </div>
+              <div>
+                <label htmlFor="postalCode" className="label">Postal/ZIP code</label>
+                <input
+                  id="postalCode"
+                  className="input"
+                  maxLength={20}
+                  value={form.postalCode}
+                  onChange={(e) => update('postalCode', e.target.value)}
+                  placeholder="e.g. 22026"
+                />
+              </div>
+            </>
+          )}
 
           <div>
             <label htmlFor="city" className="label">City or town *</label>
@@ -255,18 +467,131 @@ export default function SubmitPage() {
                 onChange={(e) => update('country', e.target.value.toUpperCase())}
                 placeholder="US"
               />
-              <p className="text-xs text-navy/60 mt-1">2-letter code (US, CA, GB, etc.)</p>
+              <p className="text-xs text-navy/60 mt-1">2-letter code</p>
             </div>
           </div>
-          <p className="text-xs bg-cream border-l-4 border-brand-red p-3">
-            We&apos;ll place your pin at the center of your city, then blur it by about 10 miles in a random direction. Your real location is never stored.
-          </p>
+
+          {form.entityType === 'person' && (
+            <p className="text-xs bg-cream border-l-4 border-brand-red p-3">
+              We&apos;ll place your pin at the center of your city, then blur it by about 10 miles in a random direction. Your real location is never stored.
+            </p>
+          )}
+          {form.entityType === 'shop' && (
+            <p className="text-xs bg-cream border-l-4 border-brand-red p-3">
+              Your exact address will be shown on the map so customers can find you.
+            </p>
+          )}
         </div>
 
+        {/* Shop-specific: hours */}
+        {form.entityType === 'shop' && (
+          <div className="card space-y-4">
+            <h2 className="text-2xl">Store hours (optional)</h2>
+            <div>
+              <label htmlFor="hours" className="label">Hours of operation</label>
+              <textarea
+                id="hours"
+                className="input"
+                maxLength={500}
+                rows={3}
+                value={form.hours}
+                onChange={(e) => update('hours', e.target.value)}
+                placeholder="e.g. Mon-Fri 10am-6pm, Sat 11am-5pm, Closed Sunday"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Club-specific: meeting info */}
+        {form.entityType === 'club' && (
+          <div className="card space-y-4">
+            <h2 className="text-2xl">Meeting info</h2>
+
+            <div>
+              <label htmlFor="clubMeetingInfo" className="label">When and where do you meet? *</label>
+              <textarea
+                id="clubMeetingInfo"
+                className="input"
+                required
+                maxLength={500}
+                rows={3}
+                value={form.clubMeetingInfo}
+                onChange={(e) => update('clubMeetingInfo', e.target.value)}
+                placeholder="e.g. Every Saturday 2-5pm at Central Park pavilion. All skill levels welcome!"
+              />
+              <p className="text-xs text-navy/60 mt-1">Include day, time, frequency, and general location info.</p>
+            </div>
+
+            <div>
+              <label className="label">Venue location visibility</label>
+              <div className="space-y-2">
+                <label className="flex items-start gap-3 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
+                  <input
+                    type="radio"
+                    name="venuePublic"
+                    checked={!form.clubVenuePublic}
+                    onChange={() => {
+                      update('clubVenuePublic', false);
+                      update('venueAddressLine', '');
+                      update('venuePostalCode', '');
+                    }}
+                    className="mt-1"
+                  />
+                  <div>
+                    <span className="font-semibold">Private venue</span>
+                    <p className="text-xs text-navy/60">Pin shows approximate city location (~10mi blur). Good for rotating venues or safety concerns.</p>
+                  </div>
+                </label>
+                <label className="flex items-start gap-3 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
+                  <input
+                    type="radio"
+                    name="venuePublic"
+                    checked={form.clubVenuePublic}
+                    onChange={() => update('clubVenuePublic', true)}
+                    className="mt-1"
+                  />
+                  <div>
+                    <span className="font-semibold">Public venue</span>
+                    <p className="text-xs text-navy/60">Pin shows exact address. Good for public parks, community centers, etc.</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            {form.clubVenuePublic && (
+              <div className="space-y-4 pl-4 border-l-4 border-brand-red">
+                <div>
+                  <label htmlFor="venueAddressLine" className="label">Venue street address *</label>
+                  <input
+                    id="venueAddressLine"
+                    className="input"
+                    required={form.clubVenuePublic}
+                    value={form.venueAddressLine}
+                    onChange={(e) => update('venueAddressLine', e.target.value)}
+                    placeholder="e.g. 123 Park Avenue"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="venuePostalCode" className="label">Venue postal/ZIP code</label>
+                  <input
+                    id="venuePostalCode"
+                    className="input"
+                    maxLength={20}
+                    value={form.venuePostalCode}
+                    onChange={(e) => update('venuePostalCode', e.target.value)}
+                    placeholder="e.g. 22026"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Socials - all types */}
         <div className="card space-y-4">
           <h2 className="text-2xl">Socials (all optional)</h2>
           <p className="text-sm text-navy/70">
-            Share whichever handles you want. Just a handle or username — we&apos;ll build the link.
+            Share your social links so people can connect with you.
           </p>
 
           <div className="grid grid-cols-2 gap-4">
@@ -313,6 +638,7 @@ export default function SubmitPage() {
           </div>
         </div>
 
+        {/* Parent consent for minors */}
         {isMinor && (
           <div className="card space-y-4 bg-cherry-pink border-brand-red">
             <h2 className="text-2xl">Parent or guardian info</h2>
@@ -351,7 +677,7 @@ export default function SubmitPage() {
                 value={form.relationship}
                 onChange={(e) => update('relationship', e.target.value as FormState['relationship'])}
               >
-                <option value="">Select…</option>
+                <option value="">Select...</option>
                 <option value="parent">Parent</option>
                 <option value="legal guardian">Legal guardian</option>
               </select>
@@ -359,6 +685,7 @@ export default function SubmitPage() {
           </div>
         )}
 
+        {/* Consent checkboxes */}
         <div className="card space-y-4">
           <h2 className="text-2xl">Your consent</h2>
 
@@ -370,7 +697,7 @@ export default function SubmitPage() {
               className="mt-1"
             />
             <span className="text-sm">
-              I understand that my display name, city, bio, and socials will be <strong>publicly visible</strong> on the map to anyone who visits the site.
+              I understand that the {form.entityType === 'person' ? 'display name, city, bio, and socials' : 'name, location, description, and socials'} will be <strong>publicly visible</strong> on the map.
             </span>
           </label>
 
@@ -397,6 +724,21 @@ export default function SubmitPage() {
               I have read and accept the <Link href="/legal/terms" target="_blank" className="text-brand-red underline">Terms of Service</Link>.
             </span>
           </label>
+
+          {/* Authorized rep checkbox for shop/club */}
+          {(form.entityType === 'shop' || form.entityType === 'club') && (
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={form.authorizedRep}
+                onChange={(e) => update('authorizedRep', e.target.checked)}
+                className="mt-1"
+              />
+              <span className="text-sm">
+                I am authorized to list this {form.entityType === 'shop' ? 'business' : 'club'} on the map. *
+              </span>
+            </label>
+          )}
         </div>
 
         {result && !result.ok && (
@@ -404,14 +746,12 @@ export default function SubmitPage() {
         )}
 
         <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Submitting…' : 'Submit My Entry'}
+          {submitting ? 'Submitting...' : `Submit ${entityInfo.title}`}
         </button>
 
         <p className="text-xs text-navy/60 text-center">
           You can edit or delete your entry anytime. Just visit the <Link href="/profile" className="underline">My Entry</Link> page and we&apos;ll send a magic link.
         </p>
-
-        {status && <p className="mt-4 text-sm text-brand-red">{status}</p>}
       </form>
     </div>
   );

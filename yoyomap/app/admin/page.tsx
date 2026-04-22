@@ -1,26 +1,54 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+
+interface AdminEntry {
+  id: string;
+  display_name: string;
+  email: string;
+  city: string;
+  region: string | null;
+  country: string;
+  age_band: string | null;
+  entity_type: 'person' | 'shop' | 'club' | null;
+  is_visible: boolean;
+  is_flagged: boolean;
+  auto_hidden_by_reports: boolean;
+  verified_owner: boolean;
+  verified_at: string | null;
+  created_at: string;
+  deleted_at: string | null;
+}
 
 interface AdminData {
-  entries: Array<{
-    id: string; display_name: string; email: string; city: string; region: string | null;
-    country: string; age_band: string; is_visible: boolean; is_flagged: boolean;
-    verified_at: string | null; created_at: string; deleted_at: string | null;
-  }>;
+  entries: AdminEntry[];
   reports: Array<{
-    id: string; entry_id: string; reason: string; details: string | null;
-    resolved_at: string | null; created_at: string;
+    id: string;
+    entry_id: string;
+    reason: string;
+    details: string | null;
+    resolved_at: string | null;
+    created_at: string;
   }>;
   stats: {
     total: number;
     visible: number;
     pending: number;
     flagged: number;
+    autoHidden: number;
     minors: number;
     openReports: number;
+    byType: {
+      person: number;
+      shop: number;
+      club: number;
+    };
+    verifiedOwners: number;
   };
 }
+
+type EntityFilter = 'all' | 'person' | 'shop' | 'club';
+type StatusFilter = 'all' | 'visible' | 'pending' | 'flagged' | 'auto_hidden';
 
 const AdminPage = () => {
   const [pass, setPass] = useState('');
@@ -28,6 +56,8 @@ const AdminPage = () => {
   const [data, setData] = useState<AdminData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [entityFilter, setEntityFilter] = useState<EntityFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
   async function load(token: string) {
     setLoading(true);
@@ -69,6 +99,28 @@ const AdminPage = () => {
     else setError('Action failed.');
   }
 
+  // Filter entries based on selected filters
+  const filteredEntries = useMemo(() => {
+    if (!data) return [];
+    return data.entries.filter((e) => {
+      // Entity type filter
+      if (entityFilter !== 'all') {
+        const entryType = e.entity_type || 'person';
+        if (entryType !== entityFilter) return false;
+      }
+      
+      // Status filter
+      if (statusFilter !== 'all') {
+        if (statusFilter === 'visible' && (!e.is_visible || e.deleted_at || e.auto_hidden_by_reports)) return false;
+        if (statusFilter === 'pending' && (e.is_visible || e.is_flagged || e.deleted_at || e.auto_hidden_by_reports)) return false;
+        if (statusFilter === 'flagged' && (!e.is_flagged || e.deleted_at)) return false;
+        if (statusFilter === 'auto_hidden' && (!e.auto_hidden_by_reports || e.deleted_at)) return false;
+      }
+      
+      return true;
+    });
+  }, [data, entityFilter, statusFilter]);
+
   if (!authed) {
     return (
       <div className="max-w-md mx-auto px-4 py-16">
@@ -97,64 +149,113 @@ const AdminPage = () => {
               load(pass);
             }}
           >
-            {loading ? 'Checking…' : 'Sign In'}
+            {loading ? 'Checking...' : 'Sign In'}
           </button>
         </div>
       </div>
     );
   }
 
-  if (!data) return <div className="p-8">Loading…</div>;
+  if (!data) return <div className="p-8">Loading...</div>;
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-display text-brand-red mb-4">Admin Dashboard</h1>
       <p className="text-navy/80 mb-6">Manage entries and settings for the YoYo Map.</p>
 
-      <div className="grid md:grid-cols-6 gap-3 mb-8 text-center">
+      {/* Main stats */}
+      <div className="grid md:grid-cols-7 gap-3 mb-4 text-center">
         <Stat label="Total" value={data.stats.total} />
         <Stat label="Visible" value={data.stats.visible} />
         <Stat label="Pending" value={data.stats.pending} />
         <Stat label="Flagged" value={data.stats.flagged} color="text-brand-red" />
+        <Stat label="Auto-hidden" value={data.stats.autoHidden} color={data.stats.autoHidden > 0 ? 'text-amber-600' : ''} />
         <Stat label="Minors" value={data.stats.minors} />
         <Stat label="Reports" value={data.stats.openReports} color={data.stats.openReports > 0 ? 'text-brand-red' : ''} />
       </div>
 
+      {/* Entity type breakdown */}
+      <div className="grid md:grid-cols-4 gap-3 mb-8 text-center">
+        <Stat label="People" value={data.stats.byType.person} icon={<PersonIcon />} />
+        <Stat label="Shops" value={data.stats.byType.shop} icon={<ShopIcon />} />
+        <Stat label="Clubs" value={data.stats.byType.club} icon={<ClubIcon />} />
+        <Stat label="Verified Shops" value={data.stats.verifiedOwners} icon={<VerifiedIcon />} />
+      </div>
+
+      {/* Reports section */}
       <section className="mb-10">
         <h2 className="text-2xl mb-4">Open reports</h2>
         {data.reports.length === 0 ? (
           <p className="text-navy/60 text-sm">No open reports.</p>
         ) : (
           <div className="space-y-2">
-            {data.reports.map((r) => (
-              <div key={r.id} className="card text-sm">
-                <p><strong>Entry:</strong> {r.entry_id}</p>
-                <p><strong>Reason:</strong> {r.reason}</p>
-                {r.details && <p className="mt-2 text-navy/70">{r.details}</p>}
-                <div className="flex gap-2 mt-3">
-                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('flag_entry', r.entry_id)}>
-                    Hide entry
-                  </button>
-                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('delete_entry', r.entry_id)}>
-                    Delete entry
-                  </button>
-                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('resolve_report', r.id)}>
-                    Resolve report
-                  </button>
+            {data.reports.map((r) => {
+              const entry = data.entries.find((e) => e.id === r.entry_id);
+              return (
+                <div key={r.id} className="card text-sm">
+                  <p><strong>Entry:</strong> {entry?.display_name || r.entry_id}</p>
+                  <p><strong>Type:</strong> {entry?.entity_type || 'person'}</p>
+                  <p><strong>Reason:</strong> <span className={getReasonColor(r.reason)}>{r.reason}</span></p>
+                  {r.details && <p className="mt-2 text-navy/70">{r.details}</p>}
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('flag_entry', r.entry_id)}>
+                      Hide entry
+                    </button>
+                    <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('delete_entry', r.entry_id)}>
+                      Delete entry
+                    </button>
+                    <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('resolve_report', r.id)}>
+                      Resolve report
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </section>
 
+      {/* Entries section */}
       <section>
-        <h2 className="text-2xl mb-4">All entries</h2>
+        <div className="flex flex-wrap items-center gap-4 mb-4">
+          <h2 className="text-2xl">All entries</h2>
+          
+          {/* Entity type filter */}
+          <select
+            className="input py-1 text-sm w-auto"
+            value={entityFilter}
+            onChange={(e) => setEntityFilter(e.target.value as EntityFilter)}
+          >
+            <option value="all">All types</option>
+            <option value="person">People only</option>
+            <option value="shop">Shops only</option>
+            <option value="club">Clubs only</option>
+          </select>
+
+          {/* Status filter */}
+          <select
+            className="input py-1 text-sm w-auto"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          >
+            <option value="all">All statuses</option>
+            <option value="visible">Visible</option>
+            <option value="pending">Pending</option>
+            <option value="flagged">Flagged</option>
+            <option value="auto_hidden">Auto-hidden</option>
+          </select>
+
+          <span className="text-sm text-navy/60">
+            Showing {filteredEntries.length} of {data.entries.length}
+          </span>
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-xs uppercase tracking-wider border-b-2 border-navy">
               <tr>
-                <th className="py-2">Name</th>
+                <th className="py-2">Type</th>
+                <th>Name</th>
                 <th>Email</th>
                 <th>City</th>
                 <th>Age</th>
@@ -163,28 +264,21 @@ const AdminPage = () => {
               </tr>
             </thead>
             <tbody>
-              {data.entries.map((e) => (
+              {filteredEntries.map((e) => (
                 <tr key={e.id} className="border-b border-navy/10">
-                  <td className="py-2">{e.display_name}</td>
+                  <td className="py-2">
+                    <EntityTypeBadge type={e.entity_type} verified={e.verified_owner} />
+                  </td>
+                  <td>{e.display_name}</td>
                   <td className="text-xs">{e.email}</td>
                   <td>{e.city}, {e.region || e.country}</td>
-                  <td>{e.age_band}</td>
+                  <td>{e.age_band || '-'}</td>
                   <td>
-                    {e.deleted_at ? <span className="text-navy/40">deleted</span> :
-                     e.is_flagged ? <span className="text-brand-red">flagged</span> :
-                     e.is_visible ? <span className="text-green-700">visible</span> :
-                     <span className="text-navy/60">pending</span>}
+                    <StatusBadge entry={e} />
                   </td>
                   <td className="space-x-1">
                     {!e.deleted_at && (
-                      <>
-                        {e.is_flagged ? (
-                          <button className="text-xs underline" onClick={() => act('unflag_entry', e.id)}>Unflag</button>
-                        ) : (
-                          <button className="text-xs underline" onClick={() => act('flag_entry', e.id)}>Flag</button>
-                        )}
-                        <button className="text-xs underline text-brand-red" onClick={() => act('delete_entry', e.id)}>Delete</button>
-                      </>
+                      <EntryActions entry={e} act={act} />
                     )}
                   </td>
                 </tr>
@@ -195,14 +289,122 @@ const AdminPage = () => {
       </section>
     </div>
   );
-}
+};
 
-function Stat({ label, value, color }: { label: string; value: number; color?: string }) {
+// Helper components
+function Stat({ label, value, color, icon }: { label: string; value: number; color?: string; icon?: React.ReactNode }) {
   return (
     <div className="card py-3">
+      {icon && <div className="flex justify-center mb-1">{icon}</div>}
       <p className={`font-display text-3xl ${color || ''}`}>{value}</p>
       <p className="text-xs uppercase tracking-wider text-navy/60">{label}</p>
     </div>
+  );
+}
+
+function EntityTypeBadge({ type, verified }: { type: AdminEntry['entity_type']; verified?: boolean }) {
+  const entityType = type || 'person';
+  const colors = {
+    person: 'bg-[#C8102E]/10 text-[#C8102E]',
+    shop: 'bg-[#2E8B57]/10 text-[#2E8B57]',
+    club: 'bg-[#1B2A49]/10 text-[#1B2A49]',
+  };
+  
+  return (
+    <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${colors[entityType]}`}>
+      {entityType}
+      {entityType === 'shop' && verified && (
+        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+        </svg>
+      )}
+    </span>
+  );
+}
+
+function StatusBadge({ entry }: { entry: AdminEntry }) {
+  if (entry.deleted_at) return <span className="text-navy/40">deleted</span>;
+  if (entry.is_flagged) return <span className="text-brand-red font-semibold">flagged</span>;
+  if (entry.auto_hidden_by_reports) {
+    return (
+      <span className="inline-flex items-center gap-1 text-amber-600 font-semibold">
+        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
+        </svg>
+        auto-hidden
+      </span>
+    );
+  }
+  if (entry.is_visible) return <span className="text-green-700">visible</span>;
+  return <span className="text-navy/60">pending</span>;
+}
+
+function EntryActions({ entry, act }: { entry: AdminEntry; act: (action: string, id: string) => void }) {
+  return (
+    <>
+      {entry.auto_hidden_by_reports && (
+        <button className="text-xs underline text-amber-600" onClick={() => act('clear_auto_hide', entry.id)}>
+          Clear auto-hide
+        </button>
+      )}
+      {entry.is_flagged ? (
+        <button className="text-xs underline" onClick={() => act('unflag_entry', entry.id)}>Unflag</button>
+      ) : (
+        <button className="text-xs underline" onClick={() => act('flag_entry', entry.id)}>Flag</button>
+      )}
+      <button className="text-xs underline text-brand-red" onClick={() => act('delete_entry', entry.id)}>Delete</button>
+    </>
+  );
+}
+
+function getReasonColor(reason: string): string {
+  const colors: Record<string, string> = {
+    impersonation: 'text-amber-600 font-semibold',
+    fake_business: 'text-amber-600 font-semibold',
+    unauthorized_listing: 'text-amber-600 font-semibold',
+    harassment: 'text-brand-red font-semibold',
+    minor_unsafe: 'text-brand-red font-semibold',
+    spam: 'text-navy/70',
+    other: 'text-navy/70',
+  };
+  return colors[reason] || 'text-navy/70';
+}
+
+// Icons
+function PersonIcon() {
+  return (
+    <svg className="w-5 h-5 text-[#C8102E]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+    </svg>
+  );
+}
+
+function ShopIcon() {
+  return (
+    <svg className="w-5 h-5 text-[#2E8B57]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
+}
+
+function ClubIcon() {
+  return (
+    <svg className="w-5 h-5 text-[#1B2A49]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+function VerifiedIcon() {
+  return (
+    <svg className="w-5 h-5 text-[#2E8B57]" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+    </svg>
   );
 }
 
