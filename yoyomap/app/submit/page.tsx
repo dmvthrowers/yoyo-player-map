@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 
 interface FormState {
@@ -49,6 +49,7 @@ export default function SubmitPage() {
   const [form, setForm] = useState<FormState>(initial);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<null | { ok: boolean; message: string; isMinor?: boolean }>(null);
+  const [status, setStatus] = useState('');
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -60,6 +61,7 @@ export default function SubmitPage() {
     e.preventDefault();
     setSubmitting(true);
     setResult(null);
+    setStatus('Submitting...');
 
     const payload = {
       displayName: form.displayName,
@@ -100,6 +102,7 @@ export default function SubmitPage() {
       setResult({ ok: false, message: 'Network error. Please try again.' });
     } finally {
       setSubmitting(false);
+      setStatus('');
     }
   }
 
@@ -130,7 +133,9 @@ export default function SubmitPage() {
         </p>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6">
+      <form onSubmit={onSubmit} className="space-y-6" aria-labelledby="form-title">
+        <h2 id="form-title" className="text-lg font-semibold">Submit Your Information</h2>
+
         {/* Honeypot — hidden from humans, bots will fill it */}
         <div className="hidden" aria-hidden="true">
           <label>Do not fill this field</label>
@@ -147,8 +152,9 @@ export default function SubmitPage() {
           <h2 className="text-2xl">About you</h2>
 
           <div>
-            <label className="label">Display name *</label>
+            <label htmlFor="displayName" className="label">Display name *</label>
             <input
+              id="displayName"
               className="input"
               required
               maxLength={40}
@@ -160,8 +166,9 @@ export default function SubmitPage() {
           </div>
 
           <div>
-            <label className="label">Email *</label>
+            <label htmlFor="email" className="label">Email *</label>
             <input
+              id="email"
               className="input"
               type="email"
               required
@@ -197,8 +204,9 @@ export default function SubmitPage() {
           </div>
 
           <div>
-            <label className="label">Short bio (optional)</label>
+            <label htmlFor="bio" className="label">Short bio (optional)</label>
             <textarea
+              id="bio"
               className="input"
               maxLength={280}
               rows={3}
@@ -214,8 +222,9 @@ export default function SubmitPage() {
           <h2 className="text-2xl">Where you are</h2>
 
           <div>
-            <label className="label">City or town *</label>
+            <label htmlFor="city" className="label">City or town *</label>
             <input
+              id="city"
               className="input"
               required
               value={form.city}
@@ -226,8 +235,9 @@ export default function SubmitPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label">State/region</label>
+              <label htmlFor="region" className="label">State/region</label>
               <input
+                id="region"
                 className="input"
                 value={form.region}
                 onChange={(e) => update('region', e.target.value)}
@@ -235,8 +245,9 @@ export default function SubmitPage() {
               />
             </div>
             <div>
-              <label className="label">Country *</label>
+              <label htmlFor="country" className="label">Country *</label>
               <input
+                id="country"
                 className="input"
                 required
                 maxLength={2}
@@ -260,20 +271,44 @@ export default function SubmitPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label">Instagram</label>
-              <input className="input" value={form.instagram} onChange={(e) => update('instagram', e.target.value)} placeholder="handle" />
+              <label htmlFor="instagram" className="label">Instagram</label>
+              <input
+                id="instagram"
+                className="input"
+                value={form.instagram}
+                onChange={(e) => update('instagram', e.target.value)}
+                placeholder="handle"
+              />
             </div>
             <div>
-              <label className="label">YouTube</label>
-              <input className="input" value={form.youtube} onChange={(e) => update('youtube', e.target.value)} placeholder="channel" />
+              <label htmlFor="youtube" className="label">YouTube</label>
+              <input
+                id="youtube"
+                className="input"
+                value={form.youtube}
+                onChange={(e) => update('youtube', e.target.value)}
+                placeholder="channel"
+              />
             </div>
             <div>
-              <label className="label">Discord</label>
-              <input className="input" value={form.discord} onChange={(e) => update('discord', e.target.value)} placeholder="username" />
+              <label htmlFor="discord" className="label">Discord</label>
+              <input
+                id="discord"
+                className="input"
+                value={form.discord}
+                onChange={(e) => update('discord', e.target.value)}
+                placeholder="username"
+              />
             </div>
             <div>
-              <label className="label">Website</label>
-              <input className="input" value={form.website} onChange={(e) => update('website', e.target.value)} placeholder="https://..." />
+              <label htmlFor="website" className="label">Website</label>
+              <input
+                id="website"
+                className="input"
+                value={form.website}
+                onChange={(e) => update('website', e.target.value)}
+                placeholder="https://..."
+              />
             </div>
           </div>
         </div>
@@ -287,8 +322,9 @@ export default function SubmitPage() {
             </p>
 
             <div>
-              <label className="label">Parent/guardian full name *</label>
+              <label htmlFor="parentName" className="label">Parent/guardian full name *</label>
               <input
+                id="parentName"
                 className="input"
                 required={isMinor}
                 value={form.parentName}
@@ -296,8 +332,9 @@ export default function SubmitPage() {
               />
             </div>
             <div>
-              <label className="label">Parent/guardian email *</label>
+              <label htmlFor="parentEmail" className="label">Parent/guardian email *</label>
               <input
+                id="parentEmail"
                 className="input"
                 type="email"
                 required={isMinor}
@@ -306,8 +343,9 @@ export default function SubmitPage() {
               />
             </div>
             <div>
-              <label className="label">Relationship *</label>
+              <label htmlFor="relationship" className="label">Relationship *</label>
               <select
+                id="relationship"
                 className="input"
                 required={isMinor}
                 value={form.relationship}
@@ -372,6 +410,8 @@ export default function SubmitPage() {
         <p className="text-xs text-navy/60 text-center">
           You can edit or delete your entry anytime. Just visit the <Link href="/profile" className="underline">My Entry</Link> page and we&apos;ll send a magic link.
         </p>
+
+        {status && <p className="mt-4 text-sm text-brand-red">{status}</p>}
       </form>
     </div>
   );

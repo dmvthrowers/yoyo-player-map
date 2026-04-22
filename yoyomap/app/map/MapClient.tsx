@@ -13,7 +13,6 @@ interface MapEntry {
   socials: Record<string, string>;
   lat: number;
   lng: number;
-  age_band: string;
 }
 
 // Dynamic import — Leaflet requires window, must not SSR

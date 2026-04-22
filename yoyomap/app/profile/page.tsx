@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 function ProfileInner() {
@@ -15,7 +15,9 @@ function ProfileInner() {
 
 export default function ProfilePage() {
   return (
-    <div className="max-w-xl mx-auto px-4 py-12">
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-display text-brand-red mb-4">My Profile</h1>
+      <p className="text-navy/80">View and manage your profile on the YoYo Map.</p>
       <Suspense fallback={<div>Loading…</div>}>
         <ProfileInner />
       </Suspense>
@@ -97,8 +99,6 @@ interface EntryData {
   country: string;
   bio: string | null;
   socials: Record<string, string>;
-  email: string;
-  age_band: string;
   is_visible: boolean;
 }
 

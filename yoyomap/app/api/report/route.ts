@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { reportSchema } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
+import { sendReportNotificationEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient();
 
   // Verify entry exists
-  const { data: entry } = await supabase.from('entries').select('id').eq('id', entryId).maybeSingle();
+  const { data: entry } = await supabase.from('entries').select('id, display_name').eq('id', entryId).maybeSingle();
   if (!entry) return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
 
   const { error } = await supabase.from('reports').insert({
@@ -46,5 +47,12 @@ export async function POST(req: NextRequest) {
   }
 
   await logAudit('report.submitted', { actor: reporterEmail || 'anon', targetId: entryId, meta: { ip, reason } });
+
+  try {
+    await sendReportNotificationEmail(entryId, reason, details || null, reporterEmail || null, entry.display_name);
+  } catch (e) {
+    console.error('Report notification email failed:', e);
+  }
+
   return NextResponse.json({ ok: true });
 }

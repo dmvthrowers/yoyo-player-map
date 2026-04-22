@@ -41,6 +41,8 @@ A step-by-step from "got the code" to "live site." Expect ~2 hours of hands-on t
 - [ ] Push code to a **private** GitHub repo (service role key must never leak)
 - [ ] Import repo into Vercel
 - [ ] Add all env vars from `.env.local` in Vercel project settings
+- [ ] Mark these four as **Sensitive** in Vercel (encrypted at rest, unreadable after save): `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `ADMIN_PASSWORD`, `ENTRY_SECRET`
+- [ ] Enable 2FA on your Vercel account (Account Settings → Security)
 - [ ] Deploy
 - [ ] Add `map.dmvthrowers.club` as a custom domain in Vercel; update Cloudflare or wherever DNS lives
 - [ ] Wait for SSL cert to issue (~2 min)

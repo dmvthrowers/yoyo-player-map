@@ -1,5 +1,54 @@
 import Link from 'next/link';
 
+const TrustRow = () => (
+  <section className="grid md:grid-cols-3 gap-6 py-12 border-y-2 border-navy/10">
+    {/**
+     * TODO: Localize
+     */}
+    { [
+      {
+        title: '10mi',
+        subtitle: 'Location Blur',
+        description: 'We never store your exact location.',
+      },
+      {
+        title: 'Opt-In',
+        subtitle: 'Always',
+        description: 'You choose to be on the map. You can leave anytime.',
+      },
+      {
+        title: '13+',
+        subtitle: 'With Parent Consent',
+        description: 'Under 18 requires a parent or guardian to verify.',
+      },
+    ].map(({ title, subtitle, description }) => (
+      <div key={title} className="text-center">
+        <p className="font-display text-3xl text-brand-red">{title}</p>
+        <p className="text-sm uppercase tracking-wider font-semibold mt-1">{subtitle}</p>
+        <p className="text-xs mt-2 text-navy/70">{description}</p>
+      </div>
+    )) }
+  </section>
+);
+
+const HowItWorks = () => (
+  <section className="py-16">
+    <h2 className="text-3xl md:text-4xl text-center mb-12">How It Works</h2>
+    <div className="grid md:grid-cols-3 gap-8">
+      { [
+        { step: '1', title: 'Add Yourself' },
+        { step: '2', title: 'Verify Your Email' },
+        { step: '3', title: 'You\'re on the Map' },
+      ].map(({ step, title }) => (
+        <div key={step} className="card">
+          <p className="font-display text-5xl text-brand-red mb-3">{step}</p>
+          <h3 className="text-xl mb-2">{title}</h3>
+        </div>
+      )) }
+    </div>
+  </section>
+);
+
 export default function Home() {
   return (
     <div className="max-w-6xl mx-auto px-4">
@@ -22,52 +71,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Trust row */}
-      <section className="grid md:grid-cols-3 gap-6 py-12 border-y-2 border-navy/10">
-        <div className="text-center">
-          <p className="font-display text-3xl text-brand-red">10mi</p>
-          <p className="text-sm uppercase tracking-wider font-semibold mt-1">Location Blur</p>
-          <p className="text-xs mt-2 text-navy/70">We never store your exact location.</p>
-        </div>
-        <div className="text-center">
-          <p className="font-display text-3xl text-brand-red">Opt-In</p>
-          <p className="text-sm uppercase tracking-wider font-semibold mt-1">Always</p>
-          <p className="text-xs mt-2 text-navy/70">You choose to be on the map. You can leave anytime.</p>
-        </div>
-        <div className="text-center">
-          <p className="font-display text-3xl text-brand-red">13+</p>
-          <p className="text-sm uppercase tracking-wider font-semibold mt-1">With Parent Consent</p>
-          <p className="text-xs mt-2 text-navy/70">Under 18 requires a parent or guardian to verify.</p>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="py-16">
-        <h2 className="text-3xl md:text-4xl text-center mb-12">How It Works</h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          <div className="card">
-            <p className="font-display text-5xl text-brand-red mb-3">1</p>
-            <h3 className="text-xl mb-2">Add Yourself</h3>
-            <p className="text-sm text-navy/80">
-              Enter a display name and your city or town. That&apos;s it. No street address, no GPS pinning.
-            </p>
-          </div>
-          <div className="card">
-            <p className="font-display text-5xl text-brand-red mb-3">2</p>
-            <h3 className="text-xl mb-2">Verify Your Email</h3>
-            <p className="text-sm text-navy/80">
-              Click the link we send you. If you&apos;re under 18, your parent will get an email to confirm.
-            </p>
-          </div>
-          <div className="card">
-            <p className="font-display text-5xl text-brand-red mb-3">3</p>
-            <h3 className="text-xl mb-2">You&apos;re on the Map</h3>
-            <p className="text-sm text-navy/80">
-              Your pin appears as an approximate area, not your home. You can edit or delete anytime.
-            </p>
-          </div>
-        </div>
-      </section>
+      <TrustRow />
+      <HowItWorks />
 
       {/* What we don't do */}
       <section className="py-16 bg-navy text-cream -mx-4 px-4">
