@@ -17,35 +17,89 @@ export interface GeocodeResult {
   country: string;
 }
 
+export interface CityGeocodeParams {
+  city: string;
+  region?: string;
+  country: string;
+}
+
+// Place types we accept as a valid "city" match. Anything else (county, state,
+// country, region) has a centroid far from where the user actually lives.
+const CITY_LEVEL_ADDRESSTYPES = new Set([
+  'city', 'town', 'village', 'hamlet', 'municipality',
+  'suburb', 'neighbourhood', 'locality', 'isolated_dwelling',
+]);
+const NON_CITY_ADDRESSTYPES = new Set([
+  'county', 'state', 'state_district', 'region', 'province',
+  'country', 'continent',
+]);
+
+type NominatimHit = {
+  lat: string;
+  lon: string;
+  display_name: string;
+  addresstype?: string;
+  address?: Record<string, string>;
+};
+
+function pickCityHit(hits: unknown): NominatimHit | null {
+  if (!Array.isArray(hits) || hits.length === 0) return null;
+  const preferred = hits.find((h: NominatimHit) => CITY_LEVEL_ADDRESSTYPES.has(h.addresstype ?? ''));
+  if (preferred) return preferred;
+  return hits.find((h: NominatimHit) => !NON_CITY_ADDRESSTYPES.has(h.addresstype ?? '')) ?? null;
+}
+
+async function fetchNominatim(url: URL): Promise<unknown> {
+  const res = await fetch(url.toString(), {
+    headers: { 'User-Agent': NOMINATIM_UA },
+    next: { revalidate: 60 * 60 * 24 * 7 },
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+
 /**
- * Geocode a city name to approximate coordinates.
+ * Geocode a city to approximate coordinates.
  * Used for person entries and private-venue clubs.
+ *
+ * Uses Nominatim's structured query first (`city=`, `state=`, `country=`),
+ * then filters out county/state/country matches so we never pin a person to a
+ * county centroid — an issue that surfaced when "Jasper, GA" resolved to
+ * Jasper County (south of Atlanta) instead of Jasper city (north of Atlanta).
  */
-export async function geocodeCity(query: string): Promise<GeocodeResult | null> {
-  const url = new URL('https://nominatim.openstreetmap.org/search');
-  url.searchParams.set('q', query);
-  url.searchParams.set('format', 'json');
-  url.searchParams.set('limit', '1');
-  url.searchParams.set('addressdetails', '1');
-  url.searchParams.set('featuretype', 'city');
+export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeResult | null> {
+  const { city, region, country } = params;
+
+  const structured = new URL('https://nominatim.openstreetmap.org/search');
+  structured.searchParams.set('city', city);
+  if (region) structured.searchParams.set('state', region);
+  structured.searchParams.set('country', country);
+  structured.searchParams.set('format', 'json');
+  structured.searchParams.set('limit', '5');
+  structured.searchParams.set('addressdetails', '1');
 
   try {
-    const res = await fetch(url.toString(), {
-      headers: { 'User-Agent': NOMINATIM_UA },
-      // Cache for 7 days — city coords don't change
-      next: { revalidate: 60 * 60 * 24 * 7 },
-    });
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (!Array.isArray(data) || data.length === 0) return null;
-    const hit = data[0];
+    let hit = pickCityHit(await fetchNominatim(structured));
+
+    if (!hit) {
+      const freeform = new URL('https://nominatim.openstreetmap.org/search');
+      const q = [city, region, country].filter(Boolean).join(', ');
+      freeform.searchParams.set('q', q);
+      freeform.searchParams.set('format', 'json');
+      freeform.searchParams.set('limit', '5');
+      freeform.searchParams.set('addressdetails', '1');
+      freeform.searchParams.set('featuretype', 'city');
+      hit = pickCityHit(await fetchNominatim(freeform));
+    }
+
+    if (!hit) return null;
     return {
       lat: parseFloat(hit.lat),
       lng: parseFloat(hit.lon),
       displayName: hit.display_name,
-      city: hit.address?.city || hit.address?.town || hit.address?.village || hit.address?.county || query,
-      region: hit.address?.state || hit.address?.region,
-      country: hit.address?.country_code?.toUpperCase() || 'US',
+      city: hit.address?.city || hit.address?.town || hit.address?.village || hit.address?.hamlet || city,
+      region: hit.address?.state || hit.address?.region || region,
+      country: hit.address?.country_code?.toUpperCase() || country,
     };
   } catch (e) {
     console.error('Geocode error:', e);

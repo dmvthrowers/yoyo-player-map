@@ -56,8 +56,11 @@ export async function POST(req: NextRequest) {
     (d.region ?? null) !== existing.region ||
     d.country !== existing.country;
   if (locationChanged) {
-    const query = [d.city, d.region, d.country].filter(Boolean).join(', ');
-    const geo = await geocodeCity(query);
+    const geo = await geocodeCity({
+      city: d.city,
+      region: d.region || undefined,
+      country: d.country,
+    });
     if (!geo) {
       return NextResponse.json({ error: "Couldn't locate that city. Check spelling." }, { status: 400 });
     }

@@ -220,8 +220,11 @@ interface PrepareError {
 
 async function preparePersonEntry(data: PersonInput, ip: string): Promise<PreparedEntry | PrepareError> {
   // Geocode the city
-  const query = [data.city, data.region, data.country].filter(Boolean).join(', ');
-  const geo = await geocodeCity(query);
+  const geo = await geocodeCity({
+    city: data.city,
+    region: data.region || undefined,
+    country: data.country,
+  });
   if (!geo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
@@ -271,8 +274,11 @@ async function prepareShopEntry(data: ShopInput, ip: string): Promise<PreparedEn
   }
 
   // Also get city-level jittered coords as fallback (stored but not exposed)
-  const cityQuery = [data.city, data.region, data.country].filter(Boolean).join(', ');
-  const cityGeo = await geocodeCity(cityQuery);
+  const cityGeo = await geocodeCity({
+    city: data.city,
+    region: data.region || undefined,
+    country: data.country,
+  });
   const jittered = cityGeo ? jitterCoords(cityGeo.lat, cityGeo.lng) : jitterCoords(exactGeo.lat, exactGeo.lng);
 
   // Check if owner's email domain matches website domain
@@ -307,8 +313,11 @@ async function prepareShopEntry(data: ShopInput, ip: string): Promise<PreparedEn
 
 async function prepareClubEntry(data: ClubInput, ip: string): Promise<PreparedEntry | PrepareError> {
   // Geocode city for base coords
-  const cityQuery = [data.city, data.region, data.country].filter(Boolean).join(', ');
-  const cityGeo = await geocodeCity(cityQuery);
+  const cityGeo = await geocodeCity({
+    city: data.city,
+    region: data.region || undefined,
+    country: data.country,
+  });
   if (!cityGeo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
