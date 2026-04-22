@@ -19,34 +19,61 @@ type DetailOnlyFields = Pick<
 // Use globalThis.Map to avoid shadowing by this module's default export (also named Map).
 const detailCache: globalThis.Map<string, DetailOnlyFields> = new globalThis.Map();
 
-function useEntryDetail(id: string): { detail: DetailOnlyFields | null; loading: boolean } {
+function useEntryDetail(id: string): {
+  detail: DetailOnlyFields | null;
+  loading: boolean;
+  error: boolean;
+  retry: () => void;
+} {
   const cached = detailCache.get(id) ?? null;
   const [detail, setDetail] = useState<DetailOnlyFields | null>(cached);
   const [loading, setLoading] = useState(!cached);
+  const [error, setError] = useState(false);
+  // Bump to force re-fetch from the retry button.
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     if (detail) return;
     let cancelled = false;
     setLoading(true);
+    setError(false);
     fetch(`/api/entry/${id}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data: DetailOnlyFields | null) => {
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`status ${r.status}`);
+        return (await r.json()) as DetailOnlyFields;
+      })
+      .then((data) => {
         if (cancelled) return;
-        if (data) {
-          detailCache.set(id, data);
-          setDetail(data);
-        }
+        detailCache.set(id, data);
+        setDetail(data);
         setLoading(false);
       })
       .catch(() => {
-        if (!cancelled) setLoading(false);
+        if (cancelled) return;
+        setError(true);
+        setLoading(false);
       });
     return () => {
       cancelled = true;
     };
-  }, [id, detail]);
+  }, [id, detail, attempt]);
 
-  return { detail, loading };
+  return { detail, loading, error, retry: () => setAttempt((n) => n + 1) };
+}
+
+function PopupError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="mb-2 text-xs text-navy/70">
+      <p className="mb-1">Couldn&apos;t load details.</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="text-brand-red underline hover:no-underline"
+      >
+        Try again
+      </button>
+    </div>
+  );
 }
 
 function PopupSkeleton() {
@@ -229,7 +256,7 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
 // =============================================================================
 
 function PersonPopup({ entry }: { entry: MapEntry }) {
-  const { detail, loading } = useEntryDetail(entry.id);
+  const { detail, loading, error, retry } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
     <div className="min-w-[220px]">
@@ -239,6 +266,8 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
       <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
       {loading ? (
         <PopupSkeleton />
+      ) : error ? (
+        <PopupError onRetry={retry} />
       ) : (
         <>
           {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
@@ -251,7 +280,7 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
 }
 
 function ShopPopup({ entry }: { entry: MapEntry }) {
-  const { detail, loading } = useEntryDetail(entry.id);
+  const { detail, loading, error, retry } = useEntryDetail(entry.id);
   return (
     <div className="min-w-[220px]">
       <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
@@ -268,6 +297,8 @@ function ShopPopup({ entry }: { entry: MapEntry }) {
       </p>
       {loading ? (
         <PopupSkeleton />
+      ) : error ? (
+        <PopupError onRetry={retry} />
       ) : (
         <>
           {detail?.address_line && (
@@ -291,7 +322,7 @@ function ShopPopup({ entry }: { entry: MapEntry }) {
 }
 
 function ClubPopup({ entry }: { entry: MapEntry }) {
-  const { detail, loading } = useEntryDetail(entry.id);
+  const { detail, loading, error, retry } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
 
   return (
@@ -307,6 +338,8 @@ function ClubPopup({ entry }: { entry: MapEntry }) {
       </p>
       {loading ? (
         <PopupSkeleton />
+      ) : error ? (
+        <PopupError onRetry={retry} />
       ) : (
         <>
           {detail?.club_meeting_info && (
