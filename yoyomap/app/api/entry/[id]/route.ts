@@ -12,7 +12,8 @@ export const dynamic = 'force-dynamic';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_req: NextRequest, context: { params: { id: string } }) {
+  const { params } = context;
   const id = params.id;
   if (!UUID_RE.test(id)) {
     return NextResponse.json({ error: 'invalid id' }, { status: 400 });
