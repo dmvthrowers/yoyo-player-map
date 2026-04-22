@@ -55,9 +55,9 @@ export default function PrivacyPage() {
       <h2 className="text-2xl mt-8 mb-3">Who we share information with</h2>
       <p>We use these service providers (&quot;sub-processors&quot;) to run the site:</p>
       <ul className="list-disc pl-6 space-y-1">
-        <li><strong>Supabase</strong> — database and infrastructure</li>
-        <li><strong>Vercel</strong> — web hosting</li>
-        <li><strong>Resend</strong> — transactional email delivery</li>
+        <li><strong>Supabase</strong> — database and infrastructure (SOC 2 Type II, GDPR DPA available at <a href="https://supabase.com/privacy" className="text-brand-red underline" target="_blank" rel="noopener noreferrer">supabase.com/privacy</a>)</li>
+        <li><strong>Vercel</strong> — web hosting (SOC 2 Type II, GDPR DPA available at <a href="https://vercel.com/legal/privacy-policy" className="text-brand-red underline" target="_blank" rel="noopener noreferrer">vercel.com/legal/privacy-policy</a>)</li>
+        <li><strong>Resend</strong> — transactional email delivery (SOC 2 Type II, GDPR DPA on file; compliance documentation available at <a href="https://trust.resend.com" className="text-brand-red underline" target="_blank" rel="noopener noreferrer">trust.resend.com</a>)</li>
         <li><strong>OpenStreetMap / Nominatim</strong> — geocoding (we only send the city name you typed, no personal data)</li>
       </ul>
       <p className="mt-2">We do not share your data with anyone else unless legally required (for example, a valid court order).</p>
