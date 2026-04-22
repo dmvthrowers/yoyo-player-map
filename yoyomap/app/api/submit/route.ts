@@ -8,6 +8,7 @@ import {
   sendParentConsentEmail,
 } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
@@ -32,23 +33,20 @@ function checkVerifiedOwner(email: string, socials?: { website?: string }): bool
   }
 }
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
 
   // Rate limit: 5 submissions per IP per hour
   const allowed = await checkRateLimit(ip, 'submit.attempt', 5, 60);
   if (!allowed) {
-    return NextResponse.json(
-      { error: 'Too many submissions from this connection. Please try again later.' },
-      { status: 429 }
-    );
+    return apiError('rate_limited', 'Too many submissions from this connection. Please try again later.', requestId);
   }
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
+    return apiError('bad_request', 'Invalid request body.', requestId);
   }
 
   // Try new discriminated union schema first, fall back to legacy for backwards compatibility
@@ -63,10 +61,7 @@ export async function POST(req: NextRequest) {
       data = { ...legacyParsed.data, entityType: 'person' } as PersonInput;
     } else {
       const firstError = parsed.error.errors[0];
-      return NextResponse.json(
-        { error: firstError?.message || 'Invalid submission' },
-        { status: 400 }
-      );
+      return apiError('bad_request', firstError?.message || 'Invalid submission.', requestId);
     }
   }
 
@@ -111,7 +106,7 @@ export async function POST(req: NextRequest) {
   }
 
   if ('error' in entryData) {
-    return NextResponse.json({ error: entryData.error }, { status: 400 });
+    return apiError('unprocessable', entryData.error, requestId);
   }
 
   // Handle parent consent flow for minors (person only)
@@ -133,8 +128,8 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (consentErr || !consent) {
-      console.error('Parent consent insert failed:', consentErr);
-      return NextResponse.json({ error: 'Could not save consent record. Please try again.' }, { status: 500 });
+      console.error(`[api] parent consent insert failed [${requestId}]:`, consentErr);
+      return apiError('upstream_error', 'Could not save consent record. Please try again.', requestId);
     }
     parentConsentId = consent.id;
   }
@@ -151,8 +146,8 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (entryErr || !entry) {
-    console.error('Entry insert failed:', entryErr);
-    return NextResponse.json({ error: 'Could not save your entry. Please try again.' }, { status: 500 });
+    console.error(`[api] entry insert failed [${requestId}]:`, entryErr);
+    return apiError('upstream_error', 'Could not save your entry. Please try again.', requestId);
   }
 
   // Create email verification token for the submitter
@@ -165,8 +160,8 @@ export async function POST(req: NextRequest) {
     expires_at: expiresAt,
   });
   if (tokenErr) {
-    console.error('Token insert failed:', tokenErr);
-    return NextResponse.json({ error: 'Could not create verification link. Please try again.' }, { status: 500 });
+    console.error(`[api] verification token insert failed [${requestId}]:`, tokenErr);
+    return apiError('upstream_error', 'Could not create verification link. Please try again.', requestId);
   }
 
   // Send verification email (may be queued if Resend is over daily cap)
@@ -236,11 +231,15 @@ export async function POST(req: NextRequest) {
     club: 'Thanks for registering your club! Check your email to verify. Your listing will appear on the map once verified.',
   };
 
-  return NextResponse.json({
-    message: messages[data.entityType],
-    emailStatus: anyFailed ? 'partial_failed' : 'sent',
-  });
-}
+  return NextResponse.json(
+    {
+      message: messages[data.entityType],
+      emailStatus: anyFailed ? 'partial_failed' : 'sent',
+      requestId,
+    },
+    { headers: { 'x-request-id': requestId } },
+  );
+});
 
 // =============================================================================
 // Entry preparation functions

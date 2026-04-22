@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
 const schema = z.object({ token: z.string().min(1) });
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
   let body: unknown;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid body' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: 'Invalid' }, { status: 400 });
+  if (!parsed.success) return apiError('bad_request', 'Invalid input.', requestId);
 
   const supabase = createAdminClient();
   const { data: tok } = await supabase
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
 
   if (!tok || tok.purpose !== 'edit_link' || tok.used_at || new Date(tok.expires_at) < new Date()) {
-    return NextResponse.json({ error: 'Link invalid or expired.' }, { status: 401 });
+    return apiError('unauthorized', 'Link invalid or expired.', requestId);
   }
 
   const { data: entry } = await supabase
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     .select('id, parent_consent_id, email')
     .eq('id', tok.entry_id)
     .maybeSingle();
-  if (!entry) return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
+  if (!entry) return apiError('not_found', 'Entry not found.', requestId);
 
   // Hard delete — GDPR right to erasure.
   // Cascade: verification_tokens FK onto entries is ON DELETE CASCADE.
@@ -38,8 +39,8 @@ export async function POST(req: NextRequest) {
   // then the consent.
   const { error: delEntryErr } = await supabase.from('entries').delete().eq('id', entry.id);
   if (delEntryErr) {
-    console.error('Delete entry failed:', delEntryErr);
-    return NextResponse.json({ error: 'Delete failed.' }, { status: 500 });
+    console.error(`[api] delete entry failed [${requestId}]:`, delEntryErr);
+    return apiError('upstream_error', 'Delete failed.', requestId);
   }
   if (entry.parent_consent_id) {
     await supabase.from('parent_consents').delete().eq('id', entry.parent_consent_id);
@@ -49,5 +50,5 @@ export async function POST(req: NextRequest) {
   await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('token', parsed.data.token);
 
   await logAudit('entry.deleted', { actor: entry.email, targetId: entry.id, meta: { ip, type: 'self' } });
-  return NextResponse.json({ ok: true });
-}
+  return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
+});

@@ -3,29 +3,30 @@ import { reportSchema, AUTO_HIDE_REASONS } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { sendReportNotificationEmail } from '@/lib/email';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
 
   // Rate limit: 10 reports per IP per hour
   const allowed = await checkRateLimit(ip, 'report.submit', 10, 60);
   if (!allowed) {
-    return NextResponse.json({ error: 'Too many reports. Try again later.' }, { status: 429 });
+    return apiError('rate_limited', 'Too many reports. Try again later.', requestId);
   }
 
   let body: unknown;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid body' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = reportSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: 'Invalid report' }, { status: 400 });
+  if (!parsed.success) return apiError('bad_request', 'Invalid report.', requestId);
 
   const { entryId, reason, details, reporterEmail } = parsed.data;
   const supabase = createAdminClient();
 
   // Verify entry exists
   const { data: entry } = await supabase.from('entries').select('id, display_name, entity_type').eq('id', entryId).maybeSingle();
-  if (!entry) return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
+  if (!entry) return apiError('not_found', 'Entry not found.', requestId);
 
   const { error } = await supabase.from('reports').insert({
     entry_id: entryId,
@@ -36,8 +37,8 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    console.error('Report insert failed:', error);
-    return NextResponse.json({ error: 'Could not submit report.' }, { status: 500 });
+    console.error(`[api] report insert failed [${requestId}]:`, error);
+    return apiError('upstream_error', 'Could not submit report.', requestId);
   }
 
   // Auto-hide logic: certain report reasons trigger automatic hiding
@@ -67,8 +68,8 @@ export async function POST(req: NextRequest) {
   // it so the queue-drain job picks up any rate-limited sends after reset.
   const outcome = await sendReportNotificationEmail(entryId, reason, details || null, reporterEmail || null, entry.display_name);
   if (outcome.status !== 'sent') {
-    console.warn('Report notification email', outcome.status, outcome);
+    console.warn(`[api] report notification email [${requestId}]:`, outcome.status, outcome);
   }
 
-  return NextResponse.json({ ok: true });
-}
+  return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
+});

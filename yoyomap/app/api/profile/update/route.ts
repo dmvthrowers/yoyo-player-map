@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, jitterCoords } from '@/lib/geocode';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
@@ -21,12 +22,12 @@ const updateSchema = z.object({
   }).optional(),
 });
 
-export async function POST(req: NextRequest) {
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
   let body: unknown;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid body' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = updateSchema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: parsed.error.errors[0]?.message || 'Invalid' }, { status: 400 });
+  if (!parsed.success) return apiError('bad_request', parsed.error.errors[0]?.message || 'Invalid input.', requestId);
 
   const supabase = createAdminClient();
   const { data: tok } = await supabase
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
     .maybeSingle();
 
   if (!tok || tok.purpose !== 'edit_link' || tok.used_at || new Date(tok.expires_at) < new Date()) {
-    return NextResponse.json({ error: 'Link invalid or expired.' }, { status: 401 });
+    return apiError('unauthorized', 'Link invalid or expired.', requestId);
   }
 
   const { data: existing } = await supabase
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
     .select('city, region, country, lat, lng')
     .eq('id', tok.entry_id)
     .maybeSingle();
-  if (!existing) return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
+  if (!existing) return apiError('not_found', 'Entry not found.', requestId);
 
   const d = parsed.data;
   let lat = existing.lat;
@@ -62,7 +63,7 @@ export async function POST(req: NextRequest) {
       country: d.country,
     });
     if (!geo) {
-      return NextResponse.json({ error: "Couldn't locate that city. Check spelling." }, { status: 400 });
+      return apiError('unprocessable', "Couldn't locate that city. Check spelling.", requestId);
     }
     const jittered = jitterCoords(geo.lat, geo.lng);
     lat = jittered.lat;
@@ -84,10 +85,10 @@ export async function POST(req: NextRequest) {
     .eq('id', tok.entry_id);
 
   if (updateErr) {
-    console.error('Update failed:', updateErr);
-    return NextResponse.json({ error: 'Update failed.' }, { status: 500 });
+    console.error(`[api] profile update failed [${requestId}]:`, updateErr);
+    return apiError('upstream_error', 'Update failed.', requestId);
   }
 
   await logAudit('entry.updated', { targetId: tok.entry_id, meta: { ip, locationChanged } });
-  return NextResponse.json({ ok: true });
-}
+  return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
+});

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 // Lazy-loaded popup detail. The /map page ships a lean entry list; clicking a
 // pin triggers a fetch here. We cache aggressively at the CDN (s-maxage=3600)
@@ -12,14 +13,13 @@ export const dynamic = 'force-dynamic';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export async function GET(_req: NextRequest, context: { params: { id: string } }) {
-  const { params } = context;
-  const id = params.id;
-  if (!UUID_RE.test(id)) {
-    return NextResponse.json({ error: 'invalid id' }, { status: 400 });
-  }
+export const GET = withErrorHandling(
+  async (requestId: string, _req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+    const { id } = await context.params;
+    if (!UUID_RE.test(id)) {
+      return apiError('bad_request', 'Invalid entry id.', requestId);
+    }
 
-  try {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
@@ -28,11 +28,11 @@ export async function GET(_req: NextRequest, context: { params: { id: string } }
       .maybeSingle();
 
     if (error) {
-      console.error('Entry detail fetch error:', error);
-      return NextResponse.json({ error: 'fetch failed' }, { status: 500 });
+      console.error(`[api] entry detail supabase error [${requestId}]:`, error);
+      return apiError('upstream_error', 'Could not load entry details.', requestId);
     }
     if (!data) {
-      return NextResponse.json({ error: 'not found' }, { status: 404 });
+      return apiError('not_found', 'Entry not found.', requestId);
     }
 
     return NextResponse.json(data, {
@@ -40,10 +40,8 @@ export async function GET(_req: NextRequest, context: { params: { id: string } }
         // Edge cache for 1 hour, allow stale-while-revalidate for another hour.
         // Entry content changes rarely; this keeps popup opens off Supabase.
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
+        'x-request-id': requestId,
       },
     });
-  } catch (e) {
-    console.error('Entry detail handler error:', e);
-    return NextResponse.json({ error: 'internal error' }, { status: 500 });
-  }
-}
+  },
+);
