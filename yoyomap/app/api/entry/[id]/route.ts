@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, newRequestId } from '@/lib/api-error';
 
 // Lazy-loaded popup detail. The /map page ships a lean entry list; clicking a
 // pin triggers a fetch here. We cache aggressively at the CDN (s-maxage=3600)
@@ -13,8 +13,14 @@ export const dynamic = 'force-dynamic';
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export const GET = withErrorHandling(
-  async (requestId: string, _req: NextRequest, context: { params: Promise<{ id: string }> }) => {
+// Not wrapped in withErrorHandling: Next 15's route type validator needs to
+// see the params Promise in the exported function signature directly.
+export async function GET(
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> },
+) {
+  const requestId = newRequestId();
+  try {
     const { id } = await context.params;
     if (!UUID_RE.test(id)) {
       return apiError('bad_request', 'Invalid entry id.', requestId);
@@ -37,11 +43,12 @@ export const GET = withErrorHandling(
 
     return NextResponse.json(data, {
       headers: {
-        // Edge cache for 1 hour, allow stale-while-revalidate for another hour.
-        // Entry content changes rarely; this keeps popup opens off Supabase.
         'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
         'x-request-id': requestId,
       },
     });
-  },
-);
+  } catch (e) {
+    console.error(`[api] entry detail unhandled [${requestId}]:`, e);
+    return apiError('internal_error', 'Something went wrong on our end.', requestId);
+  }
+}
