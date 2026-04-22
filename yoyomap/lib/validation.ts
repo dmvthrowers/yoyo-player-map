@@ -52,15 +52,7 @@ const personSchema = z.object({
   relationship: z.enum(['parent', 'legal guardian']).optional(),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
-}).refine(
-  (data) => {
-    if (data.ageBand === '13-17') {
-      return !!(data.parentName && data.parentEmail && data.relationship);
-    }
-    return true;
-  },
-  { message: 'Parent/guardian information is required for users under 18', path: ['parentName'] }
-);
+});
 
 // =============================================================================
 // Shop-specific schema
@@ -112,15 +104,7 @@ const clubSchema = z.object({
   }),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
-}).refine(
-  (data) => {
-    if (data.clubVenuePublic) {
-      return !!(data.venueAddressLine && data.venueAddressLine.length >= 5);
-    }
-    return true;
-  },
-  { message: 'Venue address is required when venue location is public', path: ['venueAddressLine'] }
-);
+});
 
 // =============================================================================
 // Discriminated union for submit form
@@ -130,7 +114,26 @@ export const submitSchema = z.discriminatedUnion('entityType', [
   personSchema,
   shopSchema,
   clubSchema,
-]);
+]).superRefine((data, ctx) => {
+  if (data.entityType === 'person' && data.ageBand === '13-17') {
+    if (!(data.parentName && data.parentEmail && data.relationship)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Parent/guardian information is required for users under 18',
+        path: ['parentName'],
+      });
+    }
+  }
+  if (data.entityType === 'club' && data.clubVenuePublic) {
+    if (!(data.venueAddressLine && data.venueAddressLine.length >= 5)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Venue address is required when venue location is public',
+        path: ['venueAddressLine'],
+      });
+    }
+  }
+});
 
 export type SubmitInput = z.infer<typeof submitSchema>;
 export type PersonInput = z.infer<typeof personSchema>;
