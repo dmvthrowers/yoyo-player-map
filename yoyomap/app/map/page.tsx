@@ -4,23 +4,28 @@ import { createAdminClient } from '@/lib/supabase/admin';
 
 export const revalidate = 3600; // ISR: refresh cached page every hour (entries change rarely; saves Supabase egress + Vercel CPU)
 
+// Lean shape shipped on initial page load — kept small to reduce Vercel
+// bandwidth + Supabase egress. Bio, socials, hours, and other popup-only
+// fields are fetched lazily from /api/entry/[id] when the user opens a popup.
 export interface MapEntry {
   id: string;
   display_name: string;
   city: string;
   region: string | null;
   country: string;
-  bio: string | null;
-  socials: Record<string, string>;
   lat: number;
   lng: number;
   entity_type: 'person' | 'shop' | 'club';
-  // Shop-specific
+  verified_owner: boolean | null;
+}
+
+// Full detail shape returned by /api/entry/[id] and rendered inside popups.
+export interface MapEntryDetail extends MapEntry {
+  bio: string | null;
+  socials: Record<string, string>;
   address_line: string | null;
   postal_code: string | null;
   hours: string | null;
-  verified_owner: boolean | null;
-  // Club-specific
   club_meeting_info: string | null;
   club_venue_public: boolean | null;
 }
@@ -30,7 +35,7 @@ async function getEntries(): Promise<MapEntry[]> {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
-      .select('id, display_name, city, region, country, bio, socials, lat, lng, entity_type, address_line, postal_code, hours, verified_owner, club_meeting_info, club_venue_public');
+      .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
     if (error) {
       console.error('Failed to load map entries:', error);
       return [];

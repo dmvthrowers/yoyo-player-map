@@ -1,11 +1,63 @@
 'use client';
 
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker } from 'react-leaflet';
-import { useState, memo, useMemo } from 'react';
+import { useState, memo, useMemo, useEffect } from 'react';
 import L from 'leaflet';
-import type { MapEntry } from './page';
+import type { MapEntry, MapEntryDetail } from './page';
 import type { MapFilters } from './MapClient';
 import { haversineMiles, UNDERSERVED_THRESHOLD_MI } from '@/lib/geo';
+
+// Popup-only fields fetched lazily from /api/entry/[id]. Null until loaded.
+type DetailOnlyFields = Pick<
+  MapEntryDetail,
+  'bio' | 'socials' | 'address_line' | 'postal_code' | 'hours' | 'club_meeting_info' | 'club_venue_public'
+>;
+
+// Process-wide detail cache, keyed by entry id. A single user opening the
+// same popup twice shouldn't double-fetch, and Vercel's edge cache takes
+// care of cross-user dedup.
+// Use globalThis.Map to avoid shadowing by this module's default export (also named Map).
+const detailCache: globalThis.Map<string, DetailOnlyFields> = new globalThis.Map();
+
+function useEntryDetail(id: string): { detail: DetailOnlyFields | null; loading: boolean } {
+  const cached = detailCache.get(id) ?? null;
+  const [detail, setDetail] = useState<DetailOnlyFields | null>(cached);
+  const [loading, setLoading] = useState(!cached);
+
+  useEffect(() => {
+    if (detail) return;
+    let cancelled = false;
+    setLoading(true);
+    fetch(`/api/entry/${id}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: DetailOnlyFields | null) => {
+        if (cancelled) return;
+        if (data) {
+          detailCache.set(id, data);
+          setDetail(data);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [id, detail]);
+
+  return { detail, loading };
+}
+
+function PopupSkeleton() {
+  return (
+    <div className="mb-2 space-y-1.5 animate-pulse" aria-hidden="true">
+      <div className="h-3 bg-navy/10 w-full" />
+      <div className="h-3 bg-navy/10 w-4/5" />
+      <div className="h-3 bg-navy/10 w-2/3" />
+    </div>
+  );
+}
 
 // Custom icons for shops and clubs
 const shopIcon = L.divIcon({
@@ -177,7 +229,7 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
 // =============================================================================
 
 function PersonPopup({ entry }: { entry: MapEntry }) {
-  const socials = entry.socials || {};
+  const { detail, loading } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
     <div className="min-w-[220px]">
@@ -185,15 +237,21 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
         {entry.display_name}
       </p>
       <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
-      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
-      <SocialsLinks socials={socials} />
+      {loading ? (
+        <PopupSkeleton />
+      ) : (
+        <>
+          {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
+          <SocialsLinks socials={detail?.socials || {}} />
+        </>
+      )}
       <ReportLink entryId={entry.id} />
     </div>
   );
 }
 
 function ShopPopup({ entry }: { entry: MapEntry }) {
-  const socials = entry.socials || {};
+  const { detail, loading } = useEntryDetail(entry.id);
   return (
     <div className="min-w-[220px]">
       <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
@@ -205,31 +263,36 @@ function ShopPopup({ entry }: { entry: MapEntry }) {
           </svg>
         )}
       </p>
-      {entry.address_line && (
-        <p className="text-xs text-navy/80 mb-1">
-          {entry.address_line}
-          {entry.postal_code && `, ${entry.postal_code}`}
-        </p>
-      )}
       <p className="text-xs text-navy/70 mb-2">
         {[entry.city, entry.region, entry.country].filter(Boolean).join(', ')}
       </p>
-      {entry.hours && (
-        <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
-          <span className="font-semibold">Hours:</span> {entry.hours}
-        </div>
+      {loading ? (
+        <PopupSkeleton />
+      ) : (
+        <>
+          {detail?.address_line && (
+            <p className="text-xs text-navy/80 mb-1">
+              {detail.address_line}
+              {detail.postal_code && `, ${detail.postal_code}`}
+            </p>
+          )}
+          {detail?.hours && (
+            <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
+              <span className="font-semibold">Hours:</span> {detail.hours}
+            </div>
+          )}
+          {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
+          <SocialsLinks socials={detail?.socials || {}} />
+        </>
       )}
-      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
-      <SocialsLinks socials={socials} />
       <ReportLink entryId={entry.id} />
     </div>
   );
 }
 
 function ClubPopup({ entry }: { entry: MapEntry }) {
-  const socials = entry.socials || {};
+  const { detail, loading } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
-  const isPublicVenue = entry.club_venue_public;
 
   return (
     <div className="min-w-[220px]">
@@ -238,15 +301,23 @@ function ClubPopup({ entry }: { entry: MapEntry }) {
         {entry.display_name}
       </p>
       <p className="text-xs text-navy/70 mb-2">
-        {location} {!isPublicVenue && '(approximate)'}
+        {location}
+        {/* Only annotate once we actually know the venue's visibility. */}
+        {!loading && !detail?.club_venue_public && ' (approximate)'}
       </p>
-      {entry.club_meeting_info && (
-        <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
-          <span className="font-semibold">Meetings:</span> {entry.club_meeting_info}
-        </div>
+      {loading ? (
+        <PopupSkeleton />
+      ) : (
+        <>
+          {detail?.club_meeting_info && (
+            <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
+              <span className="font-semibold">Meetings:</span> {detail.club_meeting_info}
+            </div>
+          )}
+          {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
+          <SocialsLinks socials={detail?.socials || {}} />
+        </>
       )}
-      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
-      <SocialsLinks socials={socials} />
       <ReportLink entryId={entry.id} />
     </div>
   );
