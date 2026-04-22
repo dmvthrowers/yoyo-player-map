@@ -90,6 +90,28 @@ export async function sendParentConsentEmail(
   });
 }
 
+export async function sendEntryReminderEmail(
+  email: string,
+  displayName: string,
+  token: string
+): Promise<void> {
+  const link = `${APP_URL}/api/verify-parent?type=entry&token=${encodeURIComponent(token)}`;
+  const html = emailShell(
+    'Reminder: verify your YoYo Map entry',
+    `<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi ${escapeHtml(displayName)},</h2>
+     <p>Just a nudge — we have a YoYo Map entry waiting on your email confirmation. It won't appear on the map until you click verify.</p>
+     <p style="margin:20px 0;"><a href="${link}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Verify &amp; Publish</a></p>
+     <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${link}</span></p>
+     <p style="font-size:12px;color:#555;">This link expires in 24 hours. If you didn't sign up, you can ignore this email — your entry will be cleaned up automatically.</p>`
+  );
+  await getResend().emails.send({
+    from: FROM,
+    to: email,
+    subject: 'Reminder: verify your YoYo Map entry',
+    html,
+  });
+}
+
 export async function sendManageEntryEmail(
   email: string,
   displayName: string,

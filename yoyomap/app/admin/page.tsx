@@ -18,6 +18,8 @@ interface AdminEntry {
   verified_at: string | null;
   created_at: string;
   deleted_at: string | null;
+  last_reminder_at: string | null;
+  reminder_count: number;
 }
 
 interface AdminData {
@@ -95,8 +97,41 @@ const AdminPage = () => {
       headers: { 'Content-Type': 'application/json', 'x-admin-token': pass },
       body: JSON.stringify({ action, id }),
     });
-    if (res.ok) load(pass);
-    else setError('Action failed.');
+    if (res.ok) {
+      load(pass);
+    } else {
+      const body = await res.json().catch(() => null);
+      setError(body?.error || 'Action failed.');
+    }
+  }
+
+  async function sendAllReminders() {
+    if (!confirm('Send reminder emails to every eligible unverified entry?')) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/send-reminders', {
+        method: 'POST',
+        headers: { 'x-admin-token': pass },
+      });
+      const body = await res.json().catch(() => null);
+      if (res.ok && body) {
+        const skipped = body.skipped || {};
+        const skippedText = Object.entries(skipped)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join(', ');
+        setError(
+          `Sent ${body.sent} of ${body.total} reminder(s)` +
+            (skippedText ? ` — skipped (${skippedText})` : '')
+        );
+        load(pass);
+      } else {
+        setError(body?.error || 'Bulk send failed.');
+      }
+    } catch {
+      setError('Network error during bulk send.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   // Filter entries based on selected filters
@@ -219,7 +254,17 @@ const AdminPage = () => {
       <section>
         <div className="flex flex-wrap items-center gap-4 mb-4">
           <h2 className="text-2xl">All entries</h2>
-          
+
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs"
+            onClick={sendAllReminders}
+            disabled={loading}
+            title="Email all unverified owners who are eligible (under the reminder cap, outside the cooldown window)."
+          >
+            Send all reminders
+          </button>
+
           {/* Entity type filter */}
           <select
             className="input py-1 text-sm w-auto"
@@ -351,6 +396,16 @@ function EntryActions({ entry, act }: { entry: AdminEntry; act: (action: string,
         <button className="text-xs underline" onClick={() => act('unflag_entry', entry.id)}>Unflag</button>
       ) : (
         <button className="text-xs underline" onClick={() => act('flag_entry', entry.id)}>Flag</button>
+      )}
+      <button className="text-xs underline" onClick={() => act('regeocode_entry', entry.id)}>Re-geocode</button>
+      {!entry.verified_at && (
+        <button
+          className="text-xs underline"
+          onClick={() => act('send_reminder', entry.id)}
+          title={`Reminders sent: ${entry.reminder_count}${entry.last_reminder_at ? ' · last ' + new Date(entry.last_reminder_at).toLocaleDateString() : ''}`}
+        >
+          Remind ({entry.reminder_count})
+        </button>
       )}
       <button className="text-xs underline text-brand-red" onClick={() => act('delete_entry', entry.id)}>Delete</button>
     </>

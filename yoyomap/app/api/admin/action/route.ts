@@ -2,12 +2,14 @@ import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
+import { sendReminderForEntry } from '@/lib/reminders';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 const schema = z.object({
-  action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide']),
+  action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide', 'regeocode_entry', 'send_reminder']),
   id: z.string().uuid(),
 });
 
@@ -62,6 +64,63 @@ export async function POST(req: NextRequest) {
       await supabase.from('entries').update({ auto_hidden_by_reports: false }).eq('id', id);
       await logAudit('admin.clear_auto_hide', { actor: 'admin', targetId: id, meta: { ip } });
       break;
+    case 'regeocode_entry': {
+      const { data: entry } = await supabase
+        .from('entries')
+        .select('entity_type, city, region, country, address_line, postal_code, club_venue_public')
+        .eq('id', id)
+        .maybeSingle();
+      if (!entry) {
+        return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
+      }
+
+      const updates: Record<string, number> = {};
+
+      // Shops: re-geocode the street address for exact coords.
+      if (entry.entity_type === 'shop' && entry.address_line) {
+        const exactGeo = await geocodeAddress({
+          addressLine: entry.address_line,
+          city: entry.city,
+          region: entry.region || undefined,
+          postalCode: entry.postal_code || undefined,
+          country: entry.country,
+        });
+        if (!exactGeo) {
+          return NextResponse.json({ error: "Couldn't locate that address." }, { status: 400 });
+        }
+        updates.exact_lat = exactGeo.lat;
+        updates.exact_lng = exactGeo.lng;
+      }
+
+      // Persons, clubs, and shops (as a jittered fallback) all need city coords.
+      const cityGeo = await geocodeCity({
+        city: entry.city,
+        region: entry.region || undefined,
+        country: entry.country,
+      });
+      if (!cityGeo) {
+        return NextResponse.json({ error: "Couldn't locate that city." }, { status: 400 });
+      }
+      const jittered = jitterCoords(cityGeo.lat, cityGeo.lng);
+      updates.lat = jittered.lat;
+      updates.lng = jittered.lng;
+
+      const { error: updErr } = await supabase.from('entries').update(updates).eq('id', id);
+      if (updErr) {
+        return NextResponse.json({ error: 'Update failed.' }, { status: 500 });
+      }
+      await logAudit('admin.regeocode_entry', { actor: 'admin', targetId: id, meta: { ip } });
+      break;
+    }
+    case 'send_reminder': {
+      // Admin manual send — bypass the rate-limit gates.
+      const result = await sendReminderForEntry(supabase, id, { force: true });
+      if (!result.ok) {
+        return NextResponse.json({ error: `Reminder not sent: ${result.reason}` }, { status: 400 });
+      }
+      await logAudit('admin.send_reminder', { actor: 'admin', targetId: id, meta: { ip } });
+      break;
+    }
   }
 
   return NextResponse.json({ ok: true });
