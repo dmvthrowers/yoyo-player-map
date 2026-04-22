@@ -1,46 +1,140 @@
 'use client';
 
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
-import { useState, memo } from 'react';
+import { MapContainer, TileLayer, CircleMarker, Popup, Marker } from 'react-leaflet';
+import { useState, memo, useMemo } from 'react';
+import L from 'leaflet';
+import type { MapEntry } from './page';
+import type { MapFilters } from './MapClient';
+import { haversineMiles, UNDERSERVED_THRESHOLD_MI } from '@/lib/geo';
 
-// Fix default icon paths (Next.js webpack + Leaflet quirk). We use CircleMarker
-// instead of default icon markers since they match the brand better and don't
-// need image assets.
-interface MapEntry {
-  id: string;
-  display_name: string;
-  city: string;
-  region: string | null;
-  country: string;
-  bio: string | null;
-  socials: Record<string, string>;
-  lat: number;
-  lng: number;
-}
+// Custom icons for shops and clubs
+const shopIcon = L.divIcon({
+  className: 'shop-marker',
+  html: `<div style="width:14px;height:14px;background:#2E8B57;border:2px solid #1a5a36;"></div>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+});
 
-const Marker = memo(({ entry }: { entry: MapEntry }) => (
-  <CircleMarker
-    center={[entry.lat, entry.lng]}
-    pathOptions={{
-      color: '#C8102E',
-      fillColor: '#C8102E',
-      fillOpacity: 0.6,
-      weight: 2,
-    }}
-    radius={8}
+const shopVerifiedIcon = L.divIcon({
+  className: 'shop-marker-verified',
+  html: `<div style="width:14px;height:14px;background:#2E8B57;border:2px solid #1a5a36;position:relative;">
+    <svg style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#fff;border-radius:50%;" viewBox="0 0 24 24" fill="#2E8B57">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </svg>
+  </div>`,
+  iconSize: [14, 14],
+  iconAnchor: [7, 7],
+});
+
+const clubIcon = L.divIcon({
+  className: 'club-marker',
+  html: `<div style="width:16px;height:16px;border:3px solid #1B2A49;border-radius:50%;background:transparent;"></div>`,
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+});
+
+// Person marker component (uses CircleMarker for performance)
+const PersonMarker = memo(({ entry, isUnderserved }: { entry: MapEntry; isUnderserved: boolean }) => (
+  <>
+    {isUnderserved && (
+      <CircleMarker
+        center={[entry.lat, entry.lng]}
+        pathOptions={{
+          color: '#C8102E',
+          fillColor: 'transparent',
+          fillOpacity: 0,
+          weight: 2,
+          opacity: 0.6,
+          dashArray: '4, 4',
+        }}
+        radius={16}
+        className="animate-pulse"
+      />
+    )}
+    <CircleMarker
+      center={[entry.lat, entry.lng]}
+      pathOptions={{
+        color: '#C8102E',
+        fillColor: '#C8102E',
+        fillOpacity: 0.6,
+        weight: 2,
+      }}
+      radius={6}
+    >
+      <Popup>
+        <PersonPopup entry={entry} />
+      </Popup>
+    </CircleMarker>
+  </>
+));
+PersonMarker.displayName = 'PersonMarker';
+
+// Shop marker component
+const ShopMarker = memo(({ entry }: { entry: MapEntry }) => (
+  <Marker
+    position={[entry.lat, entry.lng]}
+    icon={entry.verified_owner ? shopVerifiedIcon : shopIcon}
   >
     <Popup>
-      <EntryPopup entry={entry} />
+      <ShopPopup entry={entry} />
     </Popup>
-  </CircleMarker>
+  </Marker>
 ));
+ShopMarker.displayName = 'ShopMarker';
 
-Marker.displayName = 'Marker';
+// Club marker component
+const ClubMarker = memo(({ entry }: { entry: MapEntry }) => (
+  <Marker position={[entry.lat, entry.lng]} icon={clubIcon}>
+    <Popup>
+      <ClubPopup entry={entry} />
+    </Popup>
+  </Marker>
+));
+ClubMarker.displayName = 'ClubMarker';
 
-export default function Map({ entries }: { entries: MapEntry[] }) {
-  // Center on the US by default
+interface MapProps {
+  entries: MapEntry[];
+  allEntries: MapEntry[];
+  filters: MapFilters;
+}
+
+export default function Map({ entries, allEntries, filters }: MapProps) {
   const [center] = useState<[number, number]>([39.5, -98.35]);
   const [zoom] = useState(4);
+
+  // Compute underserved status for all person entries
+  const underservedIds = useMemo(() => {
+    if (!filters.showUnderserved) return new Set<string>();
+
+    const shops = allEntries.filter((e) => e.entity_type === 'shop');
+    const clubs = allEntries.filter((e) => e.entity_type === 'club');
+    const persons = allEntries.filter((e) => e.entity_type === 'person');
+
+    const underserved = new Set<string>();
+
+    for (const person of persons) {
+      // Find distance to nearest shop
+      let nearestShopDist = Infinity;
+      for (const shop of shops) {
+        const dist = haversineMiles(person.lat, person.lng, shop.lat, shop.lng);
+        if (dist < nearestShopDist) nearestShopDist = dist;
+      }
+
+      // Find distance to nearest club
+      let nearestClubDist = Infinity;
+      for (const club of clubs) {
+        const dist = haversineMiles(person.lat, person.lng, club.lat, club.lng);
+        if (dist < nearestClubDist) nearestClubDist = dist;
+      }
+
+      // Underserved if far from BOTH shops AND clubs
+      if (nearestShopDist > UNDERSERVED_THRESHOLD_MI && nearestClubDist > UNDERSERVED_THRESHOLD_MI) {
+        underserved.add(person.id);
+      }
+    }
+
+    return underserved;
+  }, [allEntries, filters.showUnderserved]);
 
   return (
     <MapContainer center={center} zoom={zoom} className="h-full w-full" scrollWheelZoom={true}>
@@ -48,14 +142,32 @@ export default function Map({ entries }: { entries: MapEntry[] }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {entries.map((entry) => (
-        <Marker key={entry.id} entry={entry} />
-      ))}
+      {entries.map((entry) => {
+        switch (entry.entity_type) {
+          case 'shop':
+            return <ShopMarker key={entry.id} entry={entry} />;
+          case 'club':
+            return <ClubMarker key={entry.id} entry={entry} />;
+          case 'person':
+          default:
+            return (
+              <PersonMarker
+                key={entry.id}
+                entry={entry}
+                isUnderserved={underservedIds.has(entry.id)}
+              />
+            );
+        }
+      })}
     </MapContainer>
   );
 }
 
-function EntryPopup({ entry }: { entry: MapEntry }) {
+// =============================================================================
+// Popup components
+// =============================================================================
+
+function PersonPopup({ entry }: { entry: MapEntry }) {
   const socials = entry.socials || {};
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
@@ -65,33 +177,107 @@ function EntryPopup({ entry }: { entry: MapEntry }) {
       </p>
       <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
       {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
-      <div className="flex flex-wrap gap-2 text-xs">
-        {socials.instagram && (
-          <a
-            href={`https://instagram.com/${socials.instagram.replace(/^@/, '')}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand-red underline"
-          >IG</a>
+      <SocialsLinks socials={socials} />
+      <ReportLink entryId={entry.id} />
+    </div>
+  );
+}
+
+function ShopPopup({ entry }: { entry: MapEntry }) {
+  const socials = entry.socials || {};
+  return (
+    <div className="min-w-[220px]">
+      <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
+      <p className="font-bold text-base text-navy flex items-center gap-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+        {entry.display_name}
+        {entry.verified_owner && (
+          <svg className="w-4 h-4 text-[#2E8B57]" viewBox="0 0 24 24" fill="currentColor" title="Verified owner">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
         )}
-        {socials.youtube && (
-          <a
-            href={socials.youtube.startsWith('http') ? socials.youtube : `https://youtube.com/@${socials.youtube}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-brand-red underline"
-          >YT</a>
-        )}
-        {socials.discord && <span className="text-navy/70">Discord: {socials.discord}</span>}
-        {socials.website && (
-          <a href={socials.website} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">
-            Website
-          </a>
-        )}
-      </div>
-      <div className="mt-2 pt-2 border-t border-navy/10">
-        <a href={`/report?id=${entry.id}`} className="text-xs text-navy/50 underline">Report this pin</a>
-      </div>
+      </p>
+      {entry.address_line && (
+        <p className="text-xs text-navy/80 mb-1">
+          {entry.address_line}
+          {entry.postal_code && `, ${entry.postal_code}`}
+        </p>
+      )}
+      <p className="text-xs text-navy/70 mb-2">
+        {[entry.city, entry.region, entry.country].filter(Boolean).join(', ')}
+      </p>
+      {entry.hours && (
+        <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
+          <span className="font-semibold">Hours:</span> {entry.hours}
+        </div>
+      )}
+      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
+      <SocialsLinks socials={socials} />
+      <ReportLink entryId={entry.id} />
+    </div>
+  );
+}
+
+function ClubPopup({ entry }: { entry: MapEntry }) {
+  const socials = entry.socials || {};
+  const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
+  const isPublicVenue = entry.club_venue_public;
+
+  return (
+    <div className="min-w-[220px]">
+      <p className="text-[10px] uppercase tracking-wider text-[#1B2A49] font-bold mb-1">Yo-Yo Club</p>
+      <p className="font-bold text-base text-navy" style={{ fontFamily: 'Playfair Display, serif' }}>
+        {entry.display_name}
+      </p>
+      <p className="text-xs text-navy/70 mb-2">
+        {location} {!isPublicVenue && '(approximate)'}
+      </p>
+      {entry.club_meeting_info && (
+        <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1">
+          <span className="font-semibold">Meetings:</span> {entry.club_meeting_info}
+        </div>
+      )}
+      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
+      <SocialsLinks socials={socials} />
+      <ReportLink entryId={entry.id} />
+    </div>
+  );
+}
+
+function SocialsLinks({ socials }: { socials: Record<string, string> }) {
+  if (!socials || Object.keys(socials).length === 0) return null;
+  
+  return (
+    <div className="flex flex-wrap gap-2 text-xs">
+      {socials.instagram && (
+        <a
+          href={`https://instagram.com/${socials.instagram.replace(/^@/, '')}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand-red underline"
+        >IG</a>
+      )}
+      {socials.youtube && (
+        <a
+          href={socials.youtube.startsWith('http') ? socials.youtube : `https://youtube.com/@${socials.youtube}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand-red underline"
+        >YT</a>
+      )}
+      {socials.discord && <span className="text-navy/70">Discord: {socials.discord}</span>}
+      {socials.website && (
+        <a href={socials.website} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">
+          Website
+        </a>
+      )}
+    </div>
+  );
+}
+
+function ReportLink({ entryId }: { entryId: string }) {
+  return (
+    <div className="mt-2 pt-2 border-t border-navy/10">
+      <a href={`/report?id=${entryId}`} className="text-xs text-navy/50 underline">Report this pin</a>
     </div>
   );
 }

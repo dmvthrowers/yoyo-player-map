@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { reportSchema } from '@/lib/validation';
+import { reportSchema, AUTO_HIDE_REASONS } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { sendReportNotificationEmail } from '@/lib/email';
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   const supabase = createAdminClient();
 
   // Verify entry exists
-  const { data: entry } = await supabase.from('entries').select('id, display_name').eq('id', entryId).maybeSingle();
+  const { data: entry } = await supabase.from('entries').select('id, display_name, entity_type').eq('id', entryId).maybeSingle();
   if (!entry) return NextResponse.json({ error: 'Entry not found' }, { status: 404 });
 
   const { error } = await supabase.from('reports').insert({
@@ -40,10 +40,25 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Could not submit report.' }, { status: 500 });
   }
 
-  // Auto-hide on safety-related reports pending review
+  // Auto-hide logic: certain report reasons trigger automatic hiding
+  // 1. Safety-related reports (existing): minor_unsafe, harassment -> set is_flagged
+  // 2. Business/identity reports (new): impersonation, fake_business, unauthorized_listing -> set auto_hidden_by_reports
+  
   if (reason === 'minor_unsafe' || reason === 'harassment') {
-    await supabase.from('entries').update({ is_flagged: true, is_visible: false, flagged_reason: reason }).eq('id', entryId);
-    await logAudit('entry.auto_hidden', { targetId: entryId, meta: { ip, reason } });
+    // Existing behavior: flag and hide immediately for safety review
+    await supabase.from('entries').update({ 
+      is_flagged: true, 
+      is_visible: false, 
+      flagged_reason: reason 
+    }).eq('id', entryId);
+    await logAudit('entry.flagged', { targetId: entryId, meta: { ip, reason } });
+  } else if (AUTO_HIDE_REASONS.includes(reason as typeof AUTO_HIDE_REASONS[number])) {
+    // New behavior: auto-hide for business/identity issues (reversible by admin)
+    // Only for shops and clubs - people can't have fake_business or unauthorized_listing
+    await supabase.from('entries').update({ 
+      auto_hidden_by_reports: true 
+    }).eq('id', entryId);
+    await logAudit('entry.auto_hidden', { targetId: entryId, meta: { ip, reason, entityType: entry.entity_type } });
   }
 
   await logAudit('report.submitted', { actor: reporterEmail || 'anon', targetId: entryId, meta: { ip, reason } });

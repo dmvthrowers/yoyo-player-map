@@ -7,7 +7,7 @@ import { logAudit, getClientIp } from '@/lib/rate-limit';
 export const runtime = 'nodejs';
 
 const schema = z.object({
-  action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report']),
+  action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide']),
   id: z.string().uuid(),
 });
 
@@ -56,6 +56,11 @@ export async function POST(req: NextRequest) {
         resolution: 'resolved_by_admin',
       }).eq('id', id);
       await logAudit('admin.resolve_report', { actor: 'admin', targetId: id, meta: { ip } });
+      break;
+    case 'clear_auto_hide':
+      // Clear the auto_hidden_by_reports flag, making the entry visible again
+      await supabase.from('entries').update({ auto_hidden_by_reports: false }).eq('id', id);
+      await logAudit('admin.clear_auto_hide', { actor: 'admin', targetId: id, meta: { ip } });
       break;
   }
 
