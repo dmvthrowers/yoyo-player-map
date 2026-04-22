@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
@@ -84,6 +85,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <main className="flex-1">{children}</main>
 
+        <footer className="bg-dark-navy text-cream/80 border-t-4 border-brand-red mt-12">
+          <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
+            <div>
+              <p className="font-display text-lg text-cream">YoYo Map</p>
+              <p className="mt-2">A community project of DMV Throwers Yo-Yo &amp; Skill Toy Club. All skill levels welcome.</p>
+            </div>
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-xs mb-2">Legal</p>
+              <ul className="space-y-1">
+                <li><Link href="/legal/privacy" className="hover:text-brand-red">Privacy Policy</Link></li>
+                <li><Link href="/legal/terms" className="hover:text-brand-red">Terms of Service</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold uppercase tracking-wider text-xs mb-2">Contact</p>
+              <p>dmvthrowers@gmail.com</p>
+              <p className="mt-2 text-xs">DC · MD · VA</p>
+            </div>
+          </div>
+          <div className="bg-navy py-3 text-center text-xs">
+            <p>© {new Date().getFullYear()} DMV Throwers · EIN 41-4879324</p>
+          </div>
+        </footer>
+        <SpeedInsights />
         <Footer />
         <div className="bg-navy py-3 text-center text-xs">
           <p>© {new Date().getFullYear()} DMV Throwers · EIN 41-4879324</p>
