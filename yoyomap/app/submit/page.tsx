@@ -110,7 +110,14 @@ const entityTypeInfo: Record<Exclude<EntityType, ''>, { title: string; descripti
 export default function SubmitPage() {
   const [form, setForm] = useState<FormState>(initial);
   const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<null | { ok: boolean; message: string; entityType?: EntityType; isMinor?: boolean }>(null);
+  const [result, setResult] = useState<null | {
+    ok: boolean;
+    message: string;
+    entityType?: EntityType;
+    isMinor?: boolean;
+    emailStatus?: 'sent' | 'queued' | 'failed' | 'partial_failed';
+    retryAt?: string;
+  }>(null);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -192,7 +199,14 @@ export default function SubmitPage() {
       if (!res.ok) {
         setResult({ ok: false, message: data.error || 'Something went wrong. Please try again.' });
       } else {
-        setResult({ ok: true, message: data.message, entityType: form.entityType, isMinor });
+        setResult({
+          ok: true,
+          message: data.message,
+          entityType: form.entityType,
+          isMinor,
+          emailStatus: data.emailStatus,
+          retryAt: data.retryAt,
+        });
       }
     } catch {
       setResult({ ok: false, message: 'Network error. Please try again.' });
@@ -201,14 +215,38 @@ export default function SubmitPage() {
     }
   }
 
-  // Success state
+  // Success state — three flavors based on whether the verification email was
+  // actually delivered, queued for later, or permanently failed.
   if (result?.ok) {
+    const heading =
+      result.emailStatus === 'queued' ? "Saved — email coming soon"
+      : result.emailStatus === 'failed' ? "Saved — email trouble"
+      : "Check your email";
+
+    const retryHuman = result.retryAt
+      ? new Date(result.retryAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+      : null;
+
     return (
       <div className="max-w-xl mx-auto px-4 py-16">
         <div className="card text-center">
-          <h1 className="text-3xl mb-4">Check your email</h1>
+          <h1 className="text-3xl mb-4">{heading}</h1>
           <p className="text-navy/80 mb-4">{result.message}</p>
-          {result.isMinor && (
+
+          {result.emailStatus === 'queued' && retryHuman && (
+            <p className="text-sm bg-cream p-4 border-l-4 border-brand-red text-left">
+              <strong>Expected delivery:</strong> by {retryHuman} (your local time).<br />
+              You don&apos;t need to do anything — the email is queued and will send automatically.
+            </p>
+          )}
+
+          {result.emailStatus === 'failed' && (
+            <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30 text-left">
+              Please email <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">dmvthrowers@gmail.com</a> and mention the email address you used so we can finish verifying your entry.
+            </p>
+          )}
+
+          {result.isMinor && result.emailStatus !== 'queued' && result.emailStatus !== 'failed' && (
             <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30">
               We also sent a consent request to your parent or guardian. Your entry will appear on the map once they confirm.
             </p>

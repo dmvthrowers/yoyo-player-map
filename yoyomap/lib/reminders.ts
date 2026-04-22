@@ -57,20 +57,22 @@ export async function sendReminderForEntry(
   });
   if (tokenErr) return { ok: false, reason: 'token_insert_failed' };
 
-  try {
-    await sendEntryReminderEmail(entry.email, entry.display_name, token);
-  } catch (e) {
-    console.error('Failed to send reminder email:', e);
-    return { ok: false, reason: 'email_send_failed' };
+  const outcome = await sendEntryReminderEmail(entry.email, entry.display_name, token);
+
+  // Count the attempt regardless of outcome: 'queued' means the email WILL go
+  // out after the quota resets, and we don't want the bulk job to re-enqueue
+  // another reminder for the same entry tomorrow. 'failed' is rare and we'd
+  // rather skip this entry than spam it once the issue is resolved.
+  if (outcome.status === 'sent' || outcome.status === 'queued') {
+    await supabase
+      .from('entries')
+      .update({
+        last_reminder_at: new Date().toISOString(),
+        reminder_count: (entry.reminder_count ?? 0) + 1,
+      })
+      .eq('id', entry.id);
+    return { ok: true };
   }
 
-  await supabase
-    .from('entries')
-    .update({
-      last_reminder_at: new Date().toISOString(),
-      reminder_count: (entry.reminder_count ?? 0) + 1,
-    })
-    .eq('id', entry.id);
-
-  return { ok: true };
+  return { ok: false, reason: `email_${outcome.status}` };
 }

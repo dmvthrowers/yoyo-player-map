@@ -50,12 +50,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Could not send link. Try again.' }, { status: 500 });
   }
 
-  try {
-    await sendManageEntryEmail(email, entry.display_name, token);
-  } catch (e) {
-    console.error('Failed to send manage email:', e);
-  }
+  const outcome = await sendManageEntryEmail(email, entry.display_name, token);
 
-  await logAudit('magic_link.sent', { actor: email, targetId: entry.id, meta: { ip } });
+  await logAudit('magic_link.sent', {
+    actor: email,
+    targetId: entry.id,
+    meta: { ip, emailStatus: outcome.status },
+  });
+
+  // We never confirm account existence to the caller, so on "failed" we still
+  // return ok:true and let the user re-request later. For "queued" we do
+  // surface the retry time — the user already identified themselves by email,
+  // so telling them "we're over quota, try again after midnight UTC" is safe
+  // and more useful than staying silent.
+  if (outcome.status === 'queued') {
+    return NextResponse.json({
+      ok: true,
+      emailStatus: 'queued',
+      retryAt: outcome.retryAt,
+      message: outcome.kind === 'daily_quota'
+        ? "We've hit today's email limit. Your link will be sent automatically after midnight UTC — no need to re-request."
+        : "Our email service is briefly throttled. Your link will arrive in a minute or two.",
+    });
+  }
   return NextResponse.json({ ok: true });
 }

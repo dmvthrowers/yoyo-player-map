@@ -63,10 +63,11 @@ export async function POST(req: NextRequest) {
 
   await logAudit('report.submitted', { actor: reporterEmail || 'anon', targetId: entryId, meta: { ip, reason } });
 
-  try {
-    await sendReportNotificationEmail(entryId, reason, details || null, reporterEmail || null, entry.display_name);
-  } catch (e) {
-    console.error('Report notification email failed:', e);
+  // Admin-only notification — the reporter doesn't see this status, but we log
+  // it so the queue-drain job picks up any rate-limited sends after reset.
+  const outcome = await sendReportNotificationEmail(entryId, reason, details || null, reporterEmail || null, entry.display_name);
+  if (outcome.status !== 'sent') {
+    console.warn('Report notification email', outcome.status, outcome);
   }
 
   return NextResponse.json({ ok: true });

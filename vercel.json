@@ -1,3 +1,9 @@
 {
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/admin/drain-email-queue",
+      "schedule": "5 0 * * *"
+    }
+  ]
 }

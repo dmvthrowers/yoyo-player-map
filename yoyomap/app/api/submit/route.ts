@@ -169,33 +169,68 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Could not create verification link. Please try again.' }, { status: 500 });
   }
 
-  // Send verification email to submitter
-  try {
-    await sendEntryVerificationEmail(data.email, data.displayName, emailToken);
-  } catch (e) {
-    console.error('Failed to send verification email:', e);
-    // Entry is already created; continue so we don't double-insert on retry
-  }
+  // Send verification email (may be queued if Resend is over daily cap)
+  const verifyOutcome = await sendEntryVerificationEmail(data.email, data.displayName, emailToken);
 
-  // Send parent consent email if minor
-  if (data.entityType === 'person' && data.ageBand === '13-17' && parentConsentToken && data.parentEmail && data.parentName) {
-    try {
-      await sendParentConsentEmail(data.parentEmail, data.parentName, data.displayName, parentConsentToken);
-    } catch (e) {
-      console.error('Failed to send parent consent email:', e);
-    }
-  }
+  // Parent consent — same queue-aware send
+  const consentOutcome = data.entityType === 'person' && data.ageBand === '13-17' && parentConsentToken && data.parentEmail && data.parentName
+    ? await sendParentConsentEmail(data.parentEmail, data.parentName, data.displayName, parentConsentToken)
+    : null;
 
   await logAudit('entry.submitted', {
     actor: data.email,
     targetId: entry.id,
-    meta: { ip, entityType: data.entityType, city: data.city, country: data.country },
+    meta: {
+      ip,
+      entityType: data.entityType,
+      city: data.city,
+      country: data.country,
+      verifyStatus: verifyOutcome.status,
+      consentStatus: consentOutcome?.status,
+    },
   });
 
-  // Return appropriate success message based on entity type
+  // Compose a message based on whether the primary verification email was sent
+  // or queued. For minors, the parent consent email matters too — if either is
+  // delayed, tell the user both will go out after the limit resets.
+  const isMinor = data.entityType === 'person' && data.ageBand === '13-17';
+  const anyFailed = verifyOutcome.status === 'failed' || consentOutcome?.status === 'failed';
+
+  const queuedOutcome = verifyOutcome.status === 'queued'
+    ? verifyOutcome
+    : consentOutcome?.status === 'queued'
+      ? consentOutcome
+      : null;
+
+  let message: string;
+  if (queuedOutcome) {
+    const retryAt = queuedOutcome.retryAt;
+    const isDaily = queuedOutcome.kind === 'daily_quota';
+    if (isDaily) {
+      message = `Thanks! Your entry is saved, but we've hit our daily email limit. We'll send your verification link${isMinor ? ' (and the parent consent email)' : ''} automatically after the limit resets at midnight UTC. No action needed from you — just watch your inbox tomorrow.`;
+    } else {
+      message = `Thanks! Your entry is saved. Our email service is briefly throttled, so your verification link${isMinor ? ' (and the parent consent email)' : ''} will arrive shortly — please check back in a minute or two.`;
+    }
+    return NextResponse.json({
+      message,
+      emailStatus: 'queued',
+      retryAt,
+    });
+  }
+
+  if (verifyOutcome.status === 'failed') {
+    // Entry exists but we couldn't email. Tell the user so they can contact support rather than waiting forever.
+    return NextResponse.json({
+      message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact dmvthrowers@gmail.com and we'll sort it out manually.",
+      emailStatus: 'failed',
+    });
+  }
+
   const messages = {
-    person: data.entityType === 'person' && data.ageBand === '13-17'
-      ? 'Thanks! Check your email to verify your address. We also sent a consent link to your parent or guardian.'
+    person: isMinor
+      ? (consentOutcome?.status === 'failed'
+          ? "Thanks! Check your email to verify your address. We had trouble sending the parent consent email — please contact dmvthrowers@gmail.com so we can resend it."
+          : 'Thanks! Check your email to verify your address. We also sent a consent link to your parent or guardian.')
       : 'Thanks! Check your email to verify your address. Your entry will appear on the map once verified.',
     shop: 'Thanks for registering your shop! Check your email to verify. Your listing will appear on the map once verified.',
     club: 'Thanks for registering your club! Check your email to verify. Your listing will appear on the map once verified.',
@@ -203,6 +238,7 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     message: messages[data.entityType],
+    emailStatus: anyFailed ? 'partial_failed' : 'sent',
   });
 }
 
