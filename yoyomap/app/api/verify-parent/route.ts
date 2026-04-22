@@ -57,7 +57,7 @@ async function verifyEntry(
   await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('id', tok.id);
 
   // Verify the entry
-  const entry = tok.entries as { id: string; age_band: string; parent_consent_id: string | null };
+  const entry = tok.entries as { id: string; age_band: string | null; parent_consent_id: string | null };
   await supabase.from('entries').update({ verified_at: new Date().toISOString() }).eq('id', entry.id);
 
   // If adult, publish immediately. If minor, only publish if parent consent is already granted.
@@ -136,8 +136,11 @@ async function verifyConsent(
 
 async function checkCanPublish(
   supabase: ReturnType<typeof createAdminClient>,
-  entry: { age_band: string; parent_consent_id: string | null }
+  entry: { age_band: string | null; parent_consent_id: string | null }
 ): Promise<boolean> {
+  // Shops and clubs have age_band = null (enforced by entries_type_invariants).
+  // They have no parent-consent flow, so email verification alone publishes them.
+  if (entry.age_band === null) return true;
   if (entry.age_band === '18+') return true;
   if (!entry.parent_consent_id) return false;
   const { data: consent } = await supabase
