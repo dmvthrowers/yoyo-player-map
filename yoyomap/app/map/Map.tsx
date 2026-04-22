@@ -1,6 +1,6 @@
 'use client';
 
-import { MapContainer, TileLayer, CircleMarker, Popup, Marker } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl } from 'react-leaflet';
 import { useState, memo, useMemo, useEffect } from 'react';
 import L from 'leaflet';
 import type { MapEntry, MapEntryDetail } from './page';
@@ -223,7 +223,10 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
       maxZoom={17}
       className="h-full w-full"
       scrollWheelZoom={true}
+      worldCopyJump={true}
+      zoomControl={false}
     >
+      <ZoomControl position="bottomleft" />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
