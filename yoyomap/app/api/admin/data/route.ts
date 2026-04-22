@@ -17,29 +17,66 @@ export async function GET(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = createAdminClient();
-  const [{ data: entries }, { data: reports }] = await Promise.all([
-    supabase.from('entries').select('*').order('created_at', { ascending: false }),
-    supabase.from('reports').select('*').is('resolved_at', null).order('created_at', { ascending: false }),
+
+  const countActive = () => supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null);
+  const countReports = () => supabase.from('reports').select('*', { count: 'exact', head: true }).is('resolved_at', null);
+
+  const [
+    { data: entries },
+    { data: reports },
+    { count: total },
+    { count: visible },
+    { count: pending },
+    { count: flagged },
+    { count: autoHidden },
+    { count: minors },
+    { count: openReports },
+    { count: personCount },
+    { count: shopCount },
+    { count: clubCount },
+    { count: verifiedOwners },
+  ] = await Promise.all([
+    supabase
+      .from('entries')
+      .select(
+        'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at'
+      )
+      .order('created_at', { ascending: false })
+      .limit(500),
+    supabase
+      .from('reports')
+      .select('id, entry_id, reason, details, resolved_at, created_at')
+      .is('resolved_at', null)
+      .order('created_at', { ascending: false })
+      .limit(200),
+    countActive(),
+    countActive().eq('is_visible', true).eq('auto_hidden_by_reports', false),
+    countActive().eq('is_visible', false).eq('is_flagged', false).eq('auto_hidden_by_reports', false),
+    countActive().eq('is_flagged', true),
+    countActive().eq('auto_hidden_by_reports', true),
+    countActive().eq('age_band', '13-17'),
+    countReports(),
+    countActive().or('entity_type.eq.person,entity_type.is.null'),
+    countActive().eq('entity_type', 'shop'),
+    countActive().eq('entity_type', 'club'),
+    countActive().eq('entity_type', 'shop').eq('verified_owner', true),
   ]);
 
-  const e = entries || [];
   const stats = {
-    total: e.length,
-    visible: e.filter((x) => x.is_visible && !x.deleted_at && !x.auto_hidden_by_reports).length,
-    pending: e.filter((x) => !x.is_visible && !x.deleted_at && !x.is_flagged && !x.auto_hidden_by_reports).length,
-    flagged: e.filter((x) => x.is_flagged && !x.deleted_at).length,
-    autoHidden: e.filter((x) => x.auto_hidden_by_reports && !x.deleted_at).length,
-    minors: e.filter((x) => x.age_band === '13-17' && !x.deleted_at).length,
-    openReports: (reports || []).length,
-    // Entity type breakdown
+    total: total ?? 0,
+    visible: visible ?? 0,
+    pending: pending ?? 0,
+    flagged: flagged ?? 0,
+    autoHidden: autoHidden ?? 0,
+    minors: minors ?? 0,
+    openReports: openReports ?? 0,
     byType: {
-      person: e.filter((x) => (x.entity_type === 'person' || !x.entity_type) && !x.deleted_at).length,
-      shop: e.filter((x) => x.entity_type === 'shop' && !x.deleted_at).length,
-      club: e.filter((x) => x.entity_type === 'club' && !x.deleted_at).length,
+      person: personCount ?? 0,
+      shop: shopCount ?? 0,
+      club: clubCount ?? 0,
     },
-    // Verified owners (shops only)
-    verifiedOwners: e.filter((x) => x.entity_type === 'shop' && x.verified_owner && !x.deleted_at).length,
+    verifiedOwners: verifiedOwners ?? 0,
   };
 
-  return NextResponse.json({ entries: e, reports: reports || [], stats });
+  return NextResponse.json({ entries: entries ?? [], reports: reports ?? [], stats });
 }
