@@ -137,10 +137,19 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
   }, [allEntries, filters.showUnderserved]);
 
   return (
-    <MapContainer center={center} zoom={zoom} className="h-full w-full" scrollWheelZoom={true}>
+    <MapContainer
+      center={center}
+      zoom={zoom}
+      minZoom={3}
+      maxZoom={17}
+      className="h-full w-full"
+      scrollWheelZoom={true}
+    >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+        subdomains="abcd"
+        maxZoom={19}
       />
       {entries.map((entry) => {
         switch (entry.entity_type) {

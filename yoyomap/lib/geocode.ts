@@ -4,9 +4,76 @@
  * Docs: https://nominatim.org/release-docs/latest/api/Search/
  *
  * IMPORTANT: Nominatim's ToS requires a valid User-Agent with contact info.
+ *
+ * Caching: successful lookups are persisted to public.geocode_cache (keyed by
+ * a sha256 of the normalized query) so repeat lookups never hit Nominatim —
+ * this survives deploys, unlike Next's fetch cache. Rate limiting is enforced
+ * by a process-local mutex that paces requests to 1/sec.
  */
 
+import { createHash } from 'crypto';
+import { createAdminClient } from './supabase/admin';
+
 const NOMINATIM_UA = 'DMVThrowersYoYoMap/1.0 (dmvthrowers@gmail.com)';
+
+// ---------------------------------------------------------------------------
+// Rate limiter: serialize Nominatim requests, min 1100ms between starts.
+// Process-local only — a single serverless instance can geocode one address
+// per second. If Vercel spins up parallel instances they could each send
+// 1 req/sec, which is acceptable under Nominatim's policy (per-application,
+// not strictly per-process).
+// ---------------------------------------------------------------------------
+const NOMINATIM_MIN_INTERVAL_MS = 1100;
+let nominatimChain: Promise<void> = Promise.resolve();
+let lastNominatimAt = 0;
+
+function pacedNominatim<T>(run: () => Promise<T>): Promise<T> {
+  const next = nominatimChain.then(async () => {
+    const elapsed = Date.now() - lastNominatimAt;
+    const wait = NOMINATIM_MIN_INTERVAL_MS - elapsed;
+    if (wait > 0) await new Promise((r) => setTimeout(r, wait));
+    lastNominatimAt = Date.now();
+  });
+  nominatimChain = next.catch(() => {});
+  return next.then(run);
+}
+
+// ---------------------------------------------------------------------------
+// Persistent cache (public.geocode_cache)
+// ---------------------------------------------------------------------------
+function hashQuery(kind: 'city' | 'address', parts: (string | undefined)[]): string {
+  const normalized = parts
+    .map((p) => (p ?? '').trim().toLowerCase())
+    .join('|');
+  return createHash('sha256').update(`${kind}:${normalized}`).digest('hex');
+}
+
+async function readCache(queryHash: string): Promise<GeocodeResult | null> {
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('geocode_cache')
+      .select('result')
+      .eq('query_hash', queryHash)
+      .maybeSingle();
+    if (error || !data) return null;
+    return data.result as GeocodeResult;
+  } catch {
+    return null;
+  }
+}
+
+async function writeCache(queryHash: string, kind: 'city' | 'address', result: GeocodeResult): Promise<void> {
+  try {
+    const supabase = createAdminClient();
+    await supabase
+      .from('geocode_cache')
+      .upsert({ query_hash: queryHash, query_kind: kind, result }, { onConflict: 'query_hash' });
+  } catch (e) {
+    // Cache-write failures are non-fatal.
+    console.error('geocode_cache write failed:', e);
+  }
+}
 
 export interface GeocodeResult {
   lat: number;
@@ -50,12 +117,14 @@ function pickCityHit(hits: unknown): NominatimHit | null {
 }
 
 async function fetchNominatim(url: URL): Promise<unknown> {
-  const res = await fetch(url.toString(), {
-    headers: { 'User-Agent': NOMINATIM_UA },
-    next: { revalidate: 60 * 60 * 24 * 7 },
+  return pacedNominatim(async () => {
+    const res = await fetch(url.toString(), {
+      headers: { 'User-Agent': NOMINATIM_UA },
+      next: { revalidate: 60 * 60 * 24 * 7 },
+    });
+    if (!res.ok) return null;
+    return res.json();
   });
-  if (!res.ok) return null;
-  return res.json();
 }
 
 /**
@@ -69,6 +138,10 @@ async function fetchNominatim(url: URL): Promise<unknown> {
  */
 export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeResult | null> {
   const { city, region, country } = params;
+
+  const queryHash = hashQuery('city', [city, region, country]);
+  const cached = await readCache(queryHash);
+  if (cached) return cached;
 
   const structured = new URL('https://nominatim.openstreetmap.org/search');
   structured.searchParams.set('city', city);
@@ -93,7 +166,7 @@ export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeRes
     }
 
     if (!hit) return null;
-    return {
+    const result: GeocodeResult = {
       lat: parseFloat(hit.lat),
       lng: parseFloat(hit.lon),
       displayName: hit.display_name,
@@ -101,6 +174,8 @@ export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeRes
       region: hit.address?.state || hit.address?.region || region,
       country: hit.address?.country_code?.toUpperCase() || country,
     };
+    await writeCache(queryHash, 'city', result);
+    return result;
   } catch (e) {
     console.error('Geocode error:', e);
     return null;
@@ -123,6 +198,10 @@ export interface AddressGeocodeParams {
 export async function geocodeAddress(params: AddressGeocodeParams): Promise<GeocodeResult | null> {
   const { addressLine, city, region, postalCode, country } = params;
 
+  const queryHash = hashQuery('address', [addressLine, city, region, postalCode, country]);
+  const cached = await readCache(queryHash);
+  if (cached) return cached;
+
   const url = new URL('https://nominatim.openstreetmap.org/search');
   // Use structured query for better accuracy
   url.searchParams.set('street', addressLine);
@@ -135,21 +214,24 @@ export async function geocodeAddress(params: AddressGeocodeParams): Promise<Geoc
   url.searchParams.set('addressdetails', '1');
 
   try {
-    const res = await fetch(url.toString(), {
-      headers: { 'User-Agent': NOMINATIM_UA },
-      // Cache for 7 days — addresses don't change often
-      next: { revalidate: 60 * 60 * 24 * 7 },
+    const data = await pacedNominatim(async () => {
+      const res = await fetch(url.toString(), {
+        headers: { 'User-Agent': NOMINATIM_UA },
+        next: { revalidate: 60 * 60 * 24 * 7 },
+      });
+      if (!res.ok) return null;
+      return res.json();
     });
-    if (!res.ok) return null;
-    const data = await res.json();
-    
+
     // If structured query fails, fall back to free-form query
     if (!Array.isArray(data) || data.length === 0) {
-      return geocodeAddressFreeform(params);
+      const result = await geocodeAddressFreeform(params);
+      if (result) await writeCache(queryHash, 'address', result);
+      return result;
     }
-    
+
     const hit = data[0];
-    return {
+    const result: GeocodeResult = {
       lat: parseFloat(hit.lat),
       lng: parseFloat(hit.lon),
       displayName: hit.display_name,
@@ -157,6 +239,8 @@ export async function geocodeAddress(params: AddressGeocodeParams): Promise<Geoc
       region: hit.address?.state || hit.address?.region || region,
       country: hit.address?.country_code?.toUpperCase() || country,
     };
+    await writeCache(queryHash, 'address', result);
+    return result;
   } catch (e) {
     console.error('Address geocode error:', e);
     return null;
@@ -183,14 +267,16 @@ async function geocodeAddressFreeform(params: AddressGeocodeParams): Promise<Geo
   url.searchParams.set('addressdetails', '1');
 
   try {
-    const res = await fetch(url.toString(), {
-      headers: { 'User-Agent': NOMINATIM_UA },
-      next: { revalidate: 60 * 60 * 24 * 7 },
+    const data = await pacedNominatim(async () => {
+      const res = await fetch(url.toString(), {
+        headers: { 'User-Agent': NOMINATIM_UA },
+        next: { revalidate: 60 * 60 * 24 * 7 },
+      });
+      if (!res.ok) return null;
+      return res.json();
     });
-    if (!res.ok) return null;
-    const data = await res.json();
     if (!Array.isArray(data) || data.length === 0) return null;
-    
+
     const hit = data[0];
     return {
       lat: parseFloat(hit.lat),

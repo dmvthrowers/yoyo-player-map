@@ -21,8 +21,52 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://map.dmvthrowers.club
 
 export type EmailSendOutcome =
   | { status: 'sent' }
+  | { status: 'deduped' }
   | { status: 'queued'; kind: 'daily_quota' | 'throttled'; retryAt: string }
   | { status: 'failed'; error: string };
+
+// Dedup windows per template (ms). A repeat send within this window is
+// suppressed to protect Resend's 100/day free-tier cap. report_notification
+// is intentionally omitted — every report should page the admin.
+const DEDUP_WINDOW_MS: Partial<Record<QueuedEmail['template'], number>> = {
+  entry_verify: 10 * 60_000,   // 10 min — prevents double-submit dupes
+  parent_consent: 10 * 60_000, // 10 min
+  entry_reminder: 60 * 60_000, // 1 hour — cron should never double-fire
+  manage_entry: 60_000,        // 1 min — user-triggered magic link
+};
+
+async function shouldSkipAsDuplicate(toEmail: string, template: QueuedEmail['template']): Promise<boolean> {
+  const windowMs = DEDUP_WINDOW_MS[template];
+  if (!windowMs) return false;
+  try {
+    const supabase = createAdminClient();
+    const cutoff = new Date(Date.now() - windowMs).toISOString();
+    const { data } = await supabase
+      .from('email_send_log')
+      .select('last_sent_at')
+      .eq('to_email', toEmail)
+      .eq('template', template)
+      .gte('last_sent_at', cutoff)
+      .maybeSingle();
+    return !!data;
+  } catch {
+    return false;
+  }
+}
+
+async function recordSend(toEmail: string, template: QueuedEmail['template']): Promise<void> {
+  try {
+    const supabase = createAdminClient();
+    await supabase
+      .from('email_send_log')
+      .upsert(
+        { to_email: toEmail, template, last_sent_at: new Date().toISOString() },
+        { onConflict: 'to_email,template' }
+      );
+  } catch (e) {
+    console.error('email_send_log upsert failed:', e);
+  }
+}
 
 type ClassifiedError =
   | { kind: 'daily_quota'; retryAt: Date }
@@ -163,6 +207,11 @@ function render(q: QueuedEmail): RenderedEmail {
 
 async function sendOrQueue(q: QueuedEmail): Promise<EmailSendOutcome> {
   const rendered = render(q);
+
+  if (await shouldSkipAsDuplicate(rendered.to, q.template)) {
+    return { status: 'deduped' };
+  }
+
   let error: { name?: string; message?: string } | null = null;
   try {
     const result = await getResend().emails.send({
@@ -176,7 +225,10 @@ async function sendOrQueue(q: QueuedEmail): Promise<EmailSendOutcome> {
     error = { name: 'network_error', message: String(e) };
   }
 
-  if (!error) return { status: 'sent' };
+  if (!error) {
+    await recordSend(rendered.to, q.template);
+    return { status: 'sent' };
+  }
 
   const classified = classifyError(error);
   if (classified.kind === 'daily_quota' || classified.kind === 'throttled') {
@@ -245,6 +297,11 @@ export async function drainEmailQueue(limit = 100): Promise<DrainSummary> {
       // so we don't pile up duplicates across drain runs.
       await supabase.from('email_queue').delete().eq('id', row.id);
       summary.requeued += 1;
+    } else if (outcome.status === 'deduped') {
+      // A fresher send for this (to_email, template) already went out — drop
+      // this queued row rather than attempting again.
+      await supabase.from('email_queue').delete().eq('id', row.id);
+      summary.sent += 1;
     } else {
       await supabase.from('email_queue').update({
         attempts: (row.attempts ?? 0) + 1,

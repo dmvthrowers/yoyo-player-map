@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import MapClient from './MapClient';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export const revalidate = 60; // ISR: refresh cached page every 60s
+export const revalidate = 3600; // ISR: refresh cached page every hour (entries change rarely; saves Supabase egress + Vercel CPU)
 
 export interface MapEntry {
   id: string;
