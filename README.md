@@ -37,18 +37,18 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
 - 🏆 **Divisions:** 1A · X Division · Beginner/Junior · Fixed Axle (TBD)
 
 **Contest site:** [dmvthrowers.club/vsyc26.html](https://dmvthrowers.club/vsyc26.html)
-**Sponsor inquiries:** vastateyoyocontest@gmail.com
+**Sponsor inquiries:** <vastateyoyocontest@gmail.com>
 
 ---
 
 ## Contact
 
 | | |
-|---|---|
-| **Club Email** | contact@dmvthrowers.club |
-| **Contest Email** | vastateyoyocontest@gmail.com |
-| **Phone** | 850-284-1613 |
-| **Instagram** | @dmv_throwers |
+| --- | --- |
+| **Club Email** | <contact@dmvthrowers.club> |
+| **Contest Email** | <vastateyoyocontest@gmail.com> |
+| **Phone** | <850-284-1613> |
+| **Instagram** | [@dmv_throwers](https://instagram.com/dmv_throwers) |
 | **Coordinator** | Brandon Rogers |
 
 ---
@@ -56,7 +56,7 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
 ## Site Structure
 
 | Page | URL |
-|---|---|
+| --- | --- |
 | Home | [dmvthrowers.club](https://dmvthrowers.club) |
 | About | [dmvthrowers.club/about.html](https://dmvthrowers.club/about.html) |
 | Events | [dmvthrowers.club/events.html](https://dmvthrowers.club/events.html) |
@@ -70,6 +70,74 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
 
 ## File Structure
 
+/ (root)
+├── index.html              # Homepage
+├── about.html              # About page
+├── events.html             # Events page
+├── gallery.html            # Gallery page
+├── resources.html          # Resources page
+├── faq.html                # FAQ page
+├── contact.html            # Contact page
+├── vsyc26.html             # VSYC-26 contest page
+├── sitemap.xml             # Sitemap for search engines
+├── CNAME                   # GitHub Pages custom domain
+├── README.md               # This file
+└── assets/
+    ├── images/
+    │   ├── logo.png                        # Main club logo
+    │   ├── events/                         # Monthly event flyers
+    │   │   ├── DMV Throwers April 2026.png
+    │   │   ├── DMV Throwers May 2026.png
+    │   │   ├── DMV Throwers June 2026.png
+    │   │   ├── DMV Throwers July 2026.png
+    │   │   └── DMV Throwers August 2026.png
+    │   ├── gallery/                        # Club photo gallery
+    │   │   └── club*.PNG
+    │   └── logos/                          # Logo variants
+    │       ├── DMVT_Logo_*.jpeg/png
+    │       └── VAStateLogo_Final.*
+    └── documents/                          # PDFs and presentations
+        ├── DMV Throwers Workshop Run Sheet.pdf
+        ├── DMV Throwers Trick Reference Guide.pptx
+        ├── DMV Throwers Club Display Loop.pptx
+        ├── DMV Throwers Event Checklist.docx
+        ├── DMV Throwers Maintenance Guide 2.pptx
+        ├── Yoyo Club slides to share.pdf
+        └── VSYC26 Sponsor Package v26g.pdf
+/ (root)
+├── index.html              # Homepage
+├── about.html              # About page
+├── events.html             # Events page
+├── gallery.html            # Gallery page
+├── resources.html          # Resources page
+├── faq.html                # FAQ page
+├── contact.html            # Contact page
+├── vsyc26.html             # VSYC-26 contest page
+├── sitemap.xml             # Sitemap for search engines
+├── CNAME                   # GitHub Pages custom domain
+├── README.md               # This file
+└── assets/
+    ├── images/
+    │   ├── logo.png                        # Main club logo
+    │   ├── events/                         # Monthly event flyers
+    │   │   ├── DMV Throwers April 2026.png
+    │   │   ├── DMV Throwers May 2026.png
+    │   │   ├── DMV Throwers June 2026.png
+    │   │   ├── DMV Throwers July 2026.png
+    │   │   └── DMV Throwers August 2026.png
+    │   ├── gallery/                        # Club photo gallery
+    │   │   └── club*.PNG
+    │   └── logos/                          # Logo variants
+    │       ├── DMVT_Logo_*.jpeg/png
+    │       └── VAStateLogo_Final.*
+    └── documents/                          # PDFs and presentations
+        ├── DMV Throwers Workshop Run Sheet.pdf
+        ├── DMV Throwers Trick Reference Guide.pptx
+        ├── DMV Throwers Club Display Loop.pptx
+        ├── DMV Throwers Event Checklist.docx
+        ├── DMV Throwers Maintenance Guide 2.pptx
+        ├── Yoyo Club slides to share.pdf
+        └── VSYC26 Sponsor Package v26g.pdf
 ```
 / (root)
 ├── index.html              # Homepage
@@ -109,4 +177,7 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
 
 ---
 
-*DMV Throwers · Est. 2021 · DC · MD · VA · @dmv_throwers*
+
+---
+
+*DMV Throwers · Est. 2021 · DC · MD · VA · [@dmv_throwers](https://instagram.com/dmv_throwers)*

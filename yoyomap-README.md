@@ -23,7 +23,9 @@ Total monthly cost at launch-day scale: **$0** (all free tiers).
 
 **Have a lawyer review the privacy policy and terms of service.** The drafts in `app/legal/` are a reasonable starting point specific to this architecture, but they are not a substitute for legal review. A Virginia nonprofit clinic, an early-career lawyer, or a service like LegalZoom can likely do this for a couple hundred dollars or less.
 
+
 Specifically, a lawyer should confirm:
+
 - The COPPA parental consent flow qualifies as "verifiable" for your risk tolerance (email-only is the lighter end of acceptable — stronger options exist)
 - GDPR/CCPA rights language is accurate for your operations
 - Limitation of liability and governing law clauses are appropriate for DMV Throwers as an EIN-registered sole-prop DBA
@@ -36,7 +38,7 @@ Specifically, a lawyer should confirm:
 
 ```bash
 node --version  # should be 20+
-```
+```text
 
 ### 2. Install dependencies
 
@@ -47,7 +49,7 @@ npm install
 
 ### 3. Set up Supabase
 
-1. Create a free account at https://supabase.com
+1. Create a free account at <https://supabase.com>
 2. Create a new project (choose a region close to you — US East works fine)
 3. Once provisioned, go to **Project Settings → API** and copy:
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
@@ -58,7 +60,7 @@ npm install
 
 ### 4. Set up Resend (email)
 
-1. Create account at https://resend.com
+1. Create account at <https://resend.com>
 2. Add and verify `dmvthrowers.club` as a sending domain (they'll give you DNS records to add)
 3. Create an API key → `RESEND_API_KEY`
 4. Your "from" address: `noreply@dmvthrowers.club` (or similar on the verified domain)
@@ -86,14 +88,15 @@ Set `ADMIN_PASSWORD` to something strong — this is how you log into `/admin`.
 npm run dev
 ```
 
-Visit http://localhost:3000
+
+Visit <http://localhost:3000>
 
 ---
 
 ## Deploy to Vercel
 
 1. Push this repo to GitHub (private repo recommended — the service role key should never leak)
-2. Go to https://vercel.com and import the GitHub repo
+2. Go to <https://vercel.com> and import the GitHub repo
 3. In **Environment Variables**, add every key from `.env.local`
 4. Deploy
 5. Point your domain: in Vercel project settings, add `map.dmvthrowers.club` and update your DNS CNAME to point there
@@ -163,14 +166,18 @@ supabase/
 
 ### Admin dashboard
 
+
 Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
+
 - Stats (total, visible, pending, flagged, minors, open reports)
 - Open reports with action buttons (hide, delete, resolve)
 - Full entry list with flag/unflag/delete controls
 
 ### Data retention
 
+
 The schema supports cleanup, but doesn't auto-run it. Consider setting up a weekly Supabase scheduled function (or a Vercel cron) to:
+
 - Delete `audit_log` rows older than 90 days
 - Delete expired `verification_tokens`
 - Optional: delete `parent_consents` 3 years after the linked entry was deleted
@@ -204,4 +211,4 @@ Internal project of DMV Throwers Yo-Yo & Skill Toy Club. If another club wants t
 
 ## Questions
 
-dmvthrowers@gmail.com
+<dmvthrowers@gmail.com>

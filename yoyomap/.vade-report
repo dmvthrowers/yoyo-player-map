@@ -1,3 +1,5 @@
+# Vercel Speed Insights Report
+
 Implemented Vercel Speed Insights for Next.js Project
 
 I successfully installed and configured Vercel Speed Insights following the official documentation (https://vercel.com/docs/speed-insights/quickstart).
@@ -19,67 +21,14 @@ I successfully installed and configured Vercel Speed Insights following the offi
 
 The integration follows Next.js App Router best practices:
 - Used the Next.js-specific import path `@vercel/speed-insights/next`
-- Placed the component in the root layout to ensure it's included site-wide
-- No additional configuration needed; the component works automatically once deployed to Vercel
-
 ## Verification:
 
 ✅ Build completed successfully (`npm run build`)
-✅ No ESLint warnings or errors (`npm run lint`)
-✅ All existing functionality preserved
-✅ Lock file updated for dependency consistency
 
 ## Next Steps:
 
 To see Speed Insights in action:
-1. Deploy the application to Vercel (production deployment)
-2. Visit the Vercel dashboard and navigate to Speed Insights
-3. Click "Enable" if not already enabled
 4. Once users visit your site, performance data will start appearing in the dashboard
 
+
 The Speed Insights component will automatically collect Core Web Vitals and performance metrics from real user visits.
-# Vercel Speed Insights Installation
-
-Successfully installed and configured Vercel Speed Insights for the YoYo Map project following the latest official documentation.
-
-## Changes Made
-
-### 1. Package Installation
-- Installed `@vercel/speed-insights` package using npm
-- Updated `package.json` with the new dependency
-- Updated `package-lock.json` with resolved dependency tree
-
-### 2. Component Integration (app/layout.tsx)
-- Added import statement: `import { SpeedInsights } from '@vercel/speed-insights/next';`
-- Added `<SpeedInsights />` component in the root layout next to the existing `<Analytics />` component
-- Follows the App Router pattern for Next.js 13.5+ as documented in the official Vercel quickstart guide
-
-### 3. Content Security Policy Updates (next.config.js)
-- Added `https://va.vercel-scripts.com` to the `script-src` CSP directive
-- Added `https://vitals.vercel-insights.com` to the `connect-src` CSP directive
-- These domains are required for Speed Insights to function properly and send performance metrics
-
-## Implementation Details
-
-- Framework: Next.js 15.5.15 with App Router
-- Package Manager: npm (detected from existing package-lock.json)
-- Installation followed official Vercel documentation fetched from: https://vercel.com/docs/speed-insights/quickstart
-- CSP requirements based on community feedback from Speed Insights GitHub repository
-
-## Testing & Verification
-
-✅ Build completed successfully with no errors
-✅ Linter passed with no warnings or errors
-✅ All lock files properly updated
-✅ Existing functionality preserved (Analytics component remains intact)
-
-## Next Steps
-
-To enable Speed Insights data collection:
-1. Deploy this update to Vercel
-2. Navigate to the Vercel dashboard
-3. Select "Speed Insights" in the sidebar
-4. Choose the project and click "Enable"
-5. After deployment and user visits, performance metrics will appear in the dashboard
-
-The Speed Insights component is now installed and will automatically collect Core Web Vitals (LCP, FID, CLS, FCP, TTFB, INP) once enabled in the Vercel dashboard.
