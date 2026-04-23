@@ -36,8 +36,10 @@ Specifically, a lawyer should confirm:
 
 ### 1. Install Node.js 20+ and npm
 
+
 ```bash
 node --version  # should be 20+
+```
 ```text
 
 ### 2. Install dependencies
@@ -46,6 +48,7 @@ node --version  # should be 20+
 cd yoyomap
 npm install
 ```
+```text
 
 ### 3. Set up Supabase
 
@@ -91,7 +94,6 @@ npm run dev
 
 Visit <http://localhost:3000>
 
----
 
 ## Deploy to Vercel
 
@@ -101,7 +103,6 @@ Visit <http://localhost:3000>
 4. Deploy
 5. Point your domain: in Vercel project settings, add `map.dmvthrowers.club` and update your DNS CNAME to point there
 
----
 
 ## Architecture notes
 
@@ -160,7 +161,6 @@ supabase/
   schema.sql                  Full DB schema
 ```
 
----
 
 ## Maintenance
 
@@ -168,17 +168,11 @@ supabase/
 
 
 Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
-
-- Stats (total, visible, pending, flagged, minors, open reports)
-- Open reports with action buttons (hide, delete, resolve)
 - Full entry list with flag/unflag/delete controls
 
 ### Data retention
 
 
-The schema supports cleanup, but doesn't auto-run it. Consider setting up a weekly Supabase scheduled function (or a Vercel cron) to:
-
-- Delete `audit_log` rows older than 90 days
 - Delete expired `verification_tokens`
 - Optional: delete `parent_consents` 3 years after the linked entry was deleted
 
@@ -188,24 +182,15 @@ Supabase gives you the DB logs. Vercel gives you serverless function logs. If yo
 
 ### COPPA audit trail
 
-Every consent grant logs IP, user-agent, timestamp, and consent token. If you ever need to prove a consent happened (FTC inquiry, parent dispute), the records are in `parent_consents` and `audit_log`.
 
 ---
 
-## What's intentionally NOT built
-
-- **User accounts.** Auth is magic-link only. No passwords.
-- **Image uploads.** Fewer attack surfaces.
-- **Direct messaging.** Safety over feature count.
-- **Analytics.** Privacy over optimization.
 - **Payment.** Always free.
-- **Mobile apps.** The web is responsive. Mobile is for later.
 
 ---
 
 ## License
 
-Internal project of DMV Throwers Yo-Yo & Skill Toy Club. If another club wants to fork this for their own regional map, open an issue and we'll figure out licensing.
 
 ---
 

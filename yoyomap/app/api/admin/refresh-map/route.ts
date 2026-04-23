@@ -9,6 +9,7 @@ export async function POST() {
     await revalidatePath('/map');
     return NextResponse.json({ success: true, message: 'Map refresh triggered.' });
   } catch (e) {
-    return NextResponse.json({ success: false, error: e.message }, { status: 500 });
+    const message = e instanceof Error ? e.message : String(e);
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
