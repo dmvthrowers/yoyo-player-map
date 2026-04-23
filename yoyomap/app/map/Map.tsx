@@ -224,6 +224,8 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
       className="h-full w-full"
       scrollWheelZoom={true}
       worldCopyJump={true}
+      preferCanvas={true}
+      maxBoundsViscosity={1.0}
       zoomControl={false}
     >
       <ZoomControl position="bottomleft" />
@@ -232,6 +234,7 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
         url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
         subdomains="abcd"
         maxZoom={19}
+        noWrap={false}
       />
       {entries.map((entry) => {
         switch (entry.entity_type) {
