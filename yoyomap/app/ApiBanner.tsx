@@ -14,7 +14,10 @@ export function ApiBanner() {
   if (dismissed) return null;
 
   return (
-    <div role="alert" className="bg-amber-400 text-black px-4 py-3 text-center text-sm font-semibold">
+    <div
+      role="alert"
+      className="bg-brand-red text-white px-4 py-3 text-center text-xs md:text-sm font-bold uppercase tracking-[0.14em]"
+    >
       API call limit reached — signups may not work until the limit resets at midnight EDT.
     </div>
   );

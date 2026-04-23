@@ -15,71 +15,112 @@ export const metadata: Metadata = {
   },
 };
 
+const TopBar = () => (
+  <div className="topbar">
+    <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between gap-4 flex-wrap">
+      <span>A project of DMV Throwers · DC · MD · VA</span>
+      <a
+        href="https://dmvthrowers.club/index.html"
+        className="underline decoration-2 underline-offset-4 hover:bg-white hover:text-brand-red px-1"
+      >
+        ← dmvthrowers.club
+      </a>
+    </div>
+  </div>
+);
+
 const Navigation = () => (
   <>
     <a href="#main-content" className="skip-link sr-only focus:not-sr-only">Skip to main content</a>
-    <nav className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between flex-wrap gap-4" aria-label="Main Navigation">
-      <Link href="/" className="font-display text-2xl tracking-tight">
-        YoYo <span className="text-brand-red">Map</span>
-      </Link>
-      <ul className="flex gap-4 text-xs uppercase font-semibold tracking-wider flex-wrap">
-        <li><Link href="/map" className="hover:text-brand-red transition-colors">Map</Link></li>
-        <li><Link href="/submit" className="hover:text-brand-red transition-colors">Submit</Link></li>
-        <li><Link href="/profile" className="hover:text-brand-red transition-colors">Profile</Link></li>
-        <li><Link href="/legal/privacy" className="hover:text-brand-red transition-colors">Privacy</Link></li>
-        <li><Link href="/legal/terms" className="hover:text-brand-red transition-colors">Terms</Link></li>
-        <li><a href="https://dmvthrowers.club/about.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">About</a></li>
-        <li><a href="https://dmvthrowers.club/team.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Team</a></li>
-        <li><a href="https://dmvthrowers.club/events.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Events</a></li>
-        <li><a href="https://dmvthrowers.club/gallery.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Gallery</a></li>
-        <li><a href="https://dmvthrowers.club/resources.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Resources</a></li>
-        <li><a href="https://dmvthrowers.club/faq.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">FAQ</a></li>
-        <li><a href="https://dmvthrowers.club/contact.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Contact</a></li>
-        <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">VSYC-26</a></li>
-        <li><a href="https://dmvthrowers.club/code-of-conduct.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Code of Conduct</a></li>
-        <li><a href="https://github.com/dmvthrowers" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Club GitHub</a></li>
-      </ul>
+    <nav
+      className="site-nav"
+      aria-label="Main Navigation"
+    >
+      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between flex-wrap gap-4">
+        <Link href="/" className="brand-lockup flex items-baseline gap-2">
+          <span>YoYo Map</span>
+          <span className="hidden sm:inline text-xs uppercase tracking-[0.22em] font-sans font-bold text-brand-red">
+            by DMV Throwers
+          </span>
+        </Link>
+        <ul className="flex items-center gap-5 flex-wrap">
+          <li><Link href="/map" className="nav-link">Map</Link></li>
+          <li><Link href="/submit" className="nav-link">Submit</Link></li>
+          <li><Link href="/profile" className="nav-link">Profile</Link></li>
+          <li>
+            <a
+              href="https://dmvthrowers.club/events.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+            >
+              Events ↗
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://dmvthrowers.club/resources.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link"
+            >
+              Resources ↗
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://dmvthrowers.club/vsyc26.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link text-brand-red"
+            >
+              VSYC-26 ↗
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
   </>
 );
 
 const Footer = () => (
-  <footer className="bg-dark-navy text-cream/80 border-t-4 border-brand-red mt-12">
-    <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
+  <footer className="bg-navy-deep text-cream/85 border-t-4 border-brand-red mt-16">
+    <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-10 text-sm">
       <div>
-        <p className="font-display text-lg text-cream">YoYo Map</p>
-        <p className="mt-2">A community project of DMV Throwers Yo-Yo &amp; Skill Toy Club. All skill levels welcome.</p>
+        <p className="font-display text-2xl font-black text-white">YoYo Map</p>
+        <hr className="rule-red" />
+        <p className="leading-relaxed">
+          A community project of <strong>DMV Throwers Yo-Yo &amp; Skill Toy Club.</strong>
+          <br />All skill levels welcome.
+        </p>
       </div>
       <div>
-        <p className="font-semibold uppercase tracking-wider text-xs mb-2">Links</p>
-        <ul className="space-y-1">
-          <li><a href="/map" className="hover:text-brand-red">Map</a></li>
-          <li><a href="/submit" className="hover:text-brand-red">Submit</a></li>
-          <li><a href="/profile" className="hover:text-brand-red">Profile</a></li>
-          <li><a href="/legal/privacy" className="hover:text-brand-red">Privacy</a></li>
-          <li><a href="/legal/terms" className="hover:text-brand-red">Terms</a></li>
-          <li><a href="https://vercel.com/kb/bulletin/vercel-april-2026-security-incident" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Security bulletin</a></li>
-          <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">GitHub Repo</a></li>
+        <p className="eyebrow text-brand-red mb-3">This Site</p>
+        <ul className="space-y-2">
+          <li><a href="/map" className="hover:text-brand-red transition-colors">Map</a></li>
+          <li><a href="/submit" className="hover:text-brand-red transition-colors">Submit</a></li>
+          <li><a href="/profile" className="hover:text-brand-red transition-colors">Profile</a></li>
+          <li><a href="/legal/privacy" className="hover:text-brand-red transition-colors">Privacy</a></li>
+          <li><a href="/legal/terms" className="hover:text-brand-red transition-colors">Terms</a></li>
+          <li><a href="https://vercel.com/kb/bulletin/vercel-april-2026-security-incident" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Security bulletin</a></li>
+          <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">GitHub ↗</a></li>
         </ul>
       </div>
       <div>
-        <p className="font-semibold uppercase tracking-wider text-xs mb-2">Club</p>
-        <ul className="space-y-1">
-          <li><a href="https://dmvthrowers.club/about.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">About</a></li>
-          <li><a href="https://dmvthrowers.club/team.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Team</a></li>
-          <li><a href="https://dmvthrowers.club/events.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Events</a></li>
-          <li><a href="https://dmvthrowers.club/gallery.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Gallery</a></li>
-          <li><a href="https://dmvthrowers.club/resources.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Resources</a></li>
-          <li><a href="https://dmvthrowers.club/faq.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">FAQ</a></li>
-          <li><a href="https://dmvthrowers.club/contact.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Contact</a></li>
-          <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">VSYC-26</a></li>
-          <li><a href="https://dmvthrowers.club/code-of-conduct.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Code of Conduct</a></li>
-          <li><a href="https://github.com/dmvthrowers" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Club GitHub</a></li>
+        <p className="eyebrow text-brand-red mb-3">The Club</p>
+        <ul className="space-y-2">
+          <li><a href="https://dmvthrowers.club/index.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Home ↗</a></li>
+          <li><a href="https://dmvthrowers.club/about.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">About</a></li>
+          <li><a href="https://dmvthrowers.club/events.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Events</a></li>
+          <li><a href="https://dmvthrowers.club/resources.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Resources</a></li>
+          <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">VSYC-26</a></li>
+          <li><a href="https://dmvthrowers.club/contact.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Contact</a></li>
+          <li><a href="https://dmvthrowers.club/code-of-conduct.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red transition-colors">Code of Conduct</a></li>
         </ul>
       </div>
     </div>
-    <div className="bg-navy py-3 text-center text-xs">
-      <p>© {new Date().getFullYear()} DMV Throwers · Est. 2021 · DC · MD · VA</p>
+    <div className="bg-black/30 py-4 text-center text-xs uppercase tracking-[0.18em] text-cream/70">
+      © {new Date().getFullYear()} DMV Throwers · Est. 2021 · DC · MD · VA
     </div>
   </footer>
 );
@@ -88,7 +129,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen flex flex-col">
-        <header className="bg-navy text-cream border-b-4 border-brand-red">
+        <TopBar />
+        <header className="sticky top-0 z-40">
           <Navigation />
         </header>
 

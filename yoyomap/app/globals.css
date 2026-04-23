@@ -1,46 +1,137 @@
-  .font-playfair {
-    font-family: 'Playfair Display', serif;
-  }
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Montserrat:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600;700&display=swap');
 @import 'leaflet/dist/leaflet.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* DMV Throwers brand tokens — mirror dmvthrowers.club */
+:root {
+  --red: #D42B2B;
+  --red-dark: #b01f1f;
+  --navy: #1a2744;
+  --navy-deep: #0e1833;
+  --cream: #f5f0e8;
+  --cream-mid: #f0ebe0;
+  --border: #d4cebc;
+  --text-body: #3a4a6a;
+  --text-muted: #6a7a9a;
+}
+
 @layer base {
   html {
-    font-family: 'Montserrat', system-ui, sans-serif;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
   }
   body {
-    background-color: #F5F0E8;
-    color: #1a1f36;
+    background-color: var(--cream);
+    color: var(--navy-deep);
+    font-size: 1.02rem;
+    line-height: 1.7;
   }
-  h1, h2, h3 {
-    font-family: 'Playfair Display', serif;
+  h1, h2, h3, h4 {
+    font-family: 'Playfair Display', Georgia, serif;
     font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+  a {
+    color: inherit;
+  }
+  ::selection {
+    background: var(--red);
+    color: #fff;
   }
 }
 
 @layer components {
+  /* Buttons — square corners, uppercase, tracked, flat (no gradients) */
   .btn-primary {
-    @apply inline-flex items-center justify-center bg-brand-red text-white px-6 py-3 font-bold uppercase tracking-wider text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply inline-flex items-center justify-center bg-brand-red text-white px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm hover:bg-brand-red-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
+    border-radius: 0;
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center bg-navy text-cream px-6 py-3 font-bold uppercase tracking-wider text-sm hover:bg-dark-navy transition-colors;
+    @apply inline-flex items-center justify-center bg-navy text-white px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm hover:bg-brand-red transition-colors;
+    border-radius: 0;
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center border-2 border-navy text-navy px-6 py-3 font-bold uppercase tracking-wider text-sm hover:bg-navy hover:text-cream transition-colors;
+    @apply inline-flex items-center justify-center border-2 border-navy text-navy bg-transparent px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm hover:bg-navy hover:text-white transition-colors;
+    border-radius: 0;
   }
+  .btn-outline-white {
+    @apply inline-flex items-center justify-center border-2 border-white text-white bg-transparent px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm hover:bg-white hover:text-navy transition-colors;
+    border-radius: 0;
+  }
+
+  /* Forms */
   .input {
-    @apply w-full border-2 border-navy/20 bg-white px-4 py-3 text-navy focus:outline-none focus:border-brand-red transition-colors;
+    @apply w-full border-2 bg-white px-4 py-3 text-navy-deep focus:outline-none focus:border-brand-red transition-colors;
+    border-color: var(--border);
+    border-radius: 0;
   }
   .label {
-    @apply block text-sm font-semibold uppercase tracking-wider text-navy mb-2;
+    @apply block text-xs font-bold uppercase tracking-[0.18em] text-navy mb-2;
   }
+
+  /* Cards — flat, hairline border, square */
   .card {
-    @apply bg-white border-2 border-navy/10 p-6;
+    @apply bg-white p-6;
+    border: 1px solid var(--border);
+    border-radius: 0;
   }
+
+  /* Section eyebrow tag — small red uppercase label */
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.22em] text-brand-red;
+  }
+
+  /* Red divider bar used after section titles */
+  .rule-red {
+    width: 60px;
+    height: 3px;
+    background: var(--red);
+    border: 0;
+    margin: 1rem 0 1.5rem;
+  }
+
+  /* Top bar — matches club site's thin red strip */
+  .topbar {
+    @apply bg-brand-red text-white text-xs uppercase tracking-[0.18em] font-semibold;
+  }
+
+  /* Sticky cream nav — matches club site */
+  .site-nav {
+    @apply bg-cream border-b;
+    border-color: var(--border);
+  }
+
+  .nav-link {
+    @apply text-xs uppercase font-semibold tracking-[0.14em] text-navy-deep py-2 border-b-2 border-transparent hover:border-brand-red hover:text-brand-red transition-colors;
+  }
+
+  .brand-lockup {
+    @apply font-display text-2xl md:text-3xl font-black tracking-tight text-navy-deep;
+  }
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--red);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  z-index: 100;
+}
+
+/* Subtle radial-dot pattern for dark hero sections */
+.dot-pattern {
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 /* Leaflet marker fix for Next.js */
