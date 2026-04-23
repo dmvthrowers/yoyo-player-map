@@ -45,6 +45,17 @@ const Navigation = () => (
         </Link>
         <ul className="flex items-center gap-5 flex-wrap">
           <li><Link href="/map" className="nav-link">Map</Link></li>
+          <li>
+            <a
+              href="https://ko-fi.com/dmvthrowers"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nav-link bg-[#FF5E5B] text-white font-bold rounded px-3 py-1 hover:bg-[#FF8A8A] transition-colors shadow-sm"
+              title="Support cool things in the yo-yo community!"
+            >
+              Donate ☕
+            </a>
+          </li>
           <li><Link href="/submit" className="nav-link">Submit</Link></li>
           <li><Link href="/profile" className="nav-link">Profile</Link></li>
           <li>
