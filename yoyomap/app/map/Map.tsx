@@ -236,22 +236,53 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
         maxZoom={19}
         noWrap={false}
       />
-      {entries.map((entry) => {
+      {entries.flatMap((entry) => {
+        // Render duplicate markers for entries near the ±180° longitude
+        const markers = [];
+        const threshold = 170; // degrees, adjust if needed
+        const isNearEast = entry.lng > threshold;
+        const isNearWest = entry.lng < -threshold;
+
+        const markerProps = { entry, key: entry.id };
+        const markerPropsDupEast = { ...markerProps, key: entry.id + '-dup-east', entry: { ...entry, lng: entry.lng - 360 } };
+        const markerPropsDupWest = { ...markerProps, key: entry.id + '-dup-west', entry: { ...entry, lng: entry.lng + 360 } };
+
         switch (entry.entity_type) {
           case 'shop':
-            return <ShopMarker key={entry.id} entry={entry} />;
+            markers.push(<ShopMarker {...markerProps} />);
+            if (isNearEast) markers.push(<ShopMarker {...markerPropsDupEast} />);
+            if (isNearWest) markers.push(<ShopMarker {...markerPropsDupWest} />);
+            break;
           case 'club':
-            return <ClubMarker key={entry.id} entry={entry} />;
+            markers.push(<ClubMarker {...markerProps} />);
+            if (isNearEast) markers.push(<ClubMarker {...markerPropsDupEast} />);
+            if (isNearWest) markers.push(<ClubMarker {...markerPropsDupWest} />);
+            break;
           case 'person':
           default:
-            return (
+            markers.push(
               <PersonMarker
-                key={entry.id}
-                entry={entry}
+                {...markerProps}
                 isUnderserved={underservedIds.has(entry.id)}
               />
             );
+            if (isNearEast)
+              markers.push(
+                <PersonMarker
+                  {...markerPropsDupEast}
+                  isUnderserved={underservedIds.has(entry.id)}
+                />
+              );
+            if (isNearWest)
+              markers.push(
+                <PersonMarker
+                  {...markerPropsDupWest}
+                  isUnderserved={underservedIds.has(entry.id)}
+                />
+              );
+            break;
         }
+        return markers;
       })}
     </MapContainer>
   );
