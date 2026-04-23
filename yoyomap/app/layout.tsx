@@ -45,6 +45,8 @@ const Navigation = () => (
         </Link>
         <ul className="flex items-center gap-5 flex-wrap">
           <li><Link href="/map" className="nav-link">Map</Link></li>
+          <li><Link href="/submit" className="nav-link">Submit</Link></li>
+          <li><Link href="/profile" className="nav-link">Profile</Link></li>
           <li>
             <a
               href="https://ko-fi.com/dmvthrowers"
@@ -56,8 +58,6 @@ const Navigation = () => (
               Donate ☕
             </a>
           </li>
-          <li><Link href="/submit" className="nav-link">Submit</Link></li>
-          <li><Link href="/profile" className="nav-link">Profile</Link></li>
           <li>
             <a
               href="https://dmvthrowers.club/events.html"
