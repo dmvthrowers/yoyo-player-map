@@ -1,22 +1,93 @@
-# YoYo Map
 
-A privacy-first community map for yo-yoers, built by DMV Throwers Yo-Yo & Skill Toy Club.
+# DMV Throwers · YoYo Map
+
+**A privacy-first community map for yo-yoers, by DMV Throwers Yo-Yo & Skill Toy Club.**
+
+🌐 **Website:** [dmvthrowers.club](https://dmvthrowers.club)
+📸 **Instagram:** [@dmv_throwers](https://instagram.com/dmv_throwers)
+🔗 **Linktree:** [linktr.ee/dmvthrowers](https://linktr.ee/dmvthrowers)
+☕ **Support us:** [ko-fi.com/dmvthrowers](https://ko-fi.com/dmvthrowers)
+
+Last updated: 2026-04-23
 
 ---
 
-## About
+## About the Project
 
-YoYo Map helps yo-yoers find each other by letting users submit a display name, city, and (optionally) socials and a short bio. Pins appear on a public map showing only an approximate area (blurred ~10 miles). No messaging, no GPS, no data sales.
+YoYo Map helps yo-yoers find each other by letting users submit a display name, city, and (optionally) socials and a short bio. Pins appear on a public map showing only an approximate area (blurred ~10 miles). No messaging, no GPS, no data sales. Built for privacy, safety, and community.
 
 ---
 
 ## Contact
 
-- **Club Email:** [contact@dmvthrowers.club](mailto:contact@dmvthrowers.club)
-- **Contest Email:** [vastateyoyocontest@gmail.com](mailto:vastateyoyocontest@gmail.com)
-- **Instagram:** [@dmv_throwers](https://instagram.com/dmv_throwers)
-- **Phone:** [850-284-1613](tel:850-284-1613)
-- **Coordinator:** Brandon Rogers
+| | |
+| --- | --- |
+| **Club Email** | <contact@dmvthrowers.club> |
+| **Contest Email** | <vastateyoyocontest@gmail.com> |
+| **Phone** | <850-284-1613> |
+| **Instagram** | [@dmv_throwers](https://instagram.com/dmv_throwers) |
+| **Coordinator** | Brandon Rogers |
+
+---
+
+## Site Structure
+
+| Page | URL |
+| --- | --- |
+| Home | [map.dmvthrowers.club](https://map.dmvthrowers.club) |
+| Submit | [map.dmvthrowers.club/submit](https://map.dmvthrowers.club/submit) |
+| Map | [map.dmvthrowers.club/map](https://map.dmvthrowers.club/map) |
+| Profile | [map.dmvthrowers.club/profile](https://map.dmvthrowers.club/profile) |
+| Admin | [map.dmvthrowers.club/admin](https://map.dmvthrowers.club/admin) |
+| Legal: Privacy | [map.dmvthrowers.club/legal/privacy](https://map.dmvthrowers.club/legal/privacy) |
+| Legal: Terms | [map.dmvthrowers.club/legal/terms](https://map.dmvthrowers.club/legal/terms) |
+| Contact | [dmvthrowers.club/contact.html](https://dmvthrowers.club/contact.html) |
+| Main Club Site | [dmvthrowers.club](https://dmvthrowers.club) |
+
+---
+
+## File Structure
+
+```text
+/ (root)
+├── yoyomap/
+│   ├── app/
+│   │   ├── page.tsx
+│   │   ├── submit/page.tsx
+│   │   ├── map/
+│   │   │   ├── page.tsx
+│   │   │   ├── MapClient.tsx
+│   │   │   └── Map.tsx
+│   │   ├── profile/page.tsx
+│   │   ├── admin/page.tsx
+│   │   ├── report/page.tsx
+│   │   ├── legal/
+│   │   │   ├── privacy/page.tsx
+│   │   │   └── terms/page.tsx
+│   │   └── api/
+│   │       └── ...
+│   ├── lib/
+│   │   ├── supabase/client.ts
+│   │   ├── supabase/admin.ts
+│   │   ├── geocode.ts
+│   │   ├── email.ts
+│   │   ├── validation.ts
+│   │   ├── tokens.ts
+│   │   └── rate-limit.ts
+│   ├── supabase/
+│   │   ├── schema.sql
+│   │   └── migrations/
+│   ├── docs/
+│   ├── public/
+│   ├── README.md
+│   ├── LICENSE
+│   ├── CONTRIBUTING.md
+│   ├── CODE_OF_CONDUCT.md
+│   ├── SECURITY.md
+│   ├── sitemap.xml
+│   └── robots.txt
+└── ...
+```
 
 ---
 
