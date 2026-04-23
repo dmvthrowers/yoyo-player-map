@@ -297,7 +297,7 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
     <div className="min-w-[220px]">
-      <p className="font-bold text-base text-navy" style={{ fontFamily: 'Playfair Display, serif' }}>
+      <p className="font-bold text-base text-navy font-playfair">
         {entry.display_name}
       </p>
       <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
@@ -321,7 +321,7 @@ function ShopPopup({ entry }: { entry: MapEntry }) {
   return (
     <div className="min-w-[220px]">
       <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
-      <p className="font-bold text-base text-navy flex items-center gap-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+      <p className="font-bold text-base text-navy flex items-center gap-1 font-playfair">
         {entry.display_name}
         {entry.verified_owner && (
           <svg className="w-4 h-4 text-[#2E8B57]" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Verified owner">
@@ -365,7 +365,7 @@ function ClubPopup({ entry }: { entry: MapEntry }) {
   return (
     <div className="min-w-[220px]">
       <p className="text-[10px] uppercase tracking-wider text-[#1B2A49] font-bold mb-1">Yo-Yo Club</p>
-      <p className="font-bold text-base text-navy" style={{ fontFamily: 'Playfair Display, serif' }}>
+      <p className="font-bold text-base text-navy font-playfair">
         {entry.display_name}
       </p>
       <p className="text-xs text-navy/70 mb-2">

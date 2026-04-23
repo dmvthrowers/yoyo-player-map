@@ -134,27 +134,27 @@ const AdminPage = () => {
     }
   }
 
-  async function regeocodeAll() {
-      async function refreshMap() {
-        setLoading(true);
-        setError('');
-        try {
-          const res = await fetch('/api/admin/refresh-map', {
-            method: 'POST',
-            headers: { 'x-admin-token': pass },
-          });
-          const body = await res.json().catch(() => null);
-          if (res.ok && body?.success) {
-            setError('Map refresh triggered.');
-          } else {
-            setError(body?.error || 'Map refresh failed.');
-          }
-        } catch {
-          setError('Network error during map refresh.');
-        } finally {
-          setLoading(false);
-        }
+  async function refreshMap() {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/admin/refresh-map', {
+        method: 'POST',
+        headers: { 'x-admin-token': pass },
+      });
+      const body = await res.json().catch(() => null);
+      if (res.ok && body?.success) {
+        setError('Map refresh triggered.');
+      } else {
+        setError(body?.error || 'Map refresh failed.');
       }
+    } catch {
+      setError('Network error during map refresh.');
+    } finally {
+      setLoading(false);
+    }
+  }
+  async function regeocodeAll() {
     if (
       !confirm(
         'Re-geocode every entry on the map?\n\nThis processes entries in batches of 10 (≈15s per batch due to Nominatim rate limits) and stops automatically when done or when a batch makes no progress. Pins will shift slightly because jitter is re-randomized.'
@@ -368,6 +368,7 @@ const AdminPage = () => {
             className="input py-1 text-sm w-auto"
             value={entityFilter}
             onChange={(e) => setEntityFilter(e.target.value as EntityFilter)}
+            title="Filter by entity type"
           >
             <option value="all">All types</option>
             <option value="person">People only</option>
@@ -380,6 +381,7 @@ const AdminPage = () => {
             className="input py-1 text-sm w-auto"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            title="Filter by status"
           >
             <option value="all">All statuses</option>
             <option value="visible">Visible</option>
