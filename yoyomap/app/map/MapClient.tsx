@@ -58,7 +58,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
               onChange={() => toggleFilter('showPerson')}
             />
             <span className="flex items-center gap-1">
-              <span className="inline-block w-3 h-3 rounded-full bg-[#C8102E]" />
+              <span className="inline-block w-3 h-3 rounded-full bg-[#D42B2B]" />
               People
             </span>
           </label>
