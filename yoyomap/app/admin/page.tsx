@@ -135,6 +135,26 @@ const AdminPage = () => {
   }
 
   async function regeocodeAll() {
+      async function refreshMap() {
+        setLoading(true);
+        setError('');
+        try {
+          const res = await fetch('/api/admin/refresh-map', {
+            method: 'POST',
+            headers: { 'x-admin-token': pass },
+          });
+          const body = await res.json().catch(() => null);
+          if (res.ok && body?.success) {
+            setError('Map refresh triggered.');
+          } else {
+            setError(body?.error || 'Map refresh failed.');
+          }
+        } catch {
+          setError('Network error during map refresh.');
+        } finally {
+          setLoading(false);
+        }
+      }
     if (
       !confirm(
         'Re-geocode every entry on the map?\n\nThis processes entries in batches of 10 (≈15s per batch due to Nominatim rate limits) and stops automatically when done or when a batch makes no progress. Pins will shift slightly because jitter is re-randomized.'
@@ -312,6 +332,7 @@ const AdminPage = () => {
         <div className="flex flex-wrap items-center gap-4 mb-4">
           <h2 className="text-2xl">All entries</h2>
 
+
           <button
             type="button"
             className="btn-ghost py-1 px-3 text-xs"
@@ -330,6 +351,16 @@ const AdminPage = () => {
             title="One-time backfill: re-run geocoding for every entry that hasn't been re-geocoded yet. Uses the fixed structured-query geocoder that ignores county-centroid matches."
           >
             Re-geocode all
+          </button>
+
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs"
+            onClick={refreshMap}
+            disabled={loading}
+            title="Force refresh the map page to show new entries immediately."
+          >
+            {loading ? 'Refreshing…' : 'Refresh Map'}
           </button>
 
           {/* Entity type filter */}
