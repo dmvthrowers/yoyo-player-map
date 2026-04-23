@@ -1,19 +1,33 @@
 # YoYo Map
 
-A privacy-first community map that helps yo-yoers find each other. Built for DMV Throwers Yo-Yo & Skill Toy Club.
+A privacy-first community map for yo-yoers, built by DMV Throwers Yo-Yo & Skill Toy Club.
 
-## What this is
+---
 
-Yo-yoers submit their display name, city, and (optionally) socials and a short bio. A pin appears on a public map showing their approximate area (blurred ~10 miles). No messaging, no GPS, no data sales.
+## About
+
+YoYo Map helps yo-yoers find each other by letting users submit a display name, city, and (optionally) socials and a short bio. Pins appear on a public map showing only an approximate area (blurred ~10 miles). No messaging, no GPS, no data sales.
+
+---
+
+## Contact
+
+- **Club Email:** [contact@dmvthrowers.club](mailto:contact@dmvthrowers.club)
+- **Contest Email:** [vastateyoyocontest@gmail.com](mailto:vastateyoyocontest@gmail.com)
+- **Instagram:** [@dmv_throwers](https://instagram.com/dmv_throwers)
+- **Phone:** [850-284-1613](tel:850-284-1613)
+- **Coordinator:** Brandon Rogers
+
+---
 
 ## Stack
 
-- **Next.js 15** (App Router) + **TypeScript** + **Tailwind**
+- **Next.js 15** (App Router) + **TypeScript** + **Tailwind CSS**
 - **Supabase** — Postgres, Row-Level Security, auth-ready
-- **Resend** — transactional email
-- **Leaflet + OpenStreetMap** — map rendering (no Google Maps key needed)
-- **Nominatim** — city geocoding (free, no key)
-- **Vercel** — hosting
+- **Resend** — Transactional email
+- **Leaflet + OpenStreetMap** — Map rendering (no Google Maps key needed)
+- **Nominatim** — City geocoding (free, no key)
+- **Vercel** — Hosting
 
 Total monthly cost at launch-day scale: **$0** (all free tiers).
 
@@ -24,6 +38,7 @@ Total monthly cost at launch-day scale: **$0** (all free tiers).
 **Have a lawyer review the privacy policy and terms of service.** The drafts in `app/legal/` are a reasonable starting point specific to this architecture, but they are not a substitute for legal review. A Virginia nonprofit clinic, an early-career lawyer, or a service like LegalZoom can likely do this for a couple hundred dollars or less.
 
 Specifically, a lawyer should confirm:
+
 - The COPPA parental consent flow qualifies as "verifiable" for your risk tolerance (email-only is the lighter end of acceptable — stronger options exist)
 - GDPR/CCPA rights language is accurate for your operations
 - Limitation of liability and governing law clauses are appropriate for DMV Throwers as an EIN-registered sole-prop DBA
@@ -47,7 +62,7 @@ npm install
 
 ### 3. Set up Supabase
 
-1. Create a free account at https://supabase.com
+1. Create a free account at <https://supabase.com>
 2. Create a new project (choose a region close to you — US East works fine)
 3. Once provisioned, go to **Project Settings → API** and copy:
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
@@ -58,7 +73,7 @@ npm install
 
 ### 4. Set up Resend (email)
 
-1. Create account at https://resend.com
+1. Create account at <https://resend.com>
 2. Add and verify `dmvthrowers.club` as a sending domain (they'll give you DNS records to add)
 3. Create an API key → `RESEND_API_KEY`
 4. Your "from" address: `noreply@dmvthrowers.club` (or similar on the verified domain)
@@ -74,6 +89,7 @@ cp .env.local.example .env.local
 ```
 
 Generate a random `ENTRY_SECRET`:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 ```
@@ -86,14 +102,14 @@ Set `ADMIN_PASSWORD` to something strong — this is how you log into `/admin`.
 npm run dev
 ```
 
-Visit http://localhost:3000
+Visit <http://localhost:3000>
 
 ---
 
 ## Deploy to Vercel
 
 1. Push this repo to GitHub (private repo recommended — the service role key should never leak)
-2. Go to https://vercel.com and import the GitHub repo
+2. Go to <https://vercel.com> and import the GitHub repo
 3. In **Environment Variables**, add every key from `.env.local`
 4. Deploy
 5. Point your domain: in Vercel project settings, add `map.dmvthrowers.club` and update your DNS CNAME to point there
@@ -159,11 +175,22 @@ supabase/
 
 ---
 
+## Learn More
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Vercel v0 (UI Primitives)](https://v0.dev/docs)
+- [Supabase Documentation](https://supabase.com/docs)
+- [Resend Email API](https://resend.com/docs)
+
+---
+
 ## Maintenance
 
 ### Admin dashboard
 
 Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
+
 - Stats (total, visible, pending, flagged, minors, open reports)
 - Open reports with action buttons (hide, delete, resolve)
 - Full entry list with flag/unflag/delete controls
@@ -171,6 +198,7 @@ Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
 ### Data retention
 
 The schema supports cleanup, but doesn't auto-run it. Consider setting up a weekly Supabase scheduled function (or a Vercel cron) to:
+
 - Delete `audit_log` rows older than 90 days
 - Delete expired `verification_tokens`
 - Optional: delete `parent_consents` 3 years after the linked entry was deleted
@@ -198,10 +226,16 @@ Every consent grant logs IP, user-agent, timestamp, and consent token. If you ev
 
 ## License
 
-Internal project of DMV Throwers Yo-Yo & Skill Toy Club. If another club wants to fork this for their own regional map, open an issue and we'll figure out licensing.
+This project is free and unencumbered software released into the public domain under [The Unlicense](https://unlicense.org/). See LICENSE for details.
 
 ---
 
-## Questions
+## Contributing
 
-dmvthrowers@gmail.com
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+---
+
+## Questions?
+
+Email [contact@dmvthrowers.club](mailto:contact@dmvthrowers.club) or open an issue.

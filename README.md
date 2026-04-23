@@ -7,7 +7,6 @@
 🔗 **Linktree:** [linktr.ee/dmvthrowers](https://linktr.ee/dmvthrowers)
 ☕ **Support us:** [ko-fi.com/dmvthrowers](https://ko-fi.com/dmvthrowers)
 
-
 ## About the Club
 
 DMV Throwers is a free, community-run yo-yo and skill toy club serving the DC, Maryland, and Virginia area. Founded in 2021, we host free monthly meetups at Arlington Central Library in Arlington, VA — open to all ages and skill levels, from total beginners to competitive players.

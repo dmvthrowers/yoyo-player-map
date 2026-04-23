@@ -23,7 +23,6 @@ Total monthly cost at launch-day scale: **$0** (all free tiers).
 
 **Have a lawyer review the privacy policy and terms of service.** The drafts in `app/legal/` are a reasonable starting point specific to this architecture, but they are not a substitute for legal review. A Virginia nonprofit clinic, an early-career lawyer, or a service like LegalZoom can likely do this for a couple hundred dollars or less.
 
-
 Specifically, a lawyer should confirm:
 
 - The COPPA parental consent flow qualifies as "verifiable" for your risk tolerance (email-only is the lighter end of acceptable — stronger options exist)
@@ -36,10 +35,10 @@ Specifically, a lawyer should confirm:
 
 ### 1. Install Node.js 20+ and npm
 
-
 ```bash
 node --version  # should be 20+
 ```
+
 ```text
 
 ### 2. Install dependencies
@@ -48,6 +47,7 @@ node --version  # should be 20+
 cd yoyomap
 npm install
 ```
+
 ```text
 
 ### 3. Set up Supabase
@@ -79,6 +79,7 @@ cp .env.local.example .env.local
 ```
 
 Generate a random `ENTRY_SECRET`:
+
 ```bash
 node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
 ```
@@ -91,9 +92,7 @@ Set `ADMIN_PASSWORD` to something strong — this is how you log into `/admin`.
 npm run dev
 ```
 
-
 Visit <http://localhost:3000>
-
 
 ## Deploy to Vercel
 
@@ -102,7 +101,6 @@ Visit <http://localhost:3000>
 3. In **Environment Variables**, add every key from `.env.local`
 4. Deploy
 5. Point your domain: in Vercel project settings, add `map.dmvthrowers.club` and update your DNS CNAME to point there
-
 
 ## Architecture notes
 
@@ -161,17 +159,15 @@ supabase/
   schema.sql                  Full DB schema
 ```
 
-
 ## Maintenance
 
 ### Admin dashboard
 
-
 Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
+
 - Full entry list with flag/unflag/delete controls
 
 ### Data retention
-
 
 - Delete expired `verification_tokens`
 - Optional: delete `parent_consents` 3 years after the linked entry was deleted
@@ -182,7 +178,6 @@ Supabase gives you the DB logs. Vercel gives you serverless function logs. If yo
 
 ### COPPA audit trail
 
-
 ---
 
 - **Payment.** Always free.
@@ -190,7 +185,6 @@ Supabase gives you the DB logs. Vercel gives you serverless function logs. If yo
 ---
 
 ## License
-
 
 ---
 
