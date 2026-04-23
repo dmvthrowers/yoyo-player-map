@@ -57,7 +57,7 @@ function ReportInner() {
 
       <div>
         <label className="label">What&apos;s wrong?</label>
-        <select className="input" required value={reason} onChange={(e) => setReason(e.target.value)}>
+        <select className="input" required value={reason} onChange={(e) => setReason(e.target.value)} title="Reason for report">
           <option value="">Select a reason…</option>
           <option value="spam">Spam or fake entry</option>
           <option value="harassment">Harassment or threatening content</option>

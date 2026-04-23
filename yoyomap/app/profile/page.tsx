@@ -80,6 +80,7 @@ function RequestMagicLink() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            title="Email address"
           />
         </div>
         {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm">{error}</div>}
@@ -186,38 +187,38 @@ function ManageEntry({ token }: { token: string }) {
       <div className="card space-y-4">
         <div>
           <label className="label">Display name</label>
-          <input className="input" value={entry.display_name} onChange={(e) => setEntry({ ...entry, display_name: e.target.value })} />
+          <input className="input" value={entry.display_name} onChange={(e) => setEntry({ ...entry, display_name: e.target.value })} title="Display name" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">City</label>
-            <input className="input" value={entry.city} onChange={(e) => setEntry({ ...entry, city: e.target.value })} />
+            <input className="input" value={entry.city} onChange={(e) => setEntry({ ...entry, city: e.target.value })} title="City" />
           </div>
           <div>
             <label className="label">Region</label>
-            <input className="input" value={entry.region || ''} onChange={(e) => setEntry({ ...entry, region: e.target.value })} />
+            <input className="input" value={entry.region || ''} onChange={(e) => setEntry({ ...entry, region: e.target.value })} title="Region" />
           </div>
         </div>
         <div>
           <label className="label">Bio</label>
-          <textarea className="input" rows={3} maxLength={280} value={entry.bio || ''} onChange={(e) => setEntry({ ...entry, bio: e.target.value })} />
+          <textarea className="input" rows={3} maxLength={280} value={entry.bio || ''} onChange={(e) => setEntry({ ...entry, bio: e.target.value })} title="Bio" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="label">Instagram</label>
-            <input className="input" value={entry.socials?.instagram || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, instagram: e.target.value } })} />
+            <input className="input" value={entry.socials?.instagram || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, instagram: e.target.value } })} title="Instagram" />
           </div>
           <div>
             <label className="label">YouTube</label>
-            <input className="input" value={entry.socials?.youtube || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, youtube: e.target.value } })} />
+            <input className="input" value={entry.socials?.youtube || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, youtube: e.target.value } })} title="YouTube" />
           </div>
           <div>
             <label className="label">Discord</label>
-            <input className="input" value={entry.socials?.discord || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, discord: e.target.value } })} />
+            <input className="input" value={entry.socials?.discord || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, discord: e.target.value } })} title="Discord" />
           </div>
           <div>
             <label className="label">Website</label>
-            <input className="input" value={entry.socials?.website || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, website: e.target.value } })} />
+            <input className="input" value={entry.socials?.website || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, website: e.target.value } })} title="Website" />
           </div>
         </div>
         {message && <div className="border-2 border-green-600 bg-green-50 p-3 text-sm text-green-900">{message}</div>}

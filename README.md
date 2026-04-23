@@ -7,7 +7,6 @@
 🔗 **Linktree:** [linktr.ee/dmvthrowers](https://linktr.ee/dmvthrowers)
 ☕ **Support us:** [ko-fi.com/dmvthrowers](https://ko-fi.com/dmvthrowers)
 
----
 
 ## About the Club
 
@@ -108,7 +107,10 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
         ├── DMV Throwers Maintenance Guide 2.pptx
         ├── Yoyo Club slides to share.pdf
         └── VSYC26 Sponsor Package v26g.pdf
-```
+```text
+
+---
+
 
 ---
 
@@ -140,8 +142,7 @@ We're organizing the **16th annual Virginia State Yo-Yo Contest** — coming to 
 ```
 
 ---
-
-
 ---
 
 *DMV Throwers · Est. 2021 · DC · MD · VA · [@dmv_throwers](https://instagram.com/dmv_throwers)*
+---
