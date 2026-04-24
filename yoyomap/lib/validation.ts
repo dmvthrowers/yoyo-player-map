@@ -5,7 +5,7 @@ import { z } from 'zod';
 // =============================================================================
 
 const displayNameSchema = z.string().trim().min(2).max(40)
-  .regex(/^[a-zA-Z0-9 _\-.]+$/, 'Use letters, numbers, spaces, dashes, underscores, or dots only');
+  .regex(/^[a-zA-Z0-9 _\-.']+$/, "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only");
 
 const emailSchema = z.string().trim().email().toLowerCase();
 
