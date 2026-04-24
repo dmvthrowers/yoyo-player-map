@@ -197,7 +197,7 @@ export default function SubmitPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setResult({ ok: false, message: data.error || 'Something went wrong. Please try again.' });
+        setResult({ ok: false, message: data.error?.message || 'Something went wrong. Please try again.' });
       } else {
         setResult({
           ok: true,
