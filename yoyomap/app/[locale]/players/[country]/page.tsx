@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
-import { Counts, MapCta, NotListed } from '../EntryList';
+import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 
 export const revalidate = 3600;
 
