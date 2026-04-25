@@ -1,6 +1,18 @@
 import { Suspense } from 'react';
+import type { Metadata } from 'next';
 import MapClient from './MapClient';
 import { createAdminClient } from '@/lib/supabase/admin';
+
+export const metadata: Metadata = {
+  title: 'Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You',
+  description: 'Browse the global community map of yo-yo players, shops, and clubs. Privacy-first, opt-in, city-level locations only.',
+  alternates: { canonical: '/map' },
+  openGraph: {
+    title: 'Yo-Yo Player Map',
+    description: 'Find yo-yo players, shops, and clubs near you on a privacy-first community map.',
+    url: '/map',
+  },
+};
 
 export const revalidate = 3600; // ISR: refresh cached page every hour (entries change rarely; saves Supabase egress + Vercel CPU)
 

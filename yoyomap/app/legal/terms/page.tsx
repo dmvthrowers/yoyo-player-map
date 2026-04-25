@@ -1,7 +1,11 @@
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'Terms of Service — YoYo Map',
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service',
+  description: 'Terms of service for YoYo Map, a community project of DMV Throwers.',
+  alternates: { canonical: '/legal/terms' },
 };
 
 export default function TermsPage() {

@@ -1,7 +1,11 @@
 import Link from 'next/link';
 
-export const metadata = {
-  title: 'Privacy Policy — YoYo Map',
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'How YoYo Map handles your data: no tracking, city-level only, opt-in always, deletable anytime.',
+  alternates: { canonical: '/legal/privacy' },
 };
 
 export default function PrivacyPage() {

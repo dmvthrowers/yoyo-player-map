@@ -6,13 +6,48 @@ import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'YoYo Map — DMV Throwers',
-  description: 'A privacy-first community map to help yo-yoers find each other. Opt-in, city-level only, always deletable.',
-  openGraph: {
-    title: 'YoYo Map',
-    description: 'Find fellow yo-yoers in your area. Built by DMV Throwers.',
-    type: 'website',
+  metadataBase: new URL('https://map.dmvthrowers.club'),
+  title: {
+    default: 'YoYo Map — Find Yo-Yo Players Near You | DMV Throwers',
+    template: '%s | YoYo Map',
   },
+  description: 'A privacy-first community map to help yo-yoers find each other. Opt-in, city-level only, always deletable. Built by DMV Throwers.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'YoYo Map — Find Yo-Yo Players Near You',
+    description: 'Find fellow yo-yoers in your area. A community project of DMV Throwers Yo-Yo & Skill Toy Club.',
+    type: 'website',
+    url: 'https://map.dmvthrowers.club',
+    siteName: 'YoYo Map',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'YoYo Map — Find Yo-Yo Players Near You',
+    description: 'A community map for yo-yoers. Opt-in, privacy-first.',
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': 'https://dmvthrowers.club/#organization',
+      name: 'DMV Throwers Yo-Yo & Skill Toy Club',
+      url: 'https://dmvthrowers.club',
+      areaServed: ['Washington, D.C.', 'Maryland', 'Virginia'],
+      sameAs: ['https://github.com/dmvthrowers'],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://map.dmvthrowers.club/#website',
+      url: 'https://map.dmvthrowers.club',
+      name: 'YoYo Map',
+      description: 'A privacy-first community map for yo-yo players worldwide.',
+      isPartOf: { '@id': 'https://dmvthrowers.club/#organization' },
+      publisher: { '@id': 'https://dmvthrowers.club/#organization' },
+    },
+  ],
 };
 
 const TopBar = () => (
@@ -141,6 +176,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </head>
       <body className="min-h-screen flex flex-col">
         <TopBar />
