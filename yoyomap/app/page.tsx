@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 
 const TrustRow = () => (
@@ -61,7 +62,7 @@ const HowItWorks = () => (
   </section>
 );
 
-export default function Home() {
+  const t = useTranslations();
   return (
     <>
       {/* Hero — navy canvas with dot pattern, echoes club site */}
@@ -72,17 +73,17 @@ export default function Home() {
             className="font-display font-black text-white mb-6"
             style={{ fontSize: 'clamp(2.75rem, 8vw, 5.25rem)', lineHeight: 0.95 }}
           >
-            Find Your People.
+            {t('home.title')}
             <br />
-            <span className="text-brand-red">Throw Together.</span>
+            <span className="text-brand-red">{t('home.subtitle')}</span>
           </h1>
           <p className="max-w-2xl mx-auto mb-10 text-cream/85 text-lg leading-relaxed">
             A community map for yo-yoers. Add yourself, see who&apos;s nearby, connect.
             Opt-in, privacy-first, and always under your control.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/map" className="btn-primary">Explore the Map</Link>
-            <Link href="/submit" className="btn-outline-white">Add Yourself</Link>
+            <Link href="/map" className="btn-primary">{t('home.cta')}</Link>
+            <Link href="/submit" className="btn-outline-white">{t('home.add')}</Link>
           </div>
         </div>
       </section>

@@ -30,6 +30,22 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  i18n: {
+    locales: [
+      'en', // English
+      'es', // Spanish
+      'de', // German
+      'zh', // Chinese (Simplified)
+      'ja', // Japanese
+      'fr', // French
+      'pt', // Portuguese
+      'ru', // Russian
+      'ar', // Arabic
+      'hi', // Hindi
+      'ko'  // Korean
+    ],
+    defaultLocale: 'en',
+  },
   async headers() {
     return [
       {
