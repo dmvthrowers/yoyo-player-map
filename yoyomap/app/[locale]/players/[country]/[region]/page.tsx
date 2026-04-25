@@ -46,13 +46,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-  const { country, region } = await params;
+export default async function Page({ params }: { params: Params }) {
+  const { country, region } = params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
     const all = await entriesInRegion(country, '');
     entries = all.filter((e) => !e.region || e.region.trim() === '');
-    if (entries.length === 0) notFound();
+    if (entries.length === 0) return notFound();
     const countryName = entries[0]?.country ?? country;
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -77,7 +78,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     );
   } else {
     entries = await entriesInRegion(country, region);
-    if (entries.length === 0) notFound();
+    if (entries.length === 0) return notFound();
     const countryName = canonicalName(entries, 'country') ?? country;
     const regionName = canonicalName(entries, 'region') ?? region;
 
