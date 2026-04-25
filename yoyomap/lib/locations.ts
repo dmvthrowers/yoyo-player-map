@@ -101,8 +101,9 @@ export async function listLocations(): Promise<LocationKey[]> {
 
 export async function entriesInCountry(countrySlug: string): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
-  return all.filter((e) => slugify(e.country) === countrySlug);
+  return all.filter((e) => slugify(canonicalCountryName(e.country)) === countrySlug);
 }
+
 
 export async function entriesInRegion(
   countrySlug: string,
@@ -110,9 +111,10 @@ export async function entriesInRegion(
 ): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
   return all.filter(
-    (e) => slugify(e.country) === countrySlug && slugify(e.region) === regionSlug,
+    (e) => slugify(canonicalCountryName(e.country)) === countrySlug && slugify(e.region) === regionSlug,
   );
 }
+
 
 export async function entriesInCity(
   countrySlug: string,
@@ -122,7 +124,7 @@ export async function entriesInCity(
   const all = await fetchAllPublicEntries();
   return all.filter(
     (e) =>
-      slugify(e.country) === countrySlug &&
+      slugify(canonicalCountryName(e.country)) === countrySlug &&
       slugify(e.region) === regionSlug &&
       slugify(e.city) === citySlug,
   );

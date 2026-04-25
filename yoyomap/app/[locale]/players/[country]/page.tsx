@@ -63,24 +63,34 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
       <hr className="rule-red" />
       <Counts entries={allEntries} className="mb-8" />
 
+
       <h2 className="font-display text-2xl text-navy-deep mb-4">Regions</h2>
-      <ul className="grid sm:grid-cols-2 gap-4">
-        {sorted.map(([slug, r]) => (
-          <li key={slug}>
-            {slug === '_other' ? (
-              <div className="card opacity-70">
-                <p className="font-display text-xl text-navy-deep">{r.name}</p>
-                <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
-              </div>
-            ) : (
-              <Link href={`/players/${country}/${slug}`} className="card block hover:border-brand-red transition-colors">
-                <p className="font-display text-xl text-navy-deep">{r.name}</p>
-                <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
+      {sorted.length === 1 && sorted[0][0] === '_other' ? (
+        // If only 'Unspecified' region, show entries directly
+        <div className="grid gap-4 mb-8">
+          {allEntries.map((e) => (
+            <EntryCard key={e.id} e={e} />
+          ))}
+        </div>
+      ) : (
+        <ul className="grid sm:grid-cols-2 gap-4">
+          {sorted.map(([slug, r]) => (
+            <li key={slug}>
+              {slug === '_other' ? (
+                <Link href={`/players/${country}/_other`} className="card block hover:border-brand-red transition-colors">
+                  <p className="font-display text-xl text-navy-deep">{r.name}</p>
+                  <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
+                </Link>
+              ) : (
+                <Link href={`/players/${country}/${slug}`} className="card block hover:border-brand-red transition-colors">
+                  <p className="font-display text-xl text-navy-deep">{r.name}</p>
+                  <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
 
       <NotListed />
       <MapCta />
