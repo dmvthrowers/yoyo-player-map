@@ -54,7 +54,7 @@ export default async function LocaleLayout({
                 </ul>
                 <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">Security</p>
                 <ul className="space-y-1">
-                  <li><a className="hover:text-brand-red" href="/legal/security">Security Bulletin: April 2026</a></li>
+                  <li><a className="hover:text-brand-red" href="/en/legal/security">Security Bulletin: April 2026</a></li>
                 </ul>
               </div>
               <div>
