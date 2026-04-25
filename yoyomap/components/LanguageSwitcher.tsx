@@ -1,7 +1,8 @@
+
 import { useTranslations } from 'next-intl';
+import React from 'react';
 
 export default function LanguageSwitcher() {
-  // This is a simple language switcher for demonstration
   const locales = [
     { code: 'en', label: 'English' },
     { code: 'es', label: 'Español' },
@@ -16,14 +17,28 @@ export default function LanguageSwitcher() {
     { code: 'ko', label: '한국어' },
   ];
   const t = useTranslations();
+  function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const code = e.target.value;
+    if (code) {
+      window.location.href = `/${code}`;
+    }
+  }
   return (
-    <div className="flex gap-2 items-center">
-      <span className="text-xs text-navy/60">{t('nav.language', { defaultValue: 'Language:' })}</span>
-      {locales.map((l) => (
-        <a key={l.code} href={`/${l.code}`} className="underline text-brand-red text-xs hover:text-brand-red/80">
-          {l.label}
-        </a>
-      ))}
+    <div className="flex items-center gap-2">
+      <label htmlFor="language-switcher" className="text-xs text-navy/60">
+        {t('nav.language', { defaultValue: 'Language:' })}
+      </label>
+      <select
+        id="language-switcher"
+        className="text-xs border rounded px-2 py-1 bg-white text-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red"
+        onChange={handleChange}
+        defaultValue={''}
+      >
+        <option value="" disabled>{t('nav.languageSelect', { defaultValue: 'Select language' })}</option>
+        {locales.map((l) => (
+          <option key={l.code} value={l.code}>{l.label}</option>
+        ))}
+      </select>
     </div>
   );
 }

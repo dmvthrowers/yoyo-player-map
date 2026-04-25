@@ -29,9 +29,6 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <header className="sticky top-0 z-40">
             <Navigation />
-            <div className="max-w-6xl mx-auto px-4 py-2 flex justify-end">
-              <LanguageSwitcher />
-            </div>
           </header>
           <main id="main-content" className="flex-1">
             {children}
@@ -46,8 +43,6 @@ export default async function LocaleLayout({
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">DMV Throwers</p>
                 <ul className="space-y-1">
                   <li><a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Home</a></li>
-                  <li><a href="https://dmvthrowers.club/events.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Events</a></li>
-                  <li><a href="https://dmvthrowers.club/resources.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Resources</a></li>
                   <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">VSYC-26</a></li>
                 </ul>
               </div>
