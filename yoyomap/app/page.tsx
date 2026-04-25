@@ -62,6 +62,8 @@ const HowItWorks = () => (
   </section>
 );
 
+
+export default function Home() {
   const t = useTranslations();
   return (
     <>
