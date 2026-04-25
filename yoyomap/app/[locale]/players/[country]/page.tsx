@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCountry, listLocations, canonicalName } from '@/lib/locations';
+import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../EntryList';
 
@@ -14,7 +14,8 @@ export async function generateStaticParams() {
   const seen = new Set<string>();
   const out: Params[] = [];
   for (const loc of locations) {
-    const c = slugify(loc.country);
+    const canonical = canonicalCountryName(loc.country);
+    const c = slugify(canonical);
     if (!seen.has(c)) {
       seen.add(c);
       out.push({ country: c });
@@ -36,13 +37,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function CountryPage({ params }: { params: Promise<Params> }) {
   const { country } = await params;
-  const entries = await entriesInCountry(country);
-  if (entries.length === 0) notFound();
-  const name = canonicalName(entries, 'country') ?? country;
+  // Find all entries that match the canonical slug
+  const allEntries = await entriesInCountry(country);
+  if (allEntries.length === 0) notFound();
+  const name = canonicalName(allEntries, 'country') ?? country;
 
   // Group by region
   const regions = new Map<string, { name: string; count: number }>();
-  for (const e of entries) {
+  for (const e of allEntries) {
     const regionLabel = e.region ?? 'Unspecified';
     const slug = e.region ? slugify(e.region) : '_other';
     const cur = regions.get(slug);
