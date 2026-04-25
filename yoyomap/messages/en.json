@@ -7,7 +7,8 @@
     "events": "Events",
     "resources": "Resources",
     "vsyc": "VSYC-26",
-    "language": "Language:"
+    "language": "Language:",
+    "languageSelect": "Select language"
   },
   "home": {
     "title": "Find Your People.",
