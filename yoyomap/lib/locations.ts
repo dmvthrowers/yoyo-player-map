@@ -1,3 +1,47 @@
+// Country normalization map: maps all known codes/variants to canonical display name
+const COUNTRY_NORMALIZATION: Record<string, string> = {
+  us: 'United States',
+  usa: 'United States',
+  "united-states": 'United States',
+  ca: 'Canada',
+  canada: 'Canada',
+  uk: 'United Kingdom',
+  "united-kingdom": 'United Kingdom',
+  gb: 'United Kingdom',
+  nz: 'New Zealand',
+  "new-zealand": 'New Zealand',
+  es: 'Spain',
+  spain: 'Spain',
+  fr: 'France',
+  france: 'France',
+  de: 'Germany',
+  germany: 'Germany',
+  br: 'Brazil',
+  brazil: 'Brazil',
+  jp: 'Japan',
+  japan: 'Japan',
+  hn: 'Honduras',
+  honduras: 'Honduras',
+  be: 'Belgium',
+  belgium: 'Belgium',
+  ua: 'Ukraine',
+  ukraine: 'Ukraine',
+  hu: 'Hungary',
+  hungary: 'Hungary',
+  cz: 'Czech Republic',
+  "czech-republic": 'Czech Republic',
+  sg: 'Singapore',
+  singapore: 'Singapore',
+  mx: 'Mexico',
+  mexico: 'Mexico',
+  // Add more as needed
+};
+
+// Returns canonical display name for a country slug or raw name
+export function canonicalCountryName(input: string): string {
+  const slug = slugify(input);
+  return COUNTRY_NORMALIZATION[slug] || input;
+}
 import { cache } from 'react';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { slugify } from './locationSlug';

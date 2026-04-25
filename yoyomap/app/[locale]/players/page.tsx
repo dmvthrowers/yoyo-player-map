@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { listLocations } from '@/lib/locations';
+import { listLocations, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 
 export const revalidate = 3600;
@@ -15,10 +15,11 @@ export default async function PlayersIndex() {
   const locations = await listLocations();
   const countries = new Map<string, { name: string; count: number }>();
   for (const loc of locations) {
-    const slug = slugify(loc.country);
+    const canonicalName = canonicalCountryName(loc.country);
+    const slug = slugify(canonicalName);
     const cur = countries.get(slug);
     if (cur) cur.count += 1;
-    else countries.set(slug, { name: loc.country, count: 1 });
+    else countries.set(slug, { name: canonicalName, count: 1 });
   }
   const sorted = [...countries.entries()].sort((a, b) => b[1].count - a[1].count);
 
