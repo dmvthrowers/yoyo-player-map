@@ -1,15 +1,22 @@
 {
-  "nav.map": "الخريطة",
-  "nav.submit": "إرسال",
-  "nav.profile": "الملف الشخصي",
-  "nav.donate": "تبرع ☕",
-  "nav.events": "الفعاليات",
-  "nav.resources": "الموارد",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "اعثر على مجتمعك.",
-  "home.subtitle": "ارموا معًا.",
-  "home.cta": "استكشف الخريطة",
-  "home.add": "أضف نفسك",
-  "footer.project": "مشروع مجتمعي من DMV Throwers Yo-Yo & Skill Toy Club.",
-  "footer.all_welcome": "جميع المستويات مرحب بها."
+  "nav": {
+    "map": "الخريطة",
+    "submit": "إرسال",
+    "profile": "الملف الشخصي",
+    "donate": "تبرع ☕",
+    "events": "الفعاليات",
+    "resources": "الموارد",
+    "vsyc": "VSYC-26",
+    "language": "اللغة:"
+  },
+  "home": {
+    "title": "اعثر على مجتمعك.",
+    "subtitle": "ارموا معًا.",
+    "cta": "استكشف الخريطة",
+    "add": "أضف نفسك"
+  },
+  "footer": {
+    "project": "مشروع مجتمعي من DMV Throwers Yo-Yo & Skill Toy Club.",
+    "all_welcome": "جميع المستويات مرحب بها."
+  }
 }

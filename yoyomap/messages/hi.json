@@ -1,15 +1,22 @@
 {
-  "nav.map": "नक्शा",
-  "nav.submit": "जमा करें",
-  "nav.profile": "प्रोफ़ाइल",
-  "nav.donate": "दान करें ☕",
-  "nav.events": "इवेंट्स",
-  "nav.resources": "संसाधन",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "अपना समुदाय खोजें।",
-  "home.subtitle": "साथ में थ्रो करें।",
-  "home.cta": "नक्शा देखें",
-  "home.add": "खुद को जोड़ें",
-  "footer.project": "DMV Throwers Yo-Yo & Skill Toy Club की सामुदायिक परियोजना।",
-  "footer.all_welcome": "सभी स्तरों का स्वागत है।"
+  "nav": {
+    "map": "नक्शा",
+    "submit": "जमा करें",
+    "profile": "प्रोफ़ाइल",
+    "donate": "दान करें ☕",
+    "events": "इवेंट्स",
+    "resources": "संसाधन",
+    "vsyc": "VSYC-26",
+    "language": "भाषा:"
+  },
+  "home": {
+    "title": "अपना समुदाय खोजें।",
+    "subtitle": "साथ में थ्रो करें।",
+    "cta": "नक्शा देखें",
+    "add": "खुद को जोड़ें"
+  },
+  "footer": {
+    "project": "DMV Throwers Yo-Yo & Skill Toy Club की सामुदायिक परियोजना।",
+    "all_welcome": "सभी स्तरों का स्वागत है।"
+  }
 }

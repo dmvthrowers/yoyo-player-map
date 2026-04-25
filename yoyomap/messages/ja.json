@@ -1,15 +1,22 @@
 {
-  "nav.map": "地図",
-  "nav.submit": "登録",
-  "nav.profile": "プロフィール",
-  "nav.donate": "寄付 ☕",
-  "nav.events": "イベント",
-  "nav.resources": "リソース",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "仲間を見つけよう。",
-  "home.subtitle": "一緒に投げよう。",
-  "home.cta": "地図を見る",
-  "home.add": "自分を追加",
-  "footer.project": "DMV Throwers Yo-Yo & Skill Toy Club のコミュニティプロジェクト。",
-  "footer.all_welcome": "すべてのレベル歓迎。"
+  "nav": {
+    "map": "地図",
+    "submit": "登録",
+    "profile": "プロフィール",
+    "donate": "寄付 ☕",
+    "events": "イベント",
+    "resources": "リソース",
+    "vsyc": "VSYC-26",
+    "language": "言語:"
+  },
+  "home": {
+    "title": "仲間を見つけよう。",
+    "subtitle": "一緒に投げよう。",
+    "cta": "地図を見る",
+    "add": "自分を追加"
+  },
+  "footer": {
+    "project": "DMV Throwers Yo-Yo & Skill Toy Club のコミュニティプロジェクト。",
+    "all_welcome": "すべてのレベル歓迎。"
+  }
 }

@@ -1,15 +1,22 @@
 {
-  "nav.map": "Karte",
-  "nav.submit": "Eintragen",
-  "nav.profile": "Profil",
-  "nav.donate": "Spenden ☕",
-  "nav.events": "Veranstaltungen",
-  "nav.resources": "Ressourcen",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "Finde deine Leute.",
-  "home.subtitle": "Gemeinsam werfen.",
-  "home.cta": "Karte ansehen",
-  "home.add": "Füge dich hinzu",
-  "footer.project": "Ein Gemeinschaftsprojekt des DMV Throwers Yo-Yo & Skill Toy Club.",
-  "footer.all_welcome": "Alle Erfahrungsstufen willkommen."
+  "nav": {
+    "map": "Karte",
+    "submit": "Eintragen",
+    "profile": "Profil",
+    "donate": "Spenden ☕",
+    "events": "Veranstaltungen",
+    "resources": "Ressourcen",
+    "vsyc": "VSYC-26",
+    "language": "Sprache:"
+  },
+  "home": {
+    "title": "Finde deine Leute.",
+    "subtitle": "Gemeinsam werfen.",
+    "cta": "Karte ansehen",
+    "add": "Füge dich hinzu"
+  },
+  "footer": {
+    "project": "Ein Gemeinschaftsprojekt des DMV Throwers Yo-Yo & Skill Toy Club.",
+    "all_welcome": "Alle Erfahrungsstufen willkommen."
+  }
 }

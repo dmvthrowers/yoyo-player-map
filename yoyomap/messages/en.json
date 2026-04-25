@@ -1,15 +1,22 @@
 {
-  "nav.map": "Map",
-  "nav.submit": "Submit",
-  "nav.profile": "Profile",
-  "nav.donate": "Donate ☕",
-  "nav.events": "Events",
-  "nav.resources": "Resources",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "Find Your People.",
-  "home.subtitle": "Throw Together.",
-  "home.cta": "Explore the Map",
-  "home.add": "Add Yourself",
-  "footer.project": "A community project of DMV Throwers Yo-Yo & Skill Toy Club.",
-  "footer.all_welcome": "All skill levels welcome."
+  "nav": {
+    "map": "Map",
+    "submit": "Submit",
+    "profile": "Profile",
+    "donate": "Donate ☕",
+    "events": "Events",
+    "resources": "Resources",
+    "vsyc": "VSYC-26",
+    "language": "Language:"
+  },
+  "home": {
+    "title": "Find Your People.",
+    "subtitle": "Throw Together.",
+    "cta": "Explore the Map",
+    "add": "Add Yourself"
+  },
+  "footer": {
+    "project": "A community project of DMV Throwers Yo-Yo & Skill Toy Club.",
+    "all_welcome": "All skill levels welcome."
+  }
 }

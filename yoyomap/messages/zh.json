@@ -1,15 +1,22 @@
 {
-  "nav.map": "地图",
-  "nav.submit": "提交",
-  "nav.profile": "个人资料",
-  "nav.donate": "捐赠 ☕",
-  "nav.events": "活动",
-  "nav.resources": "资源",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "找到你的伙伴。",
-  "home.subtitle": "一起抛掷。",
-  "home.cta": "浏览地图",
-  "home.add": "添加自己",
-  "footer.project": "DMV Throwers Yo-Yo & Skill Toy Club 的社区项目。",
-  "footer.all_welcome": "欢迎所有水平的玩家。"
+  "nav": {
+    "map": "地图",
+    "submit": "提交",
+    "profile": "个人资料",
+    "donate": "捐赠 ☕",
+    "events": "活动",
+    "resources": "资源",
+    "vsyc": "VSYC-26",
+    "language": "语言:"
+  },
+  "home": {
+    "title": "找到你的伙伴。",
+    "subtitle": "一起抛掷。",
+    "cta": "浏览地图",
+    "add": "添加自己"
+  },
+  "footer": {
+    "project": "DMV Throwers Yo-Yo & Skill Toy Club 的社区项目。",
+    "all_welcome": "欢迎所有水平的玩家。"
+  }
 }

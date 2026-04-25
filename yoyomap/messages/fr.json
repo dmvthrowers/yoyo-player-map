@@ -1,15 +1,22 @@
 {
-  "nav.map": "Carte",
-  "nav.submit": "Soumettre",
-  "nav.profile": "Profil",
-  "nav.donate": "Donner ☕",
-  "nav.events": "Événements",
-  "nav.resources": "Ressources",
-  "nav.vsyc": "VSYC-26",
-  "home.title": "Trouvez votre communauté.",
-  "home.subtitle": "Jetez ensemble.",
-  "home.cta": "Explorer la carte",
-  "home.add": "Ajoutez-vous",
-  "footer.project": "Un projet communautaire de DMV Throwers Yo-Yo & Skill Toy Club.",
-  "footer.all_welcome": "Tous les niveaux sont les bienvenus."
+  "nav": {
+    "map": "Carte",
+    "submit": "Soumettre",
+    "profile": "Profil",
+    "donate": "Donner ☕",
+    "events": "Événements",
+    "resources": "Ressources",
+    "vsyc": "VSYC-26",
+    "language": "Langue :"
+  },
+  "home": {
+    "title": "Trouvez votre communauté.",
+    "subtitle": "Jetez ensemble.",
+    "cta": "Explorer la carte",
+    "add": "Ajoutez-vous"
+  },
+  "footer": {
+    "project": "Un projet communautaire de DMV Throwers Yo-Yo & Skill Toy Club.",
+    "all_welcome": "Tous les niveaux sont les bienvenus."
+  }
 }
