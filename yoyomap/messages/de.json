@@ -7,7 +7,8 @@
     "events": "Veranstaltungen",
     "resources": "Ressourcen",
     "vsyc": "VSYC-26",
-    "language": "Sprache:"
+    "language": "Sprache:",
+    "languageSelect": "Sprache auswählen"
   },
   "home": {
     "title": "Finde deine Leute.",

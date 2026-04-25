@@ -7,7 +7,8 @@
     "events": "活动",
     "resources": "资源",
     "vsyc": "VSYC-26",
-    "language": "语言:"
+    "language": "语言:",
+    "languageSelect": "选择语言"
   },
   "home": {
     "title": "找到你的伙伴。",

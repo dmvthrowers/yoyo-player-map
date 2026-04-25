@@ -7,7 +7,8 @@
     "events": "이벤트",
     "resources": "자료",
     "vsyc": "VSYC-26",
-    "language": "언어:"
+    "language": "언어:",
+    "languageSelect": "언어 선택"
   },
   "home": {
     "title": "당신의 사람들을 찾으세요.",
