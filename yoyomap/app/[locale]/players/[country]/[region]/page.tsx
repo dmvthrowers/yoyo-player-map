@@ -9,6 +9,7 @@ export const revalidate = 3600;
 
 interface Params { country: string; region: string }
 
+export async function generateStaticParams() {
   const locations = await listLocations();
   const seen = new Set<string>();
   const out: Params[] = [];
