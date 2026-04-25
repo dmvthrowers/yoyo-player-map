@@ -1,9 +1,25 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { DM_Sans, Playfair_Display } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 // import { ApiBanner } from './ApiBanner';
 import './globals.css';
+
+// Self-hosted by Next at build time — eliminates render-blocking @import
+// to fonts.googleapis.com (saves ~2s LCP on slow connections).
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  weight: ['700', '900'],
+  variable: '--font-display',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://map.dmvthrowers.club'),
@@ -173,7 +189,7 @@ const Footer = () => (
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${dmSans.variable} ${playfair.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>

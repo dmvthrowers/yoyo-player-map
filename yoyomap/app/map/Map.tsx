@@ -1,5 +1,6 @@
 'use client';
 
+import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl } from 'react-leaflet';
 import { useState, memo, useMemo, useEffect } from 'react';
 import L from 'leaflet';

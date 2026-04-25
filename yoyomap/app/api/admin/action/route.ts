@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
@@ -34,14 +35,28 @@ export async function POST(req: NextRequest) {
   const { action, id } = parsed.data;
   const ip = getClientIp(req.headers);
 
+  // Snapshot location up front so we can bust caches after the action.
+  // Only the visibility-changing actions need this; others fetch lazily.
+  let entryLoc: { country: string | null; region: string | null; city: string | null } | null = null;
+  if (['flag_entry', 'unflag_entry', 'delete_entry', 'clear_auto_hide'].includes(action)) {
+    const { data } = await supabase
+      .from('entries')
+      .select('country, region, city')
+      .eq('id', id)
+      .maybeSingle();
+    entryLoc = data ?? null;
+  }
+
   switch (action) {
     case 'flag_entry':
       await supabase.from('entries').update({ is_flagged: true, is_visible: false }).eq('id', id);
       await logAudit('admin.flag_entry', { actor: 'admin', targetId: id, meta: { ip } });
+      if (entryLoc) revalidateEntryLocations(entryLoc);
       break;
     case 'unflag_entry':
       await supabase.from('entries').update({ is_flagged: false, is_visible: true }).eq('id', id);
       await logAudit('admin.unflag_entry', { actor: 'admin', targetId: id, meta: { ip } });
+      if (entryLoc) revalidateEntryLocations(entryLoc);
       break;
     case 'delete_entry': {
       const { data: entry } = await supabase.from('entries').select('parent_consent_id').eq('id', id).maybeSingle();
@@ -50,6 +65,7 @@ export async function POST(req: NextRequest) {
         await supabase.from('parent_consents').delete().eq('id', entry.parent_consent_id);
       }
       await logAudit('admin.delete_entry', { actor: 'admin', targetId: id, meta: { ip } });
+      if (entryLoc) revalidateEntryLocations(entryLoc);
       break;
     }
     case 'resolve_report':
@@ -63,6 +79,7 @@ export async function POST(req: NextRequest) {
       // Clear the auto_hidden_by_reports flag, making the entry visible again
       await supabase.from('entries').update({ auto_hidden_by_reports: false }).eq('id', id);
       await logAudit('admin.clear_auto_hide', { actor: 'admin', targetId: id, meta: { ip } });
+      if (entryLoc) revalidateEntryLocations(entryLoc);
       break;
     case 'regeocode_entry': {
       const { data: entry } = await supabase

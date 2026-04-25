@@ -251,6 +251,13 @@ export default function SubmitPage() {
               We also sent a consent request to your parent or guardian. Your entry will appear on the map once they confirm.
             </p>
           )}
+
+          <p className="text-xs text-navy/60 mt-6 text-left leading-relaxed">
+            Once verified, you&apos;ll appear on the map within a few minutes. Showing up in
+            Google search for your city can take 1–2 weeks — that&apos;s normal and out of
+            our control.
+          </p>
+
           <Link href="/" className="btn-ghost mt-6 inline-block">Back to home</Link>
         </div>
       </div>

@@ -22,8 +22,8 @@ module.exports = {
         'muted-rose': '#e8b4b8',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'Georgia', 'serif'],
-        sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
+        sans: ['var(--font-sans)', 'system-ui', '-apple-system', 'sans-serif'],
       },
     },
   },

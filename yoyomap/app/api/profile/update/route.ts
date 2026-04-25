@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, jitterCoords } from '@/lib/geocode';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
+import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
@@ -90,5 +91,16 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   await logAudit('entry.updated', { targetId: tok.entry_id, meta: { ip, locationChanged } });
+
+  // Revalidate the new location, plus the old one if they moved cities.
+  revalidateEntryLocations({ country: d.country, region: d.region, city: d.city });
+  if (locationChanged) {
+    revalidateEntryLocations({
+      country: existing.country,
+      region: existing.region,
+      city: existing.city,
+    });
+  }
+
   return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
 });

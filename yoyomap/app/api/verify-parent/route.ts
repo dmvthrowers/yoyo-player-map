@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
+import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
@@ -57,7 +58,14 @@ async function verifyEntry(
   await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('id', tok.id);
 
   // Verify the entry
-  const entry = tok.entries as { id: string; age_band: string | null; parent_consent_id: string | null };
+  const entry = tok.entries as {
+    id: string;
+    age_band: string | null;
+    parent_consent_id: string | null;
+    country: string | null;
+    region: string | null;
+    city: string | null;
+  };
   await supabase.from('entries').update({ verified_at: new Date().toISOString() }).eq('id', entry.id);
 
   // If adult, publish immediately. If minor, only publish if parent consent is already granted.
@@ -65,6 +73,7 @@ async function verifyEntry(
   if (canPublish) {
     await supabase.from('entries').update({ is_visible: true }).eq('id', entry.id);
     await logAudit('entry.published', { targetId: entry.id, meta: { ip, reason: 'email_verified' } });
+    revalidateEntryLocations({ country: entry.country, region: entry.region, city: entry.city });
     return redirectTo(req, '/map', { verified: '1' });
   }
 
@@ -113,7 +122,7 @@ async function verifyConsent(
   // Find the entry linked to this consent
   const { data: entry } = await supabase
     .from('entries')
-    .select('id, verified_at')
+    .select('id, verified_at, country, region, city')
     .eq('parent_consent_id', consent.id)
     .maybeSingle();
 
@@ -122,6 +131,7 @@ async function verifyConsent(
     if (entry.verified_at) {
       await supabase.from('entries').update({ is_visible: true }).eq('id', entry.id);
       await logAudit('entry.published', { targetId: entry.id, meta: { ip, reason: 'consent_granted' } });
+      revalidateEntryLocations({ country: entry.country, region: entry.region, city: entry.city });
     }
   }
 

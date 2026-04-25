@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
+import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
@@ -28,7 +29,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const { data: entry } = await supabase
     .from('entries')
-    .select('id, parent_consent_id, email')
+    .select('id, parent_consent_id, email, country, region, city')
     .eq('id', tok.entry_id)
     .maybeSingle();
   if (!entry) return apiError('not_found', 'Entry not found.', requestId);
@@ -50,5 +51,6 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('token', parsed.data.token);
 
   await logAudit('entry.deleted', { actor: entry.email, targetId: entry.id, meta: { ip, type: 'self' } });
+  revalidateEntryLocations({ country: entry.country, region: entry.region, city: entry.city });
   return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
 });
