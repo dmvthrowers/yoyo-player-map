@@ -12,10 +12,11 @@
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
-    "@vercel/speed-insights": "^2.0.0",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "leaflet": "^1.9.4",
     "next": "15.5.15",
+    "next-intl": "^4.9.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-leaflet": "^5.0.0",
