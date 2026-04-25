@@ -11,6 +11,8 @@ export interface PublicEntry {
   bio: string | null;
   socials: Record<string, string>;
   entity_type: 'person' | 'shop' | 'club';
+  lat: number | null;
+  lng: number | null;
 }
 
 // React cache() dedupes within a single render pass — so country/region/city
@@ -20,7 +22,7 @@ export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from('map_entries')
-    .select('id, display_name, city, region, country, bio, socials, entity_type');
+    .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');
   if (error) {
     console.error('[locations] failed to fetch entries:', error);
     return [];
@@ -29,6 +31,8 @@ export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
     ...e,
     entity_type: (e.entity_type ?? 'person') as PublicEntry['entity_type'],
     socials: e.socials ?? {},
+    lat: e.lat ?? null,
+    lng: e.lng ?? null,
   }));
 });
 
