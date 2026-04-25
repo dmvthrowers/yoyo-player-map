@@ -37,16 +37,29 @@ export default async function LocaleLayout({
             {children}
           </main>
           <footer className="bg-dark-navy text-cream/80 border-t-4 border-brand-red mt-12">
-            <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
+            <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-4 gap-6 text-sm">
               <div>
                 <p className="font-display text-lg text-cream">YoYo Map</p>
                 <p className="mt-2">A community project of DMV Throwers Yo-Yo & Skill Toy Club. All skill levels welcome.</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">DMV Throwers</p>
+                <ul className="space-y-1">
+                  <li><a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Home</a></li>
+                  <li><a href="https://dmvthrowers.club/events.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Events</a></li>
+                  <li><a href="https://dmvthrowers.club/resources.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Resources</a></li>
+                  <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">VSYC-26</a></li>
+                </ul>
               </div>
               <div>
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">Legal</p>
                 <ul className="space-y-1">
                   <li><a className="hover:text-brand-red" href="/legal/privacy">privacy</a></li>
                   <li><a className="hover:text-brand-red" href="/legal/terms">terms</a></li>
+                </ul>
+                <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">Security</p>
+                <ul className="space-y-1">
+                  <li><a className="hover:text-brand-red" href="/docs/SECURITY-INCIDENT-APRIL-2026.md" target="_blank" rel="noopener noreferrer">Security Bulletin: April 2026</a></li>
                 </ul>
               </div>
               <div>
