@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
-import { Counts, MapCta, NotListed } from '../../EntryList';
+import { Counts, MapCta, NotListed, EntryCard } from '../../EntryList';
 
 export const revalidate = 3600;
 
@@ -34,8 +34,8 @@ export async function generateStaticParams() {
   return out;
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country, region } = await params;
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { country, region } = params;
   const entries = await entriesInRegion(country, region);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? region;
