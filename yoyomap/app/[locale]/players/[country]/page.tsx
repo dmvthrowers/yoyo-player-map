@@ -61,7 +61,7 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
       <p className="eyebrow text-brand-red">Country</p>
       <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">Yo-Yo Players in {name}</h1>
       <hr className="rule-red" />
-      <Counts entries={entries} className="mb-8" />
+      <Counts entries={allEntries} className="mb-8" />
 
       <h2 className="font-display text-2xl text-navy-deep mb-4">Regions</h2>
       <ul className="grid sm:grid-cols-2 gap-4">
