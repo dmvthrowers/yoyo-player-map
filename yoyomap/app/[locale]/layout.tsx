@@ -36,6 +36,32 @@ export default async function LocaleLayout({
           <main id="main-content" className="flex-1">
             {children}
           </main>
+          <footer className="bg-dark-navy text-cream/80 border-t-4 border-brand-red mt-12">
+            <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-3 gap-6 text-sm">
+              <div>
+                <p className="font-display text-lg text-cream">YoYo Map</p>
+                <p className="mt-2">A community project of DMV Throwers Yo-Yo & Skill Toy Club. All skill levels welcome.</p>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">Legal</p>
+                <ul className="space-y-1">
+                  <li><a className="hover:text-brand-red" href="/legal/privacy">privacy</a></li>
+                  <li><a className="hover:text-brand-red" href="/legal/terms">terms</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">Project</p>
+                <ul className="space-y-1">
+                  <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">GitHub Repo</a></li>
+                  <li><a href="mailto:dmvthrowers@gmail.com" className="hover:text-brand-red">dmvthrowers@gmail.com</a></li>
+                  <li className="text-xs">DC · MD · VA</li>
+                </ul>
+              </div>
+            </div>
+            <div className="bg-navy py-3 text-center text-xs">
+              <p>© 2026 DMV Throwers · EIN 41-4879324</p>
+            </div>
+          </footer>
         </NextIntlClientProvider>
       </body>
     </html>
