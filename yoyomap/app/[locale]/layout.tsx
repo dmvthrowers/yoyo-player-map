@@ -1,16 +1,28 @@
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Navigation from '../../components/Navigation';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
-import './globals.css';
+import { routing } from '../../i18n/routing';
+import '../globals.css';
 
-export default function LocaleLayout({ children, params: { locale } }: { children: React.ReactNode; params: { locale: string } }) {
-  let messages;
-  try {
-    messages = useMessages();
-  } catch (e) {
-    notFound();
-  }
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
+
+  setRequestLocale(locale);
+  const messages = await getMessages();
+
   return (
     <html lang={locale}>
       <body className="min-h-screen flex flex-col">
@@ -21,7 +33,9 @@ export default function LocaleLayout({ children, params: { locale } }: { childre
               <LanguageSwitcher />
             </div>
           </header>
-          <main id="main-content" className="flex-1">{children}</main>
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
         </NextIntlClientProvider>
       </body>
     </html>

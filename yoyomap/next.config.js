@@ -1,3 +1,6 @@
+const createNextIntlPlugin = require('next-intl/plugin');
+const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
+
 /** @type {import('next').NextConfig} */
 const csp = [
   "default-src 'self'",
@@ -30,22 +33,6 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
-  i18n: {
-    locales: [
-      'en', // English
-      'es', // Spanish
-      'de', // German
-      'zh', // Chinese (Simplified)
-      'ja', // Japanese
-      'fr', // French
-      'pt', // Portuguese
-      'ru', // Russian
-      'ar', // Arabic
-      'hi', // Hindi
-      'ko'  // Korean
-    ],
-    defaultLocale: 'en',
-  },
   async headers() {
     return [
       {
@@ -56,4 +43,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);
