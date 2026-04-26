@@ -95,6 +95,15 @@
     @apply bg-brand-red text-white text-xs uppercase tracking-[0.18em] font-semibold;
   }
 
+  .topbar-link {
+    @apply text-white/90 hover:text-white whitespace-nowrap transition-colors;
+  }
+
+  /* Make the LanguageSwitcher label readable on the red topbar */
+  .topbar label[for="language-switcher"] {
+    @apply text-white/80;
+  }
+
   /* Sticky cream nav — matches club site */
   .site-nav {
     @apply bg-cream border-b;
@@ -103,6 +112,10 @@
 
   .nav-link {
     @apply text-xs uppercase font-semibold tracking-[0.14em] text-navy-deep py-2 border-b-2 border-transparent hover:border-brand-red hover:text-brand-red transition-colors;
+  }
+
+  .donate-btn {
+    @apply text-xs uppercase font-bold tracking-[0.14em] text-white bg-brand-red rounded-md px-3 py-1.5 hover:bg-[#FF8A8A] transition-colors shadow-sm whitespace-nowrap;
   }
 
   .brand-lockup {

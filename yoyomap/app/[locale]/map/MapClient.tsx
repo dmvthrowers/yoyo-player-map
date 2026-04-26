@@ -54,7 +54,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
   return (
     <>
       {/* Filter panel */}
-      <div className="absolute top-4 right-4 z-[500] bg-cream border-2 border-navy shadow-lg">
+      <div className="absolute bottom-4 right-4 z-[500] bg-cream border-2 border-navy shadow-lg">
         <button
           onClick={() => setFilterOpen((o) => !o)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
