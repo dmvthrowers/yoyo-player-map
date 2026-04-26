@@ -178,8 +178,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     meta: {
       ip,
       entityType: data.entityType,
-      city: data.city,
-      country: data.country,
+      city_id: data.city_id,
+      country_id: data.country_id,
       verifyStatus: verifyOutcome.status,
       consentStatus: consentOutcome?.status,
     },
