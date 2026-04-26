@@ -29,7 +29,7 @@ function useRegions(countryId: number | null) {
   return regions;
 }
 
-function useAllCities(countryId: number | null, regionId: number | null) {
+function useAllCities(countryId: number | null, regionId: number | null, refreshKey = 0) {
   const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
   useEffect(() => {
     if (!countryId) { setCities([]); return; }
@@ -45,7 +45,7 @@ function useAllCities(countryId: number | null, regionId: number | null) {
       const data = await res.json();
       setCities(data.cities || []);
     })();
-  }, [countryId, regionId]);
+  }, [countryId, regionId, refreshKey]);
   return cities;
 }
 
@@ -97,7 +97,8 @@ interface CityAutocompleteProps {
 }
 
 function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutocompleteProps) {
-  const allCities = useAllCities(countryId, regionId);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const allCities = useAllCities(countryId, regionId, refreshKey);
   const [input, setInput] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [adding, setAdding] = useState(false);
@@ -105,8 +106,13 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
   const selectedCity = allCities.find(c => c.id === cityId);
 
   useEffect(() => {
-    setInput(selectedCity ? selectedCity.name : '');
-  }, [countryId, regionId, cityId]);
+    if (selectedCity) {
+      setInput(selectedCity.name);
+    } else if (!cityId) {
+      setInput('');
+    }
+    // If cityId is set but not in allCities yet, keep current input
+  }, [countryId, regionId, cityId, selectedCity]);
 
   const filtered = input
     ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
@@ -133,6 +139,7 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
       setCityId(payload.city.id);
       setInput(payload.city.name);
       setShowSuggestions(false);
+      setRefreshKey(k => k + 1);
     } else {
       alert(payload.error?.message || 'Failed to add city.');
     }
