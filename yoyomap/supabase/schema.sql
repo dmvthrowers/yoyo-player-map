@@ -1,4 +1,35 @@
 -- =============================================================================
+
+-- =============================================================================
+-- Location Normalization Tables
+-- =============================================================================
+create table if not exists public.countries (
+  id serial primary key,
+  code text not null unique check (char_length(code) = 2),
+  name text not null unique
+);
+
+create table if not exists public.regions (
+  id serial primary key,
+  country_id integer not null references public.countries(id) on delete cascade,
+  code text not null,
+  name text not null,
+  unique(country_id, code),
+  unique(country_id, name)
+);
+
+create table if not exists public.cities (
+  id serial primary key,
+  country_id integer not null references public.countries(id) on delete cascade,
+  region_id integer references public.regions(id) on delete set null,
+  name text not null,
+  unique(country_id, region_id, name)
+);
+
+-- Add new FKs to entries (nullable for migration)
+alter table public.entries add column if not exists country_id integer references public.countries(id);
+alter table public.entries add column if not exists region_id integer references public.regions(id);
+alter table public.entries add column if not exists city_id integer references public.cities(id);
 -- DMV Throwers YoYo Map — Database Schema
 -- =============================================================================
 -- Run this in the Supabase SQL Editor (Project → SQL Editor → New query).

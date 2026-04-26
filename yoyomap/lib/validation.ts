@@ -9,11 +9,11 @@ const displayNameSchema = z.string().trim().min(2).max(40)
 
 const emailSchema = z.string().trim().email().toLowerCase();
 
-const citySchema = z.string().trim().min(2).max(80);
 
-const regionSchema = z.string().trim().max(80).optional().or(z.literal(''));
-
-const countrySchema = z.string().trim().length(2).default('US');
+// Normalized location schemas: use foreign keys (numbers)
+const cityIdSchema = z.number().int().positive();
+const regionIdSchema = z.number().int().positive().optional().or(z.literal(null));
+const countryIdSchema = z.number().int().positive();
 
 const bioSchema = z.string().trim().max(280).optional().or(z.literal(''));
 
@@ -40,9 +40,9 @@ const personSchema = z.object({
   entityType: z.literal('person'),
   displayName: displayNameSchema,
   email: emailSchema,
-  city: citySchema,
-  region: regionSchema,
-  country: countrySchema,
+  city_id: cityIdSchema,
+  region_id: regionIdSchema,
+  country_id: countryIdSchema,
   bio: bioSchema,
   socials: socialsSchema,
   ageBand: z.enum(['13-17', '18+']),
@@ -62,9 +62,9 @@ const shopSchema = z.object({
   entityType: z.literal('shop'),
   displayName: displayNameSchema,
   email: emailSchema,
-  city: citySchema,
-  region: regionSchema,
-  country: countrySchema,
+  city_id: cityIdSchema,
+  region_id: regionIdSchema,
+  country_id: countryIdSchema,
   bio: bioSchema,
   socials: socialsSchema,
   // Shop-specific fields
@@ -87,9 +87,9 @@ const clubSchema = z.object({
   entityType: z.literal('club'),
   displayName: displayNameSchema,
   email: emailSchema,
-  city: citySchema,
-  region: regionSchema,
-  country: countrySchema,
+  city_id: cityIdSchema,
+  region_id: regionIdSchema,
+  country_id: countryIdSchema,
   bio: bioSchema,
   socials: socialsSchema,
   // Club-specific fields

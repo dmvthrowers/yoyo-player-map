@@ -1,6 +1,47 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createAdminClient } from '@/lib/supabase/admin';
+// Utility hooks to fetch countries, regions, and all cities for autocomplete
+function useCountries() {
+  const [countries, setCountries] = useState<{ id: number; code: string; name: string }[]>([]);
+  useEffect(() => {
+    (async () => {
+      const supabase = createAdminClient();
+      const { data } = await supabase.from('countries').select('id, code, name').order('name');
+      setCountries(data || []);
+    })();
+  }, []);
+  return countries;
+}
+
+function useRegions(countryId: number | null) {
+  const [regions, setRegions] = useState<{ id: number; code: string; name: string }[]>([]);
+  useEffect(() => {
+    if (!countryId) { setRegions([]); return; }
+    (async () => {
+      const supabase = createAdminClient();
+      const { data } = await supabase.from('regions').select('id, code, name').eq('country_id', countryId).order('name');
+      setRegions(data || []);
+    })();
+  }, [countryId]);
+  return regions;
+}
+
+function useAllCities(countryId: number | null, regionId: number | null) {
+  const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
+  useEffect(() => {
+    if (!countryId) { setCities([]); return; }
+    (async () => {
+      const supabase = createAdminClient();
+      let query = supabase.from('cities').select('id, name').eq('country_id', countryId);
+      if (regionId) query = query.eq('region_id', regionId);
+      const { data } = await query.order('name');
+      setCities(data || []);
+    })();
+  }, [countryId, regionId]);
+  return cities;
+}
 import Link from 'next/link';
 
 type EntityType = '' | 'person' | 'shop' | 'club';
@@ -9,9 +50,9 @@ interface FormState {
   entityType: EntityType;
   displayName: string;
   email: string;
-  city: string;
-  region: string;
-  country: string;
+  city_id: number | null;
+  region_id: number | null;
+  country_id: number | null;
   bio: string;
   // Person fields
   ageBand: '' | '13-17' | '18+';
@@ -45,9 +86,9 @@ const initial: FormState = {
   entityType: '',
   displayName: '',
   email: '',
-  city: '',
-  region: '',
-  country: 'US',
+  city_id: null,
+  region_id: null,
+  country_id: null,
   bio: '',
   ageBand: '',
   parentName: '',
@@ -135,9 +176,9 @@ export default function SubmitPage() {
       entityType: form.entityType,
       displayName: form.displayName,
       email: form.email,
-      city: form.city,
-      region: form.region || undefined,
-      country: form.country,
+      city_id: form.city_id,
+      region_id: form.region_id,
+      country_id: form.country_id,
       bio: form.bio || undefined,
       socials: {
         instagram: form.instagram || undefined,
@@ -478,43 +519,168 @@ export default function SubmitPage() {
             </>
           )}
 
+
+          {/* Normalized location selectors (replace with dropdowns/autocomplete) */}
+          {/* Country dropdown */}
           <div>
-            <label htmlFor="city" className="label">City or town *</label>
-            <input
-              id="city"
+            <label htmlFor="country_id" className="label">Country *</label>
+            <select
+              id="country_id"
               className="input"
               required
-              value={form.city}
-              onChange={(e) => update('city', e.target.value)}
-              placeholder="e.g. Dumfries"
-            />
+              value={form.country_id ?? ''}
+              onChange={e => {
+                const val = e.target.value ? Number(e.target.value) : null;
+                update('country_id', val);
+                update('region_id', null);
+                update('city_id', null);
+              }}
+            >
+              <option value="">Select country</option>
+              {useCountries().map(c => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
           </div>
+          {/* Region dropdown */}
+          <div>
+            <label htmlFor="region_id" className="label">State/region</label>
+            <select
+              id="region_id"
+              className="input"
+              value={form.region_id ?? ''}
+              onChange={e => {
+                const val = e.target.value ? Number(e.target.value) : null;
+                update('region_id', val);
+                update('city_id', null);
+              }}
+              disabled={!form.country_id}
+            >
+              <option value="">Select region</option>
+              {useRegions(form.country_id).map(r => (
+                <option key={r.id} value={r.id}>{r.name}</option>
+              ))}
+            </select>
+          </div>
+          {/* City autocomplete */}
+          <CityAutocomplete
+            countryId={form.country_id}
+            regionId={form.region_id}
+            cityId={form.city_id}
+            setCityId={id => update('city_id', id)}
+          />
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="region" className="label">State/region</label>
-              <input
-                id="region"
-                className="input"
-                value={form.region}
-                onChange={(e) => update('region', e.target.value)}
-                placeholder="e.g. VA"
-              />
-            </div>
-            <div>
-              <label htmlFor="country" className="label">Country *</label>
-              <input
-                id="country"
-                className="input"
-                required
-                maxLength={2}
-                value={form.country}
-                onChange={(e) => update('country', e.target.value.toUpperCase())}
-                placeholder="US"
-              />
-              <p className="text-xs text-navy/60 mt-1">2-letter code</p>
-            </div>
-          </div>
+// CityAutocomplete component
+function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
+  countryId: number | null;
+  regionId: number | null;
+  cityId: number | null;
+  setCityId: (id: number | null) => void;
+}) {
+  const allCities = useAllCities(countryId, regionId);
+  const [input, setInput] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedCity = allCities.find(c => c.id === cityId);
+
+  useEffect(() => {
+    setInput(selectedCity ? selectedCity.name : '');
+  }, [countryId, regionId, cityId]);
+
+  const filtered = input
+    ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
+    : allCities;
+
+  // Check if input is a new city (not in list, not empty)
+  const isNewCity = input.trim().length > 1 && !filtered.some(c => c.name.toLowerCase() === input.trim().toLowerCase());
+
+  async function handleAddCity() {
+    if (!countryId) return;
+    setAdding(true);
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('cities').insert({
+      name: input.trim(),
+      country_id: countryId,
+      region_id: regionId || null,
+    }).select('id').single();
+    setAdding(false);
+    if (data && data.id) {
+      setCityId(data.id);
+      setShowSuggestions(false);
+    } else {
+      alert('Failed to add city.');
+    }
+  }
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <label htmlFor="city_autocomplete" className="label">City or town *</label>
+      <input
+        id="city_autocomplete"
+        className="input"
+        required
+        ref={inputRef}
+        value={input}
+        onChange={e => {
+          setInput(e.target.value);
+          setShowSuggestions(true);
+          setCityId(null);
+        }}
+        onFocus={() => setShowSuggestions(true)}
+        autoComplete="off"
+        placeholder="Start typing your city..."
+        disabled={!countryId}
+      />
+      {showSuggestions && filtered.length > 0 && (
+        <ul style={{
+          position: 'absolute',
+          zIndex: 10,
+          background: 'white',
+          border: '1px solid #ccc',
+          width: '100%',
+          maxHeight: 180,
+          overflowY: 'auto',
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+        }}>
+          {filtered.slice(0, 20).map(city => (
+            <li
+              key={city.id}
+              style={{ padding: '8px', cursor: 'pointer', background: city.id === cityId ? '#f3f3f3' : undefined }}
+              onMouseDown={() => {
+                setInput(city.name);
+                setCityId(city.id);
+                setShowSuggestions(false);
+              }}
+            >
+              {city.name}
+            </li>
+          ))}
+        </ul>
+      )}
+      {showSuggestions && filtered.length === 0 && !isNewCity && (
+        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
+          No cities found.
+        </div>
+      )}
+      {showSuggestions && isNewCity && (
+        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
+          <button
+            type="button"
+            className="btn"
+            disabled={adding}
+            onMouseDown={handleAddCity}
+            style={{ width: '100%', textAlign: 'left' }}
+          >
+            {adding ? 'Adding...' : `Add "${input.trim()}" as a new city`}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
           {form.entityType === 'person' && (
             <p className="text-xs bg-cream border-l-4 border-brand-red p-3">
