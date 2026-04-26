@@ -199,8 +199,25 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
 }
 
 // Main page component
+const entityTypeInfo = {
+  person: {
+    icon: '🧑',
+    title: 'Person',
+    description: 'Add yourself as a yo-yo player!'
+  },
+  shop: {
+    icon: '🏪',
+    title: 'Shop',
+    description: 'Add a yo-yo shop or retailer.'
+  },
+  club: {
+    icon: '🎲',
+    title: 'Club',
+    description: 'Add a yo-yo club or meetup group.'
+  }
+};
+
 export default function SubmitPage() {
-  // ...existing code...
   // State and logic for the form
   const [form, setForm] = useState<FormState>({
     entityType: '',
@@ -237,8 +254,6 @@ export default function SubmitPage() {
   const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
 
-  // ...existing code...
-  // onSubmit handler
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.honeypot) return;
@@ -270,9 +285,6 @@ export default function SubmitPage() {
     }
   }
 
-  // ...existing code...
-  // Success state — three flavors based on whether the verification email was
-  // actually delivered, queued for later, or permanently failed.
   if (result?.ok) {
     const heading =
       result.emailStatus === 'queued' ? "Saved — email coming soon"
@@ -320,8 +332,6 @@ export default function SubmitPage() {
     );
   }
 
-  // ...existing code...
-  // Entity type picker (step 1)
   if (!form.entityType) {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
@@ -357,8 +367,6 @@ export default function SubmitPage() {
     );
   }
 
-  // ...existing code...
-  // Form (step 2)
   const entityInfo = entityTypeInfo[form.entityType];
 
   return (
