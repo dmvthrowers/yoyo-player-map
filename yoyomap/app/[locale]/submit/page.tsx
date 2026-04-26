@@ -82,153 +82,122 @@ interface FormState {
   honeypot: string;
 }
 
-const initial: FormState = {
-  entityType: '',
-  displayName: '',
-  email: '',
-  city_id: null,
-  region_id: null,
-  country_id: null,
-  bio: '',
-  ageBand: '',
-  parentName: '',
-  parentEmail: '',
-  relationship: '',
-  addressLine: '',
-  postalCode: '',
-  hours: '',
-  contactName: '',
-  authorizedRep: false,
-  clubMeetingInfo: '',
-  clubVenuePublic: false,
-  venueAddressLine: '',
-  venuePostalCode: '',
-  instagram: '',
-  youtube: '',
-  discord: '',
-  website: '',
-  consentPrivacy: false,
-  consentTerms: false,
-  consentPublic: false,
-  honeypot: '',
-};
 
-const entityTypeInfo: Record<Exclude<EntityType, ''>, { title: string; description: string; icon: React.ReactNode }> = {
-  person: {
-    title: 'Person',
-    description: 'Individual yo-yo thrower. Your location will be blurred to ~10 miles for privacy.',
-    icon: (
-      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4.4 3.6-8 8-8s8 3.6 8 8" />
-      </svg>
-    ),
-  },
-  shop: {
-    title: 'Yo-Yo Shop',
-    description: 'Physical retail store. Your exact address will be shown on the map.',
-    icon: (
-      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-  },
-  club: {
-    title: 'Yo-Yo Club',
-    description: 'Local meet-up group. Choose whether to show exact venue or general area.',
-    icon: (
-      <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    ),
-  },
-};
+// CityAutocomplete component and props interface
+interface CityAutocompleteProps {
+  countryId: number | null;
+  regionId: number | null;
+  cityId: number | null;
+  setCityId: (id: number | null) => void;
+}
 
-export default function SubmitPage() {
-  const [form, setForm] = useState<FormState>(initial);
-  const [submitting, setSubmitting] = useState(false);
-  const [result, setResult] = useState<null | {
-    ok: boolean;
-    message: string;
-    entityType?: EntityType;
-    isMinor?: boolean;
-    emailStatus?: 'sent' | 'queued' | 'failed' | 'partial_failed';
-    retryAt?: string;
-  }>(null);
+function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutocompleteProps) {
+  const allCities = useAllCities(countryId, regionId);
+  const [input, setInput] = useState('');
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [adding, setAdding] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const selectedCity = allCities.find(c => c.id === cityId);
 
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((f) => ({ ...f, [key]: value }));
+  useEffect(() => {
+    setInput(selectedCity ? selectedCity.name : '');
+  }, [countryId, regionId, cityId]);
+
+  const filtered = input
+    ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
+    : allCities;
+
+  // Check if input is a new city (not in list, not empty)
+  const isNewCity = input.trim().length > 1 && !filtered.some(c => c.name.toLowerCase() === input.trim().toLowerCase());
+
+  async function handleAddCity() {
+    if (!countryId) return;
+    setAdding(true);
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from('cities').insert({
+      name: input.trim(),
+      country_id: countryId,
+      region_id: regionId || null,
+    }).select('id').single();
+    setAdding(false);
+    if (data && data.id) {
+      setCityId(data.id);
+      setShowSuggestions(false);
+    } else {
+      alert('Failed to add city.');
+    }
   }
 
-  const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
+  return (
+    <div style={{ position: 'relative' }}>
+      <label htmlFor="city_autocomplete" className="label">City or town *</label>
+      <input
+        id="city_autocomplete"
+        className="input"
+        required
+        ref={inputRef}
+        value={input}
+        onChange={e => {
+          setInput(e.target.value);
+          setShowSuggestions(true);
+          setCityId(null);
+        }}
+        onFocus={() => setShowSuggestions(true)}
+        autoComplete="off"
+        placeholder="Start typing your city..."
+        disabled={!countryId}
+      />
+      {showSuggestions && filtered.length > 0 && (
+        <ul style={{
+          position: 'absolute',
+          zIndex: 10,
+          background: 'white',
+          border: '1px solid #ccc',
+          width: '100%',
+          maxHeight: 180,
+          overflowY: 'auto',
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+        }}>
+          {filtered.slice(0, 20).map(city => (
+            <li
+              key={city.id}
+              style={{ padding: '8px', cursor: 'pointer', background: city.id === cityId ? '#f3f3f3' : undefined }}
+              onMouseDown={() => {
+                setInput(city.name);
+                setCityId(city.id);
+                setShowSuggestions(false);
+              }}
+            >
+              {city.name}
+            </li>
+          ))}
+        </ul>
+      )}
+      {showSuggestions && filtered.length === 0 && !isNewCity && (
+        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
+          No cities found.
+        </div>
+      )}
+      {showSuggestions && isNewCity && (
+        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
+          <button
+            type="button"
+            className="btn"
+            disabled={adding}
+            onMouseDown={handleAddCity}
+            style={{ width: '100%', textAlign: 'left' }}
+          >
+            {adding ? 'Adding...' : `Add "${input.trim()}" as a new city`}
+          </button>
+        </div>
+      )}
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSubmitting(true);
-    setResult(null);
+    </div>
+  );
 
-    // Build payload based on entity type
-    const basePayload = {
-      entityType: form.entityType,
-      displayName: form.displayName,
-      email: form.email,
-      city_id: form.city_id,
-      region_id: form.region_id,
-      country_id: form.country_id,
-      bio: form.bio || undefined,
-      socials: {
-        instagram: form.instagram || undefined,
-        youtube: form.youtube || undefined,
-        discord: form.discord || undefined,
-        website: form.website || undefined,
-      },
-      consentPrivacy: form.consentPrivacy,
-      consentTerms: form.consentTerms,
-      consentPublic: form.consentPublic,
-      honeypot: form.honeypot,
-    };
 
-    let payload;
-    switch (form.entityType) {
-      case 'person':
-        payload = {
-          ...basePayload,
-          ageBand: form.ageBand,
-          parentName: form.parentName || undefined,
-          parentEmail: form.parentEmail || undefined,
-          relationship: form.relationship || undefined,
-        };
-        break;
-      case 'shop':
-        payload = {
-          ...basePayload,
-          addressLine: form.addressLine,
-          postalCode: form.postalCode || undefined,
-          hours: form.hours || undefined,
-          contactName: form.contactName,
-          authorizedRep: form.authorizedRep,
-        };
-        break;
-      case 'club':
-        payload = {
-          ...basePayload,
-          clubMeetingInfo: form.clubMeetingInfo,
-          clubVenuePublic: form.clubVenuePublic,
-          venueAddressLine: form.venueAddressLine || undefined,
-          venuePostalCode: form.venuePostalCode || undefined,
-          contactName: form.contactName,
-          authorizedRep: form.authorizedRep,
-        };
-        break;
-      default:
-        setResult({ ok: false, message: 'Please select what type of entry you want to add.' });
-        setSubmitting(false);
-        return;
-    }
 
     try {
       const res = await fetch('/api/submit', {
@@ -562,6 +531,9 @@ export default function SubmitPage() {
               ))}
             </select>
           </div>
+
+
+
           {/* City autocomplete */}
           <CityAutocomplete
             countryId={form.country_id}
@@ -569,118 +541,6 @@ export default function SubmitPage() {
             cityId={form.city_id}
             setCityId={id => update('city_id', id)}
           />
-
-// CityAutocomplete component
-function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
-  countryId: number | null;
-  regionId: number | null;
-  cityId: number | null;
-  setCityId: (id: number | null) => void;
-}) {
-  const allCities = useAllCities(countryId, regionId);
-  const [input, setInput] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [adding, setAdding] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const selectedCity = allCities.find(c => c.id === cityId);
-
-  useEffect(() => {
-    setInput(selectedCity ? selectedCity.name : '');
-  }, [countryId, regionId, cityId]);
-
-  const filtered = input
-    ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
-    : allCities;
-
-  // Check if input is a new city (not in list, not empty)
-  const isNewCity = input.trim().length > 1 && !filtered.some(c => c.name.toLowerCase() === input.trim().toLowerCase());
-
-  async function handleAddCity() {
-    if (!countryId) return;
-    setAdding(true);
-    const supabase = createAdminClient();
-    const { data, error } = await supabase.from('cities').insert({
-      name: input.trim(),
-      country_id: countryId,
-      region_id: regionId || null,
-    }).select('id').single();
-    setAdding(false);
-    if (data && data.id) {
-      setCityId(data.id);
-      setShowSuggestions(false);
-    } else {
-      alert('Failed to add city.');
-    }
-  }
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <label htmlFor="city_autocomplete" className="label">City or town *</label>
-      <input
-        id="city_autocomplete"
-        className="input"
-        required
-        ref={inputRef}
-        value={input}
-        onChange={e => {
-          setInput(e.target.value);
-          setShowSuggestions(true);
-          setCityId(null);
-        }}
-        onFocus={() => setShowSuggestions(true)}
-        autoComplete="off"
-        placeholder="Start typing your city..."
-        disabled={!countryId}
-      />
-      {showSuggestions && filtered.length > 0 && (
-        <ul style={{
-          position: 'absolute',
-          zIndex: 10,
-          background: 'white',
-          border: '1px solid #ccc',
-          width: '100%',
-          maxHeight: 180,
-          overflowY: 'auto',
-          margin: 0,
-          padding: 0,
-          listStyle: 'none',
-        }}>
-          {filtered.slice(0, 20).map(city => (
-            <li
-              key={city.id}
-              style={{ padding: '8px', cursor: 'pointer', background: city.id === cityId ? '#f3f3f3' : undefined }}
-              onMouseDown={() => {
-                setInput(city.name);
-                setCityId(city.id);
-                setShowSuggestions(false);
-              }}
-            >
-              {city.name}
-            </li>
-          ))}
-        </ul>
-      )}
-      {showSuggestions && filtered.length === 0 && !isNewCity && (
-        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
-          No cities found.
-        </div>
-      )}
-      {showSuggestions && isNewCity && (
-        <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
-          <button
-            type="button"
-            className="btn"
-            disabled={adding}
-            onMouseDown={handleAddCity}
-            style={{ width: '100%', textAlign: 'left' }}
-          >
-            {adding ? 'Adding...' : `Add "${input.trim()}" as a new city`}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
 
           {form.entityType === 'person' && (
             <p className="text-xs bg-cream border-l-4 border-brand-red p-3">
