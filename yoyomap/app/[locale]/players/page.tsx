@@ -21,7 +21,9 @@ export default async function PlayersIndex() {
     if (cur) cur.count += 1;
     else countries.set(slug, { name: canonicalName, count: 1 });
   }
-  const sorted = [...countries.entries()].sort((a, b) => b[1].count - a[1].count);
+  const sorted = [...countries.entries()].sort((a, b) =>
+    a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' })
+  );
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

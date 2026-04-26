@@ -51,7 +51,11 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
     if (cur) cur.count += 1;
     else regions.set(slug, { name: regionLabel, count: 1 });
   }
-  const sorted = [...regions.entries()].sort((a, b) => b[1].count - a[1].count);
+  const sorted = [...regions.entries()].sort((a, b) => {
+    if (a[0] === '_other') return 1;
+    if (b[0] === '_other') return -1;
+    return a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' });
+  });
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

@@ -90,7 +90,9 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       if (cur) cur.count += 1;
       else cities.set(slug, { name: e.city, count: 1 });
     }
-    const sorted = [...cities.entries()].sort((a, b) => b[1].count - a[1].count);
+    const sorted = [...cities.entries()].sort((a, b) =>
+      a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' })
+    );
 
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
