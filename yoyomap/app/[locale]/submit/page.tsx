@@ -268,29 +268,87 @@ export default function SubmitPage() {
   });
   const [result, setResult] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [cityError, setCityError] = useState<string | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
   const countries = useCountries();
   const regions = useRegions(form.country_id);
 
+  useEffect(() => {
+    if (result && !result.ok) {
+      setTimeout(() => {
+        document.querySelector('[data-error="server"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
+    }
+  }, [result]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.honeypot) return;
+
+    // Client-side validation — collect all errors before touching the server
+    const errors: Record<string, string> = {};
+
+    if (form.entityType === 'person' && !form.ageBand) {
+      errors.ageBand = 'Please select your age group.';
+    }
+    if (form.country_id === null) {
+      errors.country_id = 'Please select your country.';
+    }
     if (form.city_id === null) {
       const cityInput = (document.getElementById('city_autocomplete') as HTMLInputElement)?.value?.trim();
-      setCityError(
-        cityInput
-          ? `Please select your city from the list, or click 'Add "${cityInput}"' to add it.`
-          : 'Please select your city from the list, or click \'Add [city name]\' to add it.'
-      );
+      errors.city_id = cityInput
+        ? `Please select your city from the list, or click 'Add "${cityInput}"' to add it.`
+        : "Please select your city from the list, or click 'Add [city name]' to add it.";
+    }
+    if (!form.consentPublic) {
+      errors.consentPublic = 'You must acknowledge that your entry will be publicly visible.';
+    }
+    if (!form.consentPrivacy) {
+      errors.consentPrivacy = 'You must accept the Privacy Policy.';
+    }
+    if (!form.consentTerms) {
+      errors.consentTerms = 'You must accept the Terms of Service.';
+    }
+    if ((form.entityType === 'shop' || form.entityType === 'club') && !form.authorizedRep) {
+      errors.authorizedRep = `You must confirm you are authorized to list this ${form.entityType === 'shop' ? 'business' : 'club'}.`;
+    }
+    if (isMinor) {
+      if (!form.parentName.trim()) errors.parentName = 'Parent or guardian name is required.';
+      if (!form.parentEmail.trim()) errors.parentEmail = 'Parent or guardian email is required.';
+      if (!form.relationship) errors.relationship = 'Please select the relationship.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setTimeout(() => {
+        document.querySelector('[data-error]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 50);
       return;
     }
-    setCityError(null);
+    setFormErrors({});
     setSubmitting(true);
-    const payload = Object.fromEntries(
-      Object.entries(form).filter(([, v]) => v !== '')
-    );
+
+    // Build socials as a nested object — the schema expects { socials: {...} }, not flat fields
+    const rawWebsite = form.website.trim();
+    const normalizedWebsite = rawWebsite && !rawWebsite.includes('://')
+      ? `https://${rawWebsite}`
+      : rawWebsite;
+
+    const socials: Record<string, string> = {};
+    if (form.instagram.trim()) socials.instagram = form.instagram.trim();
+    if (form.youtube.trim()) socials.youtube = form.youtube.trim();
+    if (form.discord.trim()) socials.discord = form.discord.trim();
+    if (normalizedWebsite) socials.website = normalizedWebsite;
+
+    const socialKeys = new Set(['instagram', 'youtube', 'discord', 'website']);
+    const payload = {
+      ...Object.fromEntries(
+        Object.entries(form).filter(([k, v]) => !socialKeys.has(k) && v !== '')
+      ),
+      ...(Object.keys(socials).length > 0 ? { socials } : {}),
+    };
+
     try {
       const res = await fetch('/api/submit', {
         method: 'POST',
@@ -423,6 +481,9 @@ export default function SubmitPage() {
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
+        {result && !result.ok && (
+          <div className="border-2 border-brand-red bg-brand-red/10 p-4 text-sm" data-error="server">{result.message}</div>
+        )}
         {/* Honeypot */}
         <div className="hidden" aria-hidden="true">
           <label>Do not fill this field</label>
@@ -502,6 +563,7 @@ export default function SubmitPage() {
                 </label>
               </div>
               <p className="text-xs text-navy/60 mt-1">You must be at least 13. Under 18 needs a parent or guardian to consent.</p>
+              {formErrors.ageBand && <p className="text-sm text-brand-red mt-1" data-error="ageBand">{formErrors.ageBand}</p>}
             </div>
           )}
 
@@ -599,6 +661,7 @@ export default function SubmitPage() {
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
+            {formErrors.country_id && <p className="text-sm text-brand-red mt-1" data-error="country_id">{formErrors.country_id}</p>}
           </div>
           {/* Region dropdown */}
           <div>
@@ -630,11 +693,11 @@ export default function SubmitPage() {
             cityId={form.city_id}
             setCityId={id => {
               update('city_id', id);
-              if (id !== null) setCityError(null);
+              if (id !== null) setFormErrors(e => { const n = { ...e }; delete n.city_id; return n; });
             }}
           />
-          {cityError && (
-            <p className="text-sm text-brand-red mt-1">{cityError}</p>
+          {formErrors.city_id && (
+            <p className="text-sm text-brand-red mt-1" data-error="city_id">{formErrors.city_id}</p>
           )}
 
           {form.entityType === 'person' && (
@@ -822,6 +885,7 @@ export default function SubmitPage() {
                 value={form.parentName}
                 onChange={(e) => update('parentName', e.target.value)}
               />
+              {formErrors.parentName && <p className="text-sm text-brand-red mt-1" data-error="parentName">{formErrors.parentName}</p>}
             </div>
             <div>
               <label htmlFor="parentEmail" className="label">Parent/guardian email *</label>
@@ -833,6 +897,7 @@ export default function SubmitPage() {
                 value={form.parentEmail}
                 onChange={(e) => update('parentEmail', e.target.value)}
               />
+              {formErrors.parentEmail && <p className="text-sm text-brand-red mt-1" data-error="parentEmail">{formErrors.parentEmail}</p>}
             </div>
             <div>
               <label htmlFor="relationship" className="label">Relationship *</label>
@@ -847,6 +912,7 @@ export default function SubmitPage() {
                 <option value="parent">Parent</option>
                 <option value="legal guardian">Legal guardian</option>
               </select>
+              {formErrors.relationship && <p className="text-sm text-brand-red mt-1" data-error="relationship">{formErrors.relationship}</p>}
             </div>
           </div>
         )}
@@ -855,61 +921,69 @@ export default function SubmitPage() {
         <div className="card space-y-4">
           <h2 className="text-2xl">Your consent</h2>
 
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              checked={form.consentPublic}
-              onChange={(e) => update('consentPublic', e.target.checked)}
-              className="mt-1"
-            />
-            <span className="text-sm">
-              I understand that the {form.entityType === 'person' ? 'display name, city, bio, and socials' : 'name, location, description, and socials'} will be <strong>publicly visible</strong> on the map.
-            </span>
-          </label>
-
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              checked={form.consentPrivacy}
-              onChange={(e) => update('consentPrivacy', e.target.checked)}
-              className="mt-1"
-            />
-            <span className="text-sm">
-              I have read and accept the <Link href="/legal/privacy" target="_blank" className="text-brand-red underline">Privacy Policy</Link>.
-            </span>
-          </label>
-
-          <label className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              checked={form.consentTerms}
-              onChange={(e) => update('consentTerms', e.target.checked)}
-              className="mt-1"
-            />
-            <span className="text-sm">
-              I have read and accept the <Link href="/legal/terms" target="_blank" className="text-brand-red underline">Terms of Service</Link>.
-            </span>
-          </label>
-
-          {/* Authorized rep checkbox for shop/club */}
-          {(form.entityType === 'shop' || form.entityType === 'club') && (
+          <div>
             <label className="flex items-start gap-3">
               <input
                 type="checkbox"
-                checked={form.authorizedRep}
-                onChange={(e) => update('authorizedRep', e.target.checked)}
+                checked={form.consentPublic}
+                onChange={(e) => update('consentPublic', e.target.checked)}
                 className="mt-1"
               />
               <span className="text-sm">
-                I am authorized to list this {form.entityType === 'shop' ? 'business' : 'club'} on the map. *
+                I understand that the {form.entityType === 'person' ? 'display name, city, bio, and socials' : 'name, location, description, and socials'} will be <strong>publicly visible</strong> on the map.
               </span>
             </label>
+            {formErrors.consentPublic && <p className="text-sm text-brand-red mt-1" data-error="consentPublic">{formErrors.consentPublic}</p>}
+          </div>
+
+          <div>
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={form.consentPrivacy}
+                onChange={(e) => update('consentPrivacy', e.target.checked)}
+                className="mt-1"
+              />
+              <span className="text-sm">
+                I have read and accept the <Link href="/legal/privacy" target="_blank" className="text-brand-red underline">Privacy Policy</Link>.
+              </span>
+            </label>
+            {formErrors.consentPrivacy && <p className="text-sm text-brand-red mt-1" data-error="consentPrivacy">{formErrors.consentPrivacy}</p>}
+          </div>
+
+          <div>
+            <label className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={form.consentTerms}
+                onChange={(e) => update('consentTerms', e.target.checked)}
+                className="mt-1"
+              />
+              <span className="text-sm">
+                I have read and accept the <Link href="/legal/terms" target="_blank" className="text-brand-red underline">Terms of Service</Link>.
+              </span>
+            </label>
+            {formErrors.consentTerms && <p className="text-sm text-brand-red mt-1" data-error="consentTerms">{formErrors.consentTerms}</p>}
+          </div>
+
+          {/* Authorized rep checkbox for shop/club */}
+          {(form.entityType === 'shop' || form.entityType === 'club') && (
+            <div>
+              <label className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={form.authorizedRep}
+                  onChange={(e) => update('authorizedRep', e.target.checked)}
+                  className="mt-1"
+                />
+                <span className="text-sm">
+                  I am authorized to list this {form.entityType === 'shop' ? 'business' : 'club'} on the map. *
+                </span>
+              </label>
+              {formErrors.authorizedRep && <p className="text-sm text-brand-red mt-1" data-error="authorizedRep">{formErrors.authorizedRep}</p>}
+            </div>
           )}
         </div>
-
-        {result && !result.ok && (
-          <div className="border-2 border-brand-red bg-brand-red/10 p-4 text-sm">{result.message}</div>
-        )}
 
         <button type="submit" className="btn-primary w-full" disabled={submitting}>
           {submitting ? 'Submitting...' : `Submit ${entityInfo.title}`}
