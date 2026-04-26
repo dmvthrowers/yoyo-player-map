@@ -290,11 +290,11 @@ async function preparePersonEntry(
   if (!geo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
-      const geo = await geocodeCity({
-        city: loc.cityName,
-        region: loc.regionName || undefined,
-        country: loc.countryCode,
-      });
+
+  const jittered = jitterCoords(geo.lat, geo.lng);
+
+  return {
+    columns: {
       entity_type: 'person',
       display_name: data.displayName,
       email: data.email,
