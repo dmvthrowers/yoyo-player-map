@@ -261,6 +261,7 @@ export default function SubmitPage() {
   });
   const [result, setResult] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [cityError, setCityError] = useState<string | null>(null);
   const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
   const countries = useCountries();
@@ -269,6 +270,16 @@ export default function SubmitPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.honeypot) return;
+    if (form.city_id === null) {
+      const cityInput = (document.getElementById('city_autocomplete') as HTMLInputElement)?.value?.trim();
+      setCityError(
+        cityInput
+          ? `Please select your city from the list, or click 'Add "${cityInput}"' to add it.`
+          : 'Please select your city from the list, or click \'Add [city name]\' to add it.'
+      );
+      return;
+    }
+    setCityError(null);
     setSubmitting(true);
     const payload = { ...form };
     try {
@@ -608,8 +619,14 @@ export default function SubmitPage() {
             countryId={form.country_id}
             regionId={form.region_id}
             cityId={form.city_id}
-            setCityId={id => update('city_id', id)}
+            setCityId={id => {
+              update('city_id', id);
+              if (id !== null) setCityError(null);
+            }}
           />
+          {cityError && (
+            <p className="text-sm text-brand-red mt-1">{cityError}</p>
+          )}
 
           {form.entityType === 'person' && (
             <p className="text-xs bg-cream border-l-4 border-brand-red p-3">

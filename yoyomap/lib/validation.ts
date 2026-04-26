@@ -11,9 +11,9 @@ const emailSchema = z.string().trim().email().toLowerCase();
 
 
 // Normalized location schemas: use foreign keys (numbers)
-const cityIdSchema = z.number().int().positive();
+const cityIdSchema = z.number({ invalid_type_error: 'Please select a city from the list' }).int().positive();
 const regionIdSchema = z.number().int().positive().optional().or(z.literal(null));
-const countryIdSchema = z.number().int().positive();
+const countryIdSchema = z.number({ invalid_type_error: 'Please select a country' }).int().positive();
 
 const bioSchema = z.string().trim().max(280).optional().or(z.literal(''));
 
