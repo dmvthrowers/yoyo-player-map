@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import MapClient from './MapClient';
+import MapInfoPanel from './MapInfoPanel';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export const metadata: Metadata = {
@@ -75,18 +76,7 @@ export default async function MapPage() {
 
   return (
     <div className="h-[calc(100vh-180px)] relative">
-      <div className="absolute top-4 left-4 z-[500] bg-cream border-2 border-navy p-3 max-w-xs shadow-lg">
-        <p className="font-display text-xl mb-1">YoYo Map</p>
-        <p className="text-xs text-navy/80 mb-2">
-          <strong>{counts.person}</strong> thrower{counts.person === 1 ? '' : 's'} 
-          {counts.shop > 0 && <>, <strong>{counts.shop}</strong> shop{counts.shop === 1 ? '' : 's'}</>}
-          {counts.club > 0 && <>, <strong>{counts.club}</strong> club{counts.club === 1 ? '' : 's'}</>}
-        </p>
-        <p className="text-[10px] text-navy/60 mb-2">
-          People pins are blurred ~10mi. Shops and public club venues show exact locations.
-        </p>
-        <a href="/submit" className="btn-primary text-xs py-2 px-3 w-full">Add to the map</a>
-      </div>
+      <MapInfoPanel counts={counts} />
       <Suspense fallback={<div className="p-8">Loading map...</div>}>
         <MapClient entries={entries} />
       </Suspense>
