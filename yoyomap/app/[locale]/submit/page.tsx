@@ -215,6 +215,54 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
   );
 }
 
+function SubmitToast({ onClose }: { onClose: () => void }) {
+  const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    const fade = setTimeout(() => setFading(true), 5000);
+    const close = setTimeout(onClose, 6000);
+    return () => { clearTimeout(fade); clearTimeout(close); };
+  }, [onClose]);
+
+  return (
+    <>
+      <style>{`
+        @keyframes toast-slide-in {
+          from { transform: translateX(calc(100% + 1.5rem)); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-slide-in { animation: toast-slide-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      `}</style>
+      <div
+        role="alert"
+        className={`toast-slide-in fixed top-4 right-4 z-50 w-80 bg-white border-l-4 border-brand-red shadow-xl p-4 transition-opacity duration-700 ${fading ? 'opacity-0' : 'opacity-100'}`}
+      >
+        <div className="flex items-start gap-3">
+          <div className="flex-shrink-0 mt-0.5">
+            <svg className="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-navy text-sm">Check your email!</p>
+            <p className="text-navy/70 text-xs mt-0.5 leading-relaxed">Click the link we just sent you to verify your listing.</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Dismiss"
+            className="flex-shrink-0 text-navy/30 hover:text-navy/70 transition-colors ml-1"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // Main page component
 const entityTypeInfo = {
   person: {
@@ -268,6 +316,7 @@ export default function SubmitPage() {
   });
   const [result, setResult] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
@@ -359,6 +408,7 @@ export default function SubmitPage() {
       if (!res.ok) {
         setResult({ ok: false, message: data.error?.message || 'Something went wrong. Please try again.' });
       } else {
+        setShowToast(true);
         setResult({
           ok: true,
           message: data.message,
@@ -376,9 +426,11 @@ export default function SubmitPage() {
   }
 
   if (result?.ok) {
-    const heading =
-      result.emailStatus === 'queued' ? "Saved — email coming soon"
-      : result.emailStatus === 'failed' ? "Saved — email trouble"
+    const isEmailTrouble = result.emailStatus === 'failed';
+    const isQueued = result.emailStatus === 'queued';
+
+    const heading = isQueued ? "Saved — email coming soon"
+      : isEmailTrouble ? "Saved — email trouble"
       : "Check your email";
 
     const retryHuman = result.retryAt
@@ -386,39 +438,90 @@ export default function SubmitPage() {
       : null;
 
     return (
-      <div className="max-w-xl mx-auto px-4 py-16">
-        <div className="card text-center">
-          <h1 className="text-3xl mb-4">{heading}</h1>
-          <p className="text-navy/80 mb-4">{result.message}</p>
+      <>
+        {showToast && <SubmitToast onClose={() => setShowToast(false)} />}
+        <div className="max-w-xl mx-auto px-4 py-16">
+          <div className="card text-center">
 
-          {result.emailStatus === 'queued' && retryHuman && (
-            <p className="text-sm bg-cream p-4 border-l-4 border-brand-red text-left">
-              <strong>Expected delivery:</strong> by {retryHuman} (your local time).<br />
-              You don&apos;t need to do anything — the email is queued and will send automatically.
+            {/* 3-step progress indicator */}
+            {!isEmailTrouble && (
+              <div className="flex items-center justify-center mb-6">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-9 h-9 rounded-full bg-brand-red flex items-center justify-center">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-semibold text-brand-red whitespace-nowrap">Submitted</span>
+                </div>
+                <div className="w-8 h-0.5 bg-brand-red mb-4 flex-shrink-0" />
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-9 h-9 rounded-full border-2 border-brand-red bg-cherry-pink flex items-center justify-center animate-pulse">
+                    <svg className="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs font-semibold text-brand-red whitespace-nowrap">Verify email</span>
+                </div>
+                <div className="w-8 h-0.5 bg-navy/20 mb-4 flex-shrink-0" />
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-9 h-9 rounded-full border-2 border-navy/20 flex items-center justify-center">
+                    <svg className="w-5 h-5 text-navy/30" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span className="text-xs text-navy/40 whitespace-nowrap">On the map</span>
+                </div>
+              </div>
+            )}
+
+            <h1 className="text-3xl mb-2">{heading}</h1>
+
+            {!isEmailTrouble && !isQueued && (
+              <p className="text-navy/80 font-medium mb-3">
+                Your pin won&apos;t appear on the map until you click the verification link. Check your spam folder if you don&apos;t see it within a few minutes.
+              </p>
+            )}
+
+            <p className="text-navy/80 mb-4">{result.message}</p>
+
+            {isQueued && retryHuman && (
+              <p className="text-sm bg-cream p-4 border-l-4 border-brand-red text-left">
+                <strong>Expected delivery:</strong> by {retryHuman} (your local time).<br />
+                You don&apos;t need to do anything — the email is queued and will send automatically.
+              </p>
+            )}
+
+            {isEmailTrouble && (
+              <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30 text-left">
+                Please email <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">dmvthrowers@gmail.com</a> and mention the email address you used so we can finish verifying your entry.
+              </p>
+            )}
+
+            {result.isMinor && !isQueued && !isEmailTrouble && (
+              <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30">
+                We also sent a consent request to your parent or guardian. Your entry will appear on the map once they confirm.
+              </p>
+            )}
+
+            <p className="text-xs text-navy/60 mt-6 text-left leading-relaxed">
+              Once verified, you&apos;ll appear on the map within a few minutes. Showing up in
+              Google search for your city can take 1–2 weeks — that&apos;s normal and out of
+              our control.
             </p>
-          )}
 
-          {result.emailStatus === 'failed' && (
-            <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30 text-left">
-              Please email <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">dmvthrowers@gmail.com</a> and mention the email address you used so we can finish verifying your entry.
-            </p>
-          )}
+            {!isEmailTrouble && (
+              <p className="text-xs text-navy/60 mt-2">
+                Didn&apos;t get it?{' '}
+                <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">Email dmvthrowers@gmail.com</a>
+              </p>
+            )}
 
-          {result.isMinor && result.emailStatus !== 'queued' && result.emailStatus !== 'failed' && (
-            <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30">
-              We also sent a consent request to your parent or guardian. Your entry will appear on the map once they confirm.
-            </p>
-          )}
-
-          <p className="text-xs text-navy/60 mt-6 text-left leading-relaxed">
-            Once verified, you&apos;ll appear on the map within a few minutes. Showing up in
-            Google search for your city can take 1–2 weeks — that&apos;s normal and out of
-            our control.
-          </p>
-
-          <Link href="/" className="btn-ghost mt-6 inline-block">Back to home</Link>
+            <Link href="/" className="btn-ghost mt-6 inline-block">Back to home</Link>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -984,6 +1087,10 @@ export default function SubmitPage() {
             </div>
           )}
         </div>
+
+        <p className="text-sm text-navy/60 text-center bg-cream border border-navy/10 p-3">
+          After submitting, we&apos;ll email you a verification link. Your listing won&apos;t go live until you click it.
+        </p>
 
         <button type="submit" className="btn-primary w-full" disabled={submitting}>
           {submitting ? 'Submitting...' : `Submit ${entityInfo.title}`}
