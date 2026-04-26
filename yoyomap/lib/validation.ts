@@ -147,9 +147,9 @@ export type ClubInput = z.infer<typeof clubSchema>;
 export const legacySubmitSchema = z.object({
   displayName: displayNameSchema,
   email: emailSchema,
-  city: citySchema,
-  region: regionSchema,
-  country: countrySchema,
+  city_id: cityIdSchema,
+  region_id: regionIdSchema,
+  country_id: countryIdSchema,
   bio: bioSchema,
   ageBand: z.enum(['13-17', '18+']),
   socials: socialsSchema,

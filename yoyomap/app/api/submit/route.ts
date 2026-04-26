@@ -95,13 +95,13 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   let entryData;
   switch (data.entityType) {
     case 'person':
-      entryData = await preparePersonEntry(data, ip);
+      entryData = await preparePersonEntry(data, ip, supabase);
       break;
     case 'shop':
-      entryData = await prepareShopEntry(data, ip);
+      entryData = await prepareShopEntry(data, ip, supabase);
       break;
     case 'club':
-      entryData = await prepareClubEntry(data, ip);
+      entryData = await prepareClubEntry(data, ip, supabase);
       break;
   }
 
@@ -245,6 +245,27 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 // Entry preparation functions
 // =============================================================================
 
+async function resolveLocationNames(
+  supabase: ReturnType<typeof createAdminClient>,
+  cityId: number,
+  regionId: number | null | undefined,
+  countryId: number,
+): Promise<{ cityName: string; regionName: string | null; countryCode: string } | null> {
+  const [cityRes, countryRes, regionRes] = await Promise.all([
+    supabase.from('cities').select('name').eq('id', cityId).single(),
+    supabase.from('countries').select('code').eq('id', countryId).single(),
+    regionId
+      ? supabase.from('regions').select('name').eq('id', regionId).single()
+      : Promise.resolve({ data: null, error: null }),
+  ]);
+  if (cityRes.error || !cityRes.data || countryRes.error || !countryRes.data) return null;
+  return {
+    cityName: cityRes.data.name,
+    regionName: regionRes.data?.name ?? null,
+    countryCode: countryRes.data.code,
+  };
+}
+
 interface PreparedEntry {
   columns: Record<string, unknown>;
 }
@@ -253,34 +274,41 @@ interface PrepareError {
   error: string;
 }
 
-async function preparePersonEntry(data: PersonInput, ip: string): Promise<PreparedEntry | PrepareError> {
-  // Geocode the city
+async function preparePersonEntry(
+  data: PersonInput,
+  ip: string,
+  supabase: ReturnType<typeof createAdminClient>,
+): Promise<PreparedEntry | PrepareError> {
+  const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
+  if (!loc) return { error: "We couldn't resolve your location. Please try again." };
+
   const geo = await geocodeCity({
-    city: data.city,
-    region: data.region || undefined,
-    country: data.country,
+    city: loc.cityName,
+    region: loc.regionName || undefined,
+    country: loc.countryCode,
   });
   if (!geo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
-
-  // Apply jitter for privacy
-  const jittered = jitterCoords(geo.lat, geo.lng);
-
-  return {
-    columns: {
+      const geo = await geocodeCity({
+        city: loc.cityName,
+        region: loc.regionName || undefined,
+        country: loc.countryCode,
+      });
       entity_type: 'person',
       display_name: data.displayName,
       email: data.email,
-      city: geo.city || data.city,
-      region: data.region || geo.region || null,
-      country: data.country || geo.country || 'US',
+      city_id: data.city_id,
+      region_id: data.region_id ?? null,
+      country_id: data.country_id,
+      city: geo.city || loc.cityName,
+      region: loc.regionName || geo.region || null,
+      country: geo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
       lat: jittered.lat,
       lng: jittered.lng,
       age_band: data.ageBand,
-      // Null out shop/club fields
       exact_lat: null,
       exact_lng: null,
       address_line: null,
@@ -294,29 +322,32 @@ async function preparePersonEntry(data: PersonInput, ip: string): Promise<Prepar
   };
 }
 
-async function prepareShopEntry(data: ShopInput, ip: string): Promise<PreparedEntry | PrepareError> {
-  // Geocode the street address for exact coords
+async function prepareShopEntry(
+  data: ShopInput,
+  ip: string,
+  supabase: ReturnType<typeof createAdminClient>,
+): Promise<PreparedEntry | PrepareError> {
+  const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
+  if (!loc) return { error: "We couldn't resolve your location. Please try again." };
+
   const exactGeo = await geocodeAddress({
     addressLine: data.addressLine,
-    city: data.city,
-    region: data.region || undefined,
+    city: loc.cityName,
+    region: loc.regionName || undefined,
     postalCode: data.postalCode || undefined,
-    country: data.country,
+    country: loc.countryCode,
   });
-
   if (!exactGeo) {
     return { error: "We couldn't find that address. Please check the spelling and try again." };
   }
 
-  // Also get city-level jittered coords as fallback (stored but not exposed)
   const cityGeo = await geocodeCity({
-    city: data.city,
-    region: data.region || undefined,
-    country: data.country,
+    city: loc.cityName,
+    region: loc.regionName || undefined,
+    country: loc.countryCode,
   });
   const jittered = cityGeo ? jitterCoords(cityGeo.lat, cityGeo.lng) : jitterCoords(exactGeo.lat, exactGeo.lng);
 
-  // Check if owner's email domain matches website domain
   const verifiedOwner = checkVerifiedOwner(data.email, data.socials);
 
   return {
@@ -324,21 +355,23 @@ async function prepareShopEntry(data: ShopInput, ip: string): Promise<PreparedEn
       entity_type: 'shop',
       display_name: data.displayName,
       email: data.email,
-      city: cityGeo?.city || exactGeo.city || data.city,
-      region: data.region || cityGeo?.region || exactGeo.region || null,
-      country: data.country || exactGeo.country || 'US',
+      city_id: data.city_id,
+      region_id: data.region_id ?? null,
+      country_id: data.country_id,
+      city: cityGeo?.city || exactGeo.city || loc.cityName,
+      region: loc.regionName || cityGeo?.region || exactGeo.region || null,
+      country: exactGeo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: jittered.lat,  // Jittered fallback
+      lat: jittered.lat,
       lng: jittered.lng,
-      exact_lat: exactGeo.lat,  // Exact coords for shop
+      exact_lat: exactGeo.lat,
       exact_lng: exactGeo.lng,
       address_line: data.addressLine,
       postal_code: data.postalCode || null,
       hours: data.hours || null,
       contact_name: data.contactName,
       verified_owner: verifiedOwner,
-      // Null out person/club fields
       age_band: null,
       club_meeting_info: null,
       club_venue_public: null,
@@ -346,37 +379,39 @@ async function prepareShopEntry(data: ShopInput, ip: string): Promise<PreparedEn
   };
 }
 
-async function prepareClubEntry(data: ClubInput, ip: string): Promise<PreparedEntry | PrepareError> {
-  // Geocode city for base coords
+async function prepareClubEntry(
+  data: ClubInput,
+  ip: string,
+  supabase: ReturnType<typeof createAdminClient>,
+): Promise<PreparedEntry | PrepareError> {
+  const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
+  if (!loc) return { error: "We couldn't resolve your location. Please try again." };
+
   const cityGeo = await geocodeCity({
-    city: data.city,
-    region: data.region || undefined,
-    country: data.country,
+    city: loc.cityName,
+    region: loc.regionName || undefined,
+    country: loc.countryCode,
   });
   if (!cityGeo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
 
-  // Apply jitter for the base coords
   const jittered = jitterCoords(cityGeo.lat, cityGeo.lng);
 
   let exactLat: number | null = null;
   let exactLng: number | null = null;
 
-  // If venue is public, geocode the venue address
   if (data.clubVenuePublic && data.venueAddressLine) {
     const venueGeo = await geocodeAddress({
       addressLine: data.venueAddressLine,
-      city: data.city,
-      region: data.region || undefined,
+      city: loc.cityName,
+      region: loc.regionName || undefined,
       postalCode: data.venuePostalCode || undefined,
-      country: data.country,
+      country: loc.countryCode,
     });
-
     if (!venueGeo) {
       return { error: "We couldn't find the venue address. Please check the spelling and try again." };
     }
-
     exactLat = venueGeo.lat;
     exactLng = venueGeo.lng;
   }
@@ -386,19 +421,21 @@ async function prepareClubEntry(data: ClubInput, ip: string): Promise<PreparedEn
       entity_type: 'club',
       display_name: data.displayName,
       email: data.email,
-      city: cityGeo.city || data.city,
-      region: data.region || cityGeo.region || null,
-      country: data.country || cityGeo.country || 'US',
+      city_id: data.city_id,
+      region_id: data.region_id ?? null,
+      country_id: data.country_id,
+      city: cityGeo.city || loc.cityName,
+      region: loc.regionName || cityGeo.region || null,
+      country: cityGeo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
       lat: jittered.lat,
       lng: jittered.lng,
-      exact_lat: exactLat,  // Only set if venue is public
+      exact_lat: exactLat,
       exact_lng: exactLng,
       club_meeting_info: data.clubMeetingInfo,
       club_venue_public: data.clubVenuePublic,
       contact_name: data.contactName,
-      // Null out person/shop fields
       age_band: null,
       address_line: null,
       postal_code: null,
