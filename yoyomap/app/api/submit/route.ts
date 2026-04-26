@@ -33,6 +33,13 @@ function checkVerifiedOwner(email: string, socials?: { website?: string }): bool
   }
 }
 
+function normalizeEmptyStrings(obj: unknown): unknown {
+  if (typeof obj !== 'object' || obj === null) return obj;
+  return Object.fromEntries(
+    Object.entries(obj as Record<string, unknown>).map(([k, v]) => [k, v === '' ? undefined : v])
+  );
+}
+
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
 
@@ -51,12 +58,13 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   // Try new discriminated union schema first, fall back to legacy for backwards compatibility
   let data: SubmitInput;
-  const parsed = submitSchema.safeParse(body);
+  const normalized = normalizeEmptyStrings(body);
+  const parsed = submitSchema.safeParse(normalized);
   if (parsed.success) {
     data = parsed.data;
   } else {
     // Try legacy schema (person-only, no entityType field)
-    const legacyParsed = legacySubmitSchema.safeParse(body);
+    const legacyParsed = legacySubmitSchema.safeParse(normalized);
     if (legacyParsed.success) {
       data = { ...legacyParsed.data, entityType: 'person' } as PersonInput;
     } else {

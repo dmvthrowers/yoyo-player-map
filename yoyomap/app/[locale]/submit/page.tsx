@@ -288,7 +288,9 @@ export default function SubmitPage() {
     }
     setCityError(null);
     setSubmitting(true);
-    const payload = { ...form };
+    const payload = Object.fromEntries(
+      Object.entries(form).filter(([, v]) => v !== '')
+    );
     try {
       const res = await fetch('/api/submit', {
         method: 'POST',
