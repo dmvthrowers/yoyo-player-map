@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
+import Link from 'next/link';
+
 // Utility hooks to fetch countries, regions, and all cities for autocomplete
 function useCountries() {
   const [countries, setCountries] = useState<{ id: number; code: string; name: string }[]>([]);
   useEffect(() => {
     (async () => {
-      const supabase = createAdminClient();
-      const { data } = await supabase.from('countries').select('id, code, name').order('name');
-      setCountries(data || []);
+      const res = await fetch('/api/locations?type=countries');
+      const data = await res.json();
+      setCountries(data.countries || []);
     })();
   }, []);
   return countries;
@@ -20,9 +21,9 @@ function useRegions(countryId: number | null) {
   useEffect(() => {
     if (!countryId) { setRegions([]); return; }
     (async () => {
-      const supabase = createAdminClient();
-      const { data } = await supabase.from('regions').select('id, code, name').eq('country_id', countryId).order('name');
-      setRegions(data || []);
+      const res = await fetch(`/api/locations?type=regions&countryId=${countryId}`);
+      const data = await res.json();
+      setRegions(data.regions || []);
     })();
   }, [countryId]);
   return regions;
@@ -33,16 +34,20 @@ function useAllCities(countryId: number | null, regionId: number | null) {
   useEffect(() => {
     if (!countryId) { setCities([]); return; }
     (async () => {
-      const supabase = createAdminClient();
-      let query = supabase.from('cities').select('id, name').eq('country_id', countryId);
-      if (regionId) query = query.eq('region_id', regionId);
-      const { data } = await query.order('name');
-      setCities(data || []);
+      const params = new URLSearchParams({
+        type: 'cities',
+        countryId: String(countryId),
+      });
+      if (regionId) {
+        params.set('regionId', String(regionId));
+      }
+      const res = await fetch(`/api/locations?${params.toString()}`);
+      const data = await res.json();
+      setCities(data.cities || []);
     })();
   }, [countryId, regionId]);
   return cities;
 }
-import Link from 'next/link';
 
 type EntityType = '' | 'person' | 'shop' | 'club';
 
@@ -113,18 +118,23 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
   async function handleAddCity() {
     if (!countryId) return;
     setAdding(true);
-    const supabase = createAdminClient();
-    const { data, error } = await supabase.from('cities').insert({
-      name: input.trim(),
-      country_id: countryId,
-      region_id: regionId || null,
-    }).select('id').single();
+    const res = await fetch('/api/locations', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: input.trim(),
+        countryId,
+        regionId: regionId || null,
+      }),
+    });
+    const payload = await res.json();
     setAdding(false);
-    if (data && data.id) {
-      setCityId(data.id);
+    if (res.ok && payload.city?.id) {
+      setCityId(payload.city.id);
+      setInput(payload.city.name);
       setShowSuggestions(false);
     } else {
-      alert('Failed to add city.');
+      alert(payload.error?.message || 'Failed to add city.');
     }
   }
 
@@ -253,6 +263,8 @@ export default function SubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
+  const countries = useCountries();
+  const regions = useRegions(form.country_id);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -563,7 +575,7 @@ export default function SubmitPage() {
               }}
             >
               <option value="">Select country</option>
-              {useCountries().map(c => (
+              {countries.map(c => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
@@ -583,7 +595,7 @@ export default function SubmitPage() {
               disabled={!form.country_id}
             >
               <option value="">Select region</option>
-              {useRegions(form.country_id).map(r => (
+              {regions.map(r => (
                 <option key={r.id} value={r.id}>{r.name}</option>
               ))}
             </select>
