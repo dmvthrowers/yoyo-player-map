@@ -43,7 +43,7 @@ export function canonicalCountryName(input: string): string {
   return COUNTRY_NORMALIZATION[slug] || input;
 }
 import { cache } from 'react';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { createAdminClient, hasAdminCredentials } from '@/lib/supabase/admin';
 import { slugify } from './locationSlug';
 
 export interface PublicEntry {
@@ -63,21 +63,31 @@ export interface PublicEntry {
 // pages that all call this only hit Supabase once per request lifecycle.
 // Combined with ISR (revalidate=3600) the cost is ~1 query per hour per page.
 export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from('map_entries')
-    .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');
-  if (error) {
-    console.error('[locations] failed to fetch entries:', error);
+  if (!hasAdminCredentials()) {
+    console.warn('[locations] admin Supabase env vars missing, returning empty dataset');
     return [];
   }
-  return (data ?? []).map((e) => ({
-    ...e,
-    entity_type: (e.entity_type ?? 'person') as PublicEntry['entity_type'],
-    socials: e.socials ?? {},
-    lat: e.lat ?? null,
-    lng: e.lng ?? null,
-  }));
+
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('map_entries')
+      .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');
+    if (error) {
+      console.error('[locations] failed to fetch entries:', error);
+      return [];
+    }
+    return (data ?? []).map((e) => ({
+      ...e,
+      entity_type: (e.entity_type ?? 'person') as PublicEntry['entity_type'],
+      socials: e.socials ?? {},
+      lat: e.lat ?? null,
+      lng: e.lng ?? null,
+    }));
+  } catch (e) {
+    console.error('[locations] fetch failed, returning empty dataset:', e);
+    return [];
+  }
 });
 
 export interface LocationKey {
