@@ -21,12 +21,11 @@ const TrustRow = () => {
     },
   ];
   return (
-    <section className="grid md:grid-cols-3 gap-0 border-y" style={{ borderColor: 'var(--border)' }}>
+    <section className="grid md:grid-cols-3 gap-0 border-y border-custom">
       {trust.map(({ title, subtitle, description }, i) => (
         <div
           key={title}
-          className={`text-center py-10 px-6 ${i > 0 ? 'md:border-l' : ''}`}
-          style={{ borderColor: 'var(--border)' }}
+          className={`text-center py-10 px-6 ${i > 0 ? 'md:border-l border-custom' : ''}`}
         >
           <p className="font-display text-5xl md:text-6xl font-black text-brand-red leading-none">{title}</p>
           <p className="eyebrow text-navy mt-3">{subtitle}</p>
@@ -79,8 +78,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 py-20 md:py-28 text-center">
           <p className="eyebrow text-brand-red mb-6">{t('home.hero.eyebrow')}</p>
           <h1
-            className="font-display font-black text-white mb-6"
-            style={{ fontSize: 'clamp(2.75rem, 8vw, 5.25rem)', lineHeight: 0.95 }}
+            className="font-display font-black text-white mb-6 hero-title"
           >
             {t('home.title')}
             <br />

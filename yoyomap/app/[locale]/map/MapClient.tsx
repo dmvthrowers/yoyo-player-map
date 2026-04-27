@@ -60,7 +60,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
         <button
           onClick={() => setFilterOpen((o) => !o)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
-          aria-expanded={!!filterOpen}
+          aria-expanded={filterOpen ? 'true' : 'false'}
           aria-label={filterOpen ? t('map.collapseFilters') : t('map.expandFilters')}
         >
           <span className="text-xs font-bold uppercase tracking-wider flex-1">{t('map.filter')}</span>

@@ -67,7 +67,7 @@ export default function Navigation() {
           {/* Hamburger button — visible only on mobile */}
           <button
             className="md:hidden p-2 -mr-1 text-navy-deep"
-            aria-expanded={menuOpen}
+            aria-expanded={menuOpen ? 'true' : 'false'}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((o) => !o)}
