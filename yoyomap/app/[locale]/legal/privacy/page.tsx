@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <h2 className="text-2xl mt-8 mb-3">{t(`legal.privacy.sections.${i}.title`)}</h2>
           {(() => {
             // Use t.raw to get the raw value, which can be array or string, and avoid boolean
-            const body = t.raw(`legal.privacy.sections.${i}.body`, { returnObjects: true });
+            const body = t.raw(`legal.privacy.sections.${i}.body`);
             if (Array.isArray(body)) {
               return body.map((p: string, idx: number) => <p key={idx}>{p}</p>);
             }
