@@ -109,23 +109,7 @@ export default function ReportPage() {
       </div>
     );
 }
-        </div>
-        <div>
-          <label htmlFor="reason" className="label">{t('report.reasonLabel')}</label>
-          <select id="reason" className="input" required>
-            <option value="">{t('report.reasonSelect')}</option>
-            <option value="incorrect">{t('report.reasonIncorrect')}</option>
-            <option value="duplicate">{t('report.reasonDuplicate')}</option>
-            <option value="spam">{t('report.reasonSpam')}</option>
-            <option value="closed">{t('report.reasonClosed')}</option>
-            <option value="other">{t('report.reasonOther')}</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="details" className="label">{t('report.detailsLabel')}</label>
-          <textarea id="details" className="input" rows={3} />
-        </div>
-        <button type="submit" className="btn">{t('report.submit')}</button>
+
       </form>
     </div>
   );

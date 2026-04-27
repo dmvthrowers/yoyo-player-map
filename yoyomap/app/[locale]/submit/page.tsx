@@ -14,108 +14,9 @@ function useCountries() {
       setCountries(data.countries || []);
     })();
   }, []);
-  return countries;
-}
-
-function useRegions(countryId: number | null) {
-  const [regions, setRegions] = useState<{ id: number; code: string; name: string }[]>([]);
-  useEffect(() => {
-    if (!countryId) { setRegions([]); return; }
-    (async () => {
-      const res = await fetch(`/api/locations?type=regions&countryId=${countryId}`);
-      const data = await res.json();
-      setRegions(data.regions || []);
-    })();
-  }, [countryId]);
-  return regions;
-}
-
-function useAllCities(countryId: number | null, regionId: number | null, refreshKey = 0) {
-  const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
-  useEffect(() => {
-    if (!countryId) { setCities([]); return; }
-    (async () => {
-      const params = new URLSearchParams({
-        type: 'cities',
-        countryId: String(countryId),
-      });
-      if (regionId) {
-        params.set('regionId', String(regionId));
-      }
-      const res = await fetch(`/api/locations?${params.toString()}`);
-      const data = await res.json();
-      setCities(data.cities || []);
-    })();
-  }, [countryId, regionId, refreshKey]);
-  return cities;
-}
-
-type EntityType = '' | 'person' | 'shop' | 'club';
-
-interface FormState {
-  entityType: EntityType;
-  displayName: string;
-  email: string;
-  city_id: number | null;
-  region_id: number | null;
-  country_id: number | null;
-  bio: string;
-  // Person fields
-  ageBand: '' | '13-17' | '18+';
-  parentName: string;
-  parentEmail: string;
-  relationship: '' | 'parent' | 'legal guardian';
-  // Shop fields
-  addressLine: string;
-  postalCode: string;
-  hours: string;
-  contactName: string;
-  authorizedRep: boolean;
-  // Club fields
-  clubMeetingInfo: string;
-  clubVenuePublic: boolean;
-  venueAddressLine: string;
-  venuePostalCode: string;
-  // Socials
-  instagram: string;
-  youtube: string;
-  discord: string;
-  website: string;
-  // Consent
-  consentPrivacy: boolean;
-  consentTerms: boolean;
-  consentPublic: boolean;
-  honeypot: string;
-}
-
-
-// CityAutocomplete component and props interface
-interface CityAutocompleteProps {
-  countryId: number | null;
-  regionId: number | null;
-  cityId: number | null;
-  setCityId: (id: number | null) => void;
-}
-
-function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutocompleteProps) {
-  const [refreshKey, setRefreshKey] = useState(0);
-  const allCities = useAllCities(countryId, regionId, refreshKey);
-  const [input, setInput] = useState('');
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [adding, setAdding] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const selectedCity = allCities.find(c => c.id === cityId);
-
-  useEffect(() => {
-    if (selectedCity) {
-      setInput(selectedCity.name);
-    } else if (!cityId) {
-      setInput('');
-    }
-    // If cityId is set but not in allCities yet, keep current input
-  }, [countryId, regionId, cityId, selectedCity]);
-
-  const filtered = input
+    setFormErrors({});
+    setSubmitting(true);
+    // ...existing code...
     ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
     : allCities;
 
@@ -482,52 +383,7 @@ export default function SubmitPage() {
       );
     }
 
-            {!isEmailTrouble && !isQueued && (
-              <p className="text-navy/80 font-medium mb-3">
-                Your pin won&apos;t appear on the map until you click the verification link. Check your spam folder if you don&apos;t see it within a few minutes.
-              </p>
-            )}
-
-            <p className="text-navy/80 mb-4">{result.message}</p>
-
-            {isQueued && retryHuman && (
-              <p className="text-sm bg-cream p-4 border-l-4 border-brand-red text-left">
-                <strong>Expected delivery:</strong> by {retryHuman} (your local time).<br />
-                You don&apos;t need to do anything — the email is queued and will send automatically.
-              </p>
-            )}
-
-            {isEmailTrouble && (
-              <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30 text-left">
-                Please email <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">dmvthrowers@gmail.com</a> and mention the email address you used so we can finish verifying your entry.
-              </p>
-            )}
-
-            {result.isMinor && !isQueued && !isEmailTrouble && (
-              <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30">
-                We also sent a consent request to your parent or guardian. Your entry will appear on the map once they confirm.
-              </p>
-            )}
-
-            <p className="text-xs text-navy/60 mt-6 text-left leading-relaxed">
-              Once verified, you&apos;ll appear on the map within a few minutes. Showing up in
-              Google search for your city can take 1–2 weeks — that&apos;s normal and out of
-              our control.
-            </p>
-
-            {!isEmailTrouble && (
-              <p className="text-xs text-navy/60 mt-2">
-                Didn&apos;t get it?{' '}
-                <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">Email dmvthrowers@gmail.com</a>
-              </p>
-            )}
-
-            <Link href="/" className="btn-ghost mt-6 inline-block">Back to home</Link>
-          </div>
-        </div>
-      </>
-    );
-  }
+// Removed duplicate/stray JSX block that was causing unterminated/invalid code at the end of the file
 
   if (!form.entityType) {
     return (
