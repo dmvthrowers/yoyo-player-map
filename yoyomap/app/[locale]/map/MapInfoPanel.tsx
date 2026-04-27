@@ -1,22 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 interface Props {
   counts: { person: number; shop: number; club: number };
 }
 
-export default function MapInfoPanel({ counts }: Props) {
   const [open, setOpen] = useState(true);
+  const t = useTranslations();
 
   useEffect(() => {
     if (window.innerWidth < 768) setOpen(false);
   }, []);
 
   const summary = [
-    `${counts.person} thrower${counts.person === 1 ? '' : 's'}`,
-    counts.shop > 0 ? `${counts.shop} shop${counts.shop === 1 ? '' : 's'}` : null,
-    counts.club > 0 ? `${counts.club} club${counts.club === 1 ? '' : 's'}` : null,
+    t('map.countThrowers', { count: counts.person }),
+    counts.shop > 0 ? t('map.countShops', { count: counts.shop }) : null,
+    counts.club > 0 ? t('map.countClubs', { count: counts.club }) : null,
   ]
     .filter(Boolean)
     .join(', ');
@@ -27,9 +28,9 @@ export default function MapInfoPanel({ counts }: Props) {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"
         aria-expanded={open}
-        aria-label={open ? 'Collapse info panel' : 'Expand info panel'}
+        aria-label={open ? t('map.collapseInfoPanel') : t('map.expandInfoPanel')}
       >
-        <span className="font-display text-base leading-none whitespace-nowrap">YoYo Map</span>
+        <span className="font-display text-base leading-none whitespace-nowrap">{t('map.title')}</span>
         <span className="text-[10px] text-navy/60 flex-1 truncate">{summary}</span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -51,10 +52,10 @@ export default function MapInfoPanel({ counts }: Props) {
       {open && (
         <div className="px-3 pb-3 border-t border-navy/10">
           <p className="text-[10px] text-navy/60 my-2">
-            People pins are blurred ~10mi. Shops and public club venues show exact locations.
+            {t('map.infoPanelDescription')}
           </p>
           <a href="/submit" className="btn-primary text-xs py-2 px-3 w-full text-center block">
-            Add to the map
+            {t('map.addToMap')}
           </a>
         </div>
       )}

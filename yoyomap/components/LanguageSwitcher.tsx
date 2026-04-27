@@ -4,17 +4,17 @@ import React from 'react';
 
 export default function LanguageSwitcher() {
   const locales = [
-    { code: 'en', label: 'English' },
-    { code: 'es', label: 'Español' },
-    { code: 'de', label: 'Deutsch' },
-    { code: 'zh', label: '中文' },
-    { code: 'ja', label: '日本語' },
-    { code: 'fr', label: 'Français' },
-    { code: 'pt', label: 'Português' },
-    { code: 'ru', label: 'Русский' },
-    { code: 'ar', label: 'العربية' },
-    { code: 'hi', label: 'हिन्दी' },
-    { code: 'ko', label: '한국어' },
+    { code: 'en', key: 'nav.languages.en' },
+    { code: 'es', key: 'nav.languages.es' },
+    { code: 'de', key: 'nav.languages.de' },
+    { code: 'zh', key: 'nav.languages.zh' },
+    { code: 'ja', key: 'nav.languages.ja' },
+    { code: 'fr', key: 'nav.languages.fr' },
+    { code: 'pt', key: 'nav.languages.pt' },
+    { code: 'ru', key: 'nav.languages.ru' },
+    { code: 'ar', key: 'nav.languages.ar' },
+    { code: 'hi', key: 'nav.languages.hi' },
+    { code: 'ko', key: 'nav.languages.ko' },
   ];
   const t = useTranslations();
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -36,7 +36,7 @@ export default function LanguageSwitcher() {
       >
         <option value="" disabled>{t('nav.languageSelect', { defaultValue: 'Select language' })}</option>
         {locales.map((l) => (
-          <option key={l.code} value={l.code}>{l.label}</option>
+          <option key={l.code} value={l.code}>{t(l.key)}</option>
         ))}
       </select>
     </div>
