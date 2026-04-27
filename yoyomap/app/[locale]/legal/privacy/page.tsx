@@ -20,11 +20,20 @@ export default function PrivacyPage() {
         <div key={i}>
           <h2 className="text-2xl mt-8 mb-3">{t(`legal.privacy.sections.${i}.title`)}</h2>
           {(() => {
-            const body = t(`legal.privacy.sections.${i}.body`, { returnObjects: true });
+            // Use t.raw to get the raw value, which can be array or string, and avoid boolean
+            const body = t.raw(`legal.privacy.sections.${i}.body`, { returnObjects: true });
             if (Array.isArray(body)) {
               return body.map((p: string, idx: number) => <p key={idx}>{p}</p>);
             }
-            return <p>{body}</p>;
+            if (typeof body === 'string') {
+              return <p>{body}</p>;
+            }
+            // fallback: try t() for string, or empty
+            try {
+              const fallback = t(`legal.privacy.sections.${i}.body`);
+              if (typeof fallback === 'string') return <p>{fallback}</p>;
+            } catch {}
+            return <p></p>;
           })()}
           {/* Render lists if present */}
           {i === 2 && (
