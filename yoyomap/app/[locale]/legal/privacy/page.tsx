@@ -19,13 +19,13 @@ export default function PrivacyPage() {
       {[...Array(12)].map((_, i) => (
         <div key={i}>
           <h2 className="text-2xl mt-8 mb-3">{t(`legal.privacy.sections.${i}.title`)}</h2>
-          {Array.isArray(t(`legal.privacy.sections.${i}.body`, { returnObjects: true })) ? (
-            t(`legal.privacy.sections.${i}.body`, { returnObjects: true }).map((p: string, idx: number) => (
-              <p key={idx}>{p}</p>
-            ))
-          ) : (
-            <p>{t(`legal.privacy.sections.${i}.body`)}</p>
-          )}
+          {(() => {
+            const body = t(`legal.privacy.sections.${i}.body`, { returnObjects: true });
+            if (Array.isArray(body)) {
+              return body.map((p: string, idx: number) => <p key={idx}>{p}</p>);
+            }
+            return <p>{body}</p>;
+          })()}
           {/* Render lists if present */}
           {i === 2 && (
             <>

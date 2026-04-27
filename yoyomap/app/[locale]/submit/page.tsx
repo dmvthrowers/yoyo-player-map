@@ -1,10 +1,43 @@
+}
+
 
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import type { SubmitInput } from '@/lib/validation';
+
+// Local superset type for all possible form fields
+type FormState = {
+  entityType: '' | 'person' | 'shop' | 'club';
+  displayName: string;
+  email: string;
+  city_id: number | null;
+  region_id: number | null;
+  country_id: number | null;
+  bio: string;
+  ageBand: '' | '13-17' | '18+';
+  parentName: string;
+  parentEmail: string;
+  relationship: '' | 'parent' | 'legal guardian';
+  addressLine: string;
+  postalCode: string;
+  hours: string;
+  contactName: string;
+  authorizedRep: boolean;
+  clubMeetingInfo: string;
+  clubVenuePublic: boolean;
+  venueAddressLine: string;
+  venuePostalCode: string;
+  instagram: string;
+  youtube: string;
+  discord: string;
+  website: string;
+  consentPrivacy: boolean;
+  consentTerms: boolean;
+  consentPublic: boolean;
+  honeypot: string;
+};
 
 // Utility hooks to fetch countries, regions, and all cities for autocomplete
 
@@ -127,7 +160,7 @@ const entityTypeInfo = {
 export default function SubmitPage() {
   const t = useTranslations();
   // State and logic for the form
-  const [form, setForm] = useState<SubmitInput>({
+  const [form, setForm] = useState<FormState>({
     entityType: '',
     displayName: '',
     email: '',
@@ -161,7 +194,7 @@ export default function SubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const update = (key: keyof SubmitInput, value: any) => setForm((f: SubmitInput) => ({ ...f, [key]: value }));
+  const update = (key: keyof FormState, value: any) => setForm((f: FormState) => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
   const countries = useCountries();
   const regions = useRegions(form.country_id);
@@ -819,7 +852,7 @@ export default function SubmitPage() {
                 className="input"
                 required={isMinor}
                 value={form.relationship}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => update('relationship', e.target.value as SubmitInput['relationship'])}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => update('relationship', e.target.value as FormState['relationship'])}
               >
                 <option value="">Select...</option>
                 <option value="parent">Parent</option>
