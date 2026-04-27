@@ -11,13 +11,8 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+export default async function Layout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
+  const { locale } = params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);

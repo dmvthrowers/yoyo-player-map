@@ -36,8 +36,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
+export default async function Page({ params }: { params: { country: string } }) {
   const t = useTranslations();
-  const { country } = await params;
+  const { country } = params;
   // Find all entries that match the canonical slug
   const allEntries = await entriesInCountry(country);
   if (allEntries.length === 0) notFound();
@@ -57,6 +58,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
     if (b[0] === '_other') return -1;
     return a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' });
   });
+
+  // ...existing code...
+}
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">

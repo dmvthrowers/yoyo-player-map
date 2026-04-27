@@ -7,6 +7,7 @@ interface Props {
   counts: { person: number; shop: number; club: number };
 }
 
+export default function MapInfoPanel({ counts }: Props) {
   const [open, setOpen] = useState(true);
   const t = useTranslations();
 
@@ -27,7 +28,7 @@ interface Props {
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"
-        aria-expanded={open}
+        aria-expanded={!!open}
         aria-label={open ? t('map.collapseInfoPanel') : t('map.expandInfoPanel')}
       >
         <span className="font-display text-base leading-none whitespace-nowrap">{t('map.title')}</span>

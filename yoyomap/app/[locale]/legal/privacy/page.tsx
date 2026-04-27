@@ -10,34 +10,27 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
+  const t = useTranslations();
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 prose-styles">
-      <h1 className="text-4xl mb-2">Privacy Policy</h1>
-      <p className="text-navy/70 mb-8">Effective date: April 20, 2026</p>
+      <h1 className="text-4xl mb-2">{t('legal.privacy.title')}</h1>
+      <p className="text-navy/70 mb-8">{t('legal.privacy.effectiveDate')}</p>
 
-      <h2 className="text-2xl mt-8 mb-3">Who we are</h2>
-      export default function PrivacyPage() {
-        const t = useTranslations();
-        return (
-          <div className="max-w-3xl mx-auto px-4 py-12 prose-styles">
-            <h1 className="text-4xl mb-2">{t('legal.privacy.title')}</h1>
-            <p className="text-navy/70 mb-8">{t('legal.privacy.effectiveDate')}</p>
-
-            {[...Array(12)].map((_, i) => (
-              <div key={i}>
-                <h2 className="text-2xl mt-8 mb-3">{t(`legal.privacy.sections.${i}.title`)}</h2>
-                {Array.isArray(t(`legal.privacy.sections.${i}.body`, { returnObjects: true })) ? (
-                  t(`legal.privacy.sections.${i}.body`, { returnObjects: true }).map((p: string, idx: number) => (
-                    <p key={idx}>{p}</p>
-                  ))
-                ) : (
-                  <p>{t(`legal.privacy.sections.${i}.body`)}</p>
-                )}
-                {/* Render lists if present */}
-                {i === 2 && (
-                  <>
-                    <h3 className="text-lg mt-4 mb-2 font-semibold">{t('legal.privacy.sections.2.listTitle')}</h3>
-                    <ul className="list-disc pl-6 space-y-1">
+      {[...Array(12)].map((_, i) => (
+        <div key={i}>
+          <h2 className="text-2xl mt-8 mb-3">{t(`legal.privacy.sections.${i}.title`)}</h2>
+          {Array.isArray(t(`legal.privacy.sections.${i}.body`, { returnObjects: true })) ? (
+            t(`legal.privacy.sections.${i}.body`, { returnObjects: true }).map((p: string, idx: number) => (
+              <p key={idx}>{p}</p>
+            ))
+          ) : (
+            <p>{t(`legal.privacy.sections.${i}.body`)}</p>
+          )}
+          {/* Render lists if present */}
+          {i === 2 && (
+            <>
+              <h3 className="text-lg mt-4 mb-2 font-semibold">{t('legal.privacy.sections.2.listTitle')}</h3>
+              <ul className="list-disc pl-6 space-y-1"> 
                       {[...Array(6)].map((_, j) => (
                         <li key={j}>{t(`legal.privacy.sections.2.list.${j}`)}</li>
                       ))}

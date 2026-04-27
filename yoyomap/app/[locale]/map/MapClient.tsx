@@ -22,6 +22,7 @@ const Map = dynamic(() => import('./Map'), {
   ),
 });
 
+export default function MapClient({ entries }: { entries: MapEntry[] }) {
   const [filterOpen, setFilterOpen] = useState(true);
   const t = useTranslations();
 
@@ -59,7 +60,7 @@ const Map = dynamic(() => import('./Map'), {
         <button
           onClick={() => setFilterOpen((o) => !o)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
-          aria-expanded={filterOpen}
+          aria-expanded={!!filterOpen}
           aria-label={filterOpen ? t('map.collapseFilters') : t('map.expandFilters')}
         >
           <span className="text-xs font-bold uppercase tracking-wider flex-1">{t('map.filter')}</span>
