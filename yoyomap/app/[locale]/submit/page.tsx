@@ -1,4 +1,3 @@
-}
 
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -49,6 +48,7 @@ function useCountries() {
     })();
   }, []);
   return countries;
+
 }
 
 function useRegions(countryId: number | null) {
