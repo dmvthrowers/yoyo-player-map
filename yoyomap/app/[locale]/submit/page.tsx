@@ -49,6 +49,8 @@ function useCountries() {
   }, []);
   return countries;
 
+
+"use client";
 }
 
 function useRegions(countryId: number | null) {
