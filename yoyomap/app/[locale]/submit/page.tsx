@@ -4,8 +4,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import type { SubmitInput } from '@/lib/validation';
 
 // Utility hooks to fetch countries, regions, and all cities for autocomplete
+
 function useCountries() {
   const [countries, setCountries] = useState<{ id: number; code: string; name: string }[]>([]);
   useEffect(() => {
@@ -16,6 +18,41 @@ function useCountries() {
     })();
   }, []);
   return countries;
+}
+
+function useRegions(countryId: number | null) {
+  const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
+  useEffect(() => {
+    if (!countryId) {
+      setRegions([]);
+      return;
+    }
+    (async () => {
+      const res = await fetch(`/api/locations?type=regions&country_id=${countryId}`);
+      const data = await res.json();
+      setRegions(data.regions || []);
+    })();
+  }, [countryId]);
+  return regions;
+}
+
+// Minimal stub for CityAutocomplete
+function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
+  countryId: number | null;
+  regionId: number | null;
+  cityId: number | null;
+  setCityId: (id: number | null) => void;
+}) {
+  // This should be replaced with a real autocomplete component
+  return (
+    <input
+      id="city_autocomplete"
+      className="input"
+      value={cityId ?? ''}
+      onChange={e => setCityId(Number(e.target.value) || null)}
+      placeholder="City ID (stub)"
+    />
+  );
 }
 
 
@@ -90,7 +127,7 @@ const entityTypeInfo = {
 export default function SubmitPage() {
   const t = useTranslations();
   // State and logic for the form
-  const [form, setForm] = useState<FormState>({
+  const [form, setForm] = useState<SubmitInput>({
     entityType: '',
     displayName: '',
     email: '',
@@ -124,7 +161,7 @@ export default function SubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const update = (key: keyof FormState, value: any) => setForm(f => ({ ...f, [key]: value }));
+  const update = (key: keyof SubmitInput, value: any) => setForm((f: SubmitInput) => ({ ...f, [key]: value }));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
   const countries = useCountries();
   const regions = useRegions(form.country_id);
@@ -567,7 +604,7 @@ export default function SubmitPage() {
             countryId={form.country_id}
             regionId={form.region_id}
             cityId={form.city_id}
-            setCityId={id => {
+            setCityId={(id: number | null) => {
               update('city_id', id);
               if (id !== null) setFormErrors(e => { const n = { ...e }; delete n.city_id; return n; });
             }}
@@ -782,7 +819,7 @@ export default function SubmitPage() {
                 className="input"
                 required={isMinor}
                 value={form.relationship}
-                onChange={(e) => update('relationship', e.target.value as FormState['relationship'])}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => update('relationship', e.target.value as SubmitInput['relationship'])}
               >
                 <option value="">Select...</option>
                 <option value="parent">Parent</option>
@@ -870,7 +907,8 @@ export default function SubmitPage() {
         </button>
 
         <p className="text-xs text-navy/60 text-center">
-          {t('submit.editDeleteInstruction', { profileLink: <Link href="/profile" className="underline">{t('submit.myEntry')}</Link> })}
+          {t('submit.editDeleteInstruction', { profileLink: t('submit.myEntry') })}
+          {/* To add a link, split the translation and render <Link> separately if needed. */}
         </p>
       </form>
     </div>
