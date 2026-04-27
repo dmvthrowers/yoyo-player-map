@@ -36,8 +36,8 @@ export async function generateStaticParams() {
 }
 
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country, region } = await params;
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { country, region } = params;
   const entries = await entriesInRegion(country, region);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? region;
@@ -48,9 +48,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-export default async function Page({ params }: { params: Promise<Params> }) {
+export default async function Page({ params }: { params: Params }) {
   const t = useTranslations();
-  const { country, region } = await params;
+  const { country, region } = params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
