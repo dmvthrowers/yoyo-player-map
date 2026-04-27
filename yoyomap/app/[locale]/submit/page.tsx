@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 // Utility hooks to fetch countries, regions, and all cities for autocomplete
 function useCountries() {
@@ -145,9 +146,10 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
     }
   }
 
+  const t = useTranslations();
   return (
     <div style={{ position: 'relative' }}>
-      <label htmlFor="city_autocomplete" className="label">City or town *</label>
+      <label htmlFor="city_autocomplete" className="label">{t('submit.cityOrTown')} *</label>
       <input
         id="city_autocomplete"
         className="input"
@@ -161,7 +163,7 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
         }}
         onFocus={() => setShowSuggestions(true)}
         autoComplete="off"
-        placeholder="Start typing your city..."
+        placeholder={t('submit.cityPlaceholder')}
         disabled={!countryId}
       />
       {showSuggestions && filtered.length > 0 && (
@@ -194,7 +196,7 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
       )}
       {showSuggestions && filtered.length === 0 && !isNewCity && (
         <div style={{ position: 'absolute', zIndex: 10, background: 'white', border: '1px solid #ccc', width: '100%', padding: 8 }}>
-          No cities found.
+          {t('submit.noCitiesFound')}
         </div>
       )}
       {showSuggestions && isNewCity && (
@@ -206,7 +208,7 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: CityAutoco
             onMouseDown={handleAddCity}
             style={{ width: '100%', textAlign: 'left' }}
           >
-            {adding ? 'Adding...' : `Add "${input.trim()}" as a new city`}
+            {adding ? t('submit.adding') : t('submit.addNewCity', { city: input.trim() })}
           </button>
         </div>
       )}
@@ -224,6 +226,7 @@ function SubmitToast({ onClose }: { onClose: () => void }) {
     return () => { clearTimeout(fade); clearTimeout(close); };
   }, [onClose]);
 
+  const t = useTranslations();
   return (
     <>
       <style>{`
@@ -244,13 +247,13 @@ function SubmitToast({ onClose }: { onClose: () => void }) {
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-bold text-navy text-sm">Check your email!</p>
-            <p className="text-navy/70 text-xs mt-0.5 leading-relaxed">Click the link we just sent you to verify your listing.</p>
+            <p className="font-bold text-navy text-sm">{t('submit.toastCheckEmail')}</p>
+            <p className="text-navy/70 text-xs mt-0.5 leading-relaxed">{t('submit.toastVerifyLink')}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Dismiss"
+            aria-label={t('common.dismiss')}
             className="flex-shrink-0 text-navy/30 hover:text-navy/70 transition-colors ml-1"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -283,6 +286,7 @@ const entityTypeInfo = {
 };
 
 export default function SubmitPage() {
+  const t = useTranslations();
   // State and logic for the form
   const [form, setForm] = useState<FormState>({
     entityType: '',
@@ -347,25 +351,25 @@ export default function SubmitPage() {
     if (form.city_id === null) {
       const cityInput = (document.getElementById('city_autocomplete') as HTMLInputElement)?.value?.trim();
       errors.city_id = cityInput
-        ? `Please select your city from the list, or click 'Add "${cityInput}"' to add it.`
-        : "Please select your city from the list, or click 'Add [city name]' to add it.";
+        ? t('submit.errorCitySelectAdd', { city: cityInput })
+        : t('submit.errorCitySelectAddGeneric');
     }
     if (!form.consentPublic) {
-      errors.consentPublic = 'You must acknowledge that your entry will be publicly visible.';
+      errors.consentPublic = t('submit.errorConsentPublic');
     }
     if (!form.consentPrivacy) {
-      errors.consentPrivacy = 'You must accept the Privacy Policy.';
+      errors.consentPrivacy = t('submit.errorConsentPrivacy');
     }
     if (!form.consentTerms) {
-      errors.consentTerms = 'You must accept the Terms of Service.';
+      errors.consentTerms = t('submit.errorConsentTerms');
     }
     if ((form.entityType === 'shop' || form.entityType === 'club') && !form.authorizedRep) {
-      errors.authorizedRep = `You must confirm you are authorized to list this ${form.entityType === 'shop' ? 'business' : 'club'}.`;
+      errors.authorizedRep = t('submit.errorAuthorizedRep', { type: form.entityType === 'shop' ? t('submit.business') : t('submit.club') });
     }
     if (isMinor) {
-      if (!form.parentName.trim()) errors.parentName = 'Parent or guardian name is required.';
-      if (!form.parentEmail.trim()) errors.parentEmail = 'Parent or guardian email is required.';
-      if (!form.relationship) errors.relationship = 'Please select the relationship.';
+      if (!form.parentName.trim()) errors.parentName = t('submit.errorParentName');
+      if (!form.parentEmail.trim()) errors.parentEmail = t('submit.errorParentEmail');
+      if (!form.relationship) errors.relationship = t('submit.errorRelationship');
     }
 
     if (Object.keys(errors).length > 0) {
@@ -379,104 +383,104 @@ export default function SubmitPage() {
     setSubmitting(true);
 
     // Build socials as a nested object — the schema expects { socials: {...} }, not flat fields
-    const rawWebsite = form.website.trim();
-    const normalizedWebsite = rawWebsite && !rawWebsite.includes('://')
-      ? `https://${rawWebsite}`
-      : rawWebsite;
+    if (result?.ok) {
+      const isEmailTrouble = result.emailStatus === 'failed';
+      const isQueued = result.emailStatus === 'queued';
 
-    const socials: Record<string, string> = {};
-    if (form.instagram.trim()) socials.instagram = form.instagram.trim();
-    if (form.youtube.trim()) socials.youtube = form.youtube.trim();
-    if (form.discord.trim()) socials.discord = form.discord.trim();
-    if (normalizedWebsite) socials.website = normalizedWebsite;
+      const heading = isQueued ? t('submit.savedEmailComing')
+        : isEmailTrouble ? t('submit.savedEmailTrouble')
+        : t('submit.checkYourEmail');
 
-    const socialKeys = new Set(['instagram', 'youtube', 'discord', 'website']);
-    const payload = {
-      ...Object.fromEntries(
-        Object.entries(form).filter(([k, v]) => !socialKeys.has(k) && v !== '')
-      ),
-      ...(Object.keys(socials).length > 0 ? { socials } : {}),
-    };
+      const retryHuman = result.retryAt
+        ? new Date(result.retryAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+        : null;
 
-    try {
-      const res = await fetch('/api/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setResult({ ok: false, message: data.error?.message || 'Something went wrong. Please try again.' });
-      } else {
-        setShowToast(true);
-        setResult({
-          ok: true,
-          message: data.message,
-          entityType: form.entityType,
-          isMinor,
-          emailStatus: data.emailStatus,
-          retryAt: data.retryAt,
-        });
-      }
-    } catch {
-      setResult({ ok: false, message: 'Network error. Please try again.' });
-    } finally {
-      setSubmitting(false);
+      return (
+        <>
+          {showToast && <SubmitToast onClose={() => setShowToast(false)} />}
+          <div className="max-w-xl mx-auto px-4 py-16">
+            <div className="card text-center">
+
+              {/* 3-step progress indicator */}
+              {!isEmailTrouble && (
+                <div className="flex items-center justify-center mb-6">
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-9 h-9 rounded-full bg-brand-red flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                        <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className="text-xs font-semibold text-brand-red whitespace-nowrap">{t('submit.submitted')}</span>
+                  </div>
+                  <div className="w-8 h-0.5 bg-brand-red mb-4 flex-shrink-0" />
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-9 h-9 rounded-full border-2 border-brand-red bg-cherry-pink flex items-center justify-center animate-pulse">
+                      <svg className="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className="text-xs font-semibold text-brand-red whitespace-nowrap">{t('submit.verifyEmail')}</span>
+                  </div>
+                  <div className="w-8 h-0.5 bg-navy/20 mb-4 flex-shrink-0" />
+                  <div className="flex flex-col items-center gap-1">
+                    <div className="w-9 h-9 rounded-full border-2 border-navy/20 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-navy/30" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                        <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </div>
+                    <span className="text-xs text-navy/40 whitespace-nowrap">{t('submit.onTheMap')}</span>
+                  </div>
+                </div>
+              )}
+
+              <h1 className="text-3xl mb-2">{heading}</h1>
+              {!isEmailTrouble && !isQueued && (
+                <p className="text-navy/80 font-medium mb-3">
+                  {t('submit.pinNotOnMap')}
+                </p>
+              )}
+
+              <p className="text-navy/80 mb-4">{result.message}</p>
+
+              {isQueued && retryHuman && (
+                <p className="text-sm bg-cream p-4 border-l-4 border-brand-red text-left">
+                  <strong>{t('submit.expectedDelivery')}:</strong> {t('submit.byTime', { time: retryHuman })}<br />
+                  {t('submit.emailIsQueued')}
+                </p>
+              )}
+
+              {isEmailTrouble && (
+                <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30 text-left">
+                  {t('submit.emailTroubleHelp')}{' '}
+                  <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">dmvthrowers@gmail.com</a>{' '}
+                  {t('submit.emailTroubleMention')}
+                </p>
+              )}
+
+              {result.isMinor && !isQueued && !isEmailTrouble && (
+                <p className="text-sm bg-cherry-pink p-4 border-2 border-brand-red/30">
+                  {t('submit.parentConsentHelp')}
+                </p>
+              )}
+
+              <p className="text-xs text-navy/60 mt-6 text-left leading-relaxed">
+                {t('submit.verifiedOnMap')}
+              </p>
+
+              {!isEmailTrouble && (
+                <p className="text-xs text-navy/60 mt-2">
+                  {t('submit.didntGetIt')}{' '}
+                  <a href="mailto:dmvthrowers@gmail.com" className="text-brand-red underline">{t('submit.emailSupport')}</a>
+                </p>
+              )}
+
+              <Link href="/" className="btn-ghost mt-6 inline-block">{t('submit.backToHome')}</Link>
+            </div>
+          </div>
+        </>
+      );
     }
-  }
-
-  if (result?.ok) {
-    const isEmailTrouble = result.emailStatus === 'failed';
-    const isQueued = result.emailStatus === 'queued';
-
-    const heading = isQueued ? "Saved — email coming soon"
-      : isEmailTrouble ? "Saved — email trouble"
-      : "Check your email";
-
-    const retryHuman = result.retryAt
-      ? new Date(result.retryAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
-      : null;
-
-    return (
-      <>
-        {showToast && <SubmitToast onClose={() => setShowToast(false)} />}
-        <div className="max-w-xl mx-auto px-4 py-16">
-          <div className="card text-center">
-
-            {/* 3-step progress indicator */}
-            {!isEmailTrouble && (
-              <div className="flex items-center justify-center mb-6">
-                <div className="flex flex-col items-center gap-1">
-                  <div className="w-9 h-9 rounded-full bg-brand-red flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-                      <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-semibold text-brand-red whitespace-nowrap">Submitted</span>
-                </div>
-                <div className="w-8 h-0.5 bg-brand-red mb-4 flex-shrink-0" />
-                <div className="flex flex-col items-center gap-1">
-                  <div className="w-9 h-9 rounded-full border-2 border-brand-red bg-cherry-pink flex items-center justify-center animate-pulse">
-                    <svg className="w-5 h-5 text-brand-red" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                      <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs font-semibold text-brand-red whitespace-nowrap">Verify email</span>
-                </div>
-                <div className="w-8 h-0.5 bg-navy/20 mb-4 flex-shrink-0" />
-                <div className="flex flex-col items-center gap-1">
-                  <div className="w-9 h-9 rounded-full border-2 border-navy/20 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-navy/30" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
-                      <path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                      <path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                  <span className="text-xs text-navy/40 whitespace-nowrap">On the map</span>
-                </div>
-              </div>
-            )}
-
-            <h1 className="text-3xl mb-2">{heading}</h1>
 
             {!isEmailTrouble && !isQueued && (
               <p className="text-navy/80 font-medium mb-3">
@@ -529,9 +533,9 @@ export default function SubmitPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
         <div className="mb-8">
-          <p className="text-xs uppercase tracking-[0.3em] text-brand-red font-bold mb-2">Add to the Map</p>
-          <h1 className="text-4xl md:text-5xl mb-2">What are you adding?</h1>
-          <p className="text-navy/80">Choose the type of entry you want to create.</p>
+          <p className="text-xs uppercase tracking-[0.3em] text-brand-red font-bold mb-2">{t('submit.addToMap')}</p>
+          <h1 className="text-4xl md:text-5xl mb-2">{t('submit.whatAreYouAdding')}</h1>
+          <p className="text-navy/80">{t('submit.chooseType')}</p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -546,15 +550,16 @@ export default function SubmitPage() {
                 <div className="text-brand-red mb-4 group-hover:scale-110 transition-transform">
                   {info.icon}
                 </div>
-                <h2 className="text-xl font-bold mb-2">{info.title}</h2>
-                <p className="text-sm text-navy/70">{info.description}</p>
+                <h2 className="text-xl font-bold mb-2">{t(`submit.type.${type}.title`)}</h2>
+                <p className="text-sm text-navy/70">{t(`submit.type.${type}.description`)}</p>
               </button>
             );
           })}
         </div>
 
         <p className="text-center text-sm text-navy/60 mt-8">
-          Already listed? <Link href="/profile" className="text-brand-red underline">Manage your entry</Link>
+          {t('submit.alreadyListed')}{' '}
+          <Link href="/profile" className="text-brand-red underline">{t('submit.manageEntry')}</Link>
         </p>
       </div>
     );
@@ -574,13 +579,13 @@ export default function SubmitPage() {
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Change type
+          {t('submit.changeType')}
         </button>
         <div className="flex items-center gap-3 mb-2">
           <span className="text-brand-red">{entityInfo.icon}</span>
-          <h1 className="text-4xl md:text-5xl">Add {entityInfo.title}</h1>
+          <h1 className="text-4xl md:text-5xl">{t('submit.addType', { type: t(`submit.type.${form.entityType}.title`) })}</h1>
         </div>
-        <p className="text-navy/80">{entityInfo.description}</p>
+        <p className="text-navy/80">{t(`submit.type.${form.entityType}.description`)}</p>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-6">
@@ -602,12 +607,17 @@ export default function SubmitPage() {
         {/* Basic info - all types */}
         <div className="card space-y-4">
           <h2 className="text-2xl">
-            {form.entityType === 'person' ? 'About you' : 'Basic info'}
+            {form.entityType === 'person' ? t('submit.aboutYou') : t('submit.basicInfo')}
           </h2>
 
           <div>
             <label htmlFor="displayName" className="label">
-              {form.entityType === 'person' ? 'Display name' : form.entityType === 'shop' ? 'Shop name' : 'Club name'} *
+              {form.entityType === 'person'
+                ? t('submit.displayName')
+                : form.entityType === 'shop'
+                ? t('submit.shopName')
+                : t('submit.clubName')}{' '}
+              *
             </label>
             <input
               id="displayName"
@@ -616,16 +626,22 @@ export default function SubmitPage() {
               maxLength={40}
               value={form.displayName}
               onChange={(e) => update('displayName', e.target.value)}
-              placeholder={form.entityType === 'person' ? 'e.g. CaptnRogers' : form.entityType === 'shop' ? 'e.g. YoYo World' : 'e.g. DC Throwers'}
+              placeholder={form.entityType === 'person'
+                ? t('submit.displayNamePlaceholder')
+                : form.entityType === 'shop'
+                ? t('submit.shopNamePlaceholder')
+                : t('submit.clubNamePlaceholder')}
             />
             <p className="text-xs text-navy/60 mt-1">
-              {form.entityType === 'person' ? 'Shown publicly. Use a handle, not your real name if you prefer.' : 'Shown publicly on the map.'}
+              {form.entityType === 'person'
+                ? t('submit.displayNameHelp')
+                : t('submit.displayNameHelpPublic')}
             </p>
           </div>
 
           <div>
             <label htmlFor="email" className="label">
-              {form.entityType === 'person' ? 'Your email' : 'Contact email'} *
+              {form.entityType === 'person' ? t('submit.yourEmail') : t('submit.contactEmail')} *
             </label>
             <input
               id="email"
@@ -636,15 +652,15 @@ export default function SubmitPage() {
               onChange={(e) => update('email', e.target.value)}
             />
             <p className="text-xs text-navy/60 mt-1">
-              Never shown publicly. Used to verify and let you manage your listing.
-              {form.entityType === 'shop' && ' If this matches your website domain, you\'ll get a verified badge.'}
+              {t('submit.emailHelp')}
+              {form.entityType === 'shop' && ' ' + t('submit.shopEmailVerified')}
             </p>
           </div>
 
           {/* Person-specific: age band */}
           {form.entityType === 'person' && (
             <div>
-              <label className="label">Age *</label>
+              <label className="label">{t('submit.age')} *</label>
               <div className="flex gap-3">
                 <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
                   <input
@@ -653,7 +669,7 @@ export default function SubmitPage() {
                     checked={form.ageBand === '18+'}
                     onChange={() => update('ageBand', '18+')}
                   />
-                  <span className="text-sm font-semibold">18 or older</span>
+                  <span className="text-sm font-semibold">{t('submit.age18plus')}</span>
                 </label>
                 <label className="flex items-center gap-2 flex-1 border-2 border-navy/20 p-3 cursor-pointer hover:border-brand-red">
                   <input
@@ -662,10 +678,10 @@ export default function SubmitPage() {
                     checked={form.ageBand === '13-17'}
                     onChange={() => update('ageBand', '13-17')}
                   />
-                  <span className="text-sm font-semibold">13 to 17</span>
+                  <span className="text-sm font-semibold">{t('submit.age13to17')}</span>
                 </label>
               </div>
-              <p className="text-xs text-navy/60 mt-1">You must be at least 13. Under 18 needs a parent or guardian to consent.</p>
+              <p className="text-xs text-navy/60 mt-1">{t('submit.ageHelp')}</p>
               {formErrors.ageBand && <p className="text-sm text-brand-red mt-1" data-error="ageBand">{formErrors.ageBand}</p>}
             </div>
           )}
@@ -689,7 +705,7 @@ export default function SubmitPage() {
 
           <div>
             <label htmlFor="bio" className="label">
-              {form.entityType === 'person' ? 'Short bio' : 'Description'} (optional)
+              {form.entityType === 'person' ? t('submit.shortBio') : t('submit.description')} ({t('submit.optional')})
             </label>
             <textarea
               id="bio"
@@ -700,19 +716,19 @@ export default function SubmitPage() {
               onChange={(e) => update('bio', e.target.value)}
               placeholder={
                 form.entityType === 'person'
-                  ? 'What do you throw? What brands? Any tricks you\'re working on?'
+                  ? t('submit.bioPersonPlaceholder')
                   : form.entityType === 'shop'
-                  ? 'What brands do you carry? Any specialties?'
-                  : 'What styles do you throw? All skill levels welcome?'
+                  ? t('submit.bioShopPlaceholder')
+                  : t('submit.bioClubPlaceholder')
               }
             />
-            <p className="text-xs text-navy/60 mt-1">{form.bio.length}/280 characters</p>
+            <p className="text-xs text-navy/60 mt-1">{form.bio.length}/280 {t('submit.characters')}</p>
           </div>
         </div>
 
         {/* Location - all types */}
         <div className="card space-y-4">
-          <h2 className="text-2xl">Location</h2>
+          <h2 className="text-2xl">{t('submit.location')}</h2>
 
           {/* Shop-specific: street address */}
           {form.entityType === 'shop' && (
@@ -1080,7 +1096,7 @@ export default function SubmitPage() {
                   className="mt-1"
                 />
                 <span className="text-sm">
-                  I am authorized to list this {form.entityType === 'shop' ? 'business' : 'club'} on the map. *
+                  {t('submit.authorizedRepAttestation', { type: form.entityType === 'shop' ? t('submit.business') : t('submit.club') })}
                 </span>
               </label>
               {formErrors.authorizedRep && <p className="text-sm text-brand-red mt-1" data-error="authorizedRep">{formErrors.authorizedRep}</p>}
@@ -1089,15 +1105,15 @@ export default function SubmitPage() {
         </div>
 
         <p className="text-sm text-navy/60 text-center bg-cream border border-navy/10 p-3">
-          After submitting, we&apos;ll email you a verification link. Your listing won&apos;t go live until you click it.
+          {t('submit.afterSubmit')}
         </p>
 
         <button type="submit" className="btn-primary w-full" disabled={submitting}>
-          {submitting ? 'Submitting...' : `Submit ${entityInfo.title}`}
+          {submitting ? t('submit.submitting') : t('submit.submitWithEntity', { entity: entityInfo.title })}
         </button>
 
         <p className="text-xs text-navy/60 text-center">
-          You can edit or delete your entry anytime. Just visit the <Link href="/profile" className="underline">My Entry</Link> page and we&apos;ll send a magic link.
+          {t('submit.editDeleteInstruction', { profileLink: <Link href="/profile" className="underline">{t('submit.myEntry')}</Link> })}
         </p>
       </form>
     </div>

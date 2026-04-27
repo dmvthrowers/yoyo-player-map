@@ -102,10 +102,42 @@ function ReportInner() {
 
 export default function ReportPage() {
   return (
-    <div className="max-w-xl mx-auto px-4 py-12">
+      <div className="max-w-2xl mx-auto px-4 py-12">
       <Suspense fallback={<div>Loading…</div>}>
         <ReportInner />
       </Suspense>
+      </div>
+    );
+}
+  const t = useTranslations();
+  return (
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <h1 className="text-4xl md:text-5xl mb-4">{t('report.title')}</h1>
+      <p className="mb-8 text-navy/80">{t('report.description')}</p>
+      <form className="space-y-6">
+        <div>
+          <label htmlFor="entryId" className="label">{t('report.entryIdLabel')}</label>
+          <input id="entryId" className="input" required />
+        </div>
+        <div>
+          <label htmlFor="reason" className="label">{t('report.reasonLabel')}</label>
+          <select id="reason" className="input" required>
+            <option value="">{t('report.reasonSelect')}</option>
+            <option value="incorrect">{t('report.reasonIncorrect')}</option>
+            <option value="duplicate">{t('report.reasonDuplicate')}</option>
+            <option value="spam">{t('report.reasonSpam')}</option>
+            <option value="closed">{t('report.reasonClosed')}</option>
+            <option value="other">{t('report.reasonOther')}</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="details" className="label">{t('report.detailsLabel')}</label>
+          <textarea id="details" className="input" rows={3} />
+        </div>
+        <button type="submit" className="btn">{t('report.submit')}</button>
+      </form>
     </div>
+  );
+}
   );
 }

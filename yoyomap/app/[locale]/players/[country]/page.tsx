@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
+import { useTranslations } from 'next-intl';
 
 export const revalidate = 3600;
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-export default async function CountryPage({ params }: { params: Promise<Params> }) {
+  const t = useTranslations();
   const { country } = await params;
   // Find all entries that match the canonical slug
   const allEntries = await entriesInCountry(country);
@@ -45,7 +46,7 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
   // Group by region
   const regions = new Map<string, { name: string; count: number }>();
   for (const e of allEntries) {
-    const regionLabel = e.region ?? 'Unspecified';
+    const regionLabel = e.region ?? t('players.unspecified');
     const slug = e.region ? slugify(e.region) : '_other';
     const cur = regions.get(slug);
     if (cur) cur.count += 1;
@@ -60,15 +61,14 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <nav className="text-xs text-navy/60 mb-3">
-        <Link href="/players" className="hover:text-brand-red">Players</Link> / {name}
+        <Link href="/players" className="hover:text-brand-red">{t('nav.players')}</Link> / {name}
       </nav>
-      <p className="eyebrow text-brand-red">Country</p>
-      <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">Yo-Yo Players in {name}</h1>
+      <p className="eyebrow text-brand-red">{t('players.country')}</p>
+      <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">{t('players.inCountry', { name })}</h1>
       <hr className="rule-red" />
       <Counts entries={allEntries} className="mb-8" />
 
-
-      <h2 className="font-display text-2xl text-navy-deep mb-4">Regions</h2>
+      <h2 className="font-display text-2xl text-navy-deep mb-4">{t('players.regions')}</h2>
       {sorted.length === 1 && sorted[0][0] === '_other' ? (
         // If only 'Unspecified' region, show entries directly
         <div className="grid gap-4 mb-8">
@@ -83,12 +83,12 @@ export default async function CountryPage({ params }: { params: Promise<Params> 
               {slug === '_other' ? (
                 <Link href={`/players/${country}/_other`} className="card block hover:border-brand-red transition-colors">
                   <p className="font-display text-xl text-navy-deep">{r.name}</p>
-                  <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
+                  <p className="text-sm text-navy/70">{t('players.locationCount', { count: r.count })}</p>
                 </Link>
               ) : (
                 <Link href={`/players/${country}/${slug}`} className="card block hover:border-brand-red transition-colors">
                   <p className="font-display text-xl text-navy-deep">{r.name}</p>
-                  <p className="text-sm text-navy/70">{r.count} location{r.count === 1 ? '' : 's'}</p>
+                  <p className="text-sm text-navy/70">{t('players.locationCount', { count: r.count })}</p>
                 </Link>
               )}
             </li>
