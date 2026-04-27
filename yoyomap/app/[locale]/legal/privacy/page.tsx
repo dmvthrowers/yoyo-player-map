@@ -85,8 +85,7 @@ export default function PrivacyPage() {
           </div>
         );
       }
-        EIN 41-4879324
-      </p>
+      <p className="mt-4">EIN 41-4879324</p>
 
       <div className="mt-12 p-4 bg-navy/5 border-l-4 border-navy text-sm">
         <strong>Back to:</strong> <Link href="/" className="text-brand-red underline">Home</Link> · <Link href="/legal/terms" className="text-brand-red underline">Terms of Service</Link>

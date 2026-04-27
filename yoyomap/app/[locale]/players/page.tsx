@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/players' },
 };
 
+export default async function Page() {
   const t = useTranslations();
   const locations = await listLocations();
   const countries = new Map<string, { name: string; count: number }>();

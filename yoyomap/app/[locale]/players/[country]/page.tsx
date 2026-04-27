@@ -60,8 +60,6 @@ export default async function Page({ params }: { params: { country: string } }) 
   });
 
   // ...existing code...
-}
-
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <nav className="text-xs text-navy/60 mb-3">

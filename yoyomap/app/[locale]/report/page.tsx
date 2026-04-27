@@ -109,15 +109,6 @@ export default function ReportPage() {
       </div>
     );
 }
-  const t = useTranslations();
-  return (
-    <div className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-4xl md:text-5xl mb-4">{t('report.title')}</h1>
-      <p className="mb-8 text-navy/80">{t('report.description')}</p>
-      <form className="space-y-6">
-        <div>
-          <label htmlFor="entryId" className="label">{t('report.entryIdLabel')}</label>
-          <input id="entryId" className="input" required />
         </div>
         <div>
           <label htmlFor="reason" className="label">{t('report.reasonLabel')}</label>
