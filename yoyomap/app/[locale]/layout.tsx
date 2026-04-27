@@ -1,6 +1,7 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import Navigation from '../../components/Navigation';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { routing } from '../../i18n/routing';
@@ -49,12 +50,13 @@ export default async function LocaleLayout({
               <div>
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">Legal</p>
                 <ul className="space-y-1">
-                  <li><a className="hover:text-brand-red" href="/legal/privacy">privacy</a></li>
-                  <li><a className="hover:text-brand-red" href="/legal/terms">terms</a></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/privacy`}>privacy</Link></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/terms`}>terms</Link></li>
                 </ul>
                 <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">Security</p>
                 <ul className="space-y-1">
-                  <li><a className="hover:text-brand-red" href="/en/legal/security">Security Bulletin: April 2026</a></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/security`}>Security Bulletin: April 2026</Link></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/status`}>Service status</Link></li>
                 </ul>
               </div>
               <div>
