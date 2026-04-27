@@ -6,8 +6,9 @@ import Link from 'next/link';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navigation() {
-  const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
+  const ariaExpanded = menuOpen ? 'true' : 'false';
+  const t = useTranslations();
   const close = () => setMenuOpen(false);
 
   return (
@@ -68,7 +69,7 @@ export default function Navigation() {
           <button
             type="button"
             className="md:hidden p-2 -mr-1 text-navy-deep"
-            aria-expanded={menuOpen ? "true" : "false"}
+            aria-expanded={ariaExpanded}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((o) => !o)}
