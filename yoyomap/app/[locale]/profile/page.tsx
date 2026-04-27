@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
+"use client";
 function ProfileInner() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
