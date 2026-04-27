@@ -14,14 +14,7 @@ function useCountries() {
       setCountries(data.countries || []);
     })();
   }, []);
-    setFormErrors({});
-    setSubmitting(true);
-    // ...existing code...
-    ? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase()))
-    : allCities;
 
-  // Check if input is a new city (not in list, not empty)
-  const isNewCity = input.trim().length > 1 && !filtered.some(c => c.name.toLowerCase() === input.trim().toLowerCase());
 
   async function handleAddCity() {
     if (!countryId) return;
@@ -116,7 +109,7 @@ function useCountries() {
 
     </div>
   );
-}
+
 
 function SubmitToast({ onClose }: { onClose: () => void }) {
   const [fading, setFading] = useState(false);

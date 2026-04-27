@@ -110,9 +110,4 @@ export default function ReportPage() {
     );
 }
 
-      </form>
-    </div>
-  );
-}
-  );
-}
+
