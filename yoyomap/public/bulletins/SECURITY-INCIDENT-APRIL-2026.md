@@ -4,7 +4,7 @@
 
 Vercel disclosed a security incident involving unauthorized access to internal systems. The attacker compromised a third-party AI tool (Context.ai) used by a Vercel employee, then used that access to take over the employee's Google Workspace account and reach Vercel environments and **non-sensitive** environment variables.
 
-Full bulletin: https://vercel.com/security/april-2026
+Full bulletin: <https://vercel.com/security/april-2026>
 
 ---
 
@@ -13,7 +13,7 @@ Full bulletin: https://vercel.com/security/april-2026
 Environment variables in this project fall into three risk tiers:
 
 | Variable | Sensitive flag needed? | Risk if unmarked |
-|---|---|---|
+| --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | No (public by design) | None |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | No (public by design, RLS-protected) | None |
 | `SUPABASE_SERVICE_ROLE_KEY` | **Yes** | Full database read/write access |
