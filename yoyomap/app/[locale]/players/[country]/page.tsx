@@ -25,8 +25,8 @@ export async function generateStaticParams() {
   return out;
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country } = await params;
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { country } = params;
   const entries = await entriesInCountry(country);
   const name = canonicalName(entries, 'country') ?? country;
   return {
