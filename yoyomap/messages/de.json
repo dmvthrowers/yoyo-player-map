@@ -8,7 +8,13 @@
     "resources": "Ressourcen",
     "vsyc": "VSYC-26",
     "language": "Sprache:",
-    "languageSelect": "Sprache auswählen"
+    "languageSelect": "Sprache auswählen",
+    "dmvThrowers": "DMV Throwers",
+    "brand": "YoYo Map",
+    "donateTitle": "Support DMV Throwers on Ko-fi",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "players": "Players"
   },
   "home": {
     "title": "Finde deine Leute.",
@@ -19,5 +25,8 @@
   "footer": {
     "project": "Ein Gemeinschaftsprojekt des DMV Throwers Yo-Yo & Skill Toy Club.",
     "all_welcome": "Alle Erfahrungsstufen willkommen."
+  },
+  "profile": {
+    "loading": "Loading profile..."
   }
 }

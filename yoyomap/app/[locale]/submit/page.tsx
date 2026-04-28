@@ -252,7 +252,19 @@ export default function SubmitPage() {
         </div>
 
         <div className="card space-y-4">
-          <select className="input" value={form.country_id??''} onChange={e=>{update('country_id', e.target.value?Number(e.target.value):null); update('region_id',null); update('city_id',null);}} required>
+          <label htmlFor="country_id" className="sr-only">{t('submit.selectCountry')}</label>
+          <select
+            id="country_id"
+            className="input"
+            value={form.country_id??''}
+            onChange={e=>{
+              update('country_id', e.target.value?Number(e.target.value):null);
+              update('region_id',null);
+              update('city_id',null);
+            }}
+            required
+            aria-label={t('submit.selectCountry')}
+          >
             <option value="">{t('submit.selectCountry')}</option>
             {countries.map(c=> <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>

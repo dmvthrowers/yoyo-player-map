@@ -9,6 +9,7 @@
     "vsyc": "VSYC-26",
     "language": "Language:",
     "languageSelect": "Select language",
+    "players": "Players",
     "languages": {
       "en": "English",
       "es": "Español",
@@ -21,30 +22,12 @@
       "ar": "العربية",
       "hi": "हिन्दी",
       "ko": "한국어"
-    }
-  },
-  "home": {
-    "title": "Find Your People.",
-    "subtitle": "Throw Together.",
-    "cta": "Explore the Map",
-    "add": "Add Yourself"
-  },
-  "footer": {
-    "title": "YoYo Map",
-    "description": "A community project of DMV Throwers Yo-Yo & Skill Toy Club.",
+    },
     "dmvThrowers": "DMV Throwers",
-    "home": "Home",
-    "vsyc": "VSYC-26",
-    "legal": "Legal",
-    "privacy": "Privacy Policy",
-    "terms": "Terms of Service",
-    "security": "Security",
-    "securityBulletin": "Security Bulletin",
-    "serviceStatus": "Service Status",
-    "project": "Project",
-    "github": "GitHub",
-    "copyright": "© 2024 DMV Throwers. All rights reserved.",
-    "all_welcome": "All skill levels welcome."
+    "brand": "YoYo Map",
+    "donateTitle": "Support DMV Throwers on Ko-fi",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "home": {
     "title": "Find Your People.",
@@ -112,30 +95,22 @@
       "button": "Get Started"
     }
   },
-  "nav": {
-    "map": "Map",
-    "submit": "Submit",
-    "profile": "Profile",
-    "donate": "Donate ☕",
-    "events": "Events",
-    "resources": "Resources",
+  "footer": {
+    "title": "YoYo Map",
+    "description": "A community project of DMV Throwers Yo-Yo & Skill Toy Club.",
+    "dmvThrowers": "DMV Throwers",
+    "home": "Home",
     "vsyc": "VSYC-26",
-    "language": "Language:",
-    "languageSelect": "Select language",
-    "players": "Players",
-    "languages": {
-      "en": "English",
-      "es": "Español",
-      "de": "Deutsch",
-      "zh": "中文",
-      "ja": "日本語",
-      "fr": "Français",
-      "pt": "Português",
-      "ru": "Русский",
-      "ar": "العربية",
-      "hi": "हिन्दी",
-      "ko": "한국어"
-    }
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "security": "Security",
+    "securityBulletin": "Security Bulletin",
+    "serviceStatus": "Service Status",
+    "project": "Project",
+    "github": "GitHub",
+    "copyright": "© 2024 DMV Throwers. All rights reserved.",
+    "all_welcome": "All skill levels welcome."
   },
   "players": {
     "browseLocations": "Browse by Location",
@@ -189,19 +164,102 @@
       "title": "Privacy Policy",
       "effectiveDate": "Effective Date: January 1, 2024",
       "sections": [
-        { "title": "Overview", "body": "YoYo Map is committed to protecting your privacy. This policy explains how we collect, use, and protect your information." },
-        { "title": "Information We Collect", "body": "We collect only the information you voluntarily provide when adding yourself to the map." },
-        { "title": "Data You Provide", "body": "When you submit to the map, you may provide:", "listTitle": "Submitted Data", "list": ["Display name", "City (approximate location)", "Bio or description", "Social media links", "Entity type (player, shop, or club)", "Contact information (optional)"], "autoTitle": "Automatically Collected", "auto": ["Basic analytics (page views, no personal data)", "Error logs for debugging"] },
-        { "title": "How We Use Your Data", "body": "Your data is used to:", "list": ["Display your pin on the map", "Allow others to find and connect with you", "Improve the service", "Respond to your requests"] },
-        { "title": "Data Sharing", "body": "We do not sell or rent your personal information." },
-        { "title": "Data Retention", "body": "We retain your data until you request deletion.", "list": ["You can request deletion at any time", "Deletion requests are processed within 30 days", "Some data may be retained for legal purposes", "Anonymized data may be retained for analytics"] },
-        { "title": "Security", "body": "We implement reasonable security measures to protect your data." },
-        { "title": "Your Rights", "body": "You have the right to:", "everyoneTitle": "Everyone", "everyone": ["Access your data", "Request correction", "Request deletion"], "gdprTitle": "GDPR (EU/EEA)", "gdprBody": "Additional rights under GDPR including data portability.", "caTitle": "CCPA (California)", "caBody": "Right to know, delete, and opt-out of sale.", "vaTitle": "VCDPA (Virginia)", "vaBody": "Similar rights to GDPR and CCPA." },
-        { "title": "Cookies", "body": "We use minimal cookies for essential functionality only." },
-        { "title": "Third Party Services", "body": "We use:", "list": ["Vercel (hosting)", "Supabase (database)", "OpenStreetMap (mapping)", "Resend (email, optional)"] },
-        { "title": "Children's Privacy", "body": "This service is not intended for children under 13." },
-        { "title": "Changes to This Policy", "body": "We may update this policy. Check back periodically." },
-        { "title": "Contact Us", "body": "Questions? Email dmvthrowers@gmail.com" }
+        {
+          "title": "Overview",
+          "body": "YoYo Map is committed to protecting your privacy. This policy explains how we collect, use, and protect your information."
+        },
+        {
+          "title": "Information We Collect",
+          "body": "We collect only the information you voluntarily provide when adding yourself to the map."
+        },
+        {
+          "title": "Data You Provide",
+          "body": "When you submit to the map, you may provide:",
+          "listTitle": "Submitted Data",
+          "list": [
+            "Display name",
+            "City (approximate location)",
+            "Bio or description",
+            "Social media links",
+            "Entity type (player, shop, or club)",
+            "Contact information (optional)"
+          ],
+          "autoTitle": "Automatically Collected",
+          "auto": [
+            "Basic analytics (page views, no personal data)",
+            "Error logs for debugging"
+          ]
+        },
+        {
+          "title": "How We Use Your Data",
+          "body": "Your data is used to:",
+          "list": [
+            "Display your pin on the map",
+            "Allow others to find and connect with you",
+            "Improve the service",
+            "Respond to your requests"
+          ]
+        },
+        {
+          "title": "Data Sharing",
+          "body": "We do not sell or rent your personal information."
+        },
+        {
+          "title": "Data Retention",
+          "body": "We retain your data until you request deletion.",
+          "list": [
+            "You can request deletion at any time",
+            "Deletion requests are processed within 30 days",
+            "Some data may be retained for legal purposes",
+            "Anonymized data may be retained for analytics"
+          ]
+        },
+        {
+          "title": "Security",
+          "body": "We implement reasonable security measures to protect your data."
+        },
+        {
+          "title": "Your Rights",
+          "body": "You have the right to:",
+          "everyoneTitle": "Everyone",
+          "everyone": [
+            "Access your data",
+            "Request correction",
+            "Request deletion"
+          ],
+          "gdprTitle": "GDPR (EU/EEA)",
+          "gdprBody": "Additional rights under GDPR including data portability.",
+          "caTitle": "CCPA (California)",
+          "caBody": "Right to know, delete, and opt-out of sale.",
+          "vaTitle": "VCDPA (Virginia)",
+          "vaBody": "Similar rights to GDPR and CCPA."
+        },
+        {
+          "title": "Cookies",
+          "body": "We use minimal cookies for essential functionality only."
+        },
+        {
+          "title": "Third Party Services",
+          "body": "We use:",
+          "list": [
+            "Vercel (hosting)",
+            "Supabase (database)",
+            "OpenStreetMap (mapping)",
+            "Resend (email, optional)"
+          ]
+        },
+        {
+          "title": "Children's Privacy",
+          "body": "This service is not intended for children under 13."
+        },
+        {
+          "title": "Changes to This Policy",
+          "body": "We may update this policy. Check back periodically."
+        },
+        {
+          "title": "Contact Us",
+          "body": "Questions? Email dmvthrowers@gmail.com"
+        }
       ]
     },
     "terms": {
@@ -211,20 +269,70 @@
       "home": "Home",
       "privacy": "Privacy Policy",
       "sections": [
-        { "title": "Acceptance", "body": "By using YoYo Map, you agree to these terms." },
-        { "title": "Description", "body": "YoYo Map is a community map for finding yo-yo players, shops, and clubs." },
-        { "title": "User Conduct", "body": "You agree not to:", "list": ["Submit false or misleading information", "Harass or abuse other users", "Attempt to access others' data", "Use the service for illegal purposes", "Spam or advertise without permission", "Interfere with service operation"] },
-        { "title": "Content", "body": "You are responsible for content you submit." },
-        { "title": "Privacy", "body": "Your use is also governed by our Privacy Policy." },
-        { "title": "Intellectual Property", "body": "The service and its content are protected by copyright." },
-        { "title": "Disclaimer", "body": "The service is provided 'as is' without warranties." },
-        { "title": "Limitation of Liability", "body": "We are not liable for damages arising from use of the service." },
-        { "title": "Indemnification", "body": "You agree to indemnify us from claims arising from your use." },
-        { "title": "Termination", "body": "We may terminate access for violations." },
-        { "title": "Governing Law", "body": "These terms are governed by Virginia law." },
-        { "title": "Changes", "body": "We may modify these terms with notice." },
-        { "title": "Severability", "body": "Invalid provisions do not affect others." },
-        { "title": "Contact", "body": "Questions? Email dmvthrowers@gmail.com" }
+        {
+          "title": "Acceptance",
+          "body": "By using YoYo Map, you agree to these terms."
+        },
+        {
+          "title": "Description",
+          "body": "YoYo Map is a community map for finding yo-yo players, shops, and clubs."
+        },
+        {
+          "title": "User Conduct",
+          "body": "You agree not to:",
+          "list": [
+            "Submit false or misleading information",
+            "Harass or abuse other users",
+            "Attempt to access others' data",
+            "Use the service for illegal purposes",
+            "Spam or advertise without permission",
+            "Interfere with service operation"
+          ]
+        },
+        {
+          "title": "Content",
+          "body": "You are responsible for content you submit."
+        },
+        {
+          "title": "Privacy",
+          "body": "Your use is also governed by our Privacy Policy."
+        },
+        {
+          "title": "Intellectual Property",
+          "body": "The service and its content are protected by copyright."
+        },
+        {
+          "title": "Disclaimer",
+          "body": "The service is provided 'as is' without warranties."
+        },
+        {
+          "title": "Limitation of Liability",
+          "body": "We are not liable for damages arising from use of the service."
+        },
+        {
+          "title": "Indemnification",
+          "body": "You agree to indemnify us from claims arising from your use."
+        },
+        {
+          "title": "Termination",
+          "body": "We may terminate access for violations."
+        },
+        {
+          "title": "Governing Law",
+          "body": "These terms are governed by Virginia law."
+        },
+        {
+          "title": "Changes",
+          "body": "We may modify these terms with notice."
+        },
+        {
+          "title": "Severability",
+          "body": "Invalid provisions do not affect others."
+        },
+        {
+          "title": "Contact",
+          "body": "Questions? Email dmvthrowers@gmail.com"
+        }
       ]
     }
   },
@@ -235,6 +343,7 @@
     "emailPlaceholder": "Enter your email",
     "sending": "Sending...",
     "sent": "Check your email for the magic link!",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "loading": "Loading profile..."
   }
 }

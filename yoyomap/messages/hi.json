@@ -8,7 +8,13 @@
     "resources": "संसाधन",
     "vsyc": "VSYC-26",
     "language": "भाषा:",
-    "languageSelect": "भाषा चुनें"
+    "languageSelect": "भाषा चुनें",
+    "dmvThrowers": "DMV Throwers",
+    "brand": "YoYo Map",
+    "donateTitle": "Support DMV Throwers on Ko-fi",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "players": "Players"
   },
   "home": {
     "title": "अपना समुदाय खोजें।",
@@ -19,5 +25,8 @@
   "footer": {
     "project": "DMV Throwers Yo-Yo & Skill Toy Club की सामुदायिक परियोजना।",
     "all_welcome": "सभी स्तरों का स्वागत है।"
+  },
+  "profile": {
+    "loading": "Loading profile..."
   }
 }

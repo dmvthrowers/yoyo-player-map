@@ -8,7 +8,13 @@
     "resources": "الموارد",
     "vsyc": "VSYC-26",
     "language": "اللغة:",
-    "languageSelect": "اختر اللغة"
+    "languageSelect": "اختر اللغة",
+    "dmvThrowers": "DMV Throwers",
+    "brand": "YoYo Map",
+    "donateTitle": "Support DMV Throwers on Ko-fi",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "players": "Players"
   },
   "home": {
     "title": "اعثر على مجتمعك.",
@@ -19,5 +25,8 @@
   "footer": {
     "project": "مشروع مجتمعي من DMV Throwers Yo-Yo & Skill Toy Club.",
     "all_welcome": "جميع المستويات مرحب بها."
+  },
+  "profile": {
+    "loading": "Loading profile..."
   }
 }
