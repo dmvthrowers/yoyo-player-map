@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 export const revalidate = 3600;
 
@@ -25,8 +25,8 @@ export async function generateStaticParams() {
   return out;
 }
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { country } = params;
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { country } = await params;
   const entries = await entriesInCountry(country);
   const name = canonicalName(entries, 'country') ?? country;
   return {
@@ -36,9 +36,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function Page({ params }: { params: { country: string } }) {
-  const t = useTranslations();
-  const { country } = params;
+export default async function Page({ params }: { params: Promise<{ country: string }> }) {
+  const t = await getTranslations();
+  const { country } = await params;
   // Find all entries that match the canonical slug
   const allEntries = await entriesInCountry(country);
   if (allEntries.length === 0) notFound();

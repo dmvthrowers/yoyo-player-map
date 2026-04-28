@@ -1,5 +1,5 @@
-import { NextIntlClientProvider, hasLocale, useTranslations } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Navigation from '../../components/Navigation';
@@ -11,14 +11,14 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function Layout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
-  const { locale } = params;
+export default async function Layout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
   const messages = await getMessages();
   // Use translations in the footer
-  const t = useTranslations();
+  const t = await getTranslations();
 
   return (
     <html lang={locale}>

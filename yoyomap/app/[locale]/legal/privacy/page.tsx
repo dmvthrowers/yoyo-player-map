@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 import type { Metadata } from 'next';
 
@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/legal/privacy' },
 };
 
-export default function PrivacyPage() {
-  const t = useTranslations();
+export default async function PrivacyPage() {
+  const t = await getTranslations();
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 prose-styles">
       <h1 className="text-4xl mb-2">{t('legal.privacy.title')}</h1>

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { listLocations, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 export const revalidate = 3600;
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Page() {
-  const t = useTranslations();
+  const t = await getTranslations();
   const locations = await listLocations();
   const countries = new Map<string, { name: string; count: number }>();
   for (const loc of locations) {
@@ -38,7 +38,11 @@ export default async function Page() {
       </p>
 
       {sorted.length === 0 ? (
-        <p className="text-navy/70">{t('players.noLocations', { addYourself: <Link href="/submit" className="underline">{t('players.addYourself')}</Link> })}</p>
+        <p className="text-navy/70">
+          {t.rich('players.noLocations', { 
+            addYourself: (chunks) => <Link href="/submit" className="underline">{chunks}</Link> 
+          })}
+        </p>
       ) : (
         <ul className="grid sm:grid-cols-2 gap-4">
           {sorted.map(([slug, { name, count }]) => (
