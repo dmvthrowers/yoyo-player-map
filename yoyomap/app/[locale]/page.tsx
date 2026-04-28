@@ -1,8 +1,8 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 
-const TrustRow = () => {
-  const t = useTranslations();
+const TrustRow = async () => {
+  const t = await getTranslations();
   const trust = [
     {
       title: t('home.trust.0.title'),
@@ -44,8 +44,8 @@ const SectionTitle = ({ eyebrow, children, light = false }: { eyebrow: string; c
   </div>
 );
 
-const HowItWorks = () => {
-  const t = useTranslations();
+const HowItWorks = async () => {
+  const t = await getTranslations();
   const steps = [0, 1, 2].map((i) => ({
     step: t(`home.how.steps.${i}.step`),
     title: t(`home.how.steps.${i}.title`),
@@ -69,8 +69,8 @@ const HowItWorks = () => {
 };
 
 
-export default function Home() {
-  const t = useTranslations();
+export default async function Home() {
+  const t = await getTranslations();
   return (
     <>
       {/* Hero — navy canvas with dot pattern, echoes club site */}

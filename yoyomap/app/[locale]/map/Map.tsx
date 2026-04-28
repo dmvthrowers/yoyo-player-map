@@ -1,5 +1,4 @@
 'use client';
-'use client';
 
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl } from 'react-leaflet';
@@ -26,7 +25,6 @@ function useEntryDetail(id: string): {
   loading: boolean;
   error: boolean;
   retry: () => void;
-"use client";
 } {
   const cached = detailCache.get(id) ?? null;
   const [detail, setDetail] = useState<DetailOnlyFields | null>(cached);

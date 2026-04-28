@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../../EntryList';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 export const revalidate = 3600;
 
@@ -36,8 +36,8 @@ export async function generateStaticParams() {
 }
 
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { country, region } = params;
+export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
+  const { country, region } = await params;
   const entries = await entriesInRegion(country, region);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? region;
@@ -48,9 +48,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   };
 }
 
-export default async function Page({ params }: { params: Params }) {
-  const t = useTranslations();
-  const { country, region } = params;
+export default async function Page({ params }: { params: Promise<Params> }) {
+  const t = await getTranslations();
+  const { country, region } = await params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
