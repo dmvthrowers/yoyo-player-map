@@ -16,6 +16,8 @@ const POP_THRESHOLD = 50_000;
 // Env loader — reads .env.local without requiring dotenv as a dependency
 // ---------------------------------------------------------------------------
 function loadEnv() {
+  const envPath = resolve(__dirname, '../.env.local');
+  if (!existsSync(envPath)) return;
   // Check next to the script first, then fall back to cwd (supports running cross-directory)
   const candidates = [resolve(__dirname, '../.env.local'), resolve(process.cwd(), '.env.local')];
   const envPath = candidates.find(p => existsSync(p));
@@ -63,6 +65,12 @@ async function fetchText(url) {
   return res.text();
 }
 
+async function upsertBatch(table, rows, onConflict) {
+  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+    const chunk = rows.slice(i, i + CHUNK_SIZE);
+    const { error } = await supabase
+      .from(table)
+      .upsert(chunk, { onConflict, ignoreDuplicates: true });
 async function fetchZipped(url, filename) {
   console.log(`  Fetching ${url} …`);
   const res = await fetch(url);
@@ -95,6 +103,7 @@ async function main() {
   const [countryInfoText, admin1Text, citiesText] = await Promise.all([
     fetchText('https://download.geonames.org/export/dump/countryInfo.txt'),
     fetchText('https://download.geonames.org/export/dump/admin1CodesASCII.txt'),
+    fetchText('https://download.geonames.org/export/dump/cities15000.txt'),
     fetchZipped('https://download.geonames.org/export/dump/cities15000.zip', 'cities15000.txt'),
   ]);
 
@@ -152,6 +161,9 @@ async function main() {
   console.log(`\nInserting ${countryRows.length} countries…`);
   await upsertBatch('countries', countryRows, 'code');
 
+  const { data: countries, error: cErr } = await supabase
+    .from('countries')
+    .select('id, code');
   // .range() is required — the default Supabase row limit is 1000, not unlimited.
   const { data: countries, error: cErr } = await supabase
     .from('countries')
@@ -188,6 +200,7 @@ async function main() {
         name: admin1Map.get(key) ?? a1,
       };
     })
+    .filter(r => r.country_id != null);
     .filter(r => {
       if (r.country_id == null) return false;
       const codeKey = `${r.country_id}\x00${r.code}`;
@@ -206,6 +219,7 @@ async function main() {
 
   const { data: regions, error: rErr } = await supabase
     .from('regions')
+    .select('id, country_id, code');
     .select('id, country_id, code')
     .range(0, 9999);
   if (rErr) throw new Error(`Failed to fetch regions: ${rErr.message}`);
