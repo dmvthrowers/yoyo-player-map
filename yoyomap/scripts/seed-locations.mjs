@@ -6,6 +6,7 @@ import { readFileSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+import AdmZip from 'adm-zip';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CHUNK_SIZE = 500;
@@ -17,6 +18,10 @@ const POP_THRESHOLD = 50_000;
 function loadEnv() {
   const envPath = resolve(__dirname, '../.env.local');
   if (!existsSync(envPath)) return;
+  // Check next to the script first, then fall back to cwd (supports running cross-directory)
+  const candidates = [resolve(__dirname, '../.env.local'), resolve(process.cwd(), '.env.local')];
+  const envPath = candidates.find(p => existsSync(p));
+  if (!envPath) return;
   const lines = readFileSync(envPath, 'utf8').split('\n');
   for (const line of lines) {
     const trimmed = line.trim();
@@ -66,6 +71,25 @@ async function upsertBatch(table, rows, onConflict) {
     const { error } = await supabase
       .from(table)
       .upsert(chunk, { onConflict, ignoreDuplicates: true });
+async function fetchZipped(url, filename) {
+  console.log(`  Fetching ${url} …`);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  const zip = new AdmZip(buf);
+  const entry = zip.getEntry(filename);
+  if (!entry) throw new Error(`${filename} not found inside ${url}`);
+  return zip.readAsText(entry);
+}
+
+// onConflict is optional. When omitted, PostgREST generates ON CONFLICT DO NOTHING
+// (catch-all for every unique constraint) instead of targeting a specific one.
+async function upsertBatch(table, rows, onConflict = null) {
+  for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
+    const chunk = rows.slice(i, i + CHUNK_SIZE);
+    const opts = { ignoreDuplicates: true };
+    if (onConflict) opts.onConflict = onConflict;
+    const { error } = await supabase.from(table).upsert(chunk, opts);
     if (error) throw new Error(`Upsert into ${table} failed: ${error.message}`);
   }
 }
@@ -80,6 +104,7 @@ async function main() {
     fetchText('https://download.geonames.org/export/dump/countryInfo.txt'),
     fetchText('https://download.geonames.org/export/dump/admin1CodesASCII.txt'),
     fetchText('https://download.geonames.org/export/dump/cities15000.txt'),
+    fetchZipped('https://download.geonames.org/export/dump/cities15000.zip', 'cities15000.txt'),
   ]);
 
   // ISO-2 → full country name  (countryInfo.txt col 0 = ISO2, col 4 = name)
@@ -139,12 +164,30 @@ async function main() {
   const { data: countries, error: cErr } = await supabase
     .from('countries')
     .select('id, code');
+  // .range() is required — the default Supabase row limit is 1000, not unlimited.
+  const { data: countries, error: cErr } = await supabase
+    .from('countries')
+    .select('id, code')
+    .range(0, 499);
   if (cErr) throw new Error(`Failed to fetch countries: ${cErr.message}`);
   const countryIdMap = new Map(countries.map(c => [c.code, c.id]));
 
   // -------------------------------------------------------------------------
   // 2. Regions
   // -------------------------------------------------------------------------
+  // regions has TWO unique constraints: (country_id, code) AND (country_id, name).
+  // PostgreSQL's ON CONFLICT clause can only target one constraint at a time, so we
+  // pre-fetch existing rows and filter out any candidate that would violate either one.
+  const { data: existingRegs, error: erErr } = await supabase
+    .from('regions')
+    .select('country_id, code, name')
+    .range(0, 9999);
+  if (erErr) throw new Error(`Failed to fetch existing regions: ${erErr.message}`);
+  const existingRegCodes = new Set((existingRegs ?? []).map(r => `${r.country_id}\x00${r.code}`));
+  const existingRegNames = new Set((existingRegs ?? []).map(r => `${r.country_id}\x00${r.name}`));
+
+  const seenRegionCodes = new Set();
+  const seenRegionNames = new Set();
   const regionRows = [...regionKeys]
     .sort()
     .map(key => {
@@ -158,6 +201,18 @@ async function main() {
       };
     })
     .filter(r => r.country_id != null);
+    .filter(r => {
+      if (r.country_id == null) return false;
+      const codeKey = `${r.country_id}\x00${r.code}`;
+      const nameKey = `${r.country_id}\x00${r.name}`;
+      // Skip rows that already exist in DB (by code OR name)
+      if (existingRegCodes.has(codeKey) || existingRegNames.has(nameKey)) return false;
+      // Skip within-batch duplicates on either dimension
+      if (seenRegionCodes.has(codeKey) || seenRegionNames.has(nameKey)) return false;
+      seenRegionCodes.add(codeKey);
+      seenRegionNames.add(nameKey);
+      return true;
+    });
 
   console.log(`Inserting ${regionRows.length} regions…`);
   await upsertBatch('regions', regionRows, 'country_id,code');
@@ -165,6 +220,8 @@ async function main() {
   const { data: regions, error: rErr } = await supabase
     .from('regions')
     .select('id, country_id, code');
+    .select('id, country_id, code')
+    .range(0, 9999);
   if (rErr) throw new Error(`Failed to fetch regions: ${rErr.message}`);
   // key: "<countryId>.<regionCode>"
   const regionIdMap = new Map(regions.map(r => [`${r.country_id}.${r.code}`, r.id]));

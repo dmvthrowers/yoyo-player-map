@@ -21,100 +21,111 @@
 
 begin;
 
-with country_seed(code, name) as (
-  values
-    ('US', 'United States'),
-    ('CA', 'Canada'),
-    ('GB', 'United Kingdom'),
-    ('MX', 'Mexico'),
-    ('BR', 'Brazil'),
-    ('AR', 'Argentina'),
-    ('CL', 'Chile'),
-    ('CO', 'Colombia'),
-    ('DE', 'Germany'),
-    ('FR', 'France'),
-    ('ES', 'Spain'),
-    ('IT', 'Italy'),
-    ('BE', 'Belgium'),
-    ('NL', 'Netherlands'),
-    ('CZ', 'Czech Republic'),
-    ('HU', 'Hungary'),
-    ('PL', 'Poland'),
-    ('UA', 'Ukraine'),
-    ('JP', 'Japan'),
-    ('KR', 'South Korea'),
-    ('CN', 'China'),
-    ('TW', 'Taiwan'),
-    ('SG', 'Singapore'),
-    ('PH', 'Philippines'),
-    ('IN', 'India'),
-    ('AU', 'Australia'),
-    ('NZ', 'New Zealand'),
-    ('HN', 'Honduras')
-),
-country_aliases(alias_slug, code, name) as (
-  values
-    ('us', 'US', 'United States'),
-    ('usa', 'US', 'United States'),
-    ('united-states', 'US', 'United States'),
-    ('ca', 'CA', 'Canada'),
-    ('canada', 'CA', 'Canada'),
-    ('uk', 'GB', 'United Kingdom'),
-    ('gb', 'GB', 'United Kingdom'),
-    ('united-kingdom', 'GB', 'United Kingdom'),
-    ('mx', 'MX', 'Mexico'),
-    ('mexico', 'MX', 'Mexico'),
-    ('br', 'BR', 'Brazil'),
-    ('brazil', 'BR', 'Brazil'),
-    ('ar', 'AR', 'Argentina'),
-    ('argentina', 'AR', 'Argentina'),
-    ('cl', 'CL', 'Chile'),
-    ('chile', 'CL', 'Chile'),
-    ('co', 'CO', 'Colombia'),
-    ('colombia', 'CO', 'Colombia'),
-    ('de', 'DE', 'Germany'),
-    ('germany', 'DE', 'Germany'),
-    ('fr', 'FR', 'France'),
-    ('france', 'FR', 'France'),
-    ('es', 'ES', 'Spain'),
-    ('spain', 'ES', 'Spain'),
-    ('it', 'IT', 'Italy'),
-    ('italy', 'IT', 'Italy'),
-    ('be', 'BE', 'Belgium'),
-    ('belgium', 'BE', 'Belgium'),
-    ('nl', 'NL', 'Netherlands'),
-    ('netherlands', 'NL', 'Netherlands'),
-    ('cz', 'CZ', 'Czech Republic'),
-    ('czech-republic', 'CZ', 'Czech Republic'),
-    ('hu', 'HU', 'Hungary'),
-    ('hungary', 'HU', 'Hungary'),
-    ('pl', 'PL', 'Poland'),
-    ('poland', 'PL', 'Poland'),
-    ('ua', 'UA', 'Ukraine'),
-    ('ukraine', 'UA', 'Ukraine'),
-    ('jp', 'JP', 'Japan'),
-    ('japan', 'JP', 'Japan'),
-    ('kr', 'KR', 'South Korea'),
-    ('south-korea', 'KR', 'South Korea'),
-    ('cn', 'CN', 'China'),
-    ('china', 'CN', 'China'),
-    ('tw', 'TW', 'Taiwan'),
-    ('taiwan', 'TW', 'Taiwan'),
-    ('sg', 'SG', 'Singapore'),
-    ('singapore', 'SG', 'Singapore'),
-    ('ph', 'PH', 'Philippines'),
-    ('philippines', 'PH', 'Philippines'),
-    ('in', 'IN', 'India'),
-    ('india', 'IN', 'India'),
-    ('au', 'AU', 'Australia'),
-    ('australia', 'AU', 'Australia'),
-    ('nz', 'NZ', 'New Zealand'),
-    ('new-zealand', 'NZ', 'New Zealand'),
-    ('hn', 'HN', 'Honduras'),
-    ('honduras', 'HN', 'Honduras')
-)
+create temporary table tmp_country_seed (
+  code text primary key,
+  name text not null
+) on commit preserve rows;
+
+insert into tmp_country_seed (code, name)
+values
+  ('US', 'United States'),
+  ('CA', 'Canada'),
+  ('GB', 'United Kingdom'),
+  ('MX', 'Mexico'),
+  ('BR', 'Brazil'),
+  ('AR', 'Argentina'),
+  ('CL', 'Chile'),
+  ('CO', 'Colombia'),
+  ('DE', 'Germany'),
+  ('FR', 'France'),
+  ('ES', 'Spain'),
+  ('IT', 'Italy'),
+  ('BE', 'Belgium'),
+  ('NL', 'Netherlands'),
+  ('CZ', 'Czech Republic'),
+  ('HU', 'Hungary'),
+  ('PL', 'Poland'),
+  ('UA', 'Ukraine'),
+  ('JP', 'Japan'),
+  ('KR', 'South Korea'),
+  ('CN', 'China'),
+  ('TW', 'Taiwan'),
+  ('SG', 'Singapore'),
+  ('PH', 'Philippines'),
+  ('IN', 'India'),
+  ('AU', 'Australia'),
+  ('NZ', 'New Zealand'),
+  ('HN', 'Honduras');
+
+create temporary table tmp_country_aliases (
+  alias_slug text primary key,
+  code text not null,
+  name text not null
+) on commit preserve rows;
+
+insert into tmp_country_aliases (alias_slug, code, name)
+values
+  ('us', 'US', 'United States'),
+  ('usa', 'US', 'United States'),
+  ('united-states', 'US', 'United States'),
+  ('ca', 'CA', 'Canada'),
+  ('canada', 'CA', 'Canada'),
+  ('uk', 'GB', 'United Kingdom'),
+  ('gb', 'GB', 'United Kingdom'),
+  ('united-kingdom', 'GB', 'United Kingdom'),
+  ('mx', 'MX', 'Mexico'),
+  ('mexico', 'MX', 'Mexico'),
+  ('br', 'BR', 'Brazil'),
+  ('brazil', 'BR', 'Brazil'),
+  ('ar', 'AR', 'Argentina'),
+  ('argentina', 'AR', 'Argentina'),
+  ('cl', 'CL', 'Chile'),
+  ('chile', 'CL', 'Chile'),
+  ('co', 'CO', 'Colombia'),
+  ('colombia', 'CO', 'Colombia'),
+  ('de', 'DE', 'Germany'),
+  ('germany', 'DE', 'Germany'),
+  ('fr', 'FR', 'France'),
+  ('france', 'FR', 'France'),
+  ('es', 'ES', 'Spain'),
+  ('spain', 'ES', 'Spain'),
+  ('it', 'IT', 'Italy'),
+  ('italy', 'IT', 'Italy'),
+  ('be', 'BE', 'Belgium'),
+  ('belgium', 'BE', 'Belgium'),
+  ('nl', 'NL', 'Netherlands'),
+  ('netherlands', 'NL', 'Netherlands'),
+  ('cz', 'CZ', 'Czech Republic'),
+  ('czech-republic', 'CZ', 'Czech Republic'),
+  ('hu', 'HU', 'Hungary'),
+  ('hungary', 'HU', 'Hungary'),
+  ('pl', 'PL', 'Poland'),
+  ('poland', 'PL', 'Poland'),
+  ('ua', 'UA', 'Ukraine'),
+  ('ukraine', 'UA', 'Ukraine'),
+  ('jp', 'JP', 'Japan'),
+  ('japan', 'JP', 'Japan'),
+  ('kr', 'KR', 'South Korea'),
+  ('south-korea', 'KR', 'South Korea'),
+  ('cn', 'CN', 'China'),
+  ('china', 'CN', 'China'),
+  ('tw', 'TW', 'Taiwan'),
+  ('taiwan', 'TW', 'Taiwan'),
+  ('sg', 'SG', 'Singapore'),
+  ('singapore', 'SG', 'Singapore'),
+  ('ph', 'PH', 'Philippines'),
+  ('philippines', 'PH', 'Philippines'),
+  ('in', 'IN', 'India'),
+  ('india', 'IN', 'India'),
+  ('au', 'AU', 'Australia'),
+  ('australia', 'AU', 'Australia'),
+  ('nz', 'NZ', 'New Zealand'),
+  ('new-zealand', 'NZ', 'New Zealand'),
+  ('hn', 'HN', 'Honduras'),
+  ('honduras', 'HN', 'Honduras');
+
 insert into public.countries (code, name)
-select code, name from country_seed
+select code, name from tmp_country_seed
 on conflict (code) do nothing;
 
 with normalized_entries as (
@@ -138,7 +149,7 @@ with normalized_entries as (
       else null
     end as country_name
   from public.entries e
-  left join country_aliases ca
+  left join tmp_country_aliases ca
     on ca.alias_slug = regexp_replace(lower(btrim(coalesce(e.country, ''))), '[^a-z0-9]+', '-', 'g')
   where e.deleted_at is null
 ),
@@ -167,7 +178,7 @@ with normalized_entries as (
       else null
     end as country_code
   from public.entries e
-  left join country_aliases ca
+  left join tmp_country_aliases ca
     on ca.alias_slug = regexp_replace(lower(btrim(coalesce(e.country, ''))), '[^a-z0-9]+', '-', 'g')
   where e.deleted_at is null
 ),
@@ -211,7 +222,7 @@ with normalized_entries as (
       else null
     end as country_code
   from public.entries e
-  left join country_aliases ca
+  left join tmp_country_aliases ca
     on ca.alias_slug = regexp_replace(lower(btrim(coalesce(e.country, ''))), '[^a-z0-9]+', '-', 'g')
   where e.deleted_at is null
 ),
@@ -275,7 +286,7 @@ with normalized_entries as (
       else null
     end as country_name
   from public.entries e
-  left join country_aliases ca
+  left join tmp_country_aliases ca
     on ca.alias_slug = regexp_replace(lower(btrim(coalesce(e.country, ''))), '[^a-z0-9]+', '-', 'g')
   where e.deleted_at is null
 ),
@@ -348,67 +359,6 @@ commit;
 --   - missing / malformed city values
 --   - legacy region strings that should be split or corrected by hand
 -- =============================================================================
-with country_aliases(alias_slug, code, name) as (
-  values
-    ('us', 'US', 'United States'),
-    ('usa', 'US', 'United States'),
-    ('united-states', 'US', 'United States'),
-    ('ca', 'CA', 'Canada'),
-    ('canada', 'CA', 'Canada'),
-    ('uk', 'GB', 'United Kingdom'),
-    ('gb', 'GB', 'United Kingdom'),
-    ('united-kingdom', 'GB', 'United Kingdom'),
-    ('mx', 'MX', 'Mexico'),
-    ('mexico', 'MX', 'Mexico'),
-    ('br', 'BR', 'Brazil'),
-    ('brazil', 'BR', 'Brazil'),
-    ('ar', 'AR', 'Argentina'),
-    ('argentina', 'AR', 'Argentina'),
-    ('cl', 'CL', 'Chile'),
-    ('chile', 'CL', 'Chile'),
-    ('co', 'CO', 'Colombia'),
-    ('colombia', 'CO', 'Colombia'),
-    ('de', 'DE', 'Germany'),
-    ('germany', 'DE', 'Germany'),
-    ('fr', 'FR', 'France'),
-    ('france', 'FR', 'France'),
-    ('es', 'ES', 'Spain'),
-    ('spain', 'ES', 'Spain'),
-    ('it', 'IT', 'Italy'),
-    ('italy', 'IT', 'Italy'),
-    ('be', 'BE', 'Belgium'),
-    ('belgium', 'BE', 'Belgium'),
-    ('nl', 'NL', 'Netherlands'),
-    ('netherlands', 'NL', 'Netherlands'),
-    ('cz', 'CZ', 'Czech Republic'),
-    ('czech-republic', 'CZ', 'Czech Republic'),
-    ('hu', 'HU', 'Hungary'),
-    ('hungary', 'HU', 'Hungary'),
-    ('pl', 'PL', 'Poland'),
-    ('poland', 'PL', 'Poland'),
-    ('ua', 'UA', 'Ukraine'),
-    ('ukraine', 'UA', 'Ukraine'),
-    ('jp', 'JP', 'Japan'),
-    ('japan', 'JP', 'Japan'),
-    ('kr', 'KR', 'South Korea'),
-    ('south-korea', 'KR', 'South Korea'),
-    ('cn', 'CN', 'China'),
-    ('china', 'CN', 'China'),
-    ('tw', 'TW', 'Taiwan'),
-    ('taiwan', 'TW', 'Taiwan'),
-    ('sg', 'SG', 'Singapore'),
-    ('singapore', 'SG', 'Singapore'),
-    ('ph', 'PH', 'Philippines'),
-    ('philippines', 'PH', 'Philippines'),
-    ('in', 'IN', 'India'),
-    ('india', 'IN', 'India'),
-    ('au', 'AU', 'Australia'),
-    ('australia', 'AU', 'Australia'),
-    ('nz', 'NZ', 'New Zealand'),
-    ('new-zealand', 'NZ', 'New Zealand'),
-    ('hn', 'HN', 'Honduras'),
-    ('honduras', 'HN', 'Honduras')
-)
 select
   e.id,
   e.display_name,
@@ -425,7 +375,7 @@ select
     else 'check_row'
   end as issue
 from public.entries e
-left join country_aliases ca
+left join tmp_country_aliases ca
   on ca.alias_slug = regexp_replace(lower(btrim(coalesce(e.country, ''))), '[^a-z0-9]+', '-', 'g')
 where e.deleted_at is null
   and (

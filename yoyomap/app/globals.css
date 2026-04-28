@@ -1,3 +1,13 @@
+/* Custom border color for TrustRow and similar components */
+.border-custom {
+  border-color: var(--border);
+}
+
+/* Hero title font size and line height */
+.hero-title {
+  font-size: clamp(2.75rem, 8vw, 5.25rem);
+  line-height: 0.95;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

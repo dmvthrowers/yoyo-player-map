@@ -1,7 +1,9 @@
+
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { listLocations, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
+import { useTranslations } from 'next-intl';
 
 export const revalidate = 3600;
 
@@ -11,7 +13,8 @@ export const metadata: Metadata = {
   alternates: { canonical: '/players' },
 };
 
-export default async function PlayersIndex() {
+export default async function Page() {
+  const t = useTranslations();
   const locations = await listLocations();
   const countries = new Map<string, { name: string; count: number }>();
   for (const loc of locations) {
@@ -27,16 +30,15 @@ export default async function PlayersIndex() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <p className="eyebrow text-brand-red">Browse Locations</p>
-      <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">Yo-Yo Players Worldwide</h1>
+      <p className="eyebrow text-brand-red">{t('players.browseLocations')}</p>
+      <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">{t('players.title')}</h1>
       <hr className="rule-red" />
       <p className="text-text-body mb-8 leading-relaxed">
-        Find yo-yo players, shops, and clubs near you. Locations on YoYo Map are opt-in
-        and city-level only — exact addresses are never published.
+        {t('players.description')}
       </p>
 
       {sorted.length === 0 ? (
-        <p className="text-navy/70">No locations yet — be the first to <Link href="/submit" className="underline">add yourself</Link>.</p>
+        <p className="text-navy/70">{t('players.noLocations', { addYourself: <Link href="/submit" className="underline">{t('players.addYourself')}</Link> })}</p>
       ) : (
         <ul className="grid sm:grid-cols-2 gap-4">
           {sorted.map(([slug, { name, count }]) => (
@@ -44,7 +46,7 @@ export default async function PlayersIndex() {
               <Link href={`/players/${slug}`} className="card block hover:border-brand-red transition-colors">
                 <p className="font-display text-2xl text-navy-deep">{name}</p>
                 <p className="text-sm text-navy/70">
-                  {count} location{count === 1 ? '' : 's'}
+                  {t('players.locationCount', { count })}
                 </p>
               </Link>
             </li>

@@ -1,8 +1,7 @@
-'use client';
-
+"use client";
+import { useTranslations } from 'next-intl';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-
 function ProfileInner() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -14,11 +13,12 @@ function ProfileInner() {
 }
 
 export default function ProfilePage() {
+  const t = useTranslations();
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-display text-brand-red mb-4">My Profile</h1>
-      <p className="text-navy/80">View and manage your profile on the YoYo Map.</p>
-      <Suspense fallback={<div>Loading…</div>}>
+      <h1 className="text-3xl font-display text-brand-red mb-4">{t('profile.title')}</h1>
+      <p className="text-navy/80">{t('profile.description')}</p>
+      <Suspense fallback={<div>{t('profile.loading')}</div>}>
         <ProfileInner />
       </Suspense>
     </div>
@@ -26,6 +26,7 @@ export default function ProfilePage() {
 }
 
 function RequestMagicLink() {
+  const t = useTranslations();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -57,9 +58,9 @@ function RequestMagicLink() {
   if (sent) {
     return (
       <div className="card text-center">
-        <h1 className="text-3xl mb-4">Check your email</h1>
+        <h1 className="text-3xl mb-4">{t('profile.checkEmail')}</h1>
         <p className="text-navy/80">
-          If that email matches an entry, we sent you a link to manage it. The link expires in 1 hour.
+          {t('profile.checkEmailHelp')}
         </p>
       </div>
     );
@@ -67,25 +68,25 @@ function RequestMagicLink() {
 
   return (
     <div>
-      <h1 className="text-4xl mb-2">Manage Your Entry</h1>
+      <h1 className="text-4xl mb-2">{t('profile.manageEntry')}</h1>
       <p className="text-navy/80 mb-6">
-        Enter the email you used to submit. We&apos;ll send you a one-time link to edit or delete your entry.
+        {t('profile.manageEntryHelp')}
       </p>
       <form onSubmit={onSubmit} className="card space-y-4">
         <div>
-          <label className="label">Email</label>
+          <label className="label">{t('profile.emailLabel')}</label>
           <input
             className="input"
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            title="Email address"
+            title={t('profile.emailTitle')}
           />
         </div>
         {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm">{error}</div>}
         <button type="submit" className="btn-primary w-full" disabled={loading}>
-          {loading ? 'Sending…' : 'Send Magic Link'}
+          {loading ? t('profile.sending') : t('profile.sendMagicLink')}
         </button>
       </form>
     </div>

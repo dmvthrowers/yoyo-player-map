@@ -1,6 +1,7 @@
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { NextIntlClientProvider, hasLocale, useTranslations } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import Navigation from '../../components/Navigation';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
 import { routing } from '../../i18n/routing';
@@ -10,18 +11,14 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-export default async function LocaleLayout({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
+export default async function Layout({ children, params }: { children: React.ReactNode; params: { locale: string } }) {
+  const { locale } = params;
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
   const messages = await getMessages();
+  // Use translations in the footer
+  const t = useTranslations();
 
   return (
     <html lang={locale}>
@@ -36,38 +33,39 @@ export default async function LocaleLayout({
           <footer className="bg-dark-navy text-cream/80 border-t-4 border-brand-red mt-12">
             <div className="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-4 gap-6 text-sm">
               <div>
-                <p className="font-display text-lg text-cream">YoYo Map</p>
-                <p className="mt-2">A community project of DMV Throwers Yo-Yo & Skill Toy Club. All skill levels welcome.</p>
+                <p className="font-display text-lg text-cream">{t('footer.title')}</p>
+                <p className="mt-2">{t('footer.description')}</p>
               </div>
               <div>
-                <p className="font-semibold uppercase tracking-wider text-xs mb-2">DMV Throwers</p>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.dmvThrowers')}</p>
                 <ul className="space-y-1">
-                  <li><a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">Home</a></li>
-                  <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">VSYC-26</a></li>
+                  <li><a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.home')}</a></li>
+                  <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.vsyc')}</a></li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold uppercase tracking-wider text-xs mb-2">Legal</p>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.legal')}</p>
                 <ul className="space-y-1">
-                  <li><a className="hover:text-brand-red" href="/legal/privacy">privacy</a></li>
-                  <li><a className="hover:text-brand-red" href="/legal/terms">terms</a></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/privacy`}>{t('footer.privacy')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/terms`}>{t('footer.terms')}</Link></li>
                 </ul>
-                <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">Security</p>
+                <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">{t('footer.security')}</p>
                 <ul className="space-y-1">
-                  <li><a className="hover:text-brand-red" href="/en/legal/security">Security Bulletin: April 2026</a></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/security`}>{t('footer.securityBulletin')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/status`}>{t('footer.serviceStatus')}</Link></li>
                 </ul>
               </div>
               <div>
-                <p className="font-semibold uppercase tracking-wider text-xs mb-2">Project</p>
+                <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.project')}</p>
                 <ul className="space-y-1">
-                  <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">GitHub Repo</a></li>
+                  <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.github')}</a></li>
                   <li><a href="mailto:dmvthrowers@gmail.com" className="hover:text-brand-red">dmvthrowers@gmail.com</a></li>
                   <li className="text-xs">DC · MD · VA</li>
                 </ul>
               </div>
             </div>
             <div className="bg-navy py-3 text-center text-xs">
-              <p>© 2026 DMV Throwers · EIN 41-4879324</p>
+              <p>{t('footer.copyright')}</p>
             </div>
           </footer>
         </NextIntlClientProvider>

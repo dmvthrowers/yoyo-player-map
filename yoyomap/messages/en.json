@@ -8,7 +8,20 @@
     "resources": "Resources",
     "vsyc": "VSYC-26",
     "language": "Language:",
-    "languageSelect": "Select language"
+    "languageSelect": "Select language",
+    "languages": {
+      "en": "English",
+      "es": "Español",
+      "de": "Deutsch",
+      "zh": "中文",
+      "ja": "日本語",
+      "fr": "Français",
+      "pt": "Português",
+      "ru": "Русский",
+      "ar": "العربية",
+      "hi": "हिन्दी",
+      "ko": "한국어"
+    }
   },
   "home": {
     "title": "Find Your People.",

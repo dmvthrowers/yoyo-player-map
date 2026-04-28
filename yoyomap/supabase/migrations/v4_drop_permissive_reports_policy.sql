@@ -13,4 +13,4 @@
 --      does not change the capability of any client-side role.
 -- =============================================================================
 
-DROP POLICY IF EXISTS "Anyone can submit a report" ON public.reports;
+-- DROP POLICY IF EXISTS "Anyone can submit a report" ON reports;

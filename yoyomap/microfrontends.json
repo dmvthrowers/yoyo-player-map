@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/microfrontends.json",
+  "applications": {
+    "yoyo-player-map": {
+      "development": {
+        "fallback": "yoyo-player-map.vercel.app"
+      }
+    }
+  }
+}

@@ -10,8 +10,8 @@
 -- sort without an extra sort step.
 -- =============================================================================
 
-CREATE INDEX IF NOT EXISTS idx_entries_visible
-  ON public.entries (created_at DESC)
+CREATE INDEX idx_entries_visible
+  ON entries (created_at)
   WHERE is_visible = true
     AND is_flagged = false
     AND deleted_at IS NULL

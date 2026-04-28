@@ -1,5 +1,8 @@
 'use client';
 
+"use client";
+"use client";
+
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -102,10 +105,12 @@ function ReportInner() {
 
 export default function ReportPage() {
   return (
-    <div className="max-w-xl mx-auto px-4 py-12">
+      <div className="max-w-2xl mx-auto px-4 py-12">
       <Suspense fallback={<div>Loading…</div>}>
         <ReportInner />
       </Suspense>
-    </div>
-  );
+      </div>
+    );
 }
+
+

@@ -6,8 +6,9 @@ import Link from 'next/link';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navigation() {
-  const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
+  const ariaExpanded = menuOpen ? 'true' : 'false';
+  const t = useTranslations();
   const close = () => setMenuOpen(false);
 
   return (
@@ -21,7 +22,7 @@ export default function Navigation() {
             rel="noopener noreferrer"
             className="topbar-link"
           >
-            DMV Throwers ↗
+            {t('nav.dmvThrowers')} ↗
           </a>
           <a
             href="https://dmvthrowers.club/vsyc26.html"
@@ -40,14 +41,14 @@ export default function Navigation() {
       <nav className="site-nav" aria-label="Main Navigation">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-6">
           <Link href="/" className="brand-lockup whitespace-nowrap" onClick={close}>
-            YoYo Map
+            {t('nav.brand')}
           </Link>
 
           {/* Desktop nav — hidden below md breakpoint */}
           <div className="hidden md:flex items-center gap-6">
             <ul className="flex items-center gap-6">
               <li><Link href="/map" className="nav-link whitespace-nowrap">{t('nav.map')}</Link></li>
-              <li><Link href="/players" className="nav-link whitespace-nowrap">Players</Link></li>
+              <li><Link href="/players" className="nav-link whitespace-nowrap">{t('nav.players')}</Link></li>
               <li><Link href="/submit" className="nav-link whitespace-nowrap">{t('nav.submit')}</Link></li>
               <li><Link href="/profile" className="nav-link whitespace-nowrap">{t('nav.profile')}</Link></li>
               <li>
@@ -56,7 +57,7 @@ export default function Navigation() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="donate-btn"
-                  title="Support cool things in the yo-yo community!"
+                  title={t('nav.donateTitle')}
                 >
                   {t('nav.donate')}
                 </a>
@@ -66,10 +67,11 @@ export default function Navigation() {
 
           {/* Hamburger button — visible only on mobile */}
           <button
+            type="button"
             className="md:hidden p-2 -mr-1 text-navy-deep"
-            aria-expanded={menuOpen}
+            aria-expanded={ariaExpanded}
             aria-controls="mobile-menu"
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((o) => !o)}
           >
             {menuOpen ? (
@@ -89,7 +91,7 @@ export default function Navigation() {
           <div id="mobile-menu" className="md:hidden border-t bg-cream px-4 pb-4 pt-2">
             <ul className="flex flex-col">
               <li><Link href="/map" className="nav-link block py-2" onClick={close}>{t('nav.map')}</Link></li>
-              <li><Link href="/players" className="nav-link block py-2" onClick={close}>Players</Link></li>
+              <li><Link href="/players" className="nav-link block py-2" onClick={close}>{t('nav.players')}</Link></li>
               <li><Link href="/submit" className="nav-link block py-2" onClick={close}>{t('nav.submit')}</Link></li>
               <li><Link href="/profile" className="nav-link block py-2" onClick={close}>{t('nav.profile')}</Link></li>
               <li className="py-2">
@@ -105,7 +107,7 @@ export default function Navigation() {
               </li>
               <li>
                 <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>
-                  DMV Throwers ↗
+                  {t('nav.dmvThrowers')} ↗
                 </a>
               </li>
               <li>
