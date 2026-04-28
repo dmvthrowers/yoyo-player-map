@@ -157,7 +157,19 @@
       "players": "Players",
       "shops": "Shops",
       "clubs": "Clubs"
-    }
+    },
+    "countThrowers": "throwers",
+    "countShops": "shops",
+    "countClubs": "clubs",
+    "collapseInfoPanel": "Collapse info panel",
+    "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
+    "addToMap": "Add to map",
+    "collapseFilters": "Collapse filters",
+    "filter": "Filter",
+    "people": "People",
+    "shops": "Shops",
+    "clubs": "Clubs",
+    "highlightUnderserved": "Highlight underserved areas"
   },
   "legal": {
     "privacy": {
@@ -345,5 +357,24 @@
     "sent": "Check your email for the magic link!",
     "error": "Something went wrong. Please try again.",
     "loading": "Loading profile..."
+  },
+  "submit": {
+    "addToMap": "Add to map",
+    "whatAreYouAdding": "What are you adding?",
+    "chooseType": "Choose a type to continue",
+    "type": {
+      "person": {
+        "title": "Person",
+        "description": "Add yourself or another yoyo player"
+      },
+      "shop": {
+        "title": "Shop",
+        "description": "Add a yoyo store or retailer"
+      },
+      "club": {
+        "title": "Club",
+        "description": "Add a yoyo club or community group"
+      }
+    }
   }
 }
