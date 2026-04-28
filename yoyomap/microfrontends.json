@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/microfrontends.json",
   "applications": {
     "yoyo-player-map": {
+      "production": {
+        "fallback": "yoyo-player-map.vercel.app"
+      },
       "development": {
         "fallback": "yoyo-player-map.vercel.app"
       }
