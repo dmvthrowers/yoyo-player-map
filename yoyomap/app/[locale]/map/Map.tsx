@@ -15,7 +15,7 @@ type DetailOnlyFields = Pick<
 
 // LRU cache — prevents unbounded memory growth in serverless
 const MAX_DETAIL_CACHE = 200;
-const detailCache: Map<string, DetailOnlyFields> = new Map();
+const detailCache: globalThis.Map<string, DetailOnlyFields> = new globalThis.Map();
 
 function setDetailCache(id: string, data: DetailOnlyFields) {
   if (detailCache.size >= MAX_DETAIL_CACHE) {
