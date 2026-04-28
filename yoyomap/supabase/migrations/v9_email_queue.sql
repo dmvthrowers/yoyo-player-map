@@ -11,7 +11,7 @@
 -- last_error — most recent failure reason, for debugging
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS public.email_queue (
+CREATE TABLE IF NOT EXISTS email_queue (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   template    text        NOT NULL,
   to_email    text        NOT NULL,
@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS public.email_queue (
 
 -- Drain query: pull unsent rows whose not_before has passed, oldest first.
 CREATE INDEX IF NOT EXISTS email_queue_drain_idx
-  ON public.email_queue (not_before)
+  ON email_queue (not_before)
   WHERE sent_at IS NULL;
 
-ALTER TABLE public.email_queue ENABLE ROW LEVEL SECURITY;
+ALTER TABLE email_queue ENABLE ROW LEVEL SECURITY;
 -- No policies: service-role only (same as verification_tokens).

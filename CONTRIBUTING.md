@@ -1,4 +1,5 @@
 # Contributing to YoYo Player Map
+
 Thank you for your interest in contributing! We welcome all contributions, from bug reports and documentation improvements to new features.
 
 ## How to Contribute

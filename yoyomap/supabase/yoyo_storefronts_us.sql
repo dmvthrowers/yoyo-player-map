@@ -1,6 +1,6 @@
 -- Yo-yo Clubs (bulk insert; generated from CSVs 2026-04-23)
 -- NOTE: Dummy emails used; update as needed. Lat/lng are approximate city centers.
-insert into public.entries (
+insert into entries (
   display_name, city, region, country, lat, lng, exact_lat, exact_lng, address_line, postal_code, entity_type, is_visible, email, age_band, bio, socials, hours, club_meeting_info, club_venue_public
 ) values
 ('AllYoYo (Phoenix)', 'Phoenix', 'AZ', 'USA', 33.4484, -112.0740, 33.4484, -112.0740, NULL, NULL, 'club', true, 'club+allyoyo-phoenix@example.com', NULL, 'Free weekly class, active as recently as 2022+. Distinct from Chandler (east metro). Also a performance troupe.', '{"website": "allyoyo.com", "instagram": "@allyoyo"}', NULL, 'Weekly class, see IG for schedule', true),
@@ -23,7 +23,7 @@ insert into public.entries (
 
 
 
-insert into public.entries (
+insert into entries (
   display_name, city, region, country, lat, lng, exact_lat, exact_lng, address_line, postal_code, entity_type, is_visible, email, age_band, bio, socials, hours
 ) values
 ('YoYoExpert', 'Easthampton', 'MA', 'USA', 42.2668, -72.6687, 42.2668, -72.6687, '116 Pleasant St, Suite 201', '01027', 'shop', true, 'store+yoyoexpert@example.com', NULL, 'Eastworks Building. Walk-in store + warehouse. Owner Andre Boulay. Hours Mon-Fri 10a-5p ET.', '{"website": "https://yoyoexpert.com", "phone": "(413) 551-9696"}', 'Mon-Fri 10a-5p ET'),
@@ -42,7 +42,7 @@ insert into public.entries (
 ('Caribou Lodge (CLYW)', 'Edmonton', 'AB', 'Canada', 53.5461, -113.4938, 53.5461, -113.4938, 'Online only', NULL, 'shop', false, 'store+clyw@example.com', NULL, 'Canadian premium yo-yo brand founded 2006 by Chris Mikulin. Outside US scope but included as major North American manufacturer. No public retail.', '{"website": "https://cariboulodge.store"}', NULL);
 
 
-insert into public.entries (
+insert into entries (
   display_name, city, region, country, lat, lng, exact_lat, exact_lng, address_line, postal_code, entity_type, is_visible, email, age_band, bio, socials, hours, club_meeting_info, club_venue_public
 ) values
 ('AllYoYo (Phoenix)', 'Phoenix', 'AZ', 'USA', 33.4484, -112.0740, 33.4484, -112.0740, NULL, NULL, 'club', true, 'club+allyoyo-phoenix@example.com', NULL, 'Free weekly class, active as recently as 2022+. Distinct from Chandler (east metro). Also a performance troupe.', '{"website": "allyoyo.com", "instagram": "@allyoyo"}', NULL, 'Weekly class, see IG for schedule', true),

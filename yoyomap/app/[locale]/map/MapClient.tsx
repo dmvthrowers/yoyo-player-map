@@ -1,7 +1,10 @@
 'use client';
+'use client';
+'use client';
 
 import dynamic from 'next/dynamic';
 import { useMemo, useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import type { MapEntry } from './page';
 
 export interface MapFilters {
@@ -23,6 +26,7 @@ const Map = dynamic(() => import('./Map'), {
 
 export default function MapClient({ entries }: { entries: MapEntry[] }) {
   const [filterOpen, setFilterOpen] = useState(true);
+  const t = useTranslations();
 
   useEffect(() => {
     if (window.innerWidth < 768) setFilterOpen(false);
@@ -58,10 +62,10 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
         <button
           onClick={() => setFilterOpen((o) => !o)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
-          aria-expanded={filterOpen}
-          aria-label={filterOpen ? 'Collapse filters' : 'Expand filters'}
+          aria-expanded={filterOpen ? 'true' : 'false'}
+          aria-label={filterOpen ? t('map.collapseFilters') : t('map.expandFilters')}
         >
-          <span className="text-xs font-bold uppercase tracking-wider flex-1">Filter</span>
+          <span className="text-xs font-bold uppercase tracking-wider flex-1">{t('map.filter')}</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="14"
@@ -90,7 +94,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                 />
                 <span className="flex items-center gap-1">
                   <span className="inline-block w-3 h-3 rounded-full bg-[#D42B2B]" />
-                  People
+                  {t('map.people')}
                 </span>
               </label>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -101,7 +105,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                 />
                 <span className="flex items-center gap-1">
                   <span className="inline-block w-3 h-3 bg-[#2E8B57]" />
-                  Shops
+                  {t('map.shops')}
                 </span>
               </label>
               <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -112,7 +116,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                 />
                 <span className="flex items-center gap-1">
                   <span className="inline-block w-3 h-3 rounded-full border-2 border-[#1B2A49]" />
-                  Clubs
+                  {t('map.clubs')}
                 </span>
               </label>
             </div>
@@ -123,11 +127,11 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                 checked={filters.showUnderserved}
                 onChange={() => toggleFilter('showUnderserved')}
               />
-              <span>Highlight underserved</span>
+              <span>{t('map.highlightUnderserved')}</span>
             </label>
             {filters.showUnderserved && (
               <p className="text-[10px] text-navy/60 mt-1">
-                Pulsing ring = &gt;50mi from nearest shop and club
+                {t('map.underservedDescription')}
               </p>
             )}
           </div>

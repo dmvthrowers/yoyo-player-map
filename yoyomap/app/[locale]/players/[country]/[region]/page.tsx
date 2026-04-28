@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../../EntryList';
+import { useTranslations } from 'next-intl';
 
 export const revalidate = 3600;
 
@@ -35,8 +36,8 @@ export async function generateStaticParams() {
 }
 
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country, region } = await params;
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { country, region } = params;
   const entries = await entriesInRegion(country, region);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? region;
@@ -47,8 +48,9 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   };
 }
 
-export default async function Page({ params }: { params: Promise<Params> }) {
-  const { country, region } = await params;
+export default async function Page({ params }: { params: Params }) {
+  const t = useTranslations();
+  const { country, region } = params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
@@ -59,12 +61,12 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
         <nav className="text-xs text-navy/60 mb-3">
-          <Link href="/players" className="hover:text-brand-red">Players</Link> /{' '}
-          <Link href={`/players/${country}`} className="hover:text-brand-red">{countryName}</Link> / Unspecified
+          <Link href="/players" className="hover:text-brand-red">{t('nav.players')}</Link> /{' '}
+          <Link href={`/players/${country}`} className="hover:text-brand-red">{countryName}</Link> / {t('players.unspecified')}
         </nav>
-        <p className="eyebrow text-brand-red">Region</p>
+        <p className="eyebrow text-brand-red">{t('players.region')}</p>
         <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">
-          Yo-Yo Players in {countryName} (Unspecified Region)
+          {t('players.inCountryUnspecifiedRegion', { country: countryName })}
         </h1>
         <hr className="rule-red" />
         <Counts entries={entries} className="mb-8" />
@@ -97,18 +99,18 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-12">
         <nav className="text-xs text-navy/60 mb-3">
-          <Link href="/players" className="hover:text-brand-red">Players</Link> /{' '}
+          <Link href="/players" className="hover:text-brand-red">{t('nav.players')}</Link> /{' '}
           <Link href={`/players/${country}`} className="hover:text-brand-red">{countryName}</Link> /{' '}
           {regionName}
         </nav>
-        <p className="eyebrow text-brand-red">Region</p>
+        <p className="eyebrow text-brand-red">{t('players.region')}</p>
         <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">
-          Yo-Yo Players in {regionName}
+          {t('players.inRegion', { region: regionName })}
         </h1>
         <hr className="rule-red" />
         <Counts entries={entries} className="mb-8" />
 
-        <h2 className="font-display text-2xl text-navy-deep mb-4">Cities</h2>
+        <h2 className="font-display text-2xl text-navy-deep mb-4">{t('players.cities')}</h2>
         <ul className="grid sm:grid-cols-2 gap-4">
           {sorted.map(([slug, c]) => (
             <li key={slug}>
@@ -117,7 +119,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
                 className="card block hover:border-brand-red transition-colors"
               >
                 <p className="font-display text-xl text-navy-deep">{c.name}</p>
-                <p className="text-sm text-navy/70">{c.count} location{c.count === 1 ? '' : 's'}</p>
+                <p className="text-sm text-navy/70">{t('players.locationCount', { count: c.count })}</p>
               </Link>
             </li>
           ))}
