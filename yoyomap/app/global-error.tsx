@@ -3,8 +3,6 @@
 // Fallback for errors thrown inside app/layout.tsx itself (where the regular
 // error.tsx can't mount because it lives inside the layout). Must render
 // <html> and <body> because the normal layout is bypassed.
-"use client";
-
 import { useEffect } from 'react';
 
 export default function GlobalError({

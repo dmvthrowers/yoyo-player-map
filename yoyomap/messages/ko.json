@@ -49,9 +49,9 @@
     }
   },
   "map": {
-    "countThrowers": "throwers",
-    "countShops": "shops",
-    "countClubs": "clubs",
+    "countThrowers": "{count, plural, one {# thrower} other {# throwers}}",
+    "countShops": "{count, plural, one {# shop} other {# shops}}",
+    "countClubs": "{count, plural, one {# club} other {# clubs}}",
     "collapseInfoPanel": "Collapse info panel",
     "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
     "addToMap": "Add to map",

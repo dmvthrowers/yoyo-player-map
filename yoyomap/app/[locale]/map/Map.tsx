@@ -299,7 +299,7 @@ function ShopPopup({ entry }: { entry: MapEntry }) { /* unchanged */
       <p className="font-bold text-base text-navy flex items-center gap-1 font-playfair">
         {entry.display_name}
         {entry.verified_owner && (
-          <svg className="w-4 h-4 text-[#2E8B57]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 6.48 2 12s4.48 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <svg className="w-4 h-4 text-[#2E8B57]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
         )}
       </p>
       <p className="text-xs text-navy/70 mb-2">{[entry.city, entry.region, entry.country].filter(Boolean).join(', ')}</p>

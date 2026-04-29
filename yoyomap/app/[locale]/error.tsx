@@ -4,8 +4,6 @@
 // route segment below app/layout.tsx (except the layout itself — see
 // global-error.tsx for that). Server errors and client errors both land here.
 
-"use client";
-
 import { useEffect } from 'react';
 import Link from 'next/link';
 

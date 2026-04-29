@@ -158,18 +158,21 @@
       "shops": "Shops",
       "clubs": "Clubs"
     },
-    "countThrowers": "throwers",
-    "countShops": "shops",
-    "countClubs": "clubs",
+    "countThrowers": "{count, plural, one {# thrower} other {# throwers}}",
+    "countShops": "{count, plural, one {# shop} other {# shops}}",
+    "countClubs": "{count, plural, one {# club} other {# clubs}}",
     "collapseInfoPanel": "Collapse info panel",
+    "expandInfoPanel": "Expand info panel",
     "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
     "addToMap": "Add to map",
     "collapseFilters": "Collapse filters",
+    "expandFilters": "Expand filters",
     "filter": "Filter",
     "people": "People",
     "shops": "Shops",
     "clubs": "Clubs",
-    "highlightUnderserved": "Highlight underserved areas"
+    "highlightUnderserved": "Highlight underserved areas",
+    "underservedDescription": "Areas with fewer than 3 players highlighted in red."
   },
   "legal": {
     "privacy": {
@@ -346,6 +349,14 @@
           "body": "Questions? Email dmvthrowers@gmail.com"
         }
       ]
+    },
+    "security": {
+      "title": "Security",
+      "description": "Security information and vulnerability disclosures for YoYo Map.",
+      "reportTitle": "Reporting a Vulnerability",
+      "reportBody": "To report a security vulnerability, please email dmvthrowers@gmail.com with a description of the issue. We will respond within 72 hours.",
+      "bulletinsTitle": "Security Bulletins",
+      "noBulletins": "No active security bulletins at this time."
     }
   },
   "profile": {
@@ -356,7 +367,34 @@
     "sending": "Sending...",
     "sent": "Check your email for the magic link!",
     "error": "Something went wrong. Please try again.",
-    "loading": "Loading profile..."
+    "loading": "Loading profile...",
+    "checkEmail": "Check your email",
+    "checkEmailHelp": "We sent you a magic link. Click it to manage your map entry.",
+    "manageEntry": "Manage Your Entry",
+    "manageEntryHelp": "Enter your email to receive a magic link and manage your listing.",
+    "emailLabel": "Email address",
+    "emailTitle": "Enter your email address",
+    "sendMagicLink": "Send Magic Link",
+    "editEntry": "Edit Your Entry",
+    "editEntryHelp": "Changes save when you click the button below.",
+    "loadingEntry": "Loading your entry…",
+    "displayName": "Display name",
+    "city": "City",
+    "region": "Region",
+    "bio": "Bio",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "discord": "Discord",
+    "website": "Website",
+    "saved": "Saved.",
+    "saveChanges": "Save Changes",
+    "saving": "Saving…",
+    "deleteEntry": "Delete your entry",
+    "deleteEntryHelp": "Permanently remove your entry. This cannot be undone. Your email and any consent records are also deleted.",
+    "deleteMyEntry": "Delete My Entry",
+    "deleteConfirm": "Yes, delete permanently",
+    "cancel": "Cancel",
+    "deletedMessage": "Your entry has been permanently deleted."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -375,6 +413,48 @@
         "title": "Club",
         "description": "Add a yoyo club or community group"
       }
-    }
+    },
+    "toastCheckEmail": "Check your email",
+    "toastVerifyLink": "Click the link we sent you to verify your submission.",
+    "savedEmailComing": "You're on the map!",
+    "savedEmailTrouble": "You're on the map!",
+    "checkYourEmail": "Check your email",
+    "parentConsentHelp": "A consent email has been sent to your parent or guardian. They must approve before your entry goes live.",
+    "backToHome": "Back to Home",
+    "displayName": "Display name",
+    "yourEmail": "Your email",
+    "age18plus": "18 or older",
+    "age13to17": "13–17",
+    "selectCountry": "Select country",
+    "selectRegion": "Select region (optional)",
+    "parentInfo": "Parent / Guardian Information",
+    "parentName": "Parent / Guardian name",
+    "parentEmail": "Parent / Guardian email",
+    "selectRelationship": "Select relationship",
+    "parent": "Parent",
+    "guardian": "Legal Guardian",
+    "consentPublic": "I consent to my information being publicly displayed on the map.",
+    "consentPrivacy": "I have read and accept the",
+    "privacyPolicy": "Privacy Policy",
+    "consentTerms": "I agree to the",
+    "terms": "Terms of Service",
+    "authorizedRep": "I am authorized to represent this organization.",
+    "submitting": "Submitting…",
+    "submit": "Submit",
+    "changeType": "Change type",
+    "addType": "Add a {type}",
+    "business": "business",
+    "club": "club",
+    "errorAgeBand": "Please select your age group.",
+    "errorCountry": "Please select a country.",
+    "errorCitySelectAdd": "Please select \"{city}\" from the list or click Add to create it.",
+    "errorCitySelectAddGeneric": "Please select or add a city.",
+    "errorConsentPublic": "You must consent to public display.",
+    "errorConsentPrivacy": "You must accept the privacy policy.",
+    "errorConsentTerms": "You must accept the terms of service.",
+    "errorAuthorizedRep": "You must confirm you are authorized to represent this {type}.",
+    "errorParentName": "Parent / guardian name is required.",
+    "errorParentEmail": "Parent / guardian email is required.",
+    "errorRelationship": "Please select a relationship."
   }
 }
