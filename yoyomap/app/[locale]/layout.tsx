@@ -59,7 +59,7 @@ export default async function Layout({ children, params }: { children: React.Rea
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.project')}</p>
                 <ul className="space-y-1">
                   <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.github')}</a></li>
-                  <li><a href="mailto:dmvthrowers@gmail.com" className="hover:text-brand-red">dmvthrowers@gmail.com</a></li>
+                  <li><Link className="hover:text-brand-red" href={`/${locale}/contact`}>{t('footer.contact')}</Link></li>
                   <li className="text-xs">DC · MD · VA</li>
                 </ul>
               </div>

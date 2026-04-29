@@ -110,7 +110,8 @@
     "project": "Project",
     "github": "GitHub",
     "copyright": "© 2024 DMV Throwers. All rights reserved.",
-    "all_welcome": "All skill levels welcome."
+    "all_welcome": "All skill levels welcome.",
+    "contact": "Contact"
   },
   "players": {
     "browseLocations": "Browse by Location",
@@ -389,6 +390,14 @@
     "saved": "Saved.",
     "saveChanges": "Save Changes",
     "saving": "Saving…",
+    "contactName": "Contact Name",
+    "addressLine": "Street Address",
+    "postalCode": "Postal / ZIP Code",
+    "hours": "Business Hours",
+    "meetingInfo": "Meeting Schedule & Info",
+    "venuePublic": "Share venue address publicly",
+    "venueAddressLine": "Venue Street Address",
+    "venuePostalCode": "Venue Postal / ZIP Code",
     "deleteEntry": "Delete your entry",
     "deleteEntryHelp": "Permanently remove your entry. This cannot be undone. Your email and any consent records are also deleted.",
     "deleteMyEntry": "Delete My Entry",
@@ -455,6 +464,35 @@
     "errorAuthorizedRep": "You must confirm you are authorized to represent this {type}.",
     "errorParentName": "Parent / guardian name is required.",
     "errorParentEmail": "Parent / guardian email is required.",
-    "errorRelationship": "Please select a relationship."
+    "errorRelationship": "Please select a relationship.",
+    "errorContactName": "Contact name is required.",
+    "errorAddressLine": "Street address is required.",
+    "errorMeetingInfo": "Meeting info is required (at least 10 characters).",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us a bit about yourself or your organization",
+    "socialLinks": "Social Links (optional)",
+    "contactName": "Contact Name",
+    "contactNamePlaceholder": "Name of the primary contact",
+    "addressLine": "Street Address",
+    "addressLinePlaceholder": "123 Main St",
+    "postalCode": "Postal / ZIP Code",
+    "hours": "Business Hours",
+    "hoursPlaceholder": "e.g. Mon–Fri 10am–6pm, Sat 11am–4pm",
+    "meetingInfo": "Meeting Schedule & Info",
+    "meetingInfoPlaceholder": "When, where, and how often you meet",
+    "venuePublic": "Share venue address publicly on the map",
+    "venueAddressLine": "Venue Street Address",
+    "venuePostalCode": "Venue Postal / ZIP Code"
+  },
+  "contact": {
+    "eyebrow": "Get in Touch",
+    "title": "Contact Us",
+    "description": "We'd love to hear from you! Reach out with questions, suggestions, or club inquiries.",
+    "emailClub": "Email (Club)",
+    "emailContest": "Email (Contest)",
+    "instagram": "Instagram",
+    "phone": "Phone",
+    "coordinator": "Coordinator",
+    "backToHome": "Back to Home"
   }
 }

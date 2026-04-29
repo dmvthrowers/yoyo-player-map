@@ -21,6 +21,15 @@ const updateSchema = z.object({
     discord: z.string().trim().max(50).optional().or(z.literal('')),
     website: z.string().trim().max(200).optional().or(z.literal('')),
   }).optional(),
+  // Club-specific fields
+  club_meeting_info: z.string().trim().max(500).nullable().optional(),
+  club_venue_public: z.boolean().optional(),
+  // Shop-specific fields
+  address_line: z.string().trim().max(200).nullable().optional(),
+  postal_code: z.string().trim().max(20).nullable().optional(),
+  hours: z.string().trim().max(500).nullable().optional(),
+  // Shared org fields
+  contact_name: z.string().trim().max(100).nullable().optional(),
 });
 
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
@@ -82,6 +91,13 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
       socials: d.socials || {},
       lat,
       lng,
+      // Type-specific fields — only written if present in payload
+      ...(d.club_meeting_info !== undefined && { club_meeting_info: d.club_meeting_info || null }),
+      ...(d.club_venue_public !== undefined && { club_venue_public: d.club_venue_public }),
+      ...(d.address_line !== undefined && { address_line: d.address_line || null }),
+      ...(d.postal_code !== undefined && { postal_code: d.postal_code || null }),
+      ...(d.hours !== undefined && { hours: d.hours || null }),
+      ...(d.contact_name !== undefined && { contact_name: d.contact_name || null }),
     })
     .eq('id', tok.entry_id);
 

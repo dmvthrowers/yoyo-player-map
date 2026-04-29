@@ -167,6 +167,10 @@ export default function SubmitPage() {
     if (!form.consentPrivacy) errors.consentPrivacy = t('submit.errorConsentPrivacy');
     if (!form.consentTerms) errors.consentTerms = t('submit.errorConsentTerms');
     if ((form.entityType === 'shop' || form.entityType === 'club') &&!form.authorizedRep) errors.authorizedRep = t('submit.errorAuthorizedRep', { type: form.entityType === 'shop'? t('submit.business') : t('submit.club') });
+    if (form.entityType === 'shop' &&!form.addressLine.trim()) errors.addressLine = t('submit.errorAddressLine');
+    if (form.entityType === 'shop' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
+    if (form.entityType === 'club' &&!form.clubMeetingInfo.trim()) errors.clubMeetingInfo = t('submit.errorMeetingInfo');
+    if (form.entityType === 'club' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
     if (isMinor) {
       if (!form.parentName.trim()) errors.parentName = t('submit.errorParentName');
       if (!form.parentEmail.trim()) errors.parentEmail = t('submit.errorParentEmail');
@@ -291,6 +295,79 @@ export default function SubmitPage() {
             </select>
           </div>
         )}
+
+        {/* Shop-specific fields */}
+        {form.entityType === 'shop' && (
+          <div className="card space-y-4">
+            <h2 className="font-semibold text-lg">🏪 Shop Details</h2>
+            <div>
+              <label className="label">{t('submit.contactName')}</label>
+              <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
+              {formErrors.contactName && <p className="text-red-600 text-sm">{formErrors.contactName}</p>}
+            </div>
+            <div>
+              <label className="label">{t('submit.addressLine')}</label>
+              <input className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.addressLine} onChange={e=>update('addressLine',e.target.value)} />
+              {formErrors.addressLine && <p className="text-red-600 text-sm">{formErrors.addressLine}</p>}
+            </div>
+            <div>
+              <label className="label">{t('submit.postalCode')}</label>
+              <input className="input" value={form.postalCode} onChange={e=>update('postalCode',e.target.value)} />
+            </div>
+            <div>
+              <label className="label">{t('submit.hours')}</label>
+              <textarea className="input" rows={3} placeholder={t('submit.hoursPlaceholder')} value={form.hours} onChange={e=>update('hours',e.target.value)} />
+            </div>
+          </div>
+        )}
+
+        {/* Club-specific fields */}
+        {form.entityType === 'club' && (
+          <div className="card space-y-4">
+            <h2 className="font-semibold text-lg">🎲 Club Details</h2>
+            <div>
+              <label className="label">{t('submit.contactName')}</label>
+              <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
+              {formErrors.contactName && <p className="text-red-600 text-sm">{formErrors.contactName}</p>}
+            </div>
+            <div>
+              <label className="label">{t('submit.meetingInfo')}</label>
+              <textarea className="input" rows={4} placeholder={t('submit.meetingInfoPlaceholder')} value={form.clubMeetingInfo} onChange={e=>update('clubMeetingInfo',e.target.value)} />
+              {formErrors.clubMeetingInfo && <p className="text-red-600 text-sm">{formErrors.clubMeetingInfo}</p>}
+            </div>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" checked={form.clubVenuePublic} onChange={e=>update('clubVenuePublic',e.target.checked)} />
+              {t('submit.venuePublic')}
+            </label>
+            {form.clubVenuePublic && (
+              <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
+                <div>
+                  <label className="label">{t('submit.venueAddressLine')}</label>
+                  <input className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.venueAddressLine} onChange={e=>update('venueAddressLine',e.target.value)} />
+                </div>
+                <div>
+                  <label className="label">{t('submit.venuePostalCode')}</label>
+                  <input className="input" value={form.venuePostalCode} onChange={e=>update('venuePostalCode',e.target.value)} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Bio & Social Links */}
+        <div className="card space-y-4">
+          <div>
+            <label className="label">{t('submit.bio')}</label>
+            <textarea className="input" rows={3} maxLength={280} placeholder={t('submit.bioPlaceholder')} value={form.bio} onChange={e=>update('bio',e.target.value)} />
+          </div>
+          <p className="font-semibold text-sm">{t('submit.socialLinks')}</p>
+          <div className="grid grid-cols-2 gap-3">
+            <input className="input" placeholder="Instagram" value={form.instagram} onChange={e=>update('instagram',e.target.value)} />
+            <input className="input" placeholder="YouTube" value={form.youtube} onChange={e=>update('youtube',e.target.value)} />
+            <input className="input" placeholder="Discord" value={form.discord} onChange={e=>update('discord',e.target.value)} />
+            <input className="input" placeholder="Website" value={form.website} onChange={e=>update('website',e.target.value)} />
+          </div>
+        </div>
 
         <div className="card space-y-3">
           <label className="flex gap-2"><input type="checkbox" checked={form.consentPublic} onChange={e=>update('consentPublic',e.target.checked)} /> {t('submit.consentPublic')}</label>

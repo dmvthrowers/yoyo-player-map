@@ -102,6 +102,13 @@ interface EntryData {
   bio: string | null;
   socials: Record<string, string>;
   is_visible: boolean;
+  entity_type: 'person' | 'shop' | 'club';
+  club_meeting_info: string | null;
+  club_venue_public: boolean;
+  contact_name: string | null;
+  address_line: string | null;
+  postal_code: string | null;
+  hours: string | null;
 }
 
 function ManageEntry({ token }: { token: string }) {
@@ -139,7 +146,21 @@ function ManageEntry({ token }: { token: string }) {
       const res = await fetch('/api/profile/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, ...entry }),
+        body: JSON.stringify({
+          token,
+          display_name: entry.display_name,
+          city: entry.city,
+          region: entry.region,
+          country: entry.country,
+          bio: entry.bio,
+          socials: entry.socials,
+          club_meeting_info: entry.club_meeting_info,
+          club_venue_public: entry.club_venue_public,
+          contact_name: entry.contact_name,
+          address_line: entry.address_line,
+          postal_code: entry.postal_code,
+          hours: entry.hours,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -223,6 +244,63 @@ function ManageEntry({ token }: { token: string }) {
             <input className="input" value={entry.socials?.website || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, website: e.target.value } })} title={t('profile.website')} />
           </div>
         </div>
+
+        {/* Shop-specific fields */}
+        {entry.entity_type === 'shop' && (
+          <>
+            <hr className="border-navy/10" />
+            <p className="font-semibold text-sm uppercase tracking-wide">🏪 Shop Details</p>
+            <div>
+              <label className="label">{t('profile.contactName')}</label>
+              <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
+            </div>
+            <div>
+              <label className="label">{t('profile.addressLine')}</label>
+              <input className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.addressLine')} />
+            </div>
+            <div>
+              <label className="label">{t('profile.postalCode')}</label>
+              <input className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.postalCode')} />
+            </div>
+            <div>
+              <label className="label">{t('profile.hours')}</label>
+              <textarea className="input" rows={3} value={entry.hours || ''} onChange={(e) => setEntry({ ...entry, hours: e.target.value })} title={t('profile.hours')} />
+            </div>
+          </>
+        )}
+
+        {/* Club-specific fields */}
+        {entry.entity_type === 'club' && (
+          <>
+            <hr className="border-navy/10" />
+            <p className="font-semibold text-sm uppercase tracking-wide">🎲 Club Details</p>
+            <div>
+              <label className="label">{t('profile.contactName')}</label>
+              <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
+            </div>
+            <div>
+              <label className="label">{t('profile.meetingInfo')}</label>
+              <textarea className="input" rows={4} value={entry.club_meeting_info || ''} onChange={(e) => setEntry({ ...entry, club_meeting_info: e.target.value })} title={t('profile.meetingInfo')} />
+            </div>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" checked={entry.club_venue_public} onChange={(e) => setEntry({ ...entry, club_venue_public: e.target.checked })} />
+              {t('profile.venuePublic')}
+            </label>
+            {entry.club_venue_public && (
+              <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
+                <div>
+                  <label className="label">{t('profile.venueAddressLine')}</label>
+                  <input className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.venueAddressLine')} />
+                </div>
+                <div>
+                  <label className="label">{t('profile.venuePostalCode')}</label>
+                  <input className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.venuePostalCode')} />
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
         {message && <div className="border-2 border-green-600 bg-green-50 p-3 text-sm text-green-900">{message}</div>}
         {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm">{error}</div>}
         <button className="btn-primary w-full" disabled={saving} onClick={save}>
