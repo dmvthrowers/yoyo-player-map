@@ -92,9 +92,8 @@ export async function POST(req: NextRequest) {
         country: entry.country,
       });
       if (cityGeo) {
-        const j = jitterCoords(cityGeo.lat, cityGeo.lng);
-        updates.lat = j.lat;
-        updates.lng = j.lng;
+        updates.lat = cityGeo.lat;
+        updates.lng = cityGeo.lng;
       } else {
         entryFailed = true;
         reason = 'city_not_found';

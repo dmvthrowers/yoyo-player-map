@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
       }
 
+
       const updates: Record<string, number> = {};
 
       // Shops: re-geocode the street address for exact coords.
@@ -109,7 +110,7 @@ export async function POST(req: NextRequest) {
         updates.exact_lng = exactGeo.lng;
       }
 
-      // Persons, clubs, and shops (as a jittered fallback) all need city coords.
+      // Persons, clubs, and shops all need city coords (raw, let DB jitter)
       const cityGeo = await geocodeCity({
         city: entry.city,
         region: entry.region || undefined,
@@ -118,9 +119,8 @@ export async function POST(req: NextRequest) {
       if (!cityGeo) {
         return NextResponse.json({ error: "Couldn't locate that city." }, { status: 400 });
       }
-      const jittered = jitterCoords(cityGeo.lat, cityGeo.lng);
-      updates.lat = jittered.lat;
-      updates.lng = jittered.lng;
+      updates.lat = cityGeo.lat;
+      updates.lng = cityGeo.lng;
 
       const { error: updErr } = await supabase.from('entries').update(updates).eq('id', id);
       if (updErr) {

@@ -299,8 +299,6 @@ async function preparePersonEntry(
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
 
-  const jittered = jitterCoords(geo.lat, geo.lng);
-
   return {
     columns: {
       entity_type: 'person',
@@ -314,8 +312,8 @@ async function preparePersonEntry(
       country: geo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: jittered.lat,
-      lng: jittered.lng,
+      lat: geo.lat,
+      lng: geo.lng,
       age_band: data.ageBand,
       exact_lat: null,
       exact_lng: null,
@@ -354,9 +352,11 @@ async function prepareShopEntry(
     region: loc.regionName || undefined,
     country: loc.countryCode,
   });
-  const jittered = cityGeo ? jitterCoords(cityGeo.lat, cityGeo.lng) : jitterCoords(exactGeo.lat, exactGeo.lng);
-
   const verifiedOwner = checkVerifiedOwner(data.email, data.socials);
+
+  // Use cityGeo if available, else exactGeo for map pin (raw, let DB jitter)
+  const lat = cityGeo ? cityGeo.lat : exactGeo.lat;
+  const lng = cityGeo ? cityGeo.lng : exactGeo.lng;
 
   return {
     columns: {
@@ -371,8 +371,8 @@ async function prepareShopEntry(
       country: exactGeo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: jittered.lat,
-      lng: jittered.lng,
+      lat,
+      lng,
       exact_lat: exactGeo.lat,
       exact_lng: exactGeo.lng,
       address_line: data.addressLine,
@@ -403,8 +403,6 @@ async function prepareClubEntry(
   if (!cityGeo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
-
-  const jittered = jitterCoords(cityGeo.lat, cityGeo.lng);
 
   let exactLat: number | null = null;
   let exactLng: number | null = null;
@@ -437,8 +435,8 @@ async function prepareClubEntry(
       country: cityGeo.country || loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: jittered.lat,
-      lng: jittered.lng,
+      lat: cityGeo.lat,
+      lng: cityGeo.lng,
       exact_lat: exactLat,
       exact_lng: exactLng,
       club_meeting_info: data.clubMeetingInfo,

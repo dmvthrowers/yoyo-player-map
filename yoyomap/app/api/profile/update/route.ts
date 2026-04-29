@@ -75,9 +75,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     if (!geo) {
       return apiError('unprocessable', "Couldn't locate that city. Check spelling.", requestId);
     }
-    const jittered = jitterCoords(geo.lat, geo.lng);
-    lat = jittered.lat;
-    lng = jittered.lng;
+    lat = geo.lat;
+    lng = geo.lng;
   }
 
   const { error: updateErr } = await supabase
