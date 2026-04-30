@@ -240,6 +240,14 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     club: 'Thanks for registering your club! Check your email to verify. Your listing will appear on the map once verified.',
   };
 
+  // On-demand revalidate the map page (ISR cache bust)
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
+      { method: 'POST' });
+  } catch (e) {
+    // Ignore errors, not critical for user
+  }
+
   return NextResponse.json(
     {
       message: messages[data.entityType],
