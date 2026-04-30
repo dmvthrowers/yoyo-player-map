@@ -70,13 +70,12 @@ async function getEntries(): Promise<MapEntry[]> {
 
 export default async function MapPage() {
   const entries = await getEntries();
-  
 
-  // Count by entity type (optional: if entity_type is needed, fetch in detail API)
+  // Count by entity type
   const counts = {
-    person: 0,
-    shop: 0,
-    club: 0,
+    person: entries.filter((e) => e.entity_type === 'person').length,
+    shop: entries.filter((e) => e.entity_type === 'shop').length,
+    club: entries.filter((e) => e.entity_type === 'club').length,
   };
 
   return (
