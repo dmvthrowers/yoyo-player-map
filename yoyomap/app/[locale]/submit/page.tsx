@@ -52,7 +52,7 @@ function useRegions(countryId: number | null) {
   const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
   useEffect(() => {
     if (!countryId) { setRegions([]); return; }
-    fetch(`/api/locations?type=regions&country_id=${countryId}`)
+    fetch(`/api/locations?type=regions&countryId=${countryId}`)
      .then(r => r.json())
      .then(d => setRegions(d.regions || []))
      .catch(() => {});
