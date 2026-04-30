@@ -3,7 +3,8 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
+export const preferredRegion = 'iad1';
 
 export async function GET(req: NextRequest) {
   const type = req.nextUrl.searchParams.get('type');

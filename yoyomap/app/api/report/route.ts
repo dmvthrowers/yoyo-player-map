@@ -5,7 +5,8 @@ import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { sendReportNotificationEmail } from '@/lib/email';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
+export const preferredRegion = 'iad1';
 
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);

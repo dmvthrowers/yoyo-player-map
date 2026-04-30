@@ -10,7 +10,8 @@ import {
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
+export const preferredRegion = 'iad1';
 
 /**
  * Check if shop owner email domain matches website domain.

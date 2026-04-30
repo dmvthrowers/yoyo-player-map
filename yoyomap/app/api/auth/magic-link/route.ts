@@ -6,7 +6,8 @@ import { sendManageEntryEmail } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
+export const preferredRegion = 'iad1';
 
 const schema = z.object({ email: z.string().trim().email().toLowerCase() });
 

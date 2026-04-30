@@ -28,6 +28,7 @@ export const preferredRegion = 'iad1'; // us-east-1 (Supabase region)
 // Lean shape shipped on initial page load — kept small to reduce Vercel
 // bandwidth + Supabase egress. Bio, socials, hours, and other popup-only
 // fields are fetched lazily from /api/entry/[id] when the user opens a popup.
+interface MapEntry {
   id: string;
   display_name: string;
   city: string;
@@ -40,7 +41,7 @@ export const preferredRegion = 'iad1'; // us-east-1 (Supabase region)
 }
 
 // Full detail shape returned by /api/entry/[id] and rendered inside popups.
-export interface MapEntryDetail extends MapEntry {
+interface MapEntryDetail extends MapEntry {
   bio: string | null;
   socials: Record<string, string>;
   address_line: string | null;
