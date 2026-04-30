@@ -43,7 +43,7 @@ export function canonicalCountryName(input: string): string {
   return COUNTRY_NORMALIZATION[slug] || input;
 }
 import { cache } from 'react';
-import { createAdminClient, hasAdminCredentials } from '@/lib/supabase/admin';
+import { supabase } from '@/lib/supabase';
 import { slugify } from './locationSlug';
 
 export interface PublicEntry {
@@ -63,13 +63,7 @@ export interface PublicEntry {
 // pages that all call this only hit Supabase once per request lifecycle.
 // Combined with ISR (revalidate=3600) the cost is ~1 query per hour per page.
 export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
-  if (!hasAdminCredentials()) {
-    console.warn('[locations] admin Supabase env vars missing, returning empty dataset');
-    return [];
-  }
-
   try {
-    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
       .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');

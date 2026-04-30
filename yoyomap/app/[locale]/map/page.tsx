@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import MapClient from './MapClient';
 import MapInfoPanel from './MapInfoPanel';
-import { createAdminClient, hasAdminCredentials } from '@/lib/supabase/admin';
+import { supabase } from '@/lib/supabase';
 
 export const metadata: Metadata = {
   title: 'Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You',
@@ -44,13 +44,7 @@ export interface MapEntryDetail extends MapEntry {
 }
 
 async function getEntries(): Promise<MapEntry[]> {
-  if (!hasAdminCredentials()) {
-    console.warn('[map] admin Supabase env vars missing, returning empty map data');
-    return [];
-  }
-
   try {
-    const supabase = createAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
       .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');

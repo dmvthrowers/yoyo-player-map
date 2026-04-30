@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createAdminClient } from '@/lib/supabase/admin';
+import { getAdminClient } from '@/lib/supabase';
 import { apiError, newRequestId } from '@/lib/api-error';
 
 // Lazy-loaded popup detail. The /map page ships a lean entry list; clicking a
@@ -26,7 +26,7 @@ export async function GET(
       return apiError('bad_request', 'Invalid entry id.', requestId);
     }
 
-    const supabase = createAdminClient();
+    const supabase = getAdminClient();
     const { data, error } = await supabase
       .from('map_entries')
       .select('id, bio, socials, address_line, postal_code, hours, club_meeting_info, club_venue_public')
