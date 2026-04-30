@@ -1,0 +1,98 @@
+﻿'use client';
+
+import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
+import { useState, memo } from 'react';
+
+// Fix default icon paths (Next.js webpack + Leaflet quirk). We use CircleMarker
+// instead of default icon markers since they match the brand better and don't
+// need image assets.
+interface MapEntry {
+  id: string;
+  display_name: string;
+  city: string;
+  region: string | null;
+  country: string;
+  bio: string | null;
+  socials: Record<string, string>;
+  lat: number;
+  lng: number;
+  age_band: string;
+}
+
+const Marker = memo(({ entry }: { entry: MapEntry }) => (
+  <CircleMarker
+    center={[entry.lat, entry.lng]}
+    pathOptions={{
+      color: '#C8102E',
+      fillColor: '#C8102E',
+      fillOpacity: 0.6,
+      weight: 2,
+    }}
+    radius={8}
+  >
+    <Popup>
+      <EntryPopup entry={entry} />
+    </Popup>
+  </CircleMarker>
+));
+
+Marker.displayName = 'Marker';
+
+export default function Map({ entries }: { entries: MapEntry[] }) {
+  // Center on the US by default
+  const [center] = useState<[number, number]>([39.5, -98.35]);
+  const [zoom] = useState(4);
+
+  return (
+    <MapContainer center={center} zoom={zoom} className="h-full w-full" scrollWheelZoom={true}>
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+      {entries.map((entry) => (
+        <Marker key={entry.id} entry={entry} />
+      ))}
+    </MapContainer>
+  );
+}
+
+function EntryPopup({ entry }: { entry: MapEntry }) {
+  const socials = entry.socials || {};
+  const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
+  return (
+    <div className="min-w-[220px]">
+      <p className="font-bold text-base text-navy" style={{ fontFamily: 'Playfair Display, serif' }}>
+        {entry.display_name}
+      </p>
+      <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
+      {entry.bio && <p className="text-sm text-navy mb-2">{entry.bio}</p>}
+      <div className="flex flex-wrap gap-2 text-xs">
+        {socials.instagram && (
+          <a
+            href={`https://instagram.com/${socials.instagram.replace(/^@/, '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-red underline"
+          >IG</a>
+        )}
+        {socials.youtube && (
+          <a
+            href={socials.youtube.startsWith('http') ? socials.youtube : `https://youtube.com/@${socials.youtube}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-red underline"
+          >YT</a>
+        )}
+        {socials.discord && <span className="text-navy/70">Discord: {socials.discord}</span>}
+        {socials.website && (
+          <a href={socials.website} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">
+            Website
+          </a>
+        )}
+      </div>
+      <div className="mt-2 pt-2 border-t border-navy/10">
+        <a href={`/report?id=${entry.id}`} className="text-xs text-navy/50 underline">Report this pin</a>
+      </div>
+    </div>
+  );
+}

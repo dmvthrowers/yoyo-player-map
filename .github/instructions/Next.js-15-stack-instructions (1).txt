@@ -1,0 +1,4 @@
+---
+applyTo: "lib/supabase/**,app/**/actions.ts,app/**/route.ts,middleware.ts"
+---
+Use @supabase/ssr createServerClient with request cookies. Verify user with `supabase.auth.getUser()` before writes. All tables must have RLS policies using auth.uid() = user_id.

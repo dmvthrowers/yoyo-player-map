@@ -1,0 +1,4 @@
+---
+applyTo: "components/map/**,lib/nominatim.ts"
+---
+Leaflet components are client-only with dynamic import ssr false. Nominatim helper is server-only, sets User-Agent, rate limits to 1 req/sec, and checks geocode_cache before fetching.

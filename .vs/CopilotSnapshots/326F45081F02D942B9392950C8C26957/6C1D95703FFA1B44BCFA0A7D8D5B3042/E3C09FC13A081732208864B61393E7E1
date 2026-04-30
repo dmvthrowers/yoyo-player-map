@@ -1,0 +1,32 @@
+﻿'use client';
+
+import dynamic from 'next/dynamic';
+import { useMemo } from 'react';
+
+interface MapEntry {
+  id: string;
+  display_name: string;
+  city: string;
+  region: string | null;
+  country: string;
+  bio: string | null;
+  socials: Record<string, string>;
+  lat: number;
+  lng: number;
+  age_band: string;
+}
+
+// Dynamic import — Leaflet requires window, must not SSR
+const Map = dynamic(() => import('./Map'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full bg-navy text-cream">
+      <p className="font-display text-2xl">Loading map…</p>
+    </div>
+  ),
+});
+
+export default function MapClient({ entries }: { entries: MapEntry[] }) {
+  const memoEntries = useMemo(() => entries, [entries]);
+  return <Map entries={memoEntries} />;
+}

@@ -1,0 +1,100 @@
+﻿import Link from 'next/link';
+
+const TrustRow = () => (
+  <section className="grid md:grid-cols-3 gap-6 py-12 border-y-2 border-navy/10">
+    {/**
+     * TODO: Localize
+     */}
+    { [
+      {
+        title: '10mi',
+        subtitle: 'Location Blur',
+        description: 'We never store your exact location.',
+      },
+      {
+        title: 'Opt-In',
+        subtitle: 'Always',
+        description: 'You choose to be on the map. You can leave anytime.',
+      },
+      {
+        title: '13+',
+        subtitle: 'With Parent Consent',
+        description: 'Under 18 requires a parent or guardian to verify.',
+      },
+    ].map(({ title, subtitle, description }) => (
+      <div key={title} className="text-center">
+        <p className="font-display text-3xl text-brand-red">{title}</p>
+        <p className="text-sm uppercase tracking-wider font-semibold mt-1">{subtitle}</p>
+        <p className="text-xs mt-2 text-navy/70">{description}</p>
+      </div>
+    )) }
+  </section>
+);
+
+const HowItWorks = () => (
+  <section className="py-16">
+    <h2 className="text-3xl md:text-4xl text-center mb-12">How It Works</h2>
+    <div className="grid md:grid-cols-3 gap-8">
+      { [
+        { step: '1', title: 'Add Yourself' },
+        { step: '2', title: 'Verify Your Email' },
+        { step: '3', title: 'You\'re on the Map' },
+      ].map(({ step, title }) => (
+        <div key={step} className="card">
+          <p className="font-display text-5xl text-brand-red mb-3">{step}</p>
+          <h3 className="text-xl mb-2">{title}</h3>
+        </div>
+      )) }
+    </div>
+  </section>
+);
+
+export default function Home() {
+  return (
+    <div className="max-w-6xl mx-auto px-4">
+      {/* Hero */}
+      <section className="py-16 md:py-24 text-center">
+        <p className="text-xs uppercase tracking-[0.3em] text-brand-red font-bold mb-4">
+          YO-YOS · KENDAMA · SKILL TOYS
+        </p>
+        <h1 className="text-5xl md:text-7xl leading-tight mb-6">
+          Find Your People.<br />
+          <span className="text-brand-red">Throw Together.</span>
+        </h1>
+        <p className="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-navy/80">
+          A community map for yo-yoers. Add yourself, see who&apos;s nearby, connect. 
+          Opt-in, privacy-first, and always under your control.
+        </p>
+        <div className="flex flex-wrap gap-4 justify-center">
+          <Link href="/map" className="btn-primary">Explore the Map</Link>
+          <Link href="/submit" className="btn-ghost">Add Yourself</Link>
+        </div>
+      </section>
+
+      <TrustRow />
+      <HowItWorks />
+
+      {/* What we don't do */}
+      <section className="py-16 bg-navy text-cream -mx-4 px-4">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl text-cream mb-8 text-center">What We Don&apos;t Do</h2>
+          <ul className="grid md:grid-cols-2 gap-4 text-sm">
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t use GPS or ask for your exact location.</li>
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t sell, share, or rent your data to anyone.</li>
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t use advertising trackers or analytics cookies.</li>
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t expose your email publicly on the map.</li>
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t allow direct messaging through the site.</li>
+            <li className="flex gap-3"><span className="text-brand-red font-bold">✕</span> We don&apos;t keep your data if you ask us to delete it.</li>
+          </ul>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16 text-center">
+        <h2 className="text-3xl md:text-4xl mb-4">Ready to find your local crew?</h2>
+        <p className="text-navy/80 mb-6">Free, all skill levels, family-friendly.</p>
+        <Link href="/submit" className="btn-primary">Add Yourself to the Map</Link>
+      </section>
+    </div>
+  );
+}

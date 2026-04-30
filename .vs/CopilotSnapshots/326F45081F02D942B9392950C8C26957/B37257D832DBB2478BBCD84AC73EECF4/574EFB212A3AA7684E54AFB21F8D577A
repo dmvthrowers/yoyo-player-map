@@ -1,0 +1,206 @@
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+
+interface AdminData {
+  entries: Array<{
+    id: string; display_name: string; email: string; city: string; region: string | null;
+    country: string; age_band: string; is_visible: boolean; is_flagged: boolean;
+    verified_at: string | null; created_at: string; deleted_at: string | null;
+  }>;
+  reports: Array<{
+    id: string; entry_id: string; reason: string; details: string | null;
+    resolved_at: string | null; created_at: string;
+  }>;
+  stats: {
+    total: number;
+    visible: number;
+    pending: number;
+    flagged: number;
+    minors: number;
+    openReports: number;
+  };
+}
+
+export default function AdminPage() {
+  const [pass, setPass] = useState('');
+  const [authed, setAuthed] = useState(false);
+  const [data, setData] = useState<AdminData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function load(token: string) {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/data', {
+        headers: { 'x-admin-token': token },
+      });
+      if (res.status === 401) {
+        setError('Wrong password.');
+        setAuthed(false);
+      } else if (res.ok) {
+        const json = await res.json();
+        setData(json);
+        setAuthed(true);
+        setError('');
+      }
+    } catch {
+      setError('Network error.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    const saved = typeof window !== 'undefined' ? sessionStorage.getItem('admin_token') : null;
+    if (saved) {
+      setPass(saved);
+      load(saved);
+    }
+  }, []);
+
+  async function act(action: string, id: string) {
+    const res = await fetch('/api/admin/action', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-token': pass },
+      body: JSON.stringify({ action, id }),
+    });
+    if (res.ok) load(pass);
+    else setError('Action failed.');
+  }
+
+  if (!authed) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16">
+        <div className="card">
+          <h1 className="text-3xl mb-4">Admin</h1>
+          <p className="text-sm text-navy/70 mb-4">Enter the admin password to continue.</p>
+          <input
+            className="input mb-4"
+            type="password"
+            value={pass}
+            onChange={(e) => setPass(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                sessionStorage.setItem('admin_token', pass);
+                load(pass);
+              }
+            }}
+            placeholder="Admin password"
+          />
+          {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm mb-3">{error}</div>}
+          <button
+            className="btn-primary w-full"
+            disabled={loading}
+            onClick={() => {
+              sessionStorage.setItem('admin_token', pass);
+              load(pass);
+            }}
+          >
+            {loading ? 'Checking…' : 'Sign In'}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) return <div className="p-8">Loading…</div>;
+
+  return (
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <h1 className="text-4xl mb-6">Admin</h1>
+
+      <div className="grid md:grid-cols-6 gap-3 mb-8 text-center">
+        <Stat label="Total" value={data.stats.total} />
+        <Stat label="Visible" value={data.stats.visible} />
+        <Stat label="Pending" value={data.stats.pending} />
+        <Stat label="Flagged" value={data.stats.flagged} color="text-brand-red" />
+        <Stat label="Minors" value={data.stats.minors} />
+        <Stat label="Reports" value={data.stats.openReports} color={data.stats.openReports > 0 ? 'text-brand-red' : ''} />
+      </div>
+
+      <section className="mb-10">
+        <h2 className="text-2xl mb-4">Open reports</h2>
+        {data.reports.length === 0 ? (
+          <p className="text-navy/60 text-sm">No open reports.</p>
+        ) : (
+          <div className="space-y-2">
+            {data.reports.map((r) => (
+              <div key={r.id} className="card text-sm">
+                <p><strong>Entry:</strong> {r.entry_id}</p>
+                <p><strong>Reason:</strong> {r.reason}</p>
+                {r.details && <p className="mt-2 text-navy/70">{r.details}</p>}
+                <div className="flex gap-2 mt-3">
+                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('flag_entry', r.entry_id)}>
+                    Hide entry
+                  </button>
+                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('delete_entry', r.entry_id)}>
+                    Delete entry
+                  </button>
+                  <button className="btn-ghost py-1 px-3 text-xs" onClick={() => act('resolve_report', r.id)}>
+                    Resolve report
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="text-2xl mb-4">All entries</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="text-left text-xs uppercase tracking-wider border-b-2 border-navy">
+              <tr>
+                <th className="py-2">Name</th>
+                <th>Email</th>
+                <th>City</th>
+                <th>Age</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.entries.map((e) => (
+                <tr key={e.id} className="border-b border-navy/10">
+                  <td className="py-2">{e.display_name}</td>
+                  <td className="text-xs">{e.email}</td>
+                  <td>{e.city}, {e.region || e.country}</td>
+                  <td>{e.age_band}</td>
+                  <td>
+                    {e.deleted_at ? <span className="text-navy/40">deleted</span> :
+                     e.is_flagged ? <span className="text-brand-red">flagged</span> :
+                     e.is_visible ? <span className="text-green-700">visible</span> :
+                     <span className="text-navy/60">pending</span>}
+                  </td>
+                  <td className="space-x-1">
+                    {!e.deleted_at && (
+                      <>
+                        {e.is_flagged ? (
+                          <button className="text-xs underline" onClick={() => act('unflag_entry', e.id)}>Unflag</button>
+                        ) : (
+                          <button className="text-xs underline" onClick={() => act('flag_entry', e.id)}>Flag</button>
+                        )}
+                        <button className="text-xs underline text-brand-red" onClick={() => act('delete_entry', e.id)}>Delete</button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function Stat({ label, value, color }: { label: string; value: number; color?: string }) {
+  return (
+    <div className="card py-3">
+      <p className={`font-display text-3xl ${color || ''}`}>{value}</p>
+      <p className="text-xs uppercase tracking-wider text-navy/60">{label}</p>
+    </div>
+  );
+}

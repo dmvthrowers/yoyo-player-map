@@ -1,0 +1,185 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\yoyomap\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx||{0F2454B1-A556-402D-A7D0-1FDE7F99DEE0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\submit\\page.tsx",
+              "ViewState": "AgIAAHsBAAAAAAAAAAAiwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:21:16.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\profile\\page.tsx",
+              "ViewState": "AgIAAPoAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:21:16.075Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\admin\\page.tsx",
+              "ViewState": "AgIAAMsAAAAAAAAAAEBVwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:21:15.71Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "page.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\page.tsx",
+              "ViewState": "AgIAAGIAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:20:40.654Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MapClient.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\MapClient.tsx",
+              "ViewState": "AgIAAB0AAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:20:39.906Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Map.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\map\\Map.tsx",
+              "ViewState": "AgIAAGAAAAAAAAAAAIBJwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:20:02.452Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "layout.tsx",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\app\\layout.tsx",
+              "ViewState": "AgIAAEkAAAAAAAAAAABRwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003213|",
+              "WhenOpened": "2026-04-21T03:19:32.878Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "tailwind.config.js",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\tailwind.config.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-04-21T03:14:16.664Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\README.md",
+              "RelativeDocumentMoniker": "yoyomap\\yoyo-player-map\\yoyomap\\README.md",
+              "ToolTip": "C:\\yoyomap\\yoyomap\\yoyo-player-map\\yoyomap\\README.md",
+              "RelativeToolTip": "yoyomap\\yoyo-player-map\\yoyomap\\README.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-04-21T03:13:48.109Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
