@@ -1,87 +1,96 @@
-# Copilot Instructions – Next.js 15 + Supabase + Resend + Leaflet + Nominatim
+# Copilot Instructions – YoYo Map (yoyomap/)
 
 ## 1. Stack lock-in
-- Next.js 15 App Router only, TypeScript strict, Tailwind CSS utility-first
-- Supabase Postgres with Row-Level Security enabled on every table, Auth via @supabase/ssr
-- Resend for transactional email, React Email templates, server-only sending
-- Leaflet + OpenStreetMap tiles via react-leaflet, loaded client-only with dynamic import ssr false
-- Nominatim for city geocoding, server-side proxy only, respect usage policy
-- Vercel hosting, pnpm
+- Next.js 15 App Router only, TypeScript strict, Tailwind CSS, npm (repo uses `npm install`)
+- Supabase Postgres with RLS enabled on EVERY table. Anon role has NO direct SELECT/INSERT/UPDATE/DELETE on base tables.
+- Resend for transactional email, server-only via lib/email.ts
+- Leaflet + OpenStreetMap via react-leaflet, client-only dynamic import
+- Nominatim for city geocoding via lib/geocode.ts, server proxy only, 1 req/sec, User-Agent required
+- Vercel hosting
 
-## 2. Project structure
+## 2. Repository truth – do not rename these paths
 app/
-  (auth)/login/page.tsx
-  (app)/dashboard/page.tsx
-  api/geocode/route.ts
-  api/email/route.ts
-  layout.tsx
-components/
-  map/Map.client.tsx
-  ui/
+  page.tsx
+  submit/page.tsx
+  map/
+    page.tsx // server wrapper, fetches from map_entries view
+    MapClient.tsx // dynamic(() => import('./Map'), { ssr: false })
+    Map.tsx // 'use client' Leaflet component
+  profile/page.tsx
+  admin/page.tsx
+  report/page.tsx
+  legal/privacy/page.tsx
+  legal/terms/page.tsx
+  api/
+    submit/route.ts
+    verify-parent/route.ts
+    auth/magic-link/route.ts
+    auth/verify-link/route.ts
+    profile/update/route.ts
+    profile/delete/route.ts
+    admin/data/route.ts
+    admin/action/route.ts
+    report/route.ts
+
 lib/
-  supabase/client.ts
-  supabase/server.ts
-  resend.ts
-  nominatim.ts
-emails/
-  Welcome.tsx
-supabase/migrations/
+  supabase/client.ts // browser client (anon key)
+  supabase/admin.ts // service-role client, server-only, persistSession:false
+  geocode.ts // geocodeCity() + jitterCoords() ~10 miles
+  email.ts // Resend wrapper
+  validation.ts // Zod schemas for all inputs
+  tokens.ts // secure token generation/verification using ENTRY_SECRET
+  rate-limit.ts // IP rate limit using audit_log
+
+supabase/
+  schema.sql // entries, parent_consents, verification_tokens, reports, audit_log, view: map_entries
 
 ## 3. Next.js 15 rules
-- Server Components by default. Add `'use client'` only for interactive UI, browser APIs, or Leaflet.
-- In Next.js 15, `params` and `searchParams` are async: always `const { id } = await params`.
-- Fetch data in async Server Components. Use Server Actions (`'use server'`) for mutations, validate with Zod.
-- Do not create `/pages` or use `getServerSideProps`. Use Route Handlers in `app/api/*/route.ts`.
-- Dynamic import Leaflet: `const Map = dynamic(() => import('@/components/map/Map.client'), { ssr: false })`【719330656032125400†L5-L6】.
+- Server Components by default. Add `'use client'` only for Map.tsx, submit form, and admin interactive UI.
+- params and searchParams are async: `const { token } = await params`
+- No /pages directory, no getServerSideProps. Use Route Handlers in app/api/**/route.ts
+- Map loading: MapClient.tsx must wrap Map.tsx with dynamic import ssr:false
 
-## 4. TypeScript and Tailwind
-- `strict: true`, no `any`. Prefer `unknown` with narrowing.
-- Export shared DB types generated from Supabase.
-- Tailwind utilities only. Use `cn()` helper for conditional classes. No CSS modules for layout.
+## 4. Supabase + RLS
+- Browser: import from lib/supabase/client.ts only
+- Server: import from lib/supabase/admin.ts only. Add `import 'server-only'` at top of that file. Never import admin.ts in a client component.
+- Public map reads MUST use `supabase.from('map_entries').select(...)`. Never query `entries` directly from client.
+- All writes go through API routes using the service-role client.
 
-## 5. Supabase + Auth + RLS
-- Use `@supabase/ssr` only. Create two factories:
-    - Browser: `createBrowserClient` for client components
-    - Server: `createServerClient` with cookies from `next/headers` for Server Components, Actions, and Route Handlers【4047917327714353297†L35-L38】【4047917327714353297†L48-L50】.
-- Env: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (or publishable key). `SUPABASE_SERVICE_ROLE_KEY` is server-only.
-- Enable RLS on every table. Policies must reference `auth.uid() = user_id` for select, insert, update, delete.
-- Never expose service_role key to client. Never bypass RLS in app code.
+## 5. Privacy-first geocoding (critical)
+- lib/geocode.ts is server-only. Flow: check cache → Nominatim with User-Agent header → enforce ≥1 sec between requests → apply jitterCoords() → return jittered lat/lon.
+- Store ONLY jittered coordinates in entries.lat/lon. Never persist raw Nominatim result.
+- Never call Nominatim from browser. Proxy via server route if needed.
 
-## 6. Resend email
-- Initialize once in `lib/resend.ts` on the server: `new Resend(process.env.RESEND_API_KEY)`.
-- Send only from Server Actions or Route Handlers, never from client components【5103196911068996285†L5-L6】.
-- Templates live in `/emails` using `@react-email/components`. Return `{ success, id?, error? }` objects.
+## 6. Auth model – magic-link only
+- No passwords, no Supabase Auth users for public editors.
+- Tokens stored in verification_tokens, hashed with ENTRY_SECRET via lib/tokens.ts.
+- Under-18: insert entry with visible = false, create parent_consents row, send email, set visible = true only after /api/verify-parent succeeds. Log IP + user-agent to parent_consents and audit_log.
+- Admin: /admin checks ADMIN_PASSWORD env var. Do not replace with Supabase Auth.
 
-## 7. Leaflet + OpenStreetMap
-- Component must start with `'use client'`. Import `leaflet/dist/leaflet.css` inside the component.
-- TileLayer: `https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png` with attribution `© OpenStreetMap contributors`.
-- Fix default marker icons manually; Next.js does not serve Leaflet's default image paths.
-- Accept explicit props: `center: [lat, lng]`, `zoom: number`, `markers?: Array<{lat, lng, popup?}>`.
+## 7. Resend email
+- All sends via lib/email.ts, server-only. Initialize: `new Resend(process.env.RESEND_API_KEY)`
+- From address: noreply@dmvthrowers.club (verified domain). Dev fallback: onboarding@resend.dev
+- Templates: parent consent, magic-link, report confirmation
 
-## 8. Nominatim geocoding
-- Server-only helper in `lib/nominatim.ts`. Never call from browser.
-- Send header: `User-Agent: your-app/1.0 (contact@yourdomain.com)`【4338322454092323654†L33-L37】.
-- Enforce max 1 request per second【4338322454092323654†L5-L7】. Implement simple rate limiter and cache results in Supabase table `geocode_cache(query text primary key, lat double precision, lon double precision, result jsonb, cached_at timestamptz)`.
-- Do not use for autocomplete. Debounce client input and proxy through `/api/geocode`.
+## 8. Validation, honeypot, rate limiting
+- Validate every API payload with Zod schemas from lib/validation.ts before DB or email calls.
+- Submit form includes hidden honeypot field (e.g., `website`). If filled, reject silently.
+- Call checkRateLimit(ip, action) from lib/rate-limit.ts on submit, magic-link, and report routes. Write attempts to audit_log.
 
-## 9. Vercel deployment
-- Required env vars:
-  | Name | Scope |
-  | --- | --- |
-  | NEXT_PUBLIC_SUPABASE_URL | Public |
-  | NEXT_PUBLIC_SUPABASE_ANON_KEY | Public |
-  | SUPABASE_SERVICE_ROLE_KEY | Server only |
-  | RESEND_API_KEY | Server only |
-- Use Node runtime for routes that use Resend or service role. Keep middleware lightweight for Supabase session refresh.
+## 9. Leaflet map
+- Map.tsx starts with `'use client'` and imports `leaflet/dist/leaflet.css`
+- Tile URL: https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png with attribution © OpenStreetMap contributors
+- Fix default marker icons manually (unpkg CDN URLs) because Next.js does not serve Leaflet assets
+- Props: center: [lat, lon], zoom?: number, markers?: Array<{lat, lon, popup?: string}>
 
-## 10. Do and Do Not
-**DO:**
-- Validate all Server Action inputs with Zod before DB or email calls.
-- Return typed results from actions, handle errors server-side.
-- Add loading.tsx and error.tsx for route segments.
+## 10. Environment variables
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY // server only
+RESEND_API_KEY // server only
+ENTRY_SECRET // for token signing
+ADMIN_PASSWORD // for /admin
 
-**DO NOT:**
-- Suggest Google Maps SDK or Mapbox tokens.
-- Import Supabase service role in client components.
-- Call Nominatim from client code or without rate limiting.
-- Disable RLS or use policies with `true`.
+## 11. DO and DO NOT
+DO: Use map_entries view for reads, jitter before insert, validate with Zod, log to audit_log, enforce honeypot and rate limits.
+DO NOT: Expose service-role key to client, query entries table from browser, store raw coordinates, call Nominatim from client, add Google Maps/Mapbox, implement password auth, image uploads, direct messaging, or analytics.
