@@ -158,7 +158,7 @@ async function fetchNominatim(url: URL): Promise<unknown | null> {
 export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeResult | null> {
   const { city, region, country } = params;
 
-  const queryHash = hashQuery('city', [city, region, country]);
+  const queryHash = await hashQuery('city', [city, region, country]);
   const cached = await readCache(queryHash);
   if (cached) return cached;
 
@@ -212,7 +212,7 @@ export interface AddressGeocodeParams {
 export async function geocodeAddress(params: AddressGeocodeParams): Promise<GeocodeResult | null> {
   const { addressLine, city, region, postalCode, country } = params;
 
-  const queryHash = hashQuery('address', [addressLine, city, region, postalCode, country]);
+  const queryHash = await hashQuery('address', [addressLine, city, region, postalCode, country]);
   const cached = await readCache(queryHash);
   if (cached) return cached;
 
