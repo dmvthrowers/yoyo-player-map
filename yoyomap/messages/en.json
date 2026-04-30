@@ -173,7 +173,11 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas",
-    "underservedDescription": "Areas with fewer than 3 players highlighted in red."
+    "underservedDescription": "Areas with fewer than 3 players highlighted in red.",
+    "searchPlaceholder": "Search name, city, region…",
+    "searchAriaLabel": "Search players, shops, and clubs",
+    "clearSearch": "Clear search",
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
   },
   "legal": {
     "privacy": {

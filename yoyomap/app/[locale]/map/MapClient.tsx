@@ -24,6 +24,7 @@ const Map = dynamic(() => import('./Map'), {
 
 export default function MapClient({ entries }: { entries: MapEntry[] }) {
   const [filterOpen, setFilterOpen] = useState(true);
+  const [search, setSearch] = useState('');
   const t = useTranslations();
 
   useEffect(() => {
@@ -39,15 +40,20 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
 
   const memoEntries = useMemo(() => entries, [entries]);
 
-  // Filter entries based on toggle state
+  // Filter entries based on toggle state + free-text search
   const filteredEntries = useMemo(() => {
+    const q = search.trim().toLowerCase();
     return memoEntries.filter((entry) => {
       if (entry.entity_type === 'person' && !filters.showPerson) return false;
       if (entry.entity_type === 'shop' && !filters.showShop) return false;
       if (entry.entity_type === 'club' && !filters.showClub) return false;
+      if (q) {
+        const hay = `${entry.display_name} ${entry.city} ${entry.region ?? ''} ${entry.country}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
       return true;
     });
-  }, [memoEntries, filters.showPerson, filters.showShop, filters.showClub]);
+  }, [memoEntries, filters.showPerson, filters.showShop, filters.showClub, search]);
 
   const toggleFilter = (key: keyof MapFilters) => {
     setFilters((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -83,7 +89,31 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
 
         {filterOpen && (
           <div className="px-3 pb-3 border-t border-navy/10">
-            <div className="space-y-1 mt-2">
+            <div className="mt-2 relative">
+              <input
+                type="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={t('map.searchPlaceholder')}
+                aria-label={t('map.searchAriaLabel')}
+                className="w-full text-sm bg-cream border border-navy/30 px-2 py-1 pr-7 focus:outline-none focus:border-navy"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch('')}
+                  aria-label={t('map.clearSearch')}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-navy/50 hover:text-navy text-sm leading-none px-1"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+            <p className="text-[10px] text-navy/60 mt-1" aria-live="polite">
+              {t('map.resultCount', { count: filteredEntries.length })}
+            </p>
+            <hr className="my-2 border-navy/20" />
+            <div className="space-y-1">
               <label className="flex items-center gap-2 text-sm cursor-pointer">
                 <input
                   type="checkbox"
