@@ -1,7 +1,11 @@
+
+import { Ratelimit } from '@upstash/ratelimit';
+import { kv } from '@vercel/kv';
 import { createAdminClient } from './supabase/admin';
 
+
 /**
- * Simple IP-based rate limit using the audit_log table.
+ * Edge-compatible IP-based rate limit using Upstash/Vercel KV.
  * Returns true if the action is allowed, false if rate-limited.
  */
 export async function checkRateLimit(
@@ -10,23 +14,24 @@ export async function checkRateLimit(
   max: number,
   windowMinutes: number
 ): Promise<boolean> {
-  const supabase = createAdminClient();
-  const since = new Date(Date.now() - windowMinutes * 60 * 1000).toISOString();
-  const { count, error } = await supabase
-    .from('audit_log')
-    .select('*', { count: 'exact', head: true })
-    .eq('action', action)
-    .gte('at', since)
-    .filter('meta->>ip', 'eq', ip);
-
-  if (error) {
+  // Use a unique key per action and IP
+  const limiter = new Ratelimit({
+    redis: kv,
+    limiter: Ratelimit.slidingWindow(max, `${windowMinutes} m`),
+    prefix: `rl:${action}`,
+  });
+  try {
+    const { success } = await limiter.limit(ip);
+    return success;
+  } catch (error) {
     console.error('Rate limit check failed:', error);
     // Fail open — don't block legitimate users if the check errors
     return true;
   }
-  return (count ?? 0) < max;
 }
 
+
+// Only use audit_log for COPPA/consent/parental events
 export async function logAudit(
   action: string,
   opts: { actor?: string; targetId?: string; meta?: Record<string, unknown> } = {}
