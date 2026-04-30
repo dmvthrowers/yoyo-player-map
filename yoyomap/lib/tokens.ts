@@ -1,24 +1,27 @@
-const ENTRY_SECRET = process.env.ENTRY_SECRET!;
 
-// Edge-compatible HMAC-SHA256 using Web Crypto API
-async function hmacSha256Hex(data: string, secret: string): Promise<string> {
+// Edge-compatible random token generator
+export function generateToken(bytes = 32): string {
+  const arr = new Uint8Array(bytes);
+  crypto.getRandomValues(arr);
+  return btoa(String.fromCharCode(...arr)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+export async function hashToken(token: string): Promise<string> {
   const encoder = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    'raw',
-    encoder.encode(secret),
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign', 'verify']
-  );
-  const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+  const data = encoder.encode(token);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-export async function signToken(data: string): Promise<string> {
-  return hmacSha256Hex(data, ENTRY_SECRET);
-}
-
-export async function verifyToken(data: string, hash: string): Promise<boolean> {
-  const sig = await signToken(data);
-  return sig === hash;
+/**
+ * Constant-time comparison to prevent timing attacks when checking tokens.
+ */
+// Constant-time comparison for edge
+export function safeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
 }
