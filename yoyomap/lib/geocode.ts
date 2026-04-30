@@ -11,7 +11,13 @@
  * by a process-local mutex that paces requests to 1/sec.
  */
 
-import { createHash } from 'crypto';
+// Edge-compatible SHA-256 hash using Web Crypto API
+async function sha256Hex(input: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(input);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 import { z } from 'zod';
 import { createAdminClient } from './supabase/admin';
 
@@ -41,11 +47,11 @@ function pacedNominatim<T>(run: () => Promise<T>): Promise<T> {
 // ---------------------------------------------------------------------------
 // Persistent cache (public.geocode_cache)
 // ---------------------------------------------------------------------------
-function hashQuery(kind: 'city' | 'address', parts: (string | undefined)[]): string {
+async function hashQuery(kind: 'city' | 'address', parts: (string | undefined)[]): Promise<string> {
   const normalized = parts
-   .map((p) => (p?? '').trim().toLowerCase())
-   .join('|');
-  return createHash('sha256').update(`${kind}:${normalized}`).digest('hex');
+    .map((p) => (p ?? '').trim().toLowerCase())
+    .join('|');
+  return sha256Hex(`${kind}:${normalized}`);
 }
 
 const GeocodeResultSchema = z.object({
