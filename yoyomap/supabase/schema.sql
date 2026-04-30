@@ -231,17 +231,32 @@ alter table public.verification_tokens enable row level security;
 alter table public.reports enable row level security;
 alter table public.audit_log enable row level security;
 
--- Public can SELECT from the map_entries view only. The view runs as its
--- definer, so we grant view access directly.
+-- Public reads happen through the map_entries view. On Supabase the view
+-- runs with security_invoker = true (the default), so Postgres checks the
+-- caller's privileges on the underlying entries table — meaning we must
+-- GRANT SELECT on entries and gate visibility through RLS that mirrors the
+-- view's WHERE clause.
 grant select on public.map_entries to anon, authenticated;
+grant select on public.entries to anon, authenticated;
 
--- No direct access to raw tables from anon. All writes go through
+-- No direct access to other raw tables from anon. All writes go through
 -- server-side API routes using the service role key.
-revoke all on public.entries from anon;
 revoke all on public.parent_consents from anon;
 revoke all on public.verification_tokens from anon;
 revoke all on public.reports from anon;
 revoke all on public.audit_log from anon;
+
+-- Public read policy: only rows the map_entries view would have exposed.
+-- The select-list in lib/locations.ts is already restricted to safe columns.
+create policy "public read visible entries"
+  on public.entries for select
+  to anon, authenticated
+  using (
+    is_visible = true
+    and is_flagged = false
+    and deleted_at is null
+    and auto_hidden_by_reports = false
+  );
 
 -- Service role bypasses RLS entirely, so server routes work.
 -- Authenticated users (if we later add Supabase Auth) can read their own row.
