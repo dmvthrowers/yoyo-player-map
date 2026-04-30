@@ -60,11 +60,23 @@ const AdminPage = () => {
   const [error, setError] = useState('');
   const [entityFilter, setEntityFilter] = useState<EntityFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  // Pagination, sorting, search
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const [sort, setSort] = useState('created_at');
+  const [direction, setDirection] = useState<'asc' | 'desc'>('desc');
+  const [search, setSearch] = useState('');
 
-  async function load(token: string) {
+  async function load(token: string, opts?: { page?: number; pageSize?: number; sort?: string; direction?: string; search?: string }) {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/data', {
+      const params = new URLSearchParams();
+      params.set('page', String(opts?.page ?? page));
+      params.set('pageSize', String(opts?.pageSize ?? pageSize));
+      params.set('sort', opts?.sort ?? sort);
+      params.set('direction', opts?.direction ?? direction);
+      if (opts?.search !== undefined ? opts.search : search) params.set('search', opts?.search !== undefined ? opts.search : search);
+      const res = await fetch(`/api/admin/data?${params.toString()}`, {
         headers: { 'x-admin-token': token },
       });
       if (res.status === 401) {
@@ -89,7 +101,15 @@ const AdminPage = () => {
       setPass(saved);
       load(saved);
     }
+    // eslint-disable-next-line
   }, []);
+
+  // Reload on page/sort/search change
+  useEffect(() => {
+    if (!authed || !pass) return;
+    load(pass, { page, pageSize, sort, direction, search });
+    // eslint-disable-next-line
+  }, [page, pageSize, sort, direction, search]);
 
   async function act(action: string, id: string) {
     const res = await fetch('/api/admin/action', {
@@ -154,18 +174,15 @@ const AdminPage = () => {
       setLoading(false);
     }
   }
-  async function regeocodeAll() {
-    if (
-      !confirm(
-        'Re-geocode every entry on the map?\n\nThis processes entries in batches of 10 (≈15s per batch due to Nominatim rate limits) and stops automatically when done or when a batch makes no progress. Pins will shift slightly because jitter is re-randomized.'
-      )
-    ) {
-      return;
-    }
+  async function regeocodeAll(force = false) {
+    const msg = force
+      ? 'FORCE RE-GEOCODE: This will re-geocode EVERY entry, even those already geocoded. This can take a long time and may hit rate limits. Are you sure?'
+      : 'Re-geocode every entry on the map?\n\nThis processes entries in batches of 10 (≈15s per batch due to Nominatim rate limits) and stops automatically when done or when a batch makes no progress. Pins will shift slightly because jitter is re-randomized.';
+    if (!confirm(msg)) return;
     setLoading(true);
     let totalSucceeded = 0;
     let totalFailed = 0;
-    const allFailures: Array<{ id: string; display_name: string; city: string; reason: string }> = [];
+    const allFailures = [];
     let batch = 0;
 
     try {
@@ -173,7 +190,8 @@ const AdminPage = () => {
         batch += 1;
         const res = await fetch('/api/admin/regeocode-all', {
           method: 'POST',
-          headers: { 'x-admin-token': pass },
+          headers: { 'x-admin-token': pass, 'Content-Type': 'application/json' },
+          body: JSON.stringify(force ? { force: true } : {}),
         });
         const body = await res.json().catch(() => null);
         if (!res.ok || !body) {
@@ -330,6 +348,15 @@ const AdminPage = () => {
       {/* Entries section */}
       <section>
         <div className="flex flex-wrap items-center gap-4 mb-4">
+          {/* Search box */}
+          <input
+            className="input py-1 text-sm w-48"
+            type="text"
+            placeholder="Search name, email, city..."
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            title="Search by name, email, or city"
+          />
           <h2 className="text-2xl">All entries</h2>
 
 
@@ -346,11 +373,21 @@ const AdminPage = () => {
           <button
             type="button"
             className="btn-ghost py-1 px-3 text-xs"
-            onClick={regeocodeAll}
+            onClick={() => regeocodeAll(false)}
             disabled={loading}
             title="One-time backfill: re-run geocoding for every entry that hasn't been re-geocoded yet. Uses the fixed structured-query geocoder that ignores county-centroid matches."
           >
             Re-geocode all
+          </button>
+
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs text-brand-red border border-brand-red"
+            onClick={() => regeocodeAll(true)}
+            disabled={loading}
+            title="Force: Re-geocode ALL entries, even those already geocoded. Use with caution!"
+          >
+            Force Re-geocode All
           </button>
 
           <button
@@ -390,8 +427,59 @@ const AdminPage = () => {
             <option value="auto_hidden">Auto-hidden</option>
           </select>
 
+          {/* Sort controls */}
+          <select
+            className="input py-1 text-sm w-auto"
+            value={sort}
+            onChange={e => { setSort(e.target.value); setPage(1); }}
+            title="Sort by column"
+          >
+            <option value="created_at">Newest</option>
+            <option value="display_name">Name</option>
+            <option value="email">Email</option>
+            <option value="city">City</option>
+          </select>
+          <select
+            className="input py-1 text-sm w-auto"
+            value={direction}
+            onChange={e => { setDirection(e.target.value as 'asc' | 'desc'); setPage(1); }}
+            title="Sort direction"
+          >
+            <option value="desc">Desc</option>
+            <option value="asc">Asc</option>
+          </select>
+
+          {/* Page size */}
+          <select
+            className="input py-1 text-sm w-auto"
+            value={pageSize}
+            onChange={e => { setPageSize(Number(e.target.value)); setPage(1); }}
+            title="Entries per page"
+          >
+            <option value={25}>25</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+            <option value={200}>200</option>
+          </select>
+
+          {/* Pagination controls */}
+          <button
+            className="btn-ghost py-1 px-2 text-xs"
+            disabled={page === 1 || loading}
+            onClick={() => setPage(p => Math.max(1, p - 1))}
+          >
+            Prev
+          </button>
+          <span className="text-sm text-navy/60">Page {page}</span>
+          <button
+            className="btn-ghost py-1 px-2 text-xs"
+            disabled={loading || (data && data.entries.length < pageSize)}
+            onClick={() => setPage(p => p + 1)}
+          >
+            Next
+          </button>
           <span className="text-sm text-navy/60">
-            Showing {filteredEntries.length} of {data.entries.length}
+            Showing {data.entries.length} of {data.stats.total} total
           </span>
         </div>
 

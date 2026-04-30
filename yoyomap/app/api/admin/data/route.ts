@@ -18,8 +18,28 @@ export async function GET(req: NextRequest) {
 
   const supabase = createAdminClient();
 
-  const countActive = () => supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null);
-  const countReports = () => supabase.from('reports').select('*', { count: 'exact', head: true }).is('resolved_at', null);
+  // Parse query params for pagination, sorting, and search
+  const { searchParams } = new URL(req.url);
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const pageSize = Math.min(parseInt(searchParams.get('pageSize') || '100', 10), 500);
+  const sort = searchParams.get('sort') || 'created_at';
+  const direction = searchParams.get('direction') === 'asc' ? true : false;
+  const search = searchParams.get('search')?.trim() || '';
+
+  // Build entries query
+  let entriesQuery = supabase
+    .from('entries')
+    .select(
+      'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
+    )
+    .order(sort, { ascending: direction })
+    .range((page - 1) * pageSize, page * pageSize - 1);
+  if (search) {
+    // Simple search on display_name, email, city
+    entriesQuery = entriesQuery.or(
+      `display_name.ilike.%${search}%,email.ilike.%${search}%,city.ilike.%${search}%`
+    );
+  }
 
   const [
     { data: entries },
@@ -36,30 +56,24 @@ export async function GET(req: NextRequest) {
     { count: clubCount },
     { count: verifiedOwners },
   ] = await Promise.all([
-    supabase
-      .from('entries')
-      .select(
-        'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
-      )
-      .order('created_at', { ascending: false })
-      .range(0, 99), // Pagination: first 100 entries
+    entriesQuery,
     supabase
       .from('reports')
       .select('id, entry_id, reason, details, resolved_at, created_at')
       .is('resolved_at', null)
       .order('created_at', { ascending: false })
       .limit(200),
-    countActive(),
-    countActive().eq('is_visible', true).eq('auto_hidden_by_reports', false),
-    countActive().eq('is_visible', false).eq('is_flagged', false).eq('auto_hidden_by_reports', false),
-    countActive().eq('is_flagged', true),
-    countActive().eq('auto_hidden_by_reports', true),
-    countActive().eq('age_band', '13-17'),
-    countReports(),
-    countActive().or('entity_type.eq.person,entity_type.is.null'),
-    countActive().eq('entity_type', 'shop'),
-    countActive().eq('entity_type', 'club'),
-    countActive().eq('entity_type', 'shop').eq('verified_owner', true),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('is_visible', true).eq('auto_hidden_by_reports', false),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('is_visible', false).eq('is_flagged', false).eq('auto_hidden_by_reports', false),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('is_flagged', true),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('auto_hidden_by_reports', true),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('age_band', '13-17'),
+    supabase.from('reports').select('*', { count: 'exact', head: true }).is('resolved_at', null),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).or('entity_type.eq.person,entity_type.is.null'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'shop'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'club'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'shop').eq('verified_owner', true),
   ]);
 
   const stats = {

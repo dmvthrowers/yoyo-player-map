@@ -30,29 +30,42 @@ interface Failure {
   reason: string;
 }
 
+
 export async function POST(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const supabase = createAdminClient();
   const ip = getClientIp(req.headers);
 
-  const { data: batch, error: qErr } = await supabase
+  let force = false;
+  try {
+    const body = await req.json();
+    if (body && body.force) force = true;
+  } catch {}
+
+  let query = supabase
     .from('entries')
     .select('id, display_name, entity_type, city, region, country, address_line, postal_code')
-    .is('geocoded_at', null)
     .is('deleted_at', null)
     .order('created_at', { ascending: true })
     .limit(BATCH_SIZE);
+  if (!force) {
+    query = query.is('geocoded_at', null);
+  }
+  const { data: batch, error: qErr } = await query;
 
   if (qErr) {
     return NextResponse.json({ error: 'Query failed.' }, { status: 500 });
   }
 
-  const { count: remainingBefore } = await supabase
+  let countQuery = supabase
     .from('entries')
     .select('id', { count: 'exact', head: true })
-    .is('geocoded_at', null)
     .is('deleted_at', null);
+  if (!force) {
+    countQuery = countQuery.is('geocoded_at', null);
+  }
+  const { count: remainingBefore } = await countQuery;
 
   let succeeded = 0;
   const failures: Failure[] = [];
