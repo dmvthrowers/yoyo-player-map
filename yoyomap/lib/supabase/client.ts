@@ -1,3 +1,4 @@
+export const MAP_TABLE = 'map_entries_cached' as const;
 import { createBrowserClient } from '@supabase/ssr';
 
 export function createClient() {

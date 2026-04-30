@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import MapClient from './MapClient';
 import MapInfoPanel from './MapInfoPanel';
 import { supabase } from '@/lib/supabase';
+import { MAP_TABLE } from '@/lib/supabase/client';
 
 export const metadata: Metadata = {
   title: 'Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You',
@@ -15,7 +16,8 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 3600; // ISR: refresh cached page every hour (entries change rarely; saves Supabase egress + Vercel CPU)
+export const revalidate = 86400; // 24 hours edge cache
+export const dynamic = 'force-static';
 
 // Lean shape shipped on initial page load — kept small to reduce Vercel
 // bandwidth + Supabase egress. Bio, socials, hours, and other popup-only
@@ -46,7 +48,7 @@ export interface MapEntryDetail extends MapEntry {
 async function getEntries(): Promise<MapEntry[]> {
   try {
     const { data, error } = await supabase
-      .from('map_entries')
+      .from(MAP_TABLE)
       .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
     if (error) {
       console.error('Failed to load map entries:', error);
