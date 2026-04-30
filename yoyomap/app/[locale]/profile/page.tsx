@@ -142,6 +142,7 @@ function ManageEntry({ token }: { token: string }) {
     if (!entry) return;
     setSaving(true);
     setMessage('');
+    setError('');
     try {
       const res = await fetch('/api/profile/update', {
         method: 'POST',
@@ -162,14 +163,20 @@ function ManageEntry({ token }: { token: string }) {
           hours: entry.hours,
         }),
       });
-      const data = await res.json();
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (e) {
+        setError('Server error: invalid response.');
+        return;
+      }
       if (!res.ok) {
         setError(data.error || 'Update failed.');
       } else {
         setMessage(t('profile.saved'));
       }
-    } catch {
-      setError('Network error.');
+    } catch (err) {
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setSaving(false);
     }

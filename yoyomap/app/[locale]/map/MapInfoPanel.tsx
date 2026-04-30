@@ -28,7 +28,7 @@ export default function MapInfoPanel({ counts }: Props) {
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"
-        aria-expanded={open ? 'true' : 'false'}
+        aria-expanded={open ? "true" : "false"}
         aria-label={open ? t('map.collapseInfoPanel') : t('map.expandInfoPanel')}
       >
         <span className="font-display text-base leading-none whitespace-nowrap">{t('map.title')}</span>

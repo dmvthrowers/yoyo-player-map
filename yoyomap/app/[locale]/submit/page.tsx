@@ -241,7 +241,15 @@ export default function SubmitPage() {
 
       <form onSubmit={onSubmit} className="space-y-6">
         {result &&!result.ok && <div className="border-2 border-red-500 p-3">{result.message}</div>}
-        <div className="hidden"><input value={form.honeypot} onChange={e=>update('honeypot',e.target.value)} /></div>
+        <div className="hidden">
+          <input 
+            value={form.honeypot} 
+            onChange={e=>update('honeypot',e.target.value)} 
+            aria-label="Leave this field blank" 
+            title="Leave this field blank" 
+            placeholder="Leave blank" 
+          />
+        </div>
 
         <div className="card space-y-4">
           <input className="input" placeholder={t('submit.displayName')} required value={form.displayName} onChange={e=>update('displayName',e.target.value)} />
@@ -274,7 +282,16 @@ export default function SubmitPage() {
           </select>
           {formErrors.country_id && <p className="text-red-600 text-sm">{formErrors.country_id}</p>}
 
-          <select className="input" value={form.region_id??''} onChange={e=>{update('region_id', e.target.value?Number(e.target.value):null); update('city_id',null);}} disabled={!form.country_id}>
+          <label htmlFor="region_id" className="sr-only">{t('submit.selectRegion')}</label>
+          <select 
+            id="region_id"
+            className="input" 
+            value={form.region_id??''} 
+            onChange={e=>{update('region_id', e.target.value?Number(e.target.value):null); update('city_id',null);}} 
+            disabled={!form.country_id}
+            aria-label={t('submit.selectRegion')}
+            title={t('submit.selectRegion')}
+          >
             <option value="">{t('submit.selectRegion')}</option>
             {regions.map(r=> <option key={r.id} value={r.id}>{r.name}</option>)}
           </select>
@@ -288,7 +305,15 @@ export default function SubmitPage() {
             <h2 className="text-xl">{t('submit.parentInfo')}</h2>
             <input className="input" placeholder={t('submit.parentName')} value={form.parentName} onChange={e=>update('parentName',e.target.value)} />
             <input className="input" type="email" placeholder={t('submit.parentEmail')} value={form.parentEmail} onChange={e=>update('parentEmail',e.target.value)} />
-            <select className="input" value={form.relationship} onChange={e=>update('relationship', e.target.value as any)}>
+            <label htmlFor="relationship" className="sr-only">{t('submit.selectRelationship')}</label>
+            <select 
+              id="relationship"
+              className="input" 
+              value={form.relationship} 
+              onChange={e=>update('relationship', e.target.value as any)}
+              aria-label={t('submit.selectRelationship')}
+              title={t('submit.selectRelationship')}
+            >
               <option value="">{t('submit.selectRelationship')}</option>
               <option value="parent">{t('submit.parent')}</option>
               <option value="legal guardian">{t('submit.guardian')}</option>
@@ -312,7 +337,14 @@ export default function SubmitPage() {
             </div>
             <div>
               <label className="label">{t('submit.postalCode')}</label>
-              <input className="input" value={form.postalCode} onChange={e=>update('postalCode',e.target.value)} />
+              <input 
+                className="input" 
+                value={form.postalCode} 
+                onChange={e=>update('postalCode',e.target.value)} 
+                placeholder={t('submit.postalCode')} 
+                title={t('submit.postalCode')} 
+                aria-label={t('submit.postalCode')} 
+              />
             </div>
             <div>
               <label className="label">{t('submit.hours')}</label>
@@ -347,7 +379,14 @@ export default function SubmitPage() {
                 </div>
                 <div>
                   <label className="label">{t('submit.venuePostalCode')}</label>
-                  <input className="input" value={form.venuePostalCode} onChange={e=>update('venuePostalCode',e.target.value)} />
+                  <input 
+                    className="input" 
+                    value={form.venuePostalCode} 
+                    onChange={e=>update('venuePostalCode',e.target.value)} 
+                    placeholder={t('submit.postalCode')} 
+                    title={t('submit.postalCode')} 
+                    aria-label={t('submit.postalCode')} 
+                  />
                 </div>
               </div>
             )}
