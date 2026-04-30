@@ -1,3 +1,65 @@
+// Region normalization map: maps known abbreviations/variants to canonical display name
+const REGION_NORMALIZATION: Record<string, string> = {
+  // US states (add more as needed)
+  al: 'Alabama',
+  ak: 'Alaska',
+  az: 'Arizona',
+  ar: 'Arkansas',
+  ca: 'California',
+  co: 'Colorado',
+  ct: 'Connecticut',
+  de: 'Delaware',
+  fl: 'Florida',
+  ga: 'Georgia',
+  hi: 'Hawaii',
+  id: 'Idaho',
+  il: 'Illinois',
+  in: 'Indiana',
+  ia: 'Iowa',
+  ks: 'Kansas',
+  ky: 'Kentucky',
+  la: 'Louisiana',
+  me: 'Maine',
+  md: 'Maryland',
+  ma: 'Massachusetts',
+  mi: 'Michigan',
+  mn: 'Minnesota',
+  ms: 'Mississippi',
+  mo: 'Missouri',
+  mt: 'Montana',
+  ne: 'Nebraska',
+  nv: 'Nevada',
+  nh: 'New Hampshire',
+  nj: 'New Jersey',
+  nm: 'New Mexico',
+  ny: 'New York',
+  nc: 'North Carolina',
+  nd: 'North Dakota',
+  oh: 'Ohio',
+  ok: 'Oklahoma',
+  or: 'Oregon',
+  pa: 'Pennsylvania',
+  ri: 'Rhode Island',
+  sc: 'South Carolina',
+  sd: 'South Dakota',
+  tn: 'Tennessee',
+  tx: 'Texas',
+  ut: 'Utah',
+  vt: 'Vermont',
+  va: 'Virginia',
+  wa: 'Washington',
+  wv: 'West Virginia',
+  wi: 'Wisconsin',
+  wy: 'Wyoming',
+  // Add more as needed
+};
+
+// Returns canonical display name for a region slug or raw name
+export function canonicalRegionName(input: string | null | undefined): string {
+  if (!input) return '';
+  const slug = slugify(input);
+  return REGION_NORMALIZATION[slug] || input;
+}
 // Country normalization map: maps all known codes/variants to canonical display name
 const COUNTRY_NORMALIZATION: Record<string, string> = {
   us: 'United States',
@@ -114,9 +176,16 @@ export async function entriesInRegion(
   regionSlug: string,
 ): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
-  return all.filter(
-    (e) => slugify(canonicalCountryName(e.country)) === countrySlug && slugify(e.region) === regionSlug,
-  );
+  // Try both canonical and normalized region names for robust matching
+  return all.filter((e) => {
+    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
+    // Try matching region slug to both canonical and normalized region names
+    const regionVariants = [e.region, canonicalRegionName(e.region)];
+    return (
+      countryMatch &&
+      regionVariants.some((r) => slugify(r) === regionSlug)
+    );
+  });
 }
 
 
@@ -126,12 +195,16 @@ export async function entriesInCity(
   citySlug: string,
 ): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
-  return all.filter(
-    (e) =>
-      slugify(canonicalCountryName(e.country)) === countrySlug &&
-      slugify(e.region) === regionSlug &&
-      slugify(e.city) === citySlug,
-  );
+  return all.filter((e) => {
+    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
+    const regionVariants = [e.region, canonicalRegionName(e.region)];
+    const regionMatch = regionVariants.some((r) => slugify(r) === regionSlug);
+    return (
+      countryMatch &&
+      regionMatch &&
+      slugify(e.city) === citySlug
+    );
+  });
 }
 
 // Resolve a slug back to canonical name (using the first matching entry).
