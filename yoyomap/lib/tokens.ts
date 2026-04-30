@@ -6,10 +6,6 @@ export function generateToken(bytes = 32): string {
   return btoa(String.fromCharCode(...arr)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-export function generateToken(bytes = 32): string {
-  return crypto.randomBytes(bytes).toString('base64url');
-}
-
 export async function hashToken(token: string): Promise<string> {
   const encoder = new TextEncoder();
   const data = encoder.encode(token);
