@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
         'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
       )
       .order('created_at', { ascending: false })
-      .limit(500),
+      .range(0, 99), // Pagination: first 100 entries
     supabase
       .from('reports')
       .select('id, entry_id, reason, details, resolved_at, created_at')

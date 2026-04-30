@@ -4,6 +4,7 @@
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useState, memo, useMemo, useEffect, useRef } from 'react';
 import type { MapEntry, MapEntryDetail } from './page';
 import type { MapFilters } from './MapClient';
@@ -228,31 +229,44 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
     return underserved;
   }, [allEntries, filters.showUnderserved]);
 
-  const markers = useMemo(() => {
-    return entries.flatMap((entry) => {
+  // Cluster only shop and club markers, not persons (for best UX)
+  const personMarkers = useMemo(() => {
+    return entries.filter(e => e.entity_type !== 'shop' && e.entity_type !== 'club').flatMap((entry) => {
       const markers = [];
       const threshold = 170;
       const isNearEast = entry.lng > threshold;
       const isNearWest = entry.lng < -threshold;
-
-      const baseProps = { entry, key: entry.id };
+      const baseProps = { entry, key: entry.id, isUnderserved: underservedIds.has(entry.id) };
       const eastProps = {...baseProps, key: `${entry.id}-e`, entry: {...entry, lng: entry.lng - 360 } };
       const westProps = {...baseProps, key: `${entry.id}-w`, entry: {...entry, lng: entry.lng + 360 } };
-
-      const createMarkers = (props: any) => {
-        switch (entry.entity_type) {
-          case 'shop': return <ShopMarker {...props} />;
-          case 'club': return <ClubMarker {...props} />;
-          default: return <PersonMarker {...props} isUnderserved={underservedIds.has(entry.id)} />;
-        }
-      };
-
-      markers.push(createMarkers(baseProps));
-      if (isNearEast) markers.push(createMarkers(eastProps));
-      if (isNearWest) markers.push(createMarkers(westProps));
+      markers.push(<PersonMarker {...baseProps} />);
+      if (isNearEast) markers.push(<PersonMarker {...eastProps} />);
+      if (isNearWest) markers.push(<PersonMarker {...westProps} />);
       return markers;
     });
   }, [entries, underservedIds]);
+
+  const clusterMarkers = useMemo(() => {
+    return entries.filter(e => e.entity_type === 'shop' || e.entity_type === 'club').flatMap((entry) => {
+      const markers = [];
+      const threshold = 170;
+      const isNearEast = entry.lng > threshold;
+      const isNearWest = entry.lng < -threshold;
+      const baseProps = { entry, key: entry.id };
+      const eastProps = {...baseProps, key: `${entry.id}-e`, entry: {...entry, lng: entry.lng - 360 } };
+      const westProps = {...baseProps, key: `${entry.id}-w`, entry: {...entry, lng: entry.lng + 360 } };
+      if (entry.entity_type === 'shop') {
+        markers.push(<ShopMarker {...baseProps} />);
+        if (isNearEast) markers.push(<ShopMarker {...eastProps} />);
+        if (isNearWest) markers.push(<ShopMarker {...westProps} />);
+      } else if (entry.entity_type === 'club') {
+        markers.push(<ClubMarker {...baseProps} />);
+        if (isNearEast) markers.push(<ClubMarker {...eastProps} />);
+        if (isNearWest) markers.push(<ClubMarker {...westProps} />);
+      }
+      return markers;
+    });
+  }, [entries]);
 
   return (
     <MapContainer
@@ -276,7 +290,10 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
         subdomains="abcd"
         maxZoom={19}
       />
-      {markers}
+      <MarkerClusterGroup chunkedLoading maxClusterRadius={60}>
+        {clusterMarkers}
+      </MarkerClusterGroup>
+      {personMarkers}
     </MapContainer>
   );
 }
