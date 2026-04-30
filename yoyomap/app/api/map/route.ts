@@ -5,7 +5,7 @@ export const revalidate = 86400; // 24 hours
 
 export async function GET() {
   const { data, error } = await supabase
-    .from('map_entries_cached')
+    .from('map_entries')
     .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
