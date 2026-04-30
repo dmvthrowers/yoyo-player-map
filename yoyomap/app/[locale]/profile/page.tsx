@@ -163,7 +163,7 @@ function ManageEntry({ token }: { token: string }) {
           hours: entry.hours,
         }),
       });
-      let data = {};
+      let data: { error?: string } = {};
       try {
         data = await res.json();
       } catch (e) {
@@ -171,7 +171,7 @@ function ManageEntry({ token }: { token: string }) {
         return;
       }
       if (!res.ok) {
-        setError(data?.error || 'Update failed.');
+        setError(data.error || 'Update failed.');
       } else {
         setMessage(t('profile.saved'));
       }
