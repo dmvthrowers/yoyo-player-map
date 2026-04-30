@@ -56,12 +56,11 @@ async function getEntries(): Promise<MapEntry[]> {
   try {
     const { data, error } = await supabase
       .from(MAP_TABLE)
-      .select('id, display_name, city, region, country, lat, lng');
+      .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
     if (error) {
       console.error('Failed to load map entries:', error);
       return [];
     }
-    // entity_type and verified_owner omitted from initial fetch for perf
     return (data ?? []);
   } catch (e) {
     console.error('Map fetch error:', e);
