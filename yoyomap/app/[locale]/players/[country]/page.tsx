@@ -5,6 +5,7 @@ import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } 
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 import { getTranslations } from 'next-intl/server';
+import PlayersTable from '../PlayersTable';
 
 export const revalidate = 3600;
 
@@ -98,6 +99,7 @@ export default async function Page({ params }: { params: Promise<{ country: stri
         </ul>
       )}
 
+      <PlayersTable entries={allEntries} hideLocationFilters />
       <NotListed />
       <MapCta />
     </div>

@@ -193,7 +193,7 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
                 {filtered.map((e) => {
                   const countryName = canonicalCountryName(e.country);
                   const regionName = canonicalRegionName(e.region);
-                  const href = locationPath(countryName, e.region ?? undefined, e.city);
+                  const href = locationPath(countryName, e.region || '_other', e.city);
                   return (
                     <tr key={e.id} className="border-t border-navy/10 hover:bg-cream-mid/50">
                       <td className="px-3 py-2">
@@ -217,7 +217,7 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
             {filtered.map((e) => {
               const countryName = canonicalCountryName(e.country);
               const regionName = canonicalRegionName(e.region);
-              const href = locationPath(countryName, e.region ?? undefined, e.city);
+              const href = locationPath(countryName, e.region || '_other', e.city);
               return (
                 <li key={e.id}>
                   <Link href={href} className="card block hover:border-brand-red transition-colors">

@@ -37,3 +37,4 @@ coverage/
 # Ignore vercel build output
 .vercel/output/
 /yoyomap/.claude
+/.claude
