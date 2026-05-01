@@ -84,22 +84,6 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const supabase = createAdminClient();
 
-  // Check if email already has an entry
-  const { data: existing } = await supabase
-    .from('entries')
-    .select('id, is_visible, deleted_at')
-    .eq('email', data.email)
-    .is('deleted_at', null)
-    .maybeSingle();
-
-  if (existing) {
-    await logAudit('submit.duplicate', { actor: data.email, meta: { ip } });
-    // Don't reveal account existence — generic message
-    return NextResponse.json({
-      message: "If that email is valid, you'll receive a verification link shortly.",
-    });
-  }
-
   // Branch based on entity type
   let entryData;
   switch (data.entityType) {

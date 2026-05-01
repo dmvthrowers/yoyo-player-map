@@ -33,6 +33,7 @@ const DEDUP_WINDOW_MS: Partial<Record<QueuedEmail['template'], number>> = {
   parent_consent: 10 * 60_000, // 10 min
   entry_reminder: 60 * 60_000, // 1 hour — cron should never double-fire
   manage_entry: 60_000,        // 1 min — user-triggered magic link
+  manage_entries: 60_000,
 };
 
 async function shouldSkipAsDuplicate(toEmail: string, template: QueuedEmail['template']): Promise<boolean> {
@@ -96,11 +97,18 @@ function nextUtcMidnight(): Date {
 // serialized to email_queue.payload (jsonb) and re-hydrated by the drain job.
 // =============================================================================
 
+export type ManageEntryItem = {
+  displayName: string;
+  token: string;
+  entityType: 'person' | 'shop' | 'club';
+};
+
 export type QueuedEmail =
   | { template: 'entry_verify'; email: string; displayName: string; token: string }
   | { template: 'parent_consent'; parentEmail: string; parentName: string; minorDisplayName: string; token: string }
   | { template: 'entry_reminder'; email: string; displayName: string; token: string }
   | { template: 'manage_entry'; email: string; displayName: string; token: string }
+  | { template: 'manage_entries'; email: string; entries: ManageEntryItem[] }
   | { template: 'report_notification'; to: string; entryId: string; reason: string; details: string | null; reporterEmail: string | null; entryDisplayName: string | null };
 
 interface RenderedEmail {
@@ -179,6 +187,28 @@ function render(q: QueuedEmail): RenderedEmail {
            <p style="margin:20px 0;"><a href="${link}" style="background:#1a1f36;color:#F5F0E8;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Manage My Entry</a></p>
            <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${link}</span></p>
            <p style="font-size:12px;color:#555;">This link expires in 1 hour.</p>`
+        ),
+      };
+    }
+    case 'manage_entries': {
+      const listHtml = q.entries.map((entry) => {
+        const link = `${APP_URL}/profile?token=${encodeURIComponent(entry.token)}`;
+        const label = entry.entityType === 'shop' ? 'Shop' : entry.entityType === 'club' ? 'Club' : 'Player';
+        return `<li style="margin-bottom:16px;">
+          <strong>${escapeHtml(entry.displayName)} (${escapeHtml(label)})</strong><br />
+          <a href="${link}" style="color:#C8102E;text-decoration:none;font-weight:bold;">Manage this entry</a><br />
+          <span style="font-size:12px;color:#555;word-break:break-all;">${link}</span>
+        </li>`;
+      }).join('');
+      return {
+        to: q.email,
+        subject: 'Manage your YoYo Map entries',
+        html: emailShell(
+          'Manage your YoYo Map entries',
+          `<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi there,</h2>
+           <p>You have multiple YoYo Map entries associated with this email address. Click any of the links below to edit or delete that entry.</p>
+           <ul style="padding-left:18px;margin:20px 0;">${listHtml}</ul>
+           <p style="font-size:12px;color:#555;">Each link expires in 1 hour.</p>`
         ),
       };
     }
@@ -349,6 +379,13 @@ export async function sendManageEntryEmail(
   token: string
 ): Promise<EmailSendOutcome> {
   return sendOrQueue({ template: 'manage_entry', email, displayName, token });
+}
+
+export async function sendManageEntriesEmail(
+  email: string,
+  entries: ManageEntryItem[]
+): Promise<EmailSendOutcome> {
+  return sendOrQueue({ template: 'manage_entries', email, entries });
 }
 
 export async function sendReportNotificationEmail(

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateToken } from '@/lib/tokens';
-import { sendManageEntryEmail } from '@/lib/email';
+import { sendManageEntryEmail, sendManageEntriesEmail } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 
@@ -26,37 +26,45 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const { email } = parsed.data;
   const supabase = createAdminClient();
 
-  const { data: entry } = await supabase
+  const { data: entries } = await supabase
     .from('entries')
-    .select('id, display_name')
+    .select('id, display_name, entity_type')
     .eq('email', email)
-    .is('deleted_at', null)
-    .maybeSingle();
+    .is('deleted_at', null);
 
   // Don't reveal whether email exists — always return success
-  if (!entry) {
+  if (!entries || entries.length === 0) {
     await logAudit('magic_link.unknown_email', { meta: { ip } });
     return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
   }
 
-  const token = generateToken();
+  const tokens = entries.map(() => generateToken());
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
-  const { error } = await supabase.from('verification_tokens').insert({
+  const inserts = entries.map((entry, index) => ({
     entry_id: entry.id,
-    token,
+    token: tokens[index],
     purpose: 'edit_link',
     expires_at: expiresAt,
-  });
+  }));
+
+  const { error } = await supabase.from('verification_tokens').insert(inserts);
   if (error) {
     console.error(`[api] magic link insert failed [${requestId}]:`, error);
     return apiError('upstream_error', 'Could not send link. Try again.', requestId);
   }
 
-  const outcome = await sendManageEntryEmail(email, entry.display_name, token);
+  const outcome = entries.length === 1
+    ? await sendManageEntryEmail(email, entries[0].display_name, tokens[0])
+    : await sendManageEntriesEmail(email, entries.map((entry, index) => ({
+        displayName: entry.display_name,
+        token: tokens[index],
+        entityType: entry.entity_type as 'person' | 'shop' | 'club',
+      })));
 
   await logAudit('magic_link.sent', {
     actor: email,
-    targetId: entry.id,
+    targetId: entries.length === 1 ? entries[0].id : null,
+    targetIds: entries.length > 1 ? entries.map((entry) => entry.id) : undefined,
     meta: { ip, emailStatus: outcome.status },
   });
 
