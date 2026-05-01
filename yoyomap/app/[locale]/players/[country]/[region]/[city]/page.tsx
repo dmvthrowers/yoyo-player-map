@@ -14,9 +14,8 @@ export async function generateStaticParams() {
   const seen = new Set<string>();
   const out: Params[] = [];
   for (const loc of locations) {
-    if (!loc.region) continue;
     const c = slugify(loc.country);
-    const r = slugify(loc.region);
+    const r = loc.region ? slugify(loc.region) : '_other';
     const ci = slugify(loc.city);
     const key = `${c}|${r}|${ci}`;
     if (!seen.has(key)) {
@@ -31,12 +30,13 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const { country, region, city } = await params;
   const entries = await entriesInCity(country, region, city);
   const countryName = canonicalName(entries, 'country') ?? country;
-  const regionName = canonicalName(entries, 'region') ?? region;
+  const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);
   const cityName = canonicalName(entries, 'city') ?? city;
   const count = entries.length;
+  const locationLabel = regionName ? `${cityName}, ${regionName}` : cityName;
   return {
-    title: `Yo-Yo Players in ${cityName}, ${regionName}`,
-    description: `${count} yo-yo player${count === 1 ? '' : 's'}, shop${count === 1 ? '' : 's'}, and club${count === 1 ? '' : 's'} in ${cityName}, ${regionName}, ${countryName}. Connect with the local community.`,
+    title: `Yo-Yo Players in ${locationLabel}`,
+    description: `${count} yo-yo player${count === 1 ? '' : 's'}, shop${count === 1 ? '' : 's'}, and club${count === 1 ? '' : 's'} in ${locationLabel}, ${countryName}. Connect with the local community.`,
     alternates: { canonical: `/players/${country}/${region}/${city}` },
   };
 }
@@ -47,7 +47,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   if (entries.length === 0) notFound();
 
   const countryName = canonicalName(entries, 'country') ?? country;
-  const regionName = canonicalName(entries, 'region') ?? region;
+  const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);
   const cityName = canonicalName(entries, 'city') ?? city;
 
   // Sort: shops/clubs first (they're permanent venues), people after
@@ -61,14 +61,14 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
       <nav className="text-xs text-navy/60 mb-3">
         <Link href="/players" className="hover:text-brand-red">Players</Link> /{' '}
         <Link href={`/players/${country}`} className="hover:text-brand-red">{countryName}</Link> /{' '}
-        <Link href={`/players/${country}/${region}`} className="hover:text-brand-red">{regionName}</Link> /{' '}
+        <Link href={`/players/${country}/${region}`} className="hover:text-brand-red">{regionName || 'Unspecified region'}</Link> /{' '}
         {cityName}
       </nav>
       <p className="eyebrow text-brand-red">City</p>
       <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">
         Yo-Yo Players in {cityName}
       </h1>
-      <p className="text-lg text-navy/70 mt-1">{regionName}, {countryName}</p>
+      <p className="text-lg text-navy/70 mt-1">{[regionName, countryName].filter(Boolean).join(', ')}</p>
       <hr className="rule-red" />
       <Counts entries={entries} className="mb-8" />
 

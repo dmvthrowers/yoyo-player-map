@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { geocodeCity, jitterCoords } from '@/lib/geocode';
+import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 import { revalidateEntryLocations } from '@/lib/revalidate';
@@ -52,7 +52,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const { data: existing } = await supabase
     .from('entries')
-    .select('city, region, country, lat, lng')
+    .select('city, region, country, lat, lng, entity_type, address_line, postal_code, club_venue_public, exact_lat, exact_lng')
     .eq('id', tok.entry_id)
     .maybeSingle();
   if (!existing) return apiError('not_found', 'Entry not found.', requestId);
@@ -60,8 +60,10 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const d = parsed.data;
   let lat = existing.lat;
   let lng = existing.lng;
+  let exactLat = existing.exact_lat as number | null;
+  let exactLng = existing.exact_lng as number | null;
 
-  // Re-geocode if location changed
+  // Re-geocode if city/region/country changed
   const locationChanged =
     d.city !== existing.city ||
     (d.region ?? null) !== existing.region ||
@@ -79,6 +81,44 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     lng = geo.lng;
   }
 
+  // Re-geocode the precise address for shops, and for clubs that publish their venue.
+  // Triggers when the address text changes OR when location changed (so the new city's
+  // context is applied) OR when a club just toggled venue-public on.
+  const isShop = existing.entity_type === 'shop';
+  const isClubVenuePublic =
+    existing.entity_type === 'club' &&
+    (d.club_venue_public ?? existing.club_venue_public) === true;
+  const venueWasPrivate = existing.entity_type === 'club' && existing.club_venue_public !== true;
+  const newAddress = d.address_line ?? existing.address_line;
+  const newPostal = d.postal_code ?? existing.postal_code;
+  const addressChanged =
+    (d.address_line !== undefined && (d.address_line || null) !== existing.address_line) ||
+    (d.postal_code !== undefined && (d.postal_code || null) !== existing.postal_code);
+
+  const shouldGeocodeAddress =
+    !!newAddress &&
+    (isShop || isClubVenuePublic) &&
+    (addressChanged || locationChanged || (isClubVenuePublic && venueWasPrivate));
+
+  if (shouldGeocodeAddress) {
+    const addrGeo = await geocodeAddress({
+      addressLine: newAddress!,
+      city: d.city,
+      region: d.region || undefined,
+      postalCode: newPostal || undefined,
+      country: d.country,
+    });
+    if (!addrGeo) {
+      return apiError('unprocessable', "Couldn't locate that address. Check spelling.", requestId);
+    }
+    exactLat = addrGeo.lat;
+    exactLng = addrGeo.lng;
+  } else if (existing.entity_type === 'club' && d.club_venue_public === false) {
+    // Club just made venue private — clear the precise coords.
+    exactLat = null;
+    exactLng = null;
+  }
+
   const { error: updateErr } = await supabase
     .from('entries')
     .update({
@@ -90,6 +130,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
       socials: d.socials || {},
       lat,
       lng,
+      exact_lat: exactLat,
+      exact_lng: exactLng,
       // Type-specific fields — only written if present in payload
       ...(d.club_meeting_info !== undefined && { club_meeting_info: d.club_meeting_info || null }),
       ...(d.club_venue_public !== undefined && { club_venue_public: d.club_venue_public }),

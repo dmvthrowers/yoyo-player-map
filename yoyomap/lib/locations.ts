@@ -197,13 +197,12 @@ export async function entriesInCity(
   const all = await fetchAllPublicEntries();
   return all.filter((e) => {
     const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
-    const regionVariants = [e.region, canonicalRegionName(e.region)];
-    const regionMatch = regionVariants.some((r) => slugify(r) === regionSlug);
-    return (
-      countryMatch &&
-      regionMatch &&
-      slugify(e.city) === citySlug
-    );
+    const hasNoRegion = !e.region || e.region.trim() === '';
+    const regionMatch =
+      regionSlug === '_other'
+        ? hasNoRegion
+        : [e.region, canonicalRegionName(e.region)].some((r) => slugify(r) === regionSlug);
+    return countryMatch && regionMatch && slugify(e.city) === citySlug;
   });
 }
 
