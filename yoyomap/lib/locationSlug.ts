@@ -18,7 +18,7 @@ export function locationPath(
   city?: string | null,
 ): string {
   const parts = ['/players', slugify(country)];
-  if (region) parts.push(slugify(region));
+  if (region) parts.push(region === '_other' ? '_other' : slugify(region));
   if (city) parts.push(slugify(city));
   return parts.join('/');
 }
