@@ -17,6 +17,7 @@ type EntityFilter = 'all' | PublicEntry['entity_type'];
 
 interface Props {
   entries: PublicEntry[];
+  hideLocationFilters?: boolean;
 }
 
 const COMBINING_MARKS = /[̀-ͯ]/g;
@@ -38,7 +39,7 @@ function matchesSearch(entry: PublicEntry, query: string): boolean {
   return words.every((w) => fields.some((f) => f.includes(w)));
 }
 
-export default function PlayersTable({ entries }: Props) {
+export default function PlayersTable({ entries, hideLocationFilters = false }: Props) {
   const t = useTranslations('players');
 
   const [query, setQuery] = useState('');
@@ -101,7 +102,7 @@ export default function PlayersTable({ entries }: Props) {
       <p className="text-text-body mb-6 leading-relaxed">{t('directoryDescription')}</p>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
-        <label className="block sm:col-span-2 lg:col-span-2">
+        <label className={`block ${hideLocationFilters ? 'sm:col-span-2 lg:col-span-3' : 'sm:col-span-2 lg:col-span-2'}`}>
           <span className="sr-only">{t('searchPlaceholder')}</span>
           <input
             type="search"
@@ -126,21 +127,23 @@ export default function PlayersTable({ entries }: Props) {
           </select>
         </label>
 
-        <label className="block">
-          <span className="sr-only">{t('filterCountry')}</span>
-          <select
-            value={country}
-            onChange={(e) => onCountryChange(e.target.value)}
-            className="w-full px-3 py-2 border-2 border-navy/30 bg-cream-light focus:border-brand-red focus:outline-none"
-          >
-            <option value="all">{t('filterCountry')}: {t('filterAll')}</option>
-            {countryOptions.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-        </label>
+        {!hideLocationFilters && (
+          <label className="block">
+            <span className="sr-only">{t('filterCountry')}</span>
+            <select
+              value={country}
+              onChange={(e) => onCountryChange(e.target.value)}
+              className="w-full px-3 py-2 border-2 border-navy/30 bg-cream-light focus:border-brand-red focus:outline-none"
+            >
+              <option value="all">{t('filterCountry')}: {t('filterAll')}</option>
+              {countryOptions.map((c) => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
+          </label>
+        )}
 
-        {regionOptions.length > 0 && (
+        {!hideLocationFilters && regionOptions.length > 0 && (
           <label className="block sm:col-span-2 lg:col-span-1">
             <span className="sr-only">{t('filterRegion')}</span>
             <select

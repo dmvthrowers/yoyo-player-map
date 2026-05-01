@@ -69,7 +69,7 @@ export default function Navigation() {
           <button
             type="button"
             className="md:hidden p-2 -mr-1 text-navy-deep"
-            aria-expanded={ariaExpanded}
+            aria-expanded={ariaExpanded ? "true" : "false"}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((o) => !o)}

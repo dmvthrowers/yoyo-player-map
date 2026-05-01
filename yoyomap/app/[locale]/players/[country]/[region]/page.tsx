@@ -3,8 +3,9 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
-import { Counts, MapCta, NotListed, EntryCard } from '../../EntryList';
+import { Counts, MapCta, NotListed } from '../../EntryList';
 import { getTranslations } from 'next-intl/server';
+import PlayersTable from '../../PlayersTable';
 
 export const revalidate = 3600;
 
@@ -70,11 +71,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
         </h1>
         <hr className="rule-red" />
         <Counts entries={entries} className="mb-8" />
-        <div className="grid gap-4 mb-8">
-          {entries.map((e) => (
-            <EntryCard key={e.id} e={e} />
-          ))}
-        </div>
+        <PlayersTable entries={entries} hideLocationFilters />
         <NotListed />
         <MapCta />
       </div>
@@ -125,6 +122,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
           ))}
         </ul>
 
+        <PlayersTable entries={entries} hideLocationFilters />
         <NotListed />
         <MapCta />
       </div>
