@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "找到你的同好",
+    "directoryDescription": "搜索玩家、商店和俱乐部的完整公开目录。点击行以查看其城市页面。",
+    "searchPlaceholder": "搜索姓名、城市、地区或国家…",
+    "filterAll": "全部",
+    "filterCountry": "国家",
+    "filterRegion": "地区",
+    "filterType": "类型",
+    "typePerson": "玩家",
+    "typeShop": "商店",
+    "typeClub": "俱乐部",
+    "thName": "姓名",
+    "thType": "类型",
+    "thCity": "城市",
+    "thRegion": "地区",
+    "thCountry": "国家",
+    "noResults": "无结果。请清除筛选或尝试其他搜索。",
+    "resultCount": "{count, plural, other {# 个结果}}",
+    "clearFilters": "清除筛选"
   }
 }

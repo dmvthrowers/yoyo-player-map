@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "اعثر على رفاقك",
+    "directoryDescription": "ابحث في الدليل الكامل للاعبين والمتاجر والأندية العامة. انقر على صف للانتقال إلى صفحة المدينة.",
+    "searchPlaceholder": "ابحث بالاسم أو المدينة أو المنطقة أو البلد…",
+    "filterAll": "الكل",
+    "filterCountry": "البلد",
+    "filterRegion": "المنطقة",
+    "filterType": "النوع",
+    "typePerson": "اللاعبون",
+    "typeShop": "المتاجر",
+    "typeClub": "الأندية",
+    "thName": "الاسم",
+    "thType": "النوع",
+    "thCity": "المدينة",
+    "thRegion": "المنطقة",
+    "thCountry": "البلد",
+    "noResults": "لا نتائج. امسح المرشحات أو جرّب بحثًا مختلفًا.",
+    "resultCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
+    "clearFilters": "مسح المرشحات"
   }
 }

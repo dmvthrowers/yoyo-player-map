@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "仲間を見つけよう",
+    "directoryDescription": "公開されているプレイヤー、ショップ、クラブの全ディレクトリを検索できます。行をクリックすると都市ページに移動します。",
+    "searchPlaceholder": "名前、都市、地域、国で検索…",
+    "filterAll": "すべて",
+    "filterCountry": "国",
+    "filterRegion": "地域",
+    "filterType": "種別",
+    "typePerson": "プレイヤー",
+    "typeShop": "ショップ",
+    "typeClub": "クラブ",
+    "thName": "名前",
+    "thType": "種別",
+    "thCity": "都市",
+    "thRegion": "地域",
+    "thCountry": "国",
+    "noResults": "該当なし。フィルターをクリアするか別のキーワードで検索してください。",
+    "resultCount": "{count, plural, other {# 件}}",
+    "clearFilters": "フィルターをクリア"
   }
 }

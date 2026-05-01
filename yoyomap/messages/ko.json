@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "당신의 동료를 찾아보세요",
+    "directoryDescription": "공개된 플레이어, 상점, 클럽 전체 디렉터리에서 검색하세요. 행을 클릭하면 해당 도시 페이지로 이동합니다.",
+    "searchPlaceholder": "이름, 도시, 지역, 국가 검색…",
+    "filterAll": "전체",
+    "filterCountry": "국가",
+    "filterRegion": "지역",
+    "filterType": "유형",
+    "typePerson": "플레이어",
+    "typeShop": "상점",
+    "typeClub": "클럽",
+    "thName": "이름",
+    "thType": "유형",
+    "thCity": "도시",
+    "thRegion": "지역",
+    "thCountry": "국가",
+    "noResults": "결과가 없습니다. 필터를 지우거나 다른 검색어를 시도하세요.",
+    "resultCount": "{count, plural, other {# 건}}",
+    "clearFilters": "필터 지우기"
   }
 }

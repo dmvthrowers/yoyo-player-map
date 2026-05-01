@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "Finde deine Leute",
+    "directoryDescription": "Durchsuche das vollständige Verzeichnis öffentlicher Spieler, Shops und Clubs. Klicke auf eine Zeile, um die zugehörige Stadtseite zu sehen.",
+    "searchPlaceholder": "Name, Stadt, Region oder Land suchen…",
+    "filterAll": "Alle",
+    "filterCountry": "Land",
+    "filterRegion": "Region",
+    "filterType": "Typ",
+    "typePerson": "Spieler",
+    "typeShop": "Shops",
+    "typeClub": "Clubs",
+    "thName": "Name",
+    "thType": "Typ",
+    "thCity": "Stadt",
+    "thRegion": "Region",
+    "thCountry": "Land",
+    "noResults": "Keine Treffer. Filter zurücksetzen oder andere Suche versuchen.",
+    "resultCount": "{count, plural, one {# Treffer} other {# Treffer}}",
+    "clearFilters": "Filter zurücksetzen"
   }
 }

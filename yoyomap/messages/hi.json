@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "अपने लोगों को खोजें",
+    "directoryDescription": "सार्वजनिक खिलाड़ियों, दुकानों और क्लबों की पूरी निर्देशिका खोजें। शहर पृष्ठ देखने के लिए किसी पंक्ति पर क्लिक करें।",
+    "searchPlaceholder": "नाम, शहर, क्षेत्र या देश खोजें…",
+    "filterAll": "सभी",
+    "filterCountry": "देश",
+    "filterRegion": "क्षेत्र",
+    "filterType": "प्रकार",
+    "typePerson": "खिलाड़ी",
+    "typeShop": "दुकानें",
+    "typeClub": "क्लब",
+    "thName": "नाम",
+    "thType": "प्रकार",
+    "thCity": "शहर",
+    "thRegion": "क्षेत्र",
+    "thCountry": "देश",
+    "noResults": "कोई परिणाम नहीं। फ़िल्टर साफ़ करें या कोई दूसरी खोज आज़माएँ।",
+    "resultCount": "{count, plural, one {# परिणाम} other {# परिणाम}}",
+    "clearFilters": "फ़िल्टर साफ़ करें"
   }
 }

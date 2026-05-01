@@ -61,5 +61,25 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "Найдите своих",
+    "directoryDescription": "Ищите в полном каталоге публичных игроков, магазинов и клубов. Нажмите на строку, чтобы открыть страницу города.",
+    "searchPlaceholder": "Поиск по имени, городу, региону или стране…",
+    "filterAll": "Все",
+    "filterCountry": "Страна",
+    "filterRegion": "Регион",
+    "filterType": "Тип",
+    "typePerson": "Игроки",
+    "typeShop": "Магазины",
+    "typeClub": "Клубы",
+    "thName": "Имя",
+    "thType": "Тип",
+    "thCity": "Город",
+    "thRegion": "Регион",
+    "thCountry": "Страна",
+    "noResults": "Ничего не найдено. Сбросьте фильтры или измените запрос.",
+    "resultCount": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}",
+    "clearFilters": "Сбросить фильтры"
   }
 }
