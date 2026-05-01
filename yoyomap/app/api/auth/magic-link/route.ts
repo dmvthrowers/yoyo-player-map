@@ -63,9 +63,12 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   await logAudit('magic_link.sent', {
     actor: email,
-    targetId: entries.length === 1 ? entries[0].id : null,
-    targetIds: entries.length > 1 ? entries.map((entry) => entry.id) : undefined,
-    meta: { ip, emailStatus: outcome.status },
+    targetId: entries.length === 1 ? entries[0].id : undefined,
+    meta: {
+      ip,
+      emailStatus: outcome.status,
+      targetIds: entries.length > 1 ? entries.map((entry) => entry.id) : undefined,
+    },
   });
 
   // We never confirm account existence to the caller, so on "failed" we still
