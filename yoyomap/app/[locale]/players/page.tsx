@@ -1,9 +1,10 @@
 
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { listLocations, canonicalCountryName } from '@/lib/locations';
+import { fetchAllPublicEntries, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { getTranslations } from 'next-intl/server';
+import PlayersTable from './PlayersTable';
 
 export const revalidate = 3600;
 
@@ -15,14 +16,16 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const t = await getTranslations();
-  const locations = await listLocations();
-  const countries = new Map<string, { name: string; count: number }>();
-  for (const loc of locations) {
-    const canonicalName = canonicalCountryName(loc.country);
+  const entries = await fetchAllPublicEntries();
+  // Distinct (country|region|city) per country, to match the "# locations" label.
+  const countries = new Map<string, { name: string; cities: Set<string> }>();
+  for (const e of entries) {
+    const canonicalName = canonicalCountryName(e.country);
     const slug = slugify(canonicalName);
+    const cityKey = `${e.region ?? ''}|${e.city}`;
     const cur = countries.get(slug);
-    if (cur) cur.count += 1;
-    else countries.set(slug, { name: canonicalName, count: 1 });
+    if (cur) cur.cities.add(cityKey);
+    else countries.set(slug, { name: canonicalName, cities: new Set([cityKey]) });
   }
   const sorted = [...countries.entries()].sort((a, b) =>
     a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' })
@@ -45,18 +48,20 @@ export default async function Page() {
         </p>
       ) : (
         <ul className="grid sm:grid-cols-2 gap-4">
-          {sorted.map(([slug, { name, count }]) => (
+          {sorted.map(([slug, { name, cities }]) => (
             <li key={slug}>
               <Link href={`/players/${slug}`} className="card block hover:border-brand-red transition-colors">
                 <p className="font-display text-2xl text-navy-deep">{name}</p>
                 <p className="text-sm text-navy/70">
-                  {t('players.locationCount', { count })}
+                  {t('players.locationCount', { count: cities.size })}
                 </p>
               </Link>
             </li>
           ))}
         </ul>
       )}
+
+      <PlayersTable entries={entries} />
     </div>
   );
 }

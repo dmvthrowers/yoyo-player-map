@@ -54,13 +54,23 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
       flagged_reason: reason 
     }).eq('id', entryId);
     await logAudit('entry.flagged', { targetId: entryId, meta: { ip, reason } });
+    // On-demand revalidate map and player pages
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
+        { method: 'POST' });
+    } catch (e) {}
   } else if (AUTO_HIDE_REASONS.includes(reason as typeof AUTO_HIDE_REASONS[number])) {
     // New behavior: auto-hide for business/identity issues (reversible by admin)
     // Only for shops and clubs - people can't have fake_business or unauthorized_listing
-    await supabase.from('entries').update({ 
+    await supabase.from('entries').update({
       auto_hidden_by_reports: true 
     }).eq('id', entryId);
     await logAudit('entry.auto_hidden', { targetId: entryId, meta: { ip, reason, entityType: entry.entity_type } });
+    // On-demand revalidate map and player pages
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
+        { method: 'POST' });
+    } catch (e) {}
   }
 
   await logAudit('report.submitted', { actor: reporterEmail || 'anon', targetId: entryId, meta: { ip, reason } });
