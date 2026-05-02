@@ -141,3 +141,7 @@ overrides:
   postcss: '^8.5.10'
   # uuid (resend->svix->uuid): buffer bounds check; needs >=14.0.0
   uuid: '^14.0.0'
+  # undici: multiple high/medium CVEs (GHSA-f269, GHSA-v9p9, GHSA-vrm6, etc.)
+  undici: '^7.25.0'
+  # devalue: prototype pollution / XSS (GHSA-cfw5-2vxh-hr84, GHSA-mwv9-gp5h-frr4)
+  devalue: '^5.8.0'
