@@ -1,0 +1,13 @@
+{
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/admin/drain-email-queue",
+      "schedule": "5 0 * * *"
+    }
+  ]
+}
