@@ -29,8 +29,9 @@ function checkAuth(req: NextRequest): boolean {
 }
 
 function safeEq(a: string, b: string): boolean {
-  const ha = crypto.createHash('sha256').update(a).digest();
-  const hb = crypto.createHash('sha256').update(b).digest();
+  const key = crypto.randomBytes(32);
+  const ha = crypto.createHmac('sha256', key).update(a).digest();
+  const hb = crypto.createHmac('sha256', key).update(b).digest();
   return crypto.timingSafeEqual(ha, hb);
 }
 

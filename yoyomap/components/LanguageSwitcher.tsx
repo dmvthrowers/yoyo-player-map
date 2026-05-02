@@ -19,7 +19,8 @@ export default function LanguageSwitcher() {
   const t = useTranslations();
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const code = e.target.value;
-    if (code) {
+    const validCodes = locales.map(l => l.code);
+    if (code && validCodes.includes(code)) {
       window.location.href = `/${code}`;
     }
   }

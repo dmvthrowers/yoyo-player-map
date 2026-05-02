@@ -18,8 +18,9 @@ function checkAdmin(req: NextRequest): boolean {
   const token = req.headers.get('x-admin-token') ?? '';
   const expected = process.env.ADMIN_PASSWORD ?? '';
   if (!token || !expected) return false;
-  const a = crypto.createHash('sha256').update(token).digest();
-  const b = crypto.createHash('sha256').update(expected).digest();
+  const key = crypto.randomBytes(32);
+  const a = crypto.createHmac('sha256', key).update(token).digest();
+  const b = crypto.createHmac('sha256', key).update(expected).digest();
   return crypto.timingSafeEqual(a, b);
 }
 
