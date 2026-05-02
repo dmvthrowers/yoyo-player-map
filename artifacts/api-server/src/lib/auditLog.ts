@@ -13,7 +13,7 @@ export async function logAudit(
     await db.insert(auditLogTable).values({
       event,
       actor: opts.actor,
-      target_id: opts.targetId ? opts.targetId as unknown as undefined : undefined,
+      target_id: opts.targetId,
       meta: opts.meta,
     });
   } catch (e) {
