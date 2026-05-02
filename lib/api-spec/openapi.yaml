@@ -1,22 +1,34 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: YoYo Map API — global yo-yo player community map
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: map
+    description: Map data operations
+  - name: locations
+    description: Location lookup and creation
+  - name: submit
+    description: Submission operations
+  - name: auth
+    description: Authentication operations
+  - name: profile
+    description: Profile management
+  - name: report
+    description: Report operations
+  - name: status
+    description: Service status
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +36,299 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /map/entries:
+    get:
+      operationId: listMapEntries
+      tags: [map]
+      summary: List all visible map entries (lean shape)
+      responses:
+        "200":
+          description: List of map entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entries:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/MapEntry"
+                  counts:
+                    $ref: "#/components/schemas/EntryCounts"
+                required: [entries, counts]
+
+  /entry/{id}:
+    get:
+      operationId: getEntryDetail
+      tags: [map]
+      summary: Get full entry detail for popup
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Entry detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MapEntryDetail"
+        "404":
+          description: Entry not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /locations:
+    get:
+      operationId: listLocations
+      tags: [locations]
+      summary: List countries, regions, or cities
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [countries, regions, cities]
+        - name: countryId
+          in: query
+          schema:
+            type: integer
+        - name: regionId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Location data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LocationsResponse"
+    post:
+      operationId: createCity
+      tags: [locations]
+      summary: Add a new city
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCityBody"
+      responses:
+        "200":
+          description: Created city
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  city:
+                    $ref: "#/components/schemas/City"
+                required: [city]
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /submit:
+    post:
+      operationId: submitEntry
+      tags: [submit]
+      summary: Submit a new map entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitBody"
+      responses:
+        "200":
+          description: Submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmitResult"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "429":
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /auth/magic-link:
+    post:
+      operationId: sendMagicLink
+      tags: [auth]
+      summary: Send magic link email for profile management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+              required: [email]
+      responses:
+        "200":
+          description: Magic link sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: [message]
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+        "404":
+          description: No entry found for that email
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /auth/verify-link:
+    get:
+      operationId: verifyMagicLink
+      tags: [auth]
+      summary: Verify magic link token and return entry data
+      parameters:
+        - name: token
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Token verified, returns entry
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  entry:
+                    $ref: "#/components/schemas/ProfileEntry"
+                required: [entry]
+        "400":
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /profile/update:
+    post:
+      operationId: updateProfile
+      tags: [profile]
+      summary: Update a profile entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileBody"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: [message]
+        "400":
+          description: Bad request or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /profile/delete:
+    post:
+      operationId: deleteProfile
+      tags: [profile]
+      summary: Delete a profile entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required: [token]
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: [message]
+        "400":
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
+  /report:
+    post:
+      operationId: reportEntry
+      tags: [report]
+      summary: Report a map entry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportBody"
+      responses:
+        "200":
+          description: Report received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: [message]
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ApiError"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +336,320 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            requestId:
+              type: string
+          required: [code, message]
+      required: [error]
+
+    MapEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        display_name:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+          nullable: true
+        country:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+        entity_type:
+          type: string
+          enum: [person, shop, club]
+        verified_owner:
+          type: boolean
+          nullable: true
+      required: [id, display_name, city, country, lat, lng]
+
+    MapEntryDetail:
+      type: object
+      properties:
+        bio:
+          type: string
+          nullable: true
+        socials:
+          type: object
+          additionalProperties:
+            type: string
+        address_line:
+          type: string
+          nullable: true
+        postal_code:
+          type: string
+          nullable: true
+        hours:
+          type: string
+          nullable: true
+        club_meeting_info:
+          type: string
+          nullable: true
+        club_venue_public:
+          type: boolean
+          nullable: true
+      required: [socials]
+
+    EntryCounts:
+      type: object
+      properties:
+        person:
+          type: integer
+        shop:
+          type: integer
+        club:
+          type: integer
+      required: [person, shop, club]
+
+    Country:
+      type: object
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+        name:
+          type: string
+      required: [id, code, name]
+
+    Region:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country_id:
+          type: integer
+      required: [id, name, country_id]
+
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country_id:
+          type: integer
+        region_id:
+          type: integer
+          nullable: true
+      required: [id, name, country_id]
+
+    LocationsResponse:
+      type: object
+      properties:
+        countries:
+          type: array
+          items:
+            $ref: "#/components/schemas/Country"
+        regions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Region"
+        cities:
+          type: array
+          items:
+            $ref: "#/components/schemas/City"
+
+    CreateCityBody:
+      type: object
+      properties:
+        name:
+          type: string
+        countryId:
+          type: integer
+        regionId:
+          type: integer
+          nullable: true
+      required: [name, countryId]
+
+    SubmitBody:
+      type: object
+      properties:
+        entityType:
+          type: string
+          enum: [person, shop, club]
+        displayName:
+          type: string
+        email:
+          type: string
+          format: email
+        city_id:
+          type: integer
+          nullable: true
+        region_id:
+          type: integer
+          nullable: true
+        country_id:
+          type: integer
+          nullable: true
+        bio:
+          type: string
+        ageBand:
+          type: string
+          enum: ["13-17", "18+"]
+        parentName:
+          type: string
+        parentEmail:
+          type: string
+        relationship:
+          type: string
+        addressLine:
+          type: string
+        postalCode:
+          type: string
+        hours:
+          type: string
+        contactName:
+          type: string
+        authorizedRep:
+          type: boolean
+        clubMeetingInfo:
+          type: string
+        clubVenuePublic:
+          type: boolean
+        venueAddressLine:
+          type: string
+        venuePostalCode:
+          type: string
+        socials:
+          type: object
+          additionalProperties:
+            type: string
+        consentPrivacy:
+          type: boolean
+        consentTerms:
+          type: boolean
+        consentPublic:
+          type: boolean
+        honeypot:
+          type: string
+      required: [entityType, displayName, email, consentPrivacy, consentTerms, consentPublic]
+
+    SubmitResult:
+      type: object
+      properties:
+        message:
+          type: string
+        emailStatus:
+          type: string
+          enum: [sent, queued, failed, partial_failed]
+        requestId:
+          type: string
+        retryAt:
+          type: string
+          nullable: true
+        isMinor:
+          type: boolean
+      required: [message]
+
+    ProfileEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        display_name:
+          type: string
+        city:
+          type: string
+        region:
+          type: string
+          nullable: true
+        country:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        socials:
+          type: object
+          additionalProperties:
+            type: string
+        is_visible:
+          type: boolean
+        entity_type:
+          type: string
+          enum: [person, shop, club]
+        club_meeting_info:
+          type: string
+          nullable: true
+        club_venue_public:
+          type: boolean
+        contact_name:
+          type: string
+          nullable: true
+        address_line:
+          type: string
+          nullable: true
+        postal_code:
+          type: string
+          nullable: true
+        hours:
+          type: string
+          nullable: true
+      required: [id, display_name, city, country, socials, is_visible, entity_type, club_venue_public]
+
+    UpdateProfileBody:
+      type: object
+      properties:
+        token:
+          type: string
+        display_name:
+          type: string
+        bio:
+          type: string
+          nullable: true
+        socials:
+          type: object
+          additionalProperties:
+            type: string
+        club_meeting_info:
+          type: string
+          nullable: true
+        club_venue_public:
+          type: boolean
+        contact_name:
+          type: string
+          nullable: true
+        address_line:
+          type: string
+          nullable: true
+        postal_code:
+          type: string
+          nullable: true
+        hours:
+          type: string
+          nullable: true
+      required: [token]
+
+    ReportBody:
+      type: object
+      properties:
+        entryId:
+          type: string
+        reason:
+          type: string
+          enum: [spam, harassment, impersonation, minor_unsafe, other]
+        details:
+          type: string
+        reporterEmail:
+          type: string
+          format: email
+      required: [entryId, reason]
