@@ -1,0 +1,85 @@
+{
+  "nav": {
+    "map": "Carte",
+    "submit": "Soumettre",
+    "profile": "Profil",
+    "donate": "Donner ☕",
+    "events": "Événements",
+    "resources": "Ressources",
+    "vsyc": "VSYC-26",
+    "language": "Langue :",
+    "languageSelect": "Choisir la langue",
+    "dmvThrowers": "DMV Throwers",
+    "brand": "YoYo Map",
+    "donateTitle": "Support DMV Throwers on Ko-fi",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "players": "Players"
+  },
+  "home": {
+    "title": "Trouvez votre communauté.",
+    "subtitle": "Jetez ensemble.",
+    "cta": "Explorer la carte",
+    "add": "Ajoutez-vous"
+  },
+  "footer": {
+    "project": "Un projet communautaire de DMV Throwers Yo-Yo & Skill Toy Club.",
+    "all_welcome": "Tous les niveaux sont les bienvenus."
+  },
+  "profile": {
+    "loading": "Loading profile..."
+  },
+  "submit": {
+    "addToMap": "Add to map",
+    "whatAreYouAdding": "What are you adding?",
+    "chooseType": "Choose a type to continue",
+    "type": {
+      "person": {
+        "title": "Person",
+        "description": "Add yourself or another yoyo player"
+      },
+      "shop": {
+        "title": "Shop",
+        "description": "Add a yoyo store or retailer"
+      },
+      "club": {
+        "title": "Club",
+        "description": "Add a yoyo club or community group"
+      }
+    }
+  },
+  "map": {
+    "countThrowers": "{count, plural, one {# thrower} other {# throwers}}",
+    "countShops": "{count, plural, one {# shop} other {# shops}}",
+    "countClubs": "{count, plural, one {# club} other {# clubs}}",
+    "collapseInfoPanel": "Collapse info panel",
+    "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
+    "addToMap": "Add to map",
+    "collapseFilters": "Collapse filters",
+    "filter": "Filter",
+    "people": "People",
+    "shops": "Shops",
+    "clubs": "Clubs",
+    "highlightUnderserved": "Highlight underserved areas"
+  },
+  "players": {
+    "directoryHeading": "Trouvez vos gens",
+    "directoryDescription": "Parcourez l'annuaire complet des joueurs, boutiques et clubs publics. Cliquez sur une ligne pour voir leur page de ville.",
+    "searchPlaceholder": "Rechercher par nom, ville, région ou pays…",
+    "filterAll": "Tous",
+    "filterCountry": "Pays",
+    "filterRegion": "Région",
+    "filterType": "Type",
+    "typePerson": "Joueurs",
+    "typeShop": "Boutiques",
+    "typeClub": "Clubs",
+    "thName": "Nom",
+    "thType": "Type",
+    "thCity": "Ville",
+    "thRegion": "Région",
+    "thCountry": "Pays",
+    "noResults": "Aucun résultat. Effacez les filtres ou essayez une autre recherche.",
+    "resultCount": "{count, plural, one {# résultat} other {# résultats}}",
+    "clearFilters": "Effacer les filtres"
+  }
+}
