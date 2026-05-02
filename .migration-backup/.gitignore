@@ -1,0 +1,40 @@
+# Node.js dependencies
+node_modules/
+
+# Build output
+.next/
+out/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Env files
+.env*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+
+# OS trash
+.trash/
+
+# Misc
+*.local
+*.sublime-workspace
+*.sublime-project
+
+# Ignore test coverage
+coverage/
+
+# Ignore vercel build output
+.vercel/output/
+/yoyomap/.claude
+/.claude
