@@ -8,6 +8,7 @@ interface Entry {
   city: string;
   region: string | null;
   country: string;
+  country_name: string | null;
   entity_type: "person" | "shop" | "club";
 }
 
@@ -19,7 +20,36 @@ const TYPE_LABEL: Record<Entry["entity_type"], string> = {
   club: "Club",
 };
 
-const COMBINING_MARKS = /[\u0300-\u036f]/g;
+// Fallback map for entries whose country_id wasn't set before the join was added
+const COUNTRY_CODE_TO_NAME: Record<string, string> = {
+  AE: "United Arab Emirates", AR: "Argentina", AT: "Austria", AU: "Australia",
+  BD: "Bangladesh", BE: "Belgium", BG: "Bulgaria", BO: "Bolivia",
+  BR: "Brazil", CA: "Canada", CH: "Switzerland", CL: "Chile",
+  CN: "China", CO: "Colombia", CR: "Costa Rica", CU: "Cuba",
+  CZ: "Czech Republic", DE: "Germany", DK: "Denmark", DO: "Dominican Republic",
+  DZ: "Algeria", EC: "Ecuador", EE: "Estonia", EG: "Egypt",
+  ES: "Spain", ET: "Ethiopia", FI: "Finland", FR: "France",
+  GB: "United Kingdom", GH: "Ghana", GR: "Greece", GT: "Guatemala",
+  HN: "Honduras", HR: "Croatia", HU: "Hungary", ID: "Indonesia",
+  IE: "Ireland", IL: "Israel", IN: "India", IT: "Italy",
+  JM: "Jamaica", JP: "Japan", KE: "Kenya", KR: "South Korea",
+  LK: "Sri Lanka", LT: "Lithuania", LV: "Latvia", MA: "Morocco",
+  MX: "Mexico", MY: "Malaysia", NG: "Nigeria", NL: "Netherlands",
+  NO: "Norway", NP: "Nepal", NZ: "New Zealand", PA: "Panama",
+  PE: "Peru", PH: "Philippines", PK: "Pakistan", PL: "Poland",
+  PR: "Puerto Rico", PT: "Portugal", PY: "Paraguay", RO: "Romania",
+  RS: "Serbia", RU: "Russia", SA: "Saudi Arabia", SE: "Sweden",
+  SG: "Singapore", SI: "Slovenia", SK: "Slovakia", TH: "Thailand",
+  TN: "Tunisia", TR: "Turkey", TW: "Taiwan", TZ: "Tanzania",
+  UA: "Ukraine", US: "United States", UY: "Uruguay", VE: "Venezuela",
+  VN: "Vietnam", ZA: "South Africa",
+};
+
+function displayCountry(entry: Entry): string {
+  return entry.country_name ?? COUNTRY_CODE_TO_NAME[entry.country.toUpperCase()] ?? entry.country;
+}
+
+const COMBINING_MARKS = /[̀-ͯ]/g;
 function fold(s: string | null | undefined): string {
   if (!s) return "";
   return s.normalize("NFKD").replace(COMBINING_MARKS, "").toLowerCase();
@@ -43,10 +73,16 @@ export default function PlayersPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  // Country options use the country code as value (for stable filtering) but display full name
   const countryOptions = useMemo(() => {
-    const set = new Set<string>();
-    for (const e of entries) if (e.country) set.add(e.country);
-    return [...set].sort();
+    const map = new Map<string, string>();
+    for (const e of entries) {
+      if (e.country && !map.has(e.country)) {
+        map.set(e.country, displayCountry(e));
+      }
+    }
+    return [...map.entries()]
+      .sort((a, b) => a[1].localeCompare(b[1], undefined, { sensitivity: "base" }));
   }, [entries]);
 
   const regionOptions = useMemo(() => {
@@ -66,7 +102,13 @@ export default function PlayersPage() {
       .filter((e) => {
         if (!deferredQuery) return true;
         const words = fold(deferredQuery).split(/\s+/).filter(Boolean);
-        const fields = [fold(e.display_name), fold(e.city), fold(e.region), fold(e.country)];
+        const fields = [
+          fold(e.display_name),
+          fold(e.city),
+          fold(e.region),
+          fold(displayCountry(e)),
+          fold(e.country),
+        ];
         return words.every((w) => fields.some((f) => f.includes(w)));
       })
       .sort((a, b) => a.display_name.localeCompare(b.display_name, undefined, { sensitivity: "base" }));
@@ -121,7 +163,7 @@ export default function PlayersPage() {
             title="Filter by country"
           >
             <option value="all">Country: All</option>
-            {countryOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+            {countryOptions.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
           </select>
         </label>
         {regionOptions.length > 0 && (
@@ -183,7 +225,7 @@ export default function PlayersPage() {
                     <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{TYPE_LABEL[e.entity_type]}</td>
                     <td className="px-3 py-2">{e.city}</td>
                     <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{e.region || "—"}</td>
-                    <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{e.country}</td>
+                    <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{displayCountry(e)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -199,7 +241,7 @@ export default function PlayersPage() {
                     <span className="eyebrow text-xs">{TYPE_LABEL[e.entity_type]}</span>
                   </div>
                   <p className="text-sm mt-1" style={{ color: "#6a7a9a" }}>
-                    {[e.city, e.region, e.country].filter(Boolean).join(", ")}
+                    {[e.city, e.region, displayCountry(e)].filter(Boolean).join(", ")}
                   </p>
                 </div>
               </li>
