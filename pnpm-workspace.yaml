@@ -124,3 +124,20 @@ overrides:
   rollup>@rollup/rollup-win32-ia32-msvc: '-'
   rollup>@rollup/rollup-win32-x64-gnu: '-'
   rollup>@rollup/rollup-win32-x64-msvc: '-'
+  # Security vulnerability overrides
+  # picomatch 2.x path (micromatch->picomatch, used by fast-glob): needs >=2.3.2
+  micromatch>picomatch: '2.3.2'
+  # picomatch 4.x path (vite->picomatch): needs >=4.0.4
+  vite>picomatch: '^4.0.4'
+  # path-to-regexp (express->router->path-to-regexp): needs >=8.4.0
+  path-to-regexp: '^8.4.0'
+  # lodash (recharts->lodash): code injection in _.template; needs >=4.18.0
+  lodash: '^4.18.1'
+  # brace-expansion (orval->typedoc->minimatch->brace-expansion): needs >=2.0.3
+  brace-expansion: '^2.0.3'
+  # yaml (vite->yaml): stack overflow; needs >=2.8.3
+  yaml: '^2.8.3'
+  # postcss (vite->postcss): XSS via unescaped </style>; needs >=8.5.10
+  postcss: '^8.5.10'
+  # uuid (resend->svix->uuid): buffer bounds check; needs >=14.0.0
+  uuid: '^14.0.0'
