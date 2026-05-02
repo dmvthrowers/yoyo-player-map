@@ -5,7 +5,7 @@ export default function StatusPage() {
   const [apiStatus, setApiStatus] = useState<"checking" | "ok" | "error">("checking");
 
   useEffect(() => {
-    fetch(apiUrl("/api/health"))
+    fetch(apiUrl("/api/healthz"))
       .then((r) => (r.ok ? setApiStatus("ok") : setApiStatus("error")))
       .catch(() => setApiStatus("error"));
   }, []);

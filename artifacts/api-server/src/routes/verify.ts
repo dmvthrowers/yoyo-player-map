@@ -5,7 +5,7 @@ import {
   verificationTokensTable,
   parentConsentsTable,
 } from "@workspace/db";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 const router = Router();
 
@@ -29,6 +29,37 @@ router.get("/verify", async (req, res) => {
       if (tok.used_at) return res.status(400).json({ error: "Token already used." });
       if (new Date(tok.expires_at) < new Date()) {
         return res.status(400).json({ error: "Token expired." });
+      }
+
+      // Fetch entry to check whether parental consent is required
+      const entryRows = await db
+        .select({ id: entriesTable.id, parent_consent_id: entriesTable.parent_consent_id })
+        .from(entriesTable)
+        .where(and(eq(entriesTable.id, tok.entry_id), isNull(entriesTable.deleted_at)))
+        .limit(1);
+      const entry = entryRows[0];
+      if (!entry) return res.status(404).json({ error: "Entry not found." });
+
+      // If the entry requires parental consent, ensure it has been granted before publishing
+      if (entry.parent_consent_id) {
+        const consentRows = await db
+          .select({ consented_at: parentConsentsTable.consented_at })
+          .from(parentConsentsTable)
+          .where(eq(parentConsentsTable.id, entry.parent_consent_id))
+          .limit(1);
+        const consent = consentRows[0];
+        if (!consent || !consent.consented_at) {
+          // Mark token as used so the link cannot be replayed; entry stays hidden pending consent
+          await db
+            .update(verificationTokensTable)
+            .set({ used_at: new Date() })
+            .where(eq(verificationTokensTable.token, token));
+          return res.json({
+            ok: false,
+            pendingConsent: true,
+            message: "Email verified. Your entry will appear on the map once your parent or guardian completes the consent form they received by email.",
+          });
+        }
       }
 
       await db

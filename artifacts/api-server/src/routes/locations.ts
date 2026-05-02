@@ -5,7 +5,7 @@ import {
   regionsTable,
   citiesTable,
 } from "@workspace/db";
-import { eq, ilike } from "drizzle-orm";
+import { and, eq, ilike } from "drizzle-orm";
 import { slugify } from "../lib/locationSlug";
 import { z } from "zod";
 
@@ -139,7 +139,7 @@ router.get("/locations", async (req, res) => {
         ? await db
             .select({ id: citiesTable.id, name: citiesTable.name, slug: citiesTable.slug, region_id: citiesTable.region_id })
             .from(citiesTable)
-            .where(eq(citiesTable.country_id, countryId))
+            .where(and(eq(citiesTable.country_id, countryId), eq(citiesTable.region_id, regionId)))
             .orderBy(citiesTable.name)
         : await db
             .select({ id: citiesTable.id, name: citiesTable.name, slug: citiesTable.slug, region_id: citiesTable.region_id })
