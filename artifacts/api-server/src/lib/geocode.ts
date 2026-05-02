@@ -47,6 +47,7 @@ async function readCache(queryHash: string): Promise<GeocodeResult | null> {
       .where(eq(geocodeCacheTable.query_hash, queryHash))
       .limit(1);
     if (!rows.length || !rows[0].result) return null;
+    console.log("geocode_cache hit:", queryHash.slice(0, 8));
     return rows[0].result as unknown as GeocodeResult;
   } catch {
     return null;
@@ -121,6 +122,64 @@ async function fetchNominatim(url: URL): Promise<unknown | null> {
   });
 }
 
+type PhotonFeature = {
+  geometry: { coordinates: [number, number] };
+  properties: {
+    name?: string;
+    city?: string;
+    town?: string;
+    village?: string;
+    state?: string;
+    country?: string;
+    countrycode?: string;
+    postcode?: string;
+    osm_value?: string;
+  };
+};
+
+async function fetchPhoton(q: string, limit = 5): Promise<PhotonFeature[] | null> {
+  const url = new URL("https://photon.komoot.io/api/");
+  url.searchParams.set("q", q);
+  url.searchParams.set("limit", String(limit));
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 7000);
+  try {
+    const res = await fetch(url.toString(), { signal: controller.signal });
+    if (!res.ok) {
+      console.error(`Photon error ${res.status}`);
+      return null;
+    }
+    const data = await res.json() as { features?: unknown[] };
+    if (!Array.isArray(data?.features)) return null;
+    return data.features as PhotonFeature[];
+  } catch (e) {
+    console.error("Photon fetch failed:", e);
+    return null;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function photonFeatureToResult(
+  feature: PhotonFeature,
+  fallbackCity: string,
+  fallbackRegion?: string,
+  fallbackCountry?: string,
+): GeocodeResult {
+  const [lng, lat] = feature.geometry.coordinates;
+  const p = feature.properties;
+  const cityName = p.city || p.town || p.village || p.name || fallbackCity;
+  const countryCode = p.countrycode?.toUpperCase() || fallbackCountry || "";
+  return {
+    lat,
+    lng,
+    displayName: [p.name, p.state, p.country].filter(Boolean).join(", ") || fallbackCity,
+    city: cityName,
+    region: p.state || fallbackRegion,
+    country: countryCode,
+  };
+}
+
 export interface CityGeocodeParams {
   city: string;
   region?: string;
@@ -154,17 +213,32 @@ export async function geocodeCity(
       freeform.searchParams.set("featuretype", "city");
       hit = pickCityHit(await fetchNominatim(freeform));
     }
-    if (!hit) return null;
-    const result: GeocodeResult = {
-      lat: parseFloat(hit.lat),
-      lng: parseFloat(hit.lon),
-      displayName: hit.display_name,
-      city: hit.address?.city || hit.address?.town || hit.address?.village || hit.address?.hamlet || city,
-      region: hit.address?.state || hit.address?.region || region,
-      country: hit.address?.country_code?.toUpperCase() || country,
-    };
-    await writeCache(queryHash, "city", result);
-    return result;
+
+    if (hit) {
+      const result: GeocodeResult = {
+        lat: parseFloat(hit.lat),
+        lng: parseFloat(hit.lon),
+        displayName: hit.display_name,
+        city: hit.address?.city || hit.address?.town || hit.address?.village || hit.address?.hamlet || city,
+        region: hit.address?.state || hit.address?.region || region,
+        country: hit.address?.country_code?.toUpperCase() || country,
+      };
+      await writeCache(queryHash, "city", result);
+      return result;
+    }
+
+    console.warn("geocode_city: Nominatim returned no results, trying Photon fallback");
+    const q = [city, region, country].filter(Boolean).join(", ");
+    const features = await fetchPhoton(q, 5);
+    if (features && features.length > 0) {
+      const result = photonFeatureToResult(features[0], city, region, country);
+      console.log("geocode_city: Photon fallback succeeded for", q);
+      await writeCache(queryHash, "city", result);
+      return result;
+    }
+
+    console.error("geocode_city: both Nominatim and Photon failed for", city, region, country);
+    return null;
   } catch (e) {
     console.error("Geocode error:", e);
     return null;
@@ -199,18 +273,31 @@ export async function geocodeAddress(
 
   try {
     const data = await fetchNominatim(url);
-    if (!Array.isArray(data) || data.length === 0) {
-      const qp = [addressLine, city];
-      if (region) qp.push(region);
-      if (postalCode) qp.push(postalCode);
-      qp.push(country);
-      const ff = new URL("https://nominatim.openstreetmap.org/search");
-      ff.searchParams.set("q", qp.join(", "));
-      ff.searchParams.set("format", "json");
-      ff.searchParams.set("limit", "1");
-      ff.searchParams.set("addressdetails", "1");
-      const ffData = await fetchNominatim(ff);
-      if (!Array.isArray(ffData) || ffData.length === 0) return null;
+    if (Array.isArray(data) && data.length > 0) {
+      const hit = data[0];
+      const result: GeocodeResult = {
+        lat: parseFloat(hit.lat),
+        lng: parseFloat(hit.lon),
+        displayName: hit.display_name,
+        city: hit.address?.city || hit.address?.town || hit.address?.village || city,
+        region: hit.address?.state || region,
+        country: hit.address?.country_code?.toUpperCase() || country,
+      };
+      await writeCache(queryHash, "address", result);
+      return result;
+    }
+
+    const qp = [addressLine, city];
+    if (region) qp.push(region);
+    if (postalCode) qp.push(postalCode);
+    qp.push(country);
+    const ff = new URL("https://nominatim.openstreetmap.org/search");
+    ff.searchParams.set("q", qp.join(", "));
+    ff.searchParams.set("format", "json");
+    ff.searchParams.set("limit", "1");
+    ff.searchParams.set("addressdetails", "1");
+    const ffData = await fetchNominatim(ff);
+    if (Array.isArray(ffData) && ffData.length > 0) {
       const hit = ffData[0];
       const result: GeocodeResult = {
         lat: parseFloat(hit.lat),
@@ -223,17 +310,19 @@ export async function geocodeAddress(
       await writeCache(queryHash, "address", result);
       return result;
     }
-    const hit = data[0];
-    const result: GeocodeResult = {
-      lat: parseFloat(hit.lat),
-      lng: parseFloat(hit.lon),
-      displayName: hit.display_name,
-      city: hit.address?.city || hit.address?.town || hit.address?.village || city,
-      region: hit.address?.state || region,
-      country: hit.address?.country_code?.toUpperCase() || country,
-    };
-    await writeCache(queryHash, "address", result);
-    return result;
+
+    console.warn("geocode_address: Nominatim returned no results, trying Photon fallback");
+    const q = qp.join(", ");
+    const features = await fetchPhoton(q, 1);
+    if (features && features.length > 0) {
+      const result = photonFeatureToResult(features[0], city, region, country);
+      console.log("geocode_address: Photon fallback succeeded for", q);
+      await writeCache(queryHash, "address", result);
+      return result;
+    }
+
+    console.error("geocode_address: both Nominatim and Photon failed for", qp.join(", "));
+    return null;
   } catch (e) {
     console.error("Address geocode error:", e);
     return null;
