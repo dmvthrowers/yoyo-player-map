@@ -15,6 +15,7 @@ import PrivacyPage from "@/pages/legal/PrivacyPage";
 import TermsPage from "@/pages/legal/TermsPage";
 import SecurityPage from "@/pages/legal/SecurityPage";
 import StatusPage from "@/pages/StatusPage";
+import VerifyPage from "@/pages/VerifyPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ function AppRoutes() {
           <Route path="/legal/terms" component={TermsPage} />
           <Route path="/legal/security" component={SecurityPage} />
           <Route path="/status" component={StatusPage} />
+          <Route path="/verify" component={VerifyPage} />
           <Route component={NotFoundPage} />
         </Switch>
       </main>

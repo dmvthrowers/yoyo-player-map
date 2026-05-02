@@ -12,7 +12,10 @@ function getResend() {
 const FROM =
   process.env.EMAIL_FROM || "DMV Throwers YoYo Map <noreply@dmvthrowers.club>";
 const APP_URL =
-  process.env.APP_URL || "https://map.dmvthrowers.club";
+  process.env.APP_URL ||
+  (process.env.REPLIT_DEV_DOMAIN
+    ? `https://${process.env.REPLIT_DEV_DOMAIN}`
+    : "https://map.dmvthrowers.club");
 
 export type EmailSendOutcome =
   | { status: "sent" }
@@ -143,7 +146,7 @@ function emailShell(title: string, bodyHtml: string): string {
 function render(q: QueuedEmail): RenderedEmail {
   switch (q.template) {
     case "entry_verify": {
-      const link = `${APP_URL}/api/verify?type=entry&token=${encodeURIComponent(q.token)}`;
+      const link = `${APP_URL}/verify?type=entry&token=${encodeURIComponent(q.token)}`;
       return {
         to: q.email,
         subject: "Verify your YoYo Map entry",
@@ -158,7 +161,7 @@ function render(q: QueuedEmail): RenderedEmail {
       };
     }
     case "parent_consent": {
-      const link = `${APP_URL}/api/verify?type=consent&token=${encodeURIComponent(q.token)}`;
+      const link = `${APP_URL}/verify?type=consent&token=${encodeURIComponent(q.token)}`;
       return {
         to: q.parentEmail,
         subject: `Consent needed: ${q.minorDisplayName} wants to join YoYo Map`,
@@ -172,7 +175,7 @@ function render(q: QueuedEmail): RenderedEmail {
       };
     }
     case "entry_reminder": {
-      const link = `${APP_URL}/api/verify?type=entry&token=${encodeURIComponent(q.token)}`;
+      const link = `${APP_URL}/verify?type=entry&token=${encodeURIComponent(q.token)}`;
       return {
         to: q.email,
         subject: "Reminder: verify your YoYo Map entry",
