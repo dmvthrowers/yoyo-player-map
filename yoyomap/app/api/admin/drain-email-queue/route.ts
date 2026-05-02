@@ -29,10 +29,14 @@ function checkAuth(req: NextRequest): boolean {
 }
 
 function safeEq(a: string, b: string): boolean {
-  const key = crypto.randomBytes(32);
-  const ha = crypto.createHmac('sha256', key).update(a).digest();
-  const hb = crypto.createHmac('sha256', key).update(b).digest();
-  return crypto.timingSafeEqual(ha, hb);
+  const ta = Buffer.from(a);
+  const tb = Buffer.from(b);
+  const len = Math.max(ta.length, tb.length);
+  const pa = Buffer.alloc(len);
+  const pb = Buffer.alloc(len);
+  ta.copy(pa);
+  tb.copy(pb);
+  return crypto.timingSafeEqual(pa, pb) && ta.length === tb.length;
 }
 
 async function handle(req: NextRequest) {

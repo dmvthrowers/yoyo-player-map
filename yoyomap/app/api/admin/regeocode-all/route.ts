@@ -16,10 +16,14 @@ function checkAdmin(req: NextRequest): boolean {
   const token = req.headers.get('x-admin-token') ?? '';
   const expected = process.env.ADMIN_PASSWORD ?? '';
   if (!token || !expected) return false;
-  const key = crypto.randomBytes(32);
-  const a = crypto.createHmac('sha256', key).update(token).digest();
-  const b = crypto.createHmac('sha256', key).update(expected).digest();
-  return crypto.timingSafeEqual(a, b);
+  const ta = Buffer.from(token);
+  const tb = Buffer.from(expected);
+  const len = Math.max(ta.length, tb.length);
+  const a = Buffer.alloc(len);
+  const b = Buffer.alloc(len);
+  ta.copy(a);
+  tb.copy(b);
+  return crypto.timingSafeEqual(a, b) && ta.length === tb.length;
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
