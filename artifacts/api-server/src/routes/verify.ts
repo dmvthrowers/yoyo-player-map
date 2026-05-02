@@ -92,6 +92,34 @@ router.get("/verify", async (req, res) => {
         .set({ consented_at: new Date() })
         .where(eq(parentConsentsTable.consent_token, token));
 
+      // If the minor's email was already verified (token consumed) we can now publish the entry
+      const entryRows = await db
+        .select({ id: entriesTable.id })
+        .from(entriesTable)
+        .where(and(eq(entriesTable.parent_consent_id, consent.id), isNull(entriesTable.deleted_at)))
+        .limit(1);
+      const entry = entryRows[0];
+
+      if (entry) {
+        const emailTokenRows = await db
+          .select({ used_at: verificationTokensTable.used_at })
+          .from(verificationTokensTable)
+          .where(and(
+            eq(verificationTokensTable.entry_id, entry.id),
+            eq(verificationTokensTable.purpose, "email_verify"),
+          ))
+          .limit(1);
+        const emailToken = emailTokenRows[0];
+        // email_verify token exists and was already consumed → email was verified first; publish now
+        if (emailToken?.used_at) {
+          await db
+            .update(entriesTable)
+            .set({ is_visible: true })
+            .where(eq(entriesTable.id, entry.id));
+          return res.json({ ok: true, message: "Consent recorded and entry is now visible on the map!" });
+        }
+      }
+
       return res.json({ ok: true, message: "Consent recorded. The entry will appear on the map once the email is also verified." });
     }
 
