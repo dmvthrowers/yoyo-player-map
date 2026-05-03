@@ -174,6 +174,16 @@ function ManageEntry({ token }: { token: string }) {
         setError(data.error || 'Update failed.');
       } else {
         setMessage(t('profile.saved'));
+        // Reload fresh from server so the form reflects exactly what was persisted
+        try {
+          const refreshRes = await fetch(`/api/auth/verify-link?token=${encodeURIComponent(token)}`);
+          const refreshData = await refreshRes.json();
+          if (refreshRes.ok && refreshData.entry) {
+            setEntry(refreshData.entry);
+          }
+        } catch {
+          // Non-critical — form already shows edited values in local state
+        }
       }
     } catch (err) {
       setError('Network error. Please check your connection and try again.');
