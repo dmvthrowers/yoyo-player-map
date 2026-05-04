@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
-export const revalidate = 86400; // 24 hours
+// Force dynamic so Next.js does not attempt to prerender this route at build
+// time (which would require a live Supabase connection). CDN-level caching is
+// handled by the Cache-Control header returned below.
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   const { data, error } = await supabase
