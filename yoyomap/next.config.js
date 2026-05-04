@@ -1,3 +1,4 @@
+const path = require('path');
 const createNextIntlPlugin = require('next-intl/plugin');
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
@@ -33,6 +34,7 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  outputFileTracingRoot: path.join(__dirname, '..'),
   // ESLint is run separately in CI (eslint .) so skip it during `next build`
   // to avoid the deprecated `next lint` path and @rushstack/eslint-patch
   // incompatibility with ESLint 9.x.

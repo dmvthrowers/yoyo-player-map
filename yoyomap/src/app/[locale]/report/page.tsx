@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 function ReportInner() {
   const params = useSearchParams();
-  const entryId = params.get('id') || '';
+  const entryId = params?.get('id') || '';
   const [reason, setReason] = useState('');
   const [details, setDetails] = useState('');
   const [email, setEmail] = useState('');
@@ -109,5 +109,4 @@ export default function ReportPage() {
       </div>
     );
 }
-
 

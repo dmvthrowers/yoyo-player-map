@@ -1,0 +1,275 @@
+@import "tailwindcss";
+
+/* Custom border color for TrustRow and similar components */
+.border-custom {
+  border-color: var(--border);
+}
+
+/* Hero title font size and line height */
+.hero-title {
+  font-size: clamp(2.75rem, 8vw, 5.25rem);
+  line-height: 0.95;
+}
+
+/* DMV Throwers brand tokens - mirror dmvthrowers.club */
+:root {
+  --red: #d42b2b;
+  --red-dark: #b01f1f;
+  --navy: #1a2744;
+  --navy-deep: #0e1833;
+  --cream: #f5f0e8;
+  --cream-mid: #f0ebe0;
+  --border: #d4cebc;
+  --text-body: #3a4a6a;
+  --text-muted: #6a7a9a;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: var(--cream);
+    color: var(--navy-deep);
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  a {
+    color: inherit;
+  }
+
+  ::selection {
+    background: var(--red);
+    color: #fff;
+  }
+}
+
+@layer components {
+  /* Buttons - square corners, uppercase, tracked, flat */
+  .btn-primary,
+  .btn-secondary,
+  .btn-ghost,
+  .btn-outline-white {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    border-radius: 0;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--red-dark);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background: var(--navy);
+    color: #fff;
+  }
+
+  .btn-secondary:hover {
+    background: var(--red);
+  }
+
+  .btn-ghost {
+    border: 2px solid var(--navy);
+    background: transparent;
+    color: var(--navy);
+  }
+
+  .btn-ghost:hover {
+    background: var(--navy);
+    color: #fff;
+  }
+
+  .btn-outline-white {
+    border: 2px solid #fff;
+    background: transparent;
+    color: #fff;
+  }
+
+  .btn-outline-white:hover {
+    background: #fff;
+    color: var(--navy);
+  }
+
+  /* Forms */
+  .input {
+    width: 100%;
+    border: 2px solid var(--border);
+    background: #fff;
+    color: var(--navy-deep);
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s ease;
+    border-radius: 0;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+
+  .label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  /* Cards - flat, hairline border, square */
+  .card {
+    background: #fff;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 0;
+  }
+
+  /* Section eyebrow tag */
+  .eyebrow {
+    color: var(--red);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+  }
+
+  .rule-red {
+    width: 60px;
+    height: 3px;
+    background: var(--red);
+    border: 0;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .topbar {
+    background: var(--red);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .topbar-link {
+    color: rgb(255 255 255 / 0.9);
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .topbar-link:hover {
+    color: #fff;
+  }
+
+  .topbar label[for="language-switcher"] {
+    color: rgb(255 255 255 / 0.8);
+  }
+
+  .site-nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-link {
+    display: inline-block;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+    color: var(--navy-deep);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .nav-link:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  .donate-btn {
+    display: inline-block;
+    white-space: nowrap;
+    border-radius: 0.375rem;
+    background: var(--red);
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+    transition: background-color 0.2s ease;
+  }
+
+  .donate-btn:hover {
+    background: #ff8a8a;
+  }
+
+  .brand-lockup {
+    color: var(--navy-deep);
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+  }
+
+  @media (min-width: 768px) {
+    .brand-lockup {
+      font-size: 1.875rem;
+    }
+  }
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--red);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  z-index: 100;
+}
+
+/* Subtle radial-dot pattern for dark hero sections */
+.dot-pattern {
+  background-image: radial-gradient(rgb(255 255 255 / 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* Leaflet marker fix for Next.js */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+}

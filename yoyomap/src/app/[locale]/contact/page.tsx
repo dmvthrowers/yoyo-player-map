@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { routing } from '../../../i18n/routing';
+import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

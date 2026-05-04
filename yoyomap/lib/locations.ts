@@ -104,7 +104,6 @@ export function canonicalCountryName(input: string): string {
   const slug = slugify(input);
   return COUNTRY_NORMALIZATION[slug] || input;
 }
-import { cache } from 'react';
 import { supabase } from '@/lib/supabase';
 import { slugify } from './locationSlug';
 
@@ -124,7 +123,7 @@ export interface PublicEntry {
 // React cache() dedupes within a single render pass — so country/region/city
 // pages that all call this only hit Supabase once per request lifecycle.
 // Combined with ISR (revalidate=3600) the cost is ~1 query per hour per page.
-export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
+export async function fetchAllPublicEntries(): Promise<PublicEntry[]> {
   try {
     const { data, error } = await supabase
       .from('map_entries')
@@ -144,7 +143,7 @@ export const fetchAllPublicEntries = cache(async (): Promise<PublicEntry[]> => {
     console.error('[locations] fetch failed, returning empty dataset:', e);
     return [];
   }
-});
+}
 
 export interface LocationKey {
   country: string;

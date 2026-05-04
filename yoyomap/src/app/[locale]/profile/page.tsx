@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 function ProfileInner() {
   const searchParams = useSearchParams();
-  const token = searchParams.get('token');
+  const token = searchParams?.get('token');
 
   if (token) {
     return <ManageEntry token={token} />;
