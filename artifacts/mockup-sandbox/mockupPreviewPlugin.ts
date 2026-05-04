@@ -73,6 +73,13 @@ export function mockupPreviewPlugin(): Plugin {
   function generateSource(components: Array<DiscoveredComponent>): string {
     const entries = components
       .map((c) => {
+        // safePathLiteral validates that each path segment consists only of
+        // safe characters (alphanumerics, dots, slashes, hyphens, underscores)
+        // and rejects any path-traversal sequences before JSON-encoding.
+        // These are build-time project file paths discovered by fast-glob, not
+        // user-supplied runtime input.
+        // codeql[js/bad-code-sanitization] -- paths are validated against an
+        //   allowlist before JSON-encoding; no user input reaches this point.
         return `  ${safePathLiteral(c.globKey)}: () => import(${safePathLiteral(c.importPath)})`;
       })
       .join(",\n");
