@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test dynamic routes and error handling",
+			"type": "shell",
+			"command": "npx vitest run",
+			"args": [
+				"--dir",
+				"yoyomap"
+			],
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		},
+		{
+			"label": "Run Vitest for yoyomap tests",
+			"type": "shell",
+			"command": "npx vitest run --dir yoyomap/tests",
+			"isBackground": false,
+			"problemMatcher": [
+				"$tsc"
+			],
+			"group": "test"
+		}
+	]
+}

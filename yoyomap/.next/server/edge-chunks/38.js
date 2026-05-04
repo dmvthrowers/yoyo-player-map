@@ -1,0 +1,61 @@
+(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[38],{756:()=>{},773:(a,b,c)=>{"use strict";c.d(b,{At:()=>h,Eb:()=>g,T1:()=>i});var d=c(1492),e=c(7295),f=c(2163);async function g(a,b,c,f){let g=new d.Ratelimit({redis:e.kv,limiter:d.Ratelimit.slidingWindow(c,`${f} m`),prefix:`rl:${b}`});try{let{success:b}=await g.limit(a);return b}catch(a){return console.error("Rate limit check failed:",a),!0}}async function h(a,b={}){let c=(0,f.Z)();await c.from("audit_log").insert({action:a,actor:b.actor??"system",target_id:b.targetId??null,meta:b.meta??{}})}function i(a){return a.get("x-forwarded-for")?.split(",")[0].trim()||a.get("x-real-ip")||"unknown"}},900:()=>{},2163:(a,b,c)=>{"use strict";c.d(b,{Z:()=>e});var d=c(2673);function e(){if(!process.env.SUPABASE_SERVICE_ROLE_KEY)throw Error("Supabase admin credentials not configured");let a=process.env.SUPABASE_SERVICE_ROLE_KEY;return(0,d.UU)("https://byqpjqpdjjlyqkwucjkl.supabase.co",a,{auth:{autoRefreshToken:!1,persistSession:!1}})}},6121:(a,b,c)=>{"use strict";c.d(b,{Nu:()=>n,OJ:()=>m,eG:()=>o,sP:()=>p,uL:()=>q});var d=c(9418),e=c(2163);let f=process.env.EMAIL_FROM||"DMV Throwers YoYo Map <noreply@dmvthrowers.club>",g=process.env.NEXT_PUBLIC_APP_URL||"https://map.dmvthrowers.club",h={entry_verify:6e5,parent_consent:6e5,entry_reminder:36e5,manage_entry:6e4,manage_entries:6e4};async function i(a,b){let c=h[b];if(!c)return!1;try{let d=(0,e.Z)(),f=new Date(Date.now()-c).toISOString(),{data:g}=await d.from("email_send_log").select("last_sent_at").eq("to_email",a).eq("template",b).gte("last_sent_at",f).maybeSingle();return!!g}catch{return!1}}async function j(a,b){try{let c=(0,e.Z)();await c.from("email_send_log").upsert({to_email:a,template:b,last_sent_at:new Date().toISOString()},{onConflict:"to_email,template"})}catch(a){console.error("email_send_log upsert failed:",a)}}async function k(a){let b=function(a){switch(a.template){case"entry_verify":{let b=`${g}/api/verify-parent?type=entry&token=${encodeURIComponent(a.token)}`;return{to:a.email,subject:"Verify your YoYo Map entry",html:r("Verify your YoYo Map entry",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi ${s(a.displayName)},</h2>
+           <p>Click the button below to confirm your email and publish your entry on the YoYo Map.</p>
+           <p style="margin:20px 0;"><a href="${b}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Verify &amp; Publish</a></p>
+           <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${b}</span></p>
+           <p style="font-size:12px;color:#555;">This link expires in 24 hours.</p>`)}}case"parent_consent":{let b=`${g}/api/verify-parent?type=consent&token=${encodeURIComponent(a.token)}`;return{to:a.parentEmail,subject:`Consent needed: ${a.minorDisplayName} wants to join YoYo Map`,html:r("Parent/guardian consent required",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi ${s(a.parentName)},</h2>
+           <p><strong>${s(a.minorDisplayName)}</strong> has asked to be listed on YoYo Map — a community directory that helps yo-yoers find each other.</p>
+           <p>As the parent or legal guardian of a user under 18, we need your consent before we can publish their entry. Here's what will be visible publicly:</p>
+           <ul>
+             <li>Their chosen display name (not legal name unless they chose that)</li>
+             <li>Their city and region (never exact address or GPS)</li>
+             <li>An optional short bio and social media handles they entered</li>
+             <li>An approximate map pin, blurred to a ~10 mile radius</li>
+           </ul>
+           <p>What we do NOT show publicly: email address, age, real name, or exact location.</p>
+           <p>There is no messaging feature on the site. Other users cannot contact ${s(a.minorDisplayName)} through the map.</p>
+           <p>You can withdraw consent at any time by replying to this email or contacting dmvthrowers@gmail.com, and the entry will be removed.</p>
+           <p style="margin:20px 0;"><a href="${b}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">I Consent — Publish the Entry</a></p>
+           <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${b}</span></p>
+           <p style="font-size:12px;color:#555;">This consent link expires in 7 days. If you do nothing, the entry will not be published.</p>
+           <p style="font-size:12px;color:#555;">Full privacy policy: ${g}/legal/privacy</p>`)}}case"entry_reminder":{let b=`${g}/api/verify-parent?type=entry&token=${encodeURIComponent(a.token)}`;return{to:a.email,subject:"Reminder: verify your YoYo Map entry",html:r("Reminder: verify your YoYo Map entry",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi ${s(a.displayName)},</h2>
+           <p>Just a nudge — we have a YoYo Map entry waiting on your email confirmation. It won't appear on the map until you click verify.</p>
+           <p style="margin:20px 0;"><a href="${b}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Verify &amp; Publish</a></p>
+           <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${b}</span></p>
+           <p style="font-size:12px;color:#555;">This link expires in 24 hours. If you didn't sign up, you can ignore this email — your entry will be cleaned up automatically.</p>`)}}case"manage_entry":{let b=`${g}/profile?token=${encodeURIComponent(a.token)}`;return{to:a.email,subject:"Manage your YoYo Map entry",html:r("Manage your YoYo Map entry",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi ${s(a.displayName)},</h2>
+           <p>Click the link below to edit or delete your YoYo Map entry.</p>
+           <p style="margin:20px 0;"><a href="${b}" style="background:#1a1f36;color:#F5F0E8;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Manage My Entry</a></p>
+           <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${b}</span></p>
+           <p style="font-size:12px;color:#555;">This link expires in 1 hour.</p>`)}}case"manage_entries":{let b=a.entries.map(a=>{let b=`${g}/profile?token=${encodeURIComponent(a.token)}`,c="shop"===a.entityType?"Shop":"club"===a.entityType?"Club":"Player";return`<li style="margin-bottom:16px;">
+          <strong>${s(a.displayName)} (${s(c)})</strong><br />
+          <a href="${b}" style="color:#C8102E;text-decoration:none;font-weight:bold;">Manage this entry</a><br />
+          <span style="font-size:12px;color:#555;word-break:break-all;">${b}</span>
+        </li>`}).join("");return{to:a.email,subject:"Manage your YoYo Map entries",html:r("Manage your YoYo Map entries",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">Hi there,</h2>
+           <p>You have multiple YoYo Map entries associated with this email address. Click any of the links below to edit or delete that entry.</p>
+           <ul style="padding-left:18px;margin:20px 0;">${b}</ul>
+           <p style="font-size:12px;color:#555;">Each link expires in 1 hour.</p>`)}}case"report_notification":{let b=`${g}/admin`;return{to:a.to,subject:`[YoYo Map] Report: ${a.reason}`,html:r("New report submitted",`<h2 style="margin:0 0 12px 0;font-family:Georgia,serif;">New report on YoYo Map</h2>
+           <p><strong>Entry:</strong> ${s(a.entryDisplayName||"(unknown)")} <span style="color:#777;">(${s(a.entryId)})</span></p>
+           <p><strong>Reason:</strong> ${s(a.reason)}</p>
+           ${a.details?`<p><strong>Details:</strong><br>${s(a.details)}</p>`:""}
+           <p><strong>Reporter:</strong> ${a.reporterEmail?s(a.reporterEmail):"(anonymous)"}</p>
+           <p style="margin:20px 0;"><a href="${b}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">Open Admin Dashboard</a></p>`)}}}}(a);if(await i(b.to,a.template))return{status:"deduped"};let c=null;try{c=(await (function(){let a=process.env.RESEND_API_KEY;if(!a)throw Error("RESEND_API_KEY not set");return new d.u(a)})().emails.send({from:f,to:b.to,subject:b.subject,html:b.html})).error??null}catch(a){c={name:"network_error",message:String(a)}}if(!c)return await j(b.to,a.template),{status:"sent"};let e=function(a){let b=a?.name??"",c=a?.message??"";return"rate_limit_exceeded"===b?/daily|quota/i.test(c)?{kind:"daily_quota",retryAt:function(){let a=new Date;return a.setUTCHours(24,0,0,0),a}()}:{kind:"throttled",retryAt:new Date(Date.now()+6e4)}:{kind:"other",error:`${b||"unknown"}: ${c||"no detail"}`}}(c);return"daily_quota"===e.kind||"throttled"===e.kind?(await l(a,b.to,e.retryAt,`${c.name}: ${c.message}`),{status:"queued",kind:e.kind,retryAt:e.retryAt.toISOString()}):(console.error("Resend send failed:",e.error),{status:"failed",error:e.error})}async function l(a,b,c,d){let f=(0,e.Z)(),{error:g}=await f.from("email_queue").insert({template:a.template,to_email:b,payload:a,not_before:c.toISOString(),last_error:d});g&&console.error("Failed to enqueue email for retry:",g)}async function m(a,b,c){return k({template:"entry_verify",email:a,displayName:b,token:c})}async function n(a,b,c,d){return k({template:"parent_consent",parentEmail:a,parentName:b,minorDisplayName:c,token:d})}async function o(a,b,c){return k({template:"manage_entry",email:a,displayName:b,token:c})}async function p(a,b){return k({template:"manage_entries",email:a,entries:b})}async function q(a,b,c,d,e){return k({template:"report_notification",to:process.env.ADMIN_NOTIFICATION_EMAIL||"dmvthrowers@gmail.com",entryId:a,reason:b,details:c,reporterEmail:d,entryDisplayName:e})}function r(a,b){return`<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>${a}</title></head>
+<body style="margin:0;padding:0;background:#F5F0E8;font-family:Arial,Helvetica,sans-serif;color:#1a1f36;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F5F0E8;padding:24px 12px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border:2px solid rgba(26,31,54,0.1);">
+        <tr><td style="background:#1a1f36;padding:16px 24px;border-bottom:4px solid #C8102E;">
+          <p style="margin:0;color:#F5F0E8;font-size:20px;font-weight:900;letter-spacing:1px;">YoYo <span style="color:#C8102E;">Map</span></p>
+        </td></tr>
+        <tr><td style="padding:28px 24px;font-size:15px;line-height:1.55;">
+          ${b}
+        </td></tr>
+        <tr><td style="background:#0d1021;color:#F5F0E8;padding:16px 24px;font-size:11px;">
+          <p style="margin:0 0 4px 0;">DMV Throwers Yo-Yo &amp; Skill Toy Club \xb7 EIN 41-4879324</p>
+          <p style="margin:0;">If you did not request this email, you can safely ignore it.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`}function s(a){return a.replace(/[&<>"']/g,a=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[a])}},6338:(a,b,c)=>{"use strict";c.d(b,{Uj:()=>g,pb:()=>f});var d=c(5273);let e={bad_request:400,unauthorized:401,forbidden:403,not_found:404,conflict:409,unprocessable:422,rate_limited:429,upstream_error:502,internal_error:500};function f(a,b,c,f){return d.Rp.json({error:{code:a,message:b,requestId:c}},{status:e[a],headers:{"x-request-id":c,...f??{}}})}function g(a){return async(...b)=>{let c=globalThis.crypto.randomUUID();try{let d=await a(c,...b);return d.headers.has("x-request-id")||d.headers.set("x-request-id",c),d}catch(a){return console.error(`[api] unhandled error [${c}]:`,a),f("internal_error","Something went wrong on our end.",c)}}}}}]);
+//# sourceMappingURL=38.js.map
