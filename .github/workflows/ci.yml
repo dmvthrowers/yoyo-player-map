@@ -48,16 +48,19 @@ jobs:
   # ── yoyomap standalone Next.js app ───────────────────────────────────────
   check-yoyomap:
     name: yoyomap — Typecheck, Lint & Audit
+  # ── yoyomap app: typecheck + lint ────────────────────────────────────────────
+  typecheck-and-lint:
+    name: Typecheck & Lint (yoyomap)
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           # yoyomap/ is a standalone app with its own lockfile — cache against it.
@@ -84,3 +87,58 @@ jobs:
         working-directory: yoyomap
         run: pnpm audit --audit-level=high --ignore-workspace
         continue-on-error: false
+  # ── yoyomap app: next build ───────────────────────────────────────────────────
+  build:
+    name: Build (yoyomap)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: yoyomap/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: yoyomap
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      - name: Build
+        working-directory: yoyomap
+        # Stub the two NEXT_PUBLIC_* vars required at build-time for bundle
+        # inlining. Runtime-only secrets (service role key, Resend key, etc.)
+        # are never needed during a build.
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+        run: pnpm build
+
+  # ── root workspace: typecheck libs / artifacts / scripts ─────────────────────
+  workspace-typecheck:
+    name: Typecheck (workspace)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck

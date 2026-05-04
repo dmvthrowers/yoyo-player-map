@@ -12,6 +12,15 @@ updates:
       - dependencies
 
   # ── yoyomap standalone Next.js app ─────────────────────────────────────
+  # GitHub Actions — keep all workflow actions up to date.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+
+  # npm — yoyomap standalone app.
   - package-ecosystem: npm
     directory: /yoyomap
     schedule:
@@ -31,3 +40,13 @@ updates:
     labels:
       - dependencies
       - github-actions
+    labels:
+      - dependencies
+    # Group all non-breaking (patch + minor) updates into one PR to reduce
+    # noise; breaking (major) changes get their own PR so they're reviewed
+    # individually.
+    groups:
+      patch-and-minor:
+        update-types:
+          - patch
+          - minor
