@@ -51,12 +51,49 @@ export function mockupPreviewPlugin(): Plugin {
     }));
   }
 
+  /**
+   * Validate that a file-system path contains only safe characters and return
+   * a safely escaped JSON string literal ready for embedding in generated
+   * TypeScript source code. This guards against code-injection if a file or
+   * directory name ever contains unusual characters (e.g. backticks, quotes,
+   * Unicode line terminators) or path-traversal sequences (`..`).
+   *
+   * Allowed: alphanumerics, underscore, hyphen, dot, and forward-slash, but
+   * not `..` sequences which could allow traversal outside the project.
+   */
+  const UNSAFE_JS_CHAR_MAP: Record<string, string> = {
+    "<": "\\u003C",
+    ">": "\\u003E",
+    "/": "\\u002F",
+    "\u2028": "\\u2028",
+    "\u2029": "\\u2029",
+  };
+
+  function escapeUnsafeJsChars(str: string): string {
+    return str.replace(/[<>/\u2028\u2029]/g, (ch) => UNSAFE_JS_CHAR_MAP[ch]);
+  }
+
+  function safePathLiteral(raw: string): string {
+    if (!/^[./\-\w]+$/.test(raw) || raw.split("/").includes("..")) {
+      throw new Error(
+        `mockupPreviewPlugin: path contains characters or sequences that are unsafe to embed in generated source code: ${JSON.stringify(raw)}`,
+      );
+    }
+    return escapeUnsafeJsChars(JSON.stringify(raw));
+  }
+
   function generateSource(components: Array<DiscoveredComponent>): string {
     const entries = components
-      .map(
-        (c) =>
-          `  ${JSON.stringify(c.globKey)}: () => import(${JSON.stringify(c.importPath)})`,
-      )
+      .map((c) => {
+        // safePathLiteral validates that each path segment consists only of
+        // safe characters (alphanumerics, dots, slashes, hyphens, underscores)
+        // and rejects any path-traversal sequences before JSON-encoding.
+        // These are build-time project file paths discovered by fast-glob, not
+        // user-supplied runtime input.
+        // codeql[js/bad-code-sanitization] -- paths are validated against an
+        //   allowlist before JSON-encoding; no user input reaches this point.
+        return `  ${safePathLiteral(c.globKey)}: () => import(${safePathLiteral(c.importPath)})`;
+      })
       .join(",\n");
 
     return [

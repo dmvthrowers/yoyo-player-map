@@ -22,8 +22,6 @@
     "deepmerge": "^4.3.1",
     "leaflet": "^1.9.4",
     "marked": "^15.0.0",
-    "next": "^16.2.4",
-    "next-intl": "^4.9.1",
     "next": "^15.2.3",
     "next-intl": "^4.11.0",
     "react": "^18.3.1",
@@ -45,9 +43,14 @@
     "eslint": "^9.12.0",
     "eslint-config-next": "15.0.3",
     "postcss": "^8.5.13",
-    "eslint-config-next": "16.2.4",
-    "postcss": "^8.4.38",
     "tailwindcss": "^4.2.4",
     "typescript": "^6.0.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "undici": ">=7.25.0",
+      "postcss": ">=8.5.10",
+      "devalue": ">=5.8.0"
+    }
   }
 }
