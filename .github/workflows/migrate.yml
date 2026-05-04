@@ -12,7 +12,7 @@ on:
       dry_run:
         description: 'Print SQL without applying (--dry-run)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
 
 # Restrict default token permissions so the workflow cannot accidentally
