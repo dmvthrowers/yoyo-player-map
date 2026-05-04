@@ -76,7 +76,6 @@ export function withErrorHandling<Args extends unknown[]>(
       }
       return res;
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(`[api] unhandled error [${requestId}]:`, e);
       return apiError('internal_error', 'Something went wrong on our end.', requestId);
     }

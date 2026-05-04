@@ -1,8 +1,16 @@
-﻿/**
- * ESLint configuration migrated from .eslintrc.json for ESLint v9+.
- */
-import next from 'eslint-config-next';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import { FlatCompat } from '@eslint/eslintrc';
 
-export default [
-  ...next('core-web-vitals'),
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
+
+const eslintConfig = [
+  ...compat.extends('next/core-web-vitals'),
 ];
+
+export default eslintConfig;

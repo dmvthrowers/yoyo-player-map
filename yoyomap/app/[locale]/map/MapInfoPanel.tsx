@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 interface Props {
@@ -55,9 +56,9 @@ export default function MapInfoPanel({ counts }: Props) {
           <p className="text-[10px] text-navy/60 my-2">
             {t('map.infoPanelDescription')}
           </p>
-          <a href="/submit" className="btn-primary text-xs py-2 px-3 w-full text-center block">
+          <Link href="/submit" className="btn-primary text-xs py-2 px-3 w-full text-center block">
             {t('map.addToMap')}
-          </a>
+          </Link>
         </div>
       )}
     </div>
