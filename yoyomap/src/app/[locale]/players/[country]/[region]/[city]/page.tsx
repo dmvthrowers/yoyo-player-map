@@ -1,7 +1,7 @@
-import { Link } from '@/i18n/navigation';
+import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCity, listLocations, canonicalName } from '@/lib/locations';
+import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 
@@ -44,7 +44,15 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const { country, region, city } = await params;
   const entries = await entriesInCity(country, region, city);
-  if (entries.length === 0) notFound();
+  if (entries.length === 0) {
+    // If the region slug is a known abbreviation (e.g. "nc"), redirect to the
+    // canonical slug (e.g. "north-carolina") so the correct page is served.
+    const canonicalRegion = REGION_NORMALIZATION[region];
+    if (canonicalRegion) {
+      redirect(`/players/${country}/${slugify(canonicalRegion)}/${city}`);
+    }
+    return notFound();
+  }
 
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);
