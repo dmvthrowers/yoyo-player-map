@@ -82,5 +82,5 @@ jobs:
 
       - name: Security audit
         working-directory: yoyomap
-        run: pnpm audit --audit-level=high
+        run: pnpm audit --audit-level=high --ignore-workspace
         continue-on-error: false
