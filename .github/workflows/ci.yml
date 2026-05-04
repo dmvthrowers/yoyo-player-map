@@ -13,8 +13,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  typecheck-and-lint:
-    name: Typecheck & Lint
+  # ── Workspace packages (lib/*, artifacts/*, scripts) ─────────────────────
+  check-workspace:
+    name: Workspace — Typecheck & Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (libs + artifacts + scripts)
+        run: pnpm typecheck
+
+      - name: Security audit
+        # --audit-level=high fails only on high/critical; low/moderate are informational.
+        run: pnpm audit --audit-level=high
+        continue-on-error: false
+
+  # ── yoyomap standalone Next.js app ───────────────────────────────────────
+  check-yoyomap:
+    name: yoyomap — Typecheck, Lint & Audit
     runs-on: ubuntu-latest
 
     steps:
@@ -46,3 +76,8 @@ jobs:
       - name: Lint
         working-directory: yoyomap
         run: pnpm lint
+
+      - name: Security audit
+        working-directory: yoyomap
+        run: pnpm audit --audit-level=high
+        continue-on-error: false
