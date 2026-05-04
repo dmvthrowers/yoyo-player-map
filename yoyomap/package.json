@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.0.0 <22"
+    "node": ">=22.0.0"
   },
   "scripts": {
     "dev": "next dev",
@@ -52,7 +52,7 @@
     "@tailwindcss/postcss": "^4.2.4",
     "@eslint/eslintrc": "^3.3.5",
     "@types/leaflet": "^1.9.21",
-    "@types/node": "^20.14.0",
+    "@types/node": "^22",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "adm-zip": "^0.5.16",
