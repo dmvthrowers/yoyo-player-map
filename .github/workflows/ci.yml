@@ -27,14 +27,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Cache the pnpm store so repeated installs are near-instant.
+          # yoyomap/ is a standalone app with its own lockfile — cache against it.
           cache: pnpm
+          cache-dependency-path: yoyomap/pnpm-lock.yaml
 
       - name: Install dependencies
+        working-directory: yoyomap
         run: pnpm install --frozen-lockfile
 
       - name: Typecheck
-        run: pnpm --filter yoyomap exec tsc --noEmit
+        working-directory: yoyomap
+        run: pnpm exec tsc --noEmit
 
       - name: Lint
-        run: pnpm --filter yoyomap lint
+        working-directory: yoyomap
+        run: pnpm lint
