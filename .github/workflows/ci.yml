@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 # Cancel any in-flight run for the same ref when a new commit is pushed,
 # so stale checks don't queue up and waste runner minutes.
 concurrency:
@@ -13,9 +16,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # ── yoyomap app: typecheck + lint ────────────────────────────────────────────
-  typecheck-and-lint:
-    name: Typecheck & Lint (yoyomap)
+  # ── Workspace packages (lib/*, artifacts/*, scripts) ─────────────────────
+  check-workspace:
+    name: Workspace — Typecheck & Audit
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +29,38 @@ jobs:
           version: 10
 
       - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck (libs + artifacts + scripts)
+        run: pnpm typecheck
+
+      - name: Security audit
+        # --audit-level=high fails only on high/critical; low/moderate are informational.
+        run: pnpm audit --audit-level=high
+        continue-on-error: false
+
+  # ── yoyomap standalone Next.js app ───────────────────────────────────────
+  check-yoyomap:
+    name: yoyomap — Typecheck, Lint & Audit
+  # ── yoyomap app: typecheck + lint ────────────────────────────────────────────
+  typecheck-and-lint:
+    name: Typecheck & Lint (yoyomap)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           # yoyomap/ is a standalone app with its own lockfile — cache against it.
@@ -48,19 +83,23 @@ jobs:
         working-directory: yoyomap
         run: pnpm lint
 
+      - name: Security audit
+        working-directory: yoyomap
+        run: pnpm audit --audit-level=high --ignore-workspace
+        continue-on-error: false
   # ── yoyomap app: next build ───────────────────────────────────────────────────
   build:
     name: Build (yoyomap)
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: pnpm
@@ -86,13 +125,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v4
         with:
           version: 10
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: pnpm
