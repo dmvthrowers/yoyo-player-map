@@ -18,5 +18,5 @@
     "paths": { "@/*": ["./*"] }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "src/App.tsx", "src/main.tsx"]
+  "exclude": ["node_modules", "src/App.tsx", "src/main.tsx", "vite.config.ts"]
 }
