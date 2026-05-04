@@ -6,6 +6,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 # Cancel any in-flight run for the same ref when a new commit is pushed,
 # so stale checks don't queue up and waste runner minutes.
 concurrency:
