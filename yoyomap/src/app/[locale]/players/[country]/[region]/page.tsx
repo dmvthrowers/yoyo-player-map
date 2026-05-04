@@ -9,12 +9,12 @@ import PlayersTable from '../../PlayersTable';
 
 export const revalidate = 3600;
 
-interface Params { country: string; region: string }
+interface Params { locale: string; country: string; region: string }
 
 export async function generateStaticParams() {
   const locations = await listLocations();
   const seen = new Set<string>();
-  const out: Params[] = [];
+  const out: Omit<Params, 'locale'>[] = [];
   for (const loc of locations) {
     const countrySlug = slugify(loc.country);
     if (loc.region) {
@@ -53,6 +53,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
   const locale = await getLocale();
   const { country, region } = await params;
+  const { locale, country, region } = await params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region

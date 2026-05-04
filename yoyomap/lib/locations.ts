@@ -175,14 +175,15 @@ export async function entriesInRegion(
   regionSlug: string,
 ): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
-  // Try both canonical and normalized region names for robust matching
+  // Expand URL abbreviations (e.g. 'nc' → 'north-carolina') so that either
+  // form matches entries whose region is stored as the full name.
+  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
   return all.filter((e) => {
     const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
-    // Try matching region slug to both canonical and normalized region names
     const regionVariants = [e.region, canonicalRegionName(e.region)];
     return (
       countryMatch &&
-      regionVariants.some((r) => slugify(r) === regionSlug)
+      regionVariants.some((r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug)
     );
   });
 }
@@ -194,13 +195,18 @@ export async function entriesInCity(
   citySlug: string,
 ): Promise<PublicEntry[]> {
   const all = await fetchAllPublicEntries();
+  // Expand URL abbreviations (e.g. 'nc' → 'north-carolina') so that either
+  // form matches entries whose region is stored as the full name.
+  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
   return all.filter((e) => {
     const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
     const hasNoRegion = !e.region || e.region.trim() === '';
     const regionMatch =
       regionSlug === '_other'
         ? hasNoRegion
-        : [e.region, canonicalRegionName(e.region)].some((r) => slugify(r) === regionSlug);
+        : [e.region, canonicalRegionName(e.region)].some(
+            (r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug,
+          );
     return countryMatch && regionMatch && slugify(e.city) === citySlug;
   });
 }
