@@ -2,9 +2,14 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
+
+export const metadata: Metadata = {
+  icons: { icon: '/favicon.svg' },
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
