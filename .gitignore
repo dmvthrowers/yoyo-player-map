@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+.claude/worktrees/determined-franklin-2c5ace/
+.claude/worktrees/inspiring-roentgen-1451e4/
+.claude/worktrees/romantic-archimedes-c3d2b0/
