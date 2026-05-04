@@ -33,7 +33,11 @@ jobs:
 
       - name: Install dependencies
         working-directory: yoyomap
-        run: pnpm install --frozen-lockfile
+        # --ignore-workspace prevents pnpm from picking up the parent
+        # pnpm-workspace.yaml and using the root lockfile instead of
+        # yoyomap/pnpm-lock.yaml (yoyomap is a standalone app, not a
+        # workspace member).
+        run: pnpm install --frozen-lockfile --ignore-workspace
 
       - name: Typecheck
         working-directory: yoyomap
