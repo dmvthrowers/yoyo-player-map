@@ -299,6 +299,19 @@ end;
 $$;
 
 -- =============================================================================
+-- pg_graphql: hide all public objects from the GraphQL schema
+-- =============================================================================
+-- The app never uses GraphQL; all reads go through the PostgREST client.
+-- These directives prevent lint rules 0026/0027 from firing while keeping
+-- SELECT grants in place for the security_invoker map_entries view.
+-- =============================================================================
+comment on view  public.map_entries is E'@graphql({"expose": false})';
+comment on table public.entries     is E'@graphql({"expose": false})';
+comment on table public.countries   is E'@graphql({"expose": false})';
+comment on table public.regions     is E'@graphql({"expose": false})';
+comment on table public.cities      is E'@graphql({"expose": false})';
+
+-- =============================================================================
 -- Done.
 -- Remember: all writes happen via the server-side API routes using the
 -- service role key, which bypasses RLS. The anon key is only used for
