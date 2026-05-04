@@ -49,6 +49,12 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: '/favicon.ico', destination: '/favicon.svg' },
+      { source: '/favicon.png', destination: '/favicon.svg' },
+    ];
+  },
 };
 
 module.exports = withNextIntl(nextConfig);
