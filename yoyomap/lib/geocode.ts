@@ -100,10 +100,7 @@ export interface CityGeocodeParams {
 const CITY_LEVEL_ADDRESSTYPES = new Set([
   'city', 'town', 'village', 'hamlet', 'municipality',
   'suburb', 'neighbourhood', 'locality', 'isolated_dwelling',
-]);
-const NON_CITY_ADDRESSTYPES = new Set([
-  'county', 'state_district', 'region', 'province',
-  'country', 'continent',
+  'administrative', // city-states (e.g. Berlin, Singapore) come back as administrative
 ]);
 
 type NominatimHit = {
@@ -116,9 +113,7 @@ type NominatimHit = {
 
 function pickCityHit(hits: unknown): NominatimHit | null {
   if (!Array.isArray(hits) || hits.length === 0) return null;
-  const preferred = hits.find((h: NominatimHit) => CITY_LEVEL_ADDRESSTYPES.has(h.addresstype?? ''));
-  if (preferred) return preferred;
-  return hits.find((h: NominatimHit) =>!NON_CITY_ADDRESSTYPES.has(h.addresstype?? ''))?? null;
+  return hits.find((h: NominatimHit) => CITY_LEVEL_ADDRESSTYPES.has(h.addresstype ?? '')) ?? null;
 }
 
 async function fetchNominatim(url: URL): Promise<unknown | null> {
