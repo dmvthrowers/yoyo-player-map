@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../../EntryList';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import PlayersTable from '../../PlayersTable';
 
 export const revalidate = 3600;
@@ -51,6 +51,8 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
+  const locale = await getLocale();
+  const { country, region } = await params;
   const { locale, country, region } = await params;
   let entries;
   if (region === '_other') {
