@@ -52,29 +52,28 @@ export function mockupPreviewPlugin(): Plugin {
   }
 
   /**
-   * Validate that a file-system path contains only safe characters before it
-   * is embedded verbatim into generated TypeScript source code.  This guards
-   * against code-injection if a file or directory name ever contains unusual
-   * characters (e.g. backticks, quotes, Unicode line terminators).
+   * Validate that a file-system path contains only safe characters and return
+   * the JSON-encoded string literal ready for embedding in generated TypeScript
+   * source code.  This guards against code-injection if a file or directory
+   * name ever contains unusual characters (e.g. backticks, quotes, Unicode
+   * line terminators) or path-traversal sequences (`..`).
    *
-   * Allowed: alphanumerics, underscore, hyphen, dot, and forward-slash.
-   * Anything else throws so the build fails loudly rather than producing
-   * potentially unsafe output.
+   * Allowed: alphanumerics, underscore, hyphen, dot, and forward-slash, but
+   * not `..` sequences which could allow traversal outside the project.
    */
-  function validatePathForSource(raw: string): void {
-    if (!/^[./\-\w]+$/.test(raw)) {
+  function safePathLiteral(raw: string): string {
+    if (!/^[./\-\w]+$/.test(raw) || raw.split("/").includes("..")) {
       throw new Error(
-        `mockupPreviewPlugin: path contains characters that are unsafe to embed in generated source code: ${JSON.stringify(raw)}`,
+        `mockupPreviewPlugin: path contains characters or sequences that are unsafe to embed in generated source code: ${JSON.stringify(raw)}`,
       );
     }
+    return JSON.stringify(raw);
   }
 
   function generateSource(components: Array<DiscoveredComponent>): string {
     const entries = components
       .map((c) => {
-        validatePathForSource(c.globKey);
-        validatePathForSource(c.importPath);
-        return `  ${JSON.stringify(c.globKey)}: () => import(${JSON.stringify(c.importPath)})`;
+        return `  ${safePathLiteral(c.globKey)}: () => import(${safePathLiteral(c.importPath)})`;
       })
       .join(",\n");
 

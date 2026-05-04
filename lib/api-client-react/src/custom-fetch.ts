@@ -33,7 +33,7 @@ export function setBaseUrl(url: string | null): void {
   // Strip trailing slashes without regex to avoid ReDoS on uncontrolled input.
   let normalized = url;
   while (normalized.endsWith("/")) normalized = normalized.slice(0, -1);
-  _baseUrl = normalized || null;
+  _baseUrl = normalized !== "" ? normalized : null;
 }
 
 /**
