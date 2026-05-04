@@ -53,21 +53,33 @@ export function mockupPreviewPlugin(): Plugin {
 
   /**
    * Validate that a file-system path contains only safe characters and return
-   * the JSON-encoded string literal ready for embedding in generated TypeScript
-   * source code.  This guards against code-injection if a file or directory
-   * name ever contains unusual characters (e.g. backticks, quotes, Unicode
-   * line terminators) or path-traversal sequences (`..`).
+   * a safely escaped JSON string literal ready for embedding in generated
+   * TypeScript source code. This guards against code-injection if a file or
+   * directory name ever contains unusual characters (e.g. backticks, quotes,
+   * Unicode line terminators) or path-traversal sequences (`..`).
    *
    * Allowed: alphanumerics, underscore, hyphen, dot, and forward-slash, but
    * not `..` sequences which could allow traversal outside the project.
    */
+  const UNSAFE_JS_CHAR_MAP: Record<string, string> = {
+    "<": "\\u003C",
+    ">": "\\u003E",
+    "/": "\\u002F",
+    "\u2028": "\\u2028",
+    "\u2029": "\\u2029",
+  };
+
+  function escapeUnsafeJsChars(str: string): string {
+    return str.replace(/[<>/\u2028\u2029]/g, (ch) => UNSAFE_JS_CHAR_MAP[ch]);
+  }
+
   function safePathLiteral(raw: string): string {
     if (!/^[./\-\w]+$/.test(raw) || raw.split("/").includes("..")) {
       throw new Error(
         `mockupPreviewPlugin: path contains characters or sequences that are unsafe to embed in generated source code: ${JSON.stringify(raw)}`,
       );
     }
-    return JSON.stringify(raw);
+    return escapeUnsafeJsChars(JSON.stringify(raw));
   }
 
   function generateSource(components: Array<DiscoveredComponent>): string {
