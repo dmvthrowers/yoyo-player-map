@@ -7,12 +7,12 @@ import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 
 export const revalidate = 3600;
 
-interface Params { country: string; region: string; city: string }
+interface Params { locale: string; country: string; region: string; city: string }
 
 export async function generateStaticParams() {
   const locations = await listLocations();
   const seen = new Set<string>();
-  const out: Params[] = [];
+  const out: Omit<Params, 'locale'>[] = [];
   for (const loc of locations) {
     const c = slugify(loc.country);
     const r = loc.region ? slugify(loc.region) : '_other';
@@ -42,14 +42,14 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
-  const { country, region, city } = await params;
+  const { locale, country, region, city } = await params;
   const entries = await entriesInCity(country, region, city);
   if (entries.length === 0) {
     // If the region slug is a known abbreviation (e.g. "nc"), redirect to the
     // canonical slug (e.g. "north-carolina") so the correct page is served.
     const canonicalRegion = REGION_NORMALIZATION[region];
     if (canonicalRegion) {
-      redirect(`/players/${country}/${slugify(canonicalRegion)}/${city}`);
+      redirect({ href: `/players/${country}/${slugify(canonicalRegion)}/${city}`, locale });
     }
     return notFound();
   }
