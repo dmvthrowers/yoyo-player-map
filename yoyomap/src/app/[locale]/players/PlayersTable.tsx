@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useDeferredValue } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import type { PublicEntry } from '@/lib/locations';
 import { canonicalCountryName, canonicalRegionName } from '@/lib/locations';

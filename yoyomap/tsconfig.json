@@ -26,6 +26,7 @@
     "src/components",
     "src/hooks",
     "src/lib",
-    "src/pages"
+    "src/pages",
+    "src/spa-pages"
   ]
 }
