@@ -1,5 +1,5 @@
 // Region normalization map: maps known abbreviations/variants to canonical display name
-const REGION_NORMALIZATION: Record<string, string> = {
+export const REGION_NORMALIZATION: Record<string, string> = {
   // US states (add more as needed)
   al: 'Alabama',
   ak: 'Alaska',

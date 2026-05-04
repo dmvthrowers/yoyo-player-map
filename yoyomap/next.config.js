@@ -41,6 +41,15 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      // Browsers and bots always request these; serve the SVG favicon we have.
+      { source: '/favicon.ico', destination: '/favicon.svg', permanent: false },
+      { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
+      // Legacy path that appears in old links/bookmarks.
+      { source: '/yoyomap', destination: '/', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
