@@ -108,11 +108,15 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
       postalCode: newPostal || undefined,
       country: d.country,
     });
-    if (!addrGeo) {
-      return apiError('unprocessable', "Couldn't locate that address. Check spelling.", requestId);
+    if (addrGeo) {
+      exactLat = addrGeo.lat;
+      exactLng = addrGeo.lng;
+    } else {
+      // Geocoding failed — clear exact coords so the venue pin doesn't show
+      // a stale or wrong location. The entry still saves at city-level.
+      exactLat = null;
+      exactLng = null;
     }
-    exactLat = addrGeo.lat;
-    exactLng = addrGeo.lng;
   } else if (existing.entity_type === 'club' && d.club_venue_public === false) {
     // Club just made venue private — clear the precise coords.
     exactLat = null;
