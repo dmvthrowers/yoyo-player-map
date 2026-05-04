@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# Cancel any in-flight run for the same ref when a new commit is pushed,
+# so stale checks don't queue up and waste runner minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  typecheck-and-lint:
+    name: Typecheck & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # yoyomap/ is a standalone app with its own lockfile — cache against it.
+          cache: pnpm
+          cache-dependency-path: yoyomap/pnpm-lock.yaml
+
+      - name: Install dependencies
+        working-directory: yoyomap
+        # --ignore-workspace prevents pnpm from picking up the parent
+        # pnpm-workspace.yaml and using the root lockfile instead of
+        # yoyomap/pnpm-lock.yaml (yoyomap is a standalone app, not a
+        # workspace member).
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      - name: Typecheck
+        working-directory: yoyomap
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        working-directory: yoyomap
+        run: pnpm lint
