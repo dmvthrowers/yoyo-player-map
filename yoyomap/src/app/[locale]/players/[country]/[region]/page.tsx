@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../../EntryList';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import PlayersTable from '../../PlayersTable';
 
 export const revalidate = 3600;
@@ -51,6 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
+  const locale = await getLocale();
   const { country, region } = await params;
   let entries;
   if (region === '_other') {
@@ -83,7 +84,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       // canonical slug (e.g. "north-carolina") so the correct page is served.
       const canonicalRegion = REGION_NORMALIZATION[region];
       if (canonicalRegion) {
-        redirect(`/players/${country}/${slugify(canonicalRegion)}`);
+        redirect({ href: `/players/${country}/${slugify(canonicalRegion)}`, locale });
       }
       return notFound();
     }

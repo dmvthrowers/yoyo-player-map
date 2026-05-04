@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
+import { getLocale } from 'next-intl/server';
 
 export const revalidate = 3600;
 
@@ -49,7 +50,8 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
     // canonical slug (e.g. "north-carolina") so the correct page is served.
     const canonicalRegion = REGION_NORMALIZATION[region];
     if (canonicalRegion) {
-      redirect(`/players/${country}/${slugify(canonicalRegion)}/${city}`);
+      const locale = await getLocale();
+      redirect({ href: `/players/${country}/${slugify(canonicalRegion)}/${city}`, locale });
     }
     return notFound();
   }
