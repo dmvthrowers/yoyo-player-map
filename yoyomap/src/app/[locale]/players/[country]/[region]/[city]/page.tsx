@@ -51,7 +51,7 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
     if (canonicalRegion) {
       redirect(`/players/${country}/${slugify(canonicalRegion)}/${city}`);
     }
-    notFound();
+    return notFound();
   }
 
   const countryName = canonicalName(entries, 'country') ?? country;
