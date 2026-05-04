@@ -50,3 +50,10 @@ Thumbs.db
 .claude/worktrees/determined-franklin-2c5ace/
 .claude/worktrees/inspiring-roentgen-1451e4/
 .claude/worktrees/romantic-archimedes-c3d2b0/
+
+# Environment files — these may contain secrets and must never be committed.
+# Copy .env.example (if provided) and fill in your own values locally.
+.env.local
+**/.env.local
+.env.*.local
+**/.env.*.local

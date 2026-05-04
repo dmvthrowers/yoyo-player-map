@@ -15,6 +15,12 @@ on:
         default: 'false'
         type: boolean
 
+# Restrict default token permissions so the workflow cannot accidentally
+# read or write more than it needs.  Only contents:read is required for
+# `actions/checkout`; no other GitHub API access is needed.
+permissions:
+  contents: read
+
 concurrency:
   # Only one migration run at a time to avoid races.
   group: migrate
