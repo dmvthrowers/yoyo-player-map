@@ -78,7 +78,6 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
-          NEXT_PUBLIC_APP_URL: https://map.dmvthrowers.club
         run: pnpm build
 
   # ── root workspace: typecheck libs / artifacts / scripts ─────────────────────

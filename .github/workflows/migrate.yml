@@ -40,9 +40,9 @@ jobs:
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             supabase db push \
-              --project-ref ${{ vars.SUPABASE_PROJECT_REF || 'byqpjqpdjjlyqkwucjkl' }} \
+              --project-ref ${{ vars.SUPABASE_PROJECT_REF }} \
               --dry-run
           else
             supabase db push \
-              --project-ref ${{ vars.SUPABASE_PROJECT_REF || 'byqpjqpdjjlyqkwucjkl' }}
+              --project-ref ${{ vars.SUPABASE_PROJECT_REF }}
           fi
