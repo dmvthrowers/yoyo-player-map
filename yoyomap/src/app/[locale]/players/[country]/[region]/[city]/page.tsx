@@ -1,5 +1,5 @@
-import { Link } from '@/i18n/navigation';
-import { notFound, redirect } from 'next/navigation';
+import { Link, redirect } from '@/i18n/navigation';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
