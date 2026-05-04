@@ -16,10 +16,11 @@ export default function LanguageSwitcher() {
     { code: 'hi', key: 'nav.languages.hi' },
     { code: 'ko', key: 'nav.languages.ko' },
   ];
+  const allowedLocaleCodes = new Set(locales.map((l) => l.code));
   const t = useTranslations();
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const code = e.target.value;
-    if (code) {
+    if (allowedLocaleCodes.has(code)) {
       window.location.href = `/${code}`;
     }
   }
