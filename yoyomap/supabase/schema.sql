@@ -205,7 +205,9 @@ $$;
 -- age_band is excluded because exposing minor status for named+located individuals
 -- raises COPPA/GDPR concerns.
 -- =============================================================================
-create or replace view public.map_entries as
+create or replace view public.map_entries
+  with (security_invoker = on)
+as
 select
   e.id,
   e.display_name,
@@ -231,11 +233,10 @@ alter table public.verification_tokens enable row level security;
 alter table public.reports enable row level security;
 alter table public.audit_log enable row level security;
 
--- Public reads happen through the map_entries view. On Supabase the view
--- runs with security_invoker = true (the default), so Postgres checks the
--- caller's privileges on the underlying entries table — meaning we must
--- GRANT SELECT on entries and gate visibility through RLS that mirrors the
--- view's WHERE clause.
+-- Public reads happen through the map_entries view. The view is defined with
+-- WITH (security_invoker = on) so Postgres checks the caller's privileges on
+-- the underlying entries table — meaning we must GRANT SELECT on entries and
+-- gate visibility through RLS that mirrors the view's WHERE clause.
 grant select on public.map_entries to anon, authenticated;
 grant select on public.entries to anon, authenticated;
 
