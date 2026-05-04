@@ -5,7 +5,7 @@
 // global-error.tsx for that). Server errors and client errors both land here.
 
 import { useEffect } from 'react';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 export default function Error({
   error,

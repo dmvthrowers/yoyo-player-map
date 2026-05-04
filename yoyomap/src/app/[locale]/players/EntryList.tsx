@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { PublicEntry } from '@/lib/locations';
 
 const TYPE_LABEL: Record<PublicEntry['entity_type'], string> = {
