@@ -22,7 +22,7 @@ export default function TermsPage() {
           <ul className="list-disc pl-6 space-y-1 mt-2">
             <li>Submit false or misleading information</li>
             <li>Harass or abuse other users</li>
-            <li>Attempt to access others' data</li>
+            <li>Attempt to access others&apos; data</li>
             <li>Use the service for illegal purposes</li>
             <li>Spam or advertise without permission</li>
             <li>Interfere with service operation</li>
@@ -30,7 +30,7 @@ export default function TermsPage() {
         </section>
         <section>
           <h2 className="text-xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Disclaimer</h2>
-          <p>The service is provided "as is" without warranties of any kind.</p>
+          <p>The service is provided &quot;as is&quot; without warranties of any kind.</p>
         </section>
         <section>
           <h2 className="text-xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Limitation of Liability</h2>

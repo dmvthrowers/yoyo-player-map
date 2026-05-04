@@ -205,7 +205,7 @@ Visit <http://localhost:3000>
 
 ### File structure
 
-```
+```text
 app/
   page.tsx                    Landing
   submit/page.tsx             Submit form (client)

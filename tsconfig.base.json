@@ -5,6 +5,8 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": false,
     "noImplicitReturns": true,
