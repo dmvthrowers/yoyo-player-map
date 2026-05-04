@@ -33,6 +33,12 @@ const securityHeaders = [
 
 const nextConfig = {
   reactStrictMode: true,
+  // ESLint is run separately in CI (eslint .) so skip it during `next build`
+  // to avoid the deprecated `next lint` path and @rushstack/eslint-patch
+  // incompatibility with ESLint 9.x.
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {
