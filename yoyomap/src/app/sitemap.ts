@@ -7,7 +7,6 @@ const BASE = 'https://map.dmvthrowers.club';
 // Runtime-rendered (not build-time) so env vars are guaranteed available, and
 // transient Supabase errors at build don't ship a broken sitemap to prod.
 export const dynamic = 'force-dynamic';
-export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
