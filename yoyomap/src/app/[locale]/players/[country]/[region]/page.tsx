@@ -1,7 +1,7 @@
-import Link from 'next/link';
+import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInRegion, listLocations, canonicalName } from '@/lib/locations';
+import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../../EntryList';
 import { getTranslations } from 'next-intl/server';
@@ -9,12 +9,12 @@ import PlayersTable from '../../PlayersTable';
 
 export const revalidate = 3600;
 
-interface Params { country: string; region: string }
+interface Params { locale: string; country: string; region: string }
 
 export async function generateStaticParams() {
   const locations = await listLocations();
   const seen = new Set<string>();
-  const out: Params[] = [];
+  const out: Omit<Params, 'locale'>[] = [];
   for (const loc of locations) {
     const countrySlug = slugify(loc.country);
     if (loc.region) {
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 
 export default async function Page({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
-  const { country, region } = await params;
+  const { locale, country, region } = await params;
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
@@ -78,7 +78,15 @@ export default async function Page({ params }: { params: Promise<Params> }) {
     );
   } else {
     entries = await entriesInRegion(country, region);
-    if (entries.length === 0) return notFound();
+    if (entries.length === 0) {
+      // If the region slug is a known abbreviation (e.g. "nc"), redirect to the
+      // canonical slug (e.g. "north-carolina") so the correct page is served.
+      const canonicalRegion = REGION_NORMALIZATION[region];
+      if (canonicalRegion) {
+        redirect({ href: `/players/${country}/${slugify(canonicalRegion)}`, locale });
+      }
+      return notFound();
+    }
     const countryName = canonicalName(entries, 'country') ?? country;
     const regionName = canonicalName(entries, 'region') ?? region;
 

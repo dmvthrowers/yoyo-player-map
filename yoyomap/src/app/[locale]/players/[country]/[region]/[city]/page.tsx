@@ -1,18 +1,19 @@
-import Link from 'next/link';
+import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCity, listLocations, canonicalName } from '@/lib/locations';
+import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
+import { getLocale } from 'next-intl/server';
 
 export const revalidate = 3600;
 
-interface Params { country: string; region: string; city: string }
+interface Params { locale: string; country: string; region: string; city: string }
 
 export async function generateStaticParams() {
   const locations = await listLocations();
   const seen = new Set<string>();
-  const out: Params[] = [];
+  const out: Omit<Params, 'locale'>[] = [];
   for (const loc of locations) {
     const c = slugify(loc.country);
     const r = loc.region ? slugify(loc.region) : '_other';
@@ -42,9 +43,18 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
-  const { country, region, city } = await params;
+  const { locale, country, region, city } = await params;
   const entries = await entriesInCity(country, region, city);
-  if (entries.length === 0) notFound();
+  if (entries.length === 0) {
+    // If the region slug is a known abbreviation (e.g. "nc"), redirect to the
+    // canonical slug (e.g. "north-carolina") so the correct page is served.
+    const canonicalRegion = REGION_NORMALIZATION[region];
+    if (canonicalRegion) {
+      const locale = await getLocale();
+      redirect({ href: `/players/${country}/${slugify(canonicalRegion)}/${city}`, locale });
+    }
+    return notFound();
+  }
 
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);

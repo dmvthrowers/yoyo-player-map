@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 
 // Rendered whenever notFound() is called or a route doesn't match.
 // Reached naturally from /profile and /report when token/id lookups fail.

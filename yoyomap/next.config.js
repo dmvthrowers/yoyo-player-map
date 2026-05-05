@@ -41,12 +41,37 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    return [
+      // Browsers and bots always request these; serve the SVG favicon we have.
+      { source: '/favicon.ico', destination: '/favicon.svg', permanent: false },
+      { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
+      // Legacy path that appears in old links/bookmarks.
+      { source: '/yoyomap', destination: '/', permanent: true },
+      // No favicon.ico/png in public — redirect to the existing SVG icon
+      { source: '/favicon.ico', destination: '/favicon.svg', permanent: false },
+      { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
+      // /yoyomap is a legacy path; send users to the map
+      { source: '/yoyomap', destination: '/en/map', permanent: true },
+      {
+        source: '/:locale(en|es|de|zh|ja|fr|pt|ru|ar|hi|ko)/yoyomap',
+        destination: '/:locale/map',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
         source: '/:path*',
         headers: securityHeaders,
       },
+    ];
+  },
+  async rewrites() {
+    return [
+      { source: '/favicon.ico', destination: '/favicon.svg' },
+      { source: '/favicon.png', destination: '/favicon.svg' },
     ];
   },
 };

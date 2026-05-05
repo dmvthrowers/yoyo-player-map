@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
@@ -67,7 +67,7 @@ export default async function ContactPage({
       </ul>
 
       <div className="mt-10">
-        <Link href={`/${locale}`} className="btn-ghost inline-block">
+        <Link href="/" className="btn-ghost inline-block">
           ← {t('contact.backToHome')}
         </Link>
       </div>

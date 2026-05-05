@@ -1,0 +1,17 @@
+{
+  "framework": "nextjs",
+  "installCommand": "pnpm install",
+  "buildCommand": "cd yoyomap && pnpm install && pnpm run build",
+  "outputDirectory": "yoyomap/.next",
+  "devCommand": "cd yoyomap && pnpm run dev",
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/admin/drain-email-queue",
+      "schedule": "5 0 * * *"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation';
 import type { Metadata } from 'next';
 import { fetchAllPublicEntries, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';

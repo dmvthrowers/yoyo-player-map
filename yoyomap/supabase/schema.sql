@@ -205,7 +205,9 @@ $$;
 -- age_band is excluded because exposing minor status for named+located individuals
 -- raises COPPA/GDPR concerns.
 -- =============================================================================
-create or replace view public.map_entries as
+create or replace view public.map_entries
+  with (security_invoker = on)
+as
 select
   e.id,
   e.display_name,
@@ -231,11 +233,10 @@ alter table public.verification_tokens enable row level security;
 alter table public.reports enable row level security;
 alter table public.audit_log enable row level security;
 
--- Public reads happen through the map_entries view. On Supabase the view
--- runs with security_invoker = true (the default), so Postgres checks the
--- caller's privileges on the underlying entries table — meaning we must
--- GRANT SELECT on entries and gate visibility through RLS that mirrors the
--- view's WHERE clause.
+-- Public reads happen through the map_entries view. The view is defined with
+-- WITH (security_invoker = on) so Postgres checks the caller's privileges on
+-- the underlying entries table — meaning we must GRANT SELECT on entries and
+-- gate visibility through RLS that mirrors the view's WHERE clause.
 grant select on public.map_entries to anon, authenticated;
 grant select on public.entries to anon, authenticated;
 
@@ -296,6 +297,19 @@ begin
   return recent_count < in_max;
 end;
 $$;
+
+-- =============================================================================
+-- pg_graphql: hide all public objects from the GraphQL schema
+-- =============================================================================
+-- The app never uses GraphQL; all reads go through the PostgREST client.
+-- These directives prevent lint rules 0026/0027 from firing while keeping
+-- SELECT grants in place for the security_invoker map_entries view.
+-- =============================================================================
+comment on view  public.map_entries is E'@graphql({"expose": false})';
+comment on table public.entries     is E'@graphql({"expose": false})';
+comment on table public.countries   is E'@graphql({"expose": false})';
+comment on table public.regions     is E'@graphql({"expose": false})';
+comment on table public.cities      is E'@graphql({"expose": false})';
 
 -- =============================================================================
 -- Done.

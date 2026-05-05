@@ -58,6 +58,7 @@ async function handle(req: NextRequest) {
     .is('verified_at', null)
     .is('deleted_at', null)
     .lt('reminder_count', MAX_REMINDERS_PER_ENTRY)
+    .order('last_reminder_at', { ascending: true, nullsFirst: true })
     .limit(500);
 
   if (error) {

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { apiUrl } from "../lib/api";
-import type { MapEntry } from "../pages/MapPage";
+import type { MapEntry } from "../spa-pages/MapPage";
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({

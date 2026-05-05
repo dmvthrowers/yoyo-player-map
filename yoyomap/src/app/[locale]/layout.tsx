@@ -1,10 +1,15 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import type { Metadata } from 'next';
+import { Link } from '@/i18n/navigation';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
+
+export const metadata: Metadata = {
+  icons: { icon: '/favicon.svg' },
+};
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -45,20 +50,20 @@ export default async function Layout({ children, params }: { children: React.Rea
               <div>
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.legal')}</p>
                 <ul className="space-y-1">
-                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/privacy`}>{t('footer.privacy')}</Link></li>
-                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/terms`}>{t('footer.terms')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href="/legal/privacy">{t('footer.privacy')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href="/legal/terms">{t('footer.terms')}</Link></li>
                 </ul>
                 <p className="font-semibold uppercase tracking-wider text-xs mt-4 mb-2">{t('footer.security')}</p>
                 <ul className="space-y-1">
-                  <li><Link className="hover:text-brand-red" href={`/${locale}/legal/security`}>{t('footer.securityBulletin')}</Link></li>
-                  <li><Link className="hover:text-brand-red" href={`/${locale}/status`}>{t('footer.serviceStatus')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href="/legal/security">{t('footer.securityBulletin')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href="/status">{t('footer.serviceStatus')}</Link></li>
                 </ul>
               </div>
               <div>
                 <p className="font-semibold uppercase tracking-wider text-xs mb-2">{t('footer.project')}</p>
                 <ul className="space-y-1">
                   <li><a href="https://github.com/dmvthrowers/yoyo-player-map" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.github')}</a></li>
-                  <li><Link className="hover:text-brand-red" href={`/${locale}/contact`}>{t('footer.contact')}</Link></li>
+                  <li><Link className="hover:text-brand-red" href="/contact">{t('footer.contact')}</Link></li>
                   <li className="text-xs">DC · MD · VA</li>
                 </ul>
               </div>
