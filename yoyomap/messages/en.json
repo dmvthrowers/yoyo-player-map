@@ -127,7 +127,9 @@
     "unspecified": "Unspecified",
     "inCountry": "Yo-Yo Players in {name}",
     "inRegion": "Yo-Yo Players in {region}",
+    "inCity": "Yo-Yo Players in {city}",
     "inCountryUnspecifiedRegion": "Yo-Yo Players in {country} (Unspecified Region)",
+    "city": "City",
     "locationCount": "{count, plural, one {# location} other {# locations}}",
     "peopleCount": "{count, plural, one {# player} other {# players}}",
     "shopsCount": "{count, plural, one {# shop} other {# shops}}",
@@ -152,7 +154,14 @@
     "thCountry": "Country",
     "noResults": "No matches. Try clearing filters or a different search.",
     "resultCount": "{count, plural, one {# result} other {# results}}",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "typeThrower": "Thrower",
+    "mapCtaHeading": "Want to see them on a map?",
+    "mapCtaButton": "Open the YoYo Map",
+    "notListedText": "Don't see yourself? Player pins are blurred ~10 miles for privacy. The list above is everyone who has chosen to be publicly visible.",
+    "throwerCount": "{count, plural, one {# thrower} other {# throwers}}",
+    "shopCount": "{count, plural, one {# shop} other {# shops}}",
+    "clubCount": "{count, plural, one {# club} other {# clubs}}"
   },
   "map": {
     "title": "Yo-Yo Player Map",

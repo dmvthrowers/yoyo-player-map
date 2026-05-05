@@ -2,6 +2,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { useRouter, usePathname } from '@/i18n/navigation';
+import { useParams } from 'next/navigation';
 import React from 'react';
 
 export default function LanguageSwitcher() {
@@ -19,25 +21,30 @@ export default function LanguageSwitcher() {
     { code: 'ko', key: 'nav.languages.ko' },
   ];
   const t = useTranslations();
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+  const currentLocale = (params?.locale as string) || 'en';
+
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const code = e.target.value;
     const validCodes = locales.map(l => l.code);
     if (code && validCodes.includes(code)) {
-      window.location.href = `/${code}`;
+      router.replace(pathname, { locale: code });
     }
   }
+
   return (
     <div className="flex items-center gap-2">
       <label htmlFor="language-switcher" className="text-xs text-navy/60">
-        {t('nav.language', { defaultValue: 'Language:' })}
+        {t('nav.language')}
       </label>
       <select
         id="language-switcher"
         className="text-xs border rounded px-2 py-1 bg-white text-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red"
         onChange={handleChange}
-        defaultValue={''}
+        value={currentLocale}
       >
-        <option value="" disabled>{t('nav.languageSelect', { defaultValue: 'Select language' })}</option>
         {locales.map((l) => (
           <option key={l.code} value={l.code}>{t(l.key)}</option>
         ))}

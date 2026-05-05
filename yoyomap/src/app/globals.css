@@ -16,9 +16,11 @@
   --color-text-muted: #6a7a9a;
   --color-cherry-pink: #F9D0D4;
   --color-muted-rose: #e8b4b8;
+  --color-cream-light: #fdfaf5;
 
   /* Font families */
   --font-display: Georgia, serif;
+  --font-playfair: Georgia, 'Times New Roman', serif;
   --font-sans: system-ui, -apple-system, sans-serif;
 }
 
