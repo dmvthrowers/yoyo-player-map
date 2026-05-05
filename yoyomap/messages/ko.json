@@ -80,6 +80,22 @@
     "thCountry": "국가",
     "noResults": "결과가 없습니다. 필터를 지우거나 다른 검색어를 시도하세요.",
     "resultCount": "{count, plural, other {# 건}}",
-    "clearFilters": "필터 지우기"
+    "typeThrower": "플레이어",
+    "typeShopSingular": "샵",
+    "typeClubSingular": "클럽",
+    "socialWebsite": "웹사이트",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "미지정",
+    "city": "도시",
+    "inCity": "{city}의 요요 플레이어",
+    "inCountryUnspecifiedRegion": "{country}의 요요 플레이어 (지역 미지정)",
+    "mapCtaHeading": "지도에서 보고 싶으신가요?",
+    "mapCtaButton": "YoYo 지도 열기",
+    "notListedText": "본인이 보이지 않나요? 플레이어 핀은 개인 정보 보호를 위해 약 16km 흐려져 있습니다. 위 목록은 공개 표시를 선택한 모든 사람입니다.",
+    "throwerCount": "{count, plural, other {# 명의 플레이어}}",
+    "shopCount": "{count, plural, other {# 개의 상점}}",
+    "clubCount": "{count, plural, other {# 개의 클럽}}"
   }
 }

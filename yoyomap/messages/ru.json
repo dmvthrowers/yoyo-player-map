@@ -80,6 +80,22 @@
     "thCountry": "Страна",
     "noResults": "Ничего не найдено. Сбросьте фильтры или измените запрос.",
     "resultCount": "{count, plural, one {# результат} few {# результата} many {# результатов} other {# результата}}",
-    "clearFilters": "Сбросить фильтры"
+    "typeThrower": "Игрок",
+    "typeShopSingular": "Магазин",
+    "typeClubSingular": "Клуб",
+    "socialWebsite": "Сайт",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "Не указано",
+    "city": "Город",
+    "inCity": "Игроки в Йо-Йо в {city}",
+    "inCountryUnspecifiedRegion": "Игроки в Йо-Йо в {country} (Регион не указан)",
+    "mapCtaHeading": "Хотите увидеть их на карте?",
+    "mapCtaButton": "Открыть карту YoYo",
+    "notListedText": "Не видите себя? Маркеры игроков смещены примерно на 16 км для защиты конфиденциальности. В списке выше — все, кто выбрал публичную видимость.",
+    "throwerCount": "{count, plural, one {# игрок} few {# игрока} many {# игроков} other {# игрока}}",
+    "shopCount": "{count, plural, one {# магазин} few {# магазина} many {# магазинов} other {# магазина}}",
+    "clubCount": "{count, plural, one {# клуб} few {# клуба} many {# клубов} other {# клуба}}"
   }
 }

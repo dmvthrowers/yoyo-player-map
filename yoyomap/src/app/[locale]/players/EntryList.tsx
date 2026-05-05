@@ -1,20 +1,18 @@
-'use client';
-
 import { Link } from '@/i18n/navigation';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import type { PublicEntry } from '@/lib/locations';
 
-const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typeThrower' | 'typeShop' | 'typeClub'> = {
+const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typeThrower' | 'typeShopSingular' | 'typeClubSingular'> = {
   person: 'typeThrower',
-  shop: 'typeShop',
-  club: 'typeClub',
+  shop: 'typeShopSingular',
+  club: 'typeClubSingular',
 };
 
-const SOCIAL_HOSTS: Array<{ key: string; label: string; prefix?: string }> = [
-  { key: 'website', label: 'Website' },
-  { key: 'instagram', label: 'Instagram', prefix: 'https://instagram.com/' },
-  { key: 'youtube', label: 'YouTube' },
-  { key: 'discord', label: 'Discord' },
+const SOCIAL_HOSTS: Array<{ key: string; labelKey: 'socialWebsite' | 'socialInstagram' | 'socialYouTube' | 'socialDiscord'; prefix?: string }> = [
+  { key: 'website', labelKey: 'socialWebsite' },
+  { key: 'instagram', labelKey: 'socialInstagram', prefix: 'https://instagram.com/' },
+  { key: 'youtube', labelKey: 'socialYouTube' },
+  { key: 'discord', labelKey: 'socialDiscord' },
 ];
 
 function socialHref(key: string, value: string): string {
@@ -24,8 +22,8 @@ function socialHref(key: string, value: string): string {
   return value;
 }
 
-export function EntryCard({ e }: { e: PublicEntry }) {
-  const t = useTranslations('players');
+export async function EntryCard({ e }: { e: PublicEntry }) {
+  const t = await getTranslations('players');
   return (
     <article className="card">
       <header className="flex items-baseline justify-between gap-3 flex-wrap">
@@ -46,7 +44,7 @@ export function EntryCard({ e }: { e: PublicEntry }) {
                 rel="noopener noreferrer ugc"
                 className="underline decoration-2 underline-offset-4 hover:text-brand-red"
               >
-                {s.label} ↗
+                {t(s.labelKey)} ↗
               </a>
             </li>
           ))}
@@ -56,14 +54,14 @@ export function EntryCard({ e }: { e: PublicEntry }) {
   );
 }
 
-export function Counts({
+export async function Counts({
   entries,
   className = '',
 }: {
   entries: { entity_type: PublicEntry['entity_type'] }[];
   className?: string;
 }) {
-  const t = useTranslations('players');
+  const t = await getTranslations('players');
   const c = {
     person: entries.filter((e) => e.entity_type === 'person').length,
     shop: entries.filter((e) => e.entity_type === 'shop').length,
@@ -86,8 +84,8 @@ export function Counts({
   );
 }
 
-export function MapCta() {
-  const t = useTranslations('players');
+export async function MapCta() {
+  const t = await getTranslations('players');
   return (
     <div className="mt-12 p-6 bg-cream-mid border-2 border-navy/20 text-center">
       <p className="font-display text-xl text-navy-deep mb-2">{t('mapCtaHeading')}</p>
@@ -96,8 +94,8 @@ export function MapCta() {
   );
 }
 
-export function NotListed() {
-  const t = useTranslations('players');
+export async function NotListed() {
+  const t = await getTranslations('players');
   return (
     <p className="text-xs text-navy/60 mt-6 italic">
       {t('notListedText')}
