@@ -1,5 +1,9 @@
 {
   "framework": "nextjs",
+  "installCommand": "pnpm install",
+  "buildCommand": "cd yoyomap && pnpm install && pnpm run build",
+  "outputDirectory": "yoyomap/.next",
+  "devCommand": "cd yoyomap && pnpm run dev",
   "crons": [
     {
       "path": "/api/cron",
