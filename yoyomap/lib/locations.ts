@@ -125,12 +125,21 @@ export interface PublicEntry {
 // Combined with ISR (revalidate=3600) the cost is ~1 query per hour per page.
 export async function fetchAllPublicEntries(): Promise<PublicEntry[]> {
   try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !key) {
+      console.error('[locations] NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is not set');
+      return [];
+    }
     const { data, error } = await supabase
       .from('map_entries')
       .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');
     if (error) {
-      console.error('[locations] failed to fetch entries:', error);
+      console.error('[locations] failed to fetch entries — code:', error.code, '| message:', error.message, '| hint:', error.hint);
       return [];
+    }
+    if (!data || data.length === 0) {
+      console.warn('[locations] fetchAllPublicEntries returned 0 entries — check Supabase RLS policies for the anon role on map_entries');
     }
     return (data ?? []).map((e) => ({
       ...e,

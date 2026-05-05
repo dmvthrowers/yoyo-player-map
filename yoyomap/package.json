@@ -68,6 +68,12 @@
       "undici": ">=7.25.0",
       "postcss": ">=8.5.10",
       "devalue": ">=5.8.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "@parcel/watcher",
+      "esbuild",
+      "sharp"
+    ]
   }
 }

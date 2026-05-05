@@ -24,6 +24,7 @@ export async function generateStaticParams() {
       out.push({ country: c, region: r, city: ci });
     }
   }
+  console.log(`[generateStaticParams] /players/[country]/[region]/[city] — ${out.length} city pages`);
   return out;
 }
 
