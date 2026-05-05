@@ -80,6 +80,22 @@
     "thCountry": "国家",
     "noResults": "无结果。请清除筛选或尝试其他搜索。",
     "resultCount": "{count, plural, other {# 个结果}}",
-    "clearFilters": "清除筛选"
+    "typeThrower": "玩家",
+    "typeShopSingular": "商店",
+    "typeClubSingular": "俱乐部",
+    "socialWebsite": "网站",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "未指定",
+    "city": "城市",
+    "inCity": "{city}的悠悠球玩家",
+    "inCountryUnspecifiedRegion": "{country}的悠悠球玩家（地区未指定）",
+    "mapCtaHeading": "想在地图上看到他们吗？",
+    "mapCtaButton": "打开悠悠球地图",
+    "notListedText": "没有看到自己？玩家图标为保护隐私已模糊约16公里。上方列表包含所有选择公开显示的人。",
+    "throwerCount": "{count, plural, other {# 名玩家}}",
+    "shopCount": "{count, plural, other {# 家商店}}",
+    "clubCount": "{count, plural, other {# 个俱乐部}}"
   }
 }

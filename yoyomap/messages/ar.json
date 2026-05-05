@@ -80,6 +80,22 @@
     "thCountry": "البلد",
     "noResults": "لا نتائج. امسح المرشحات أو جرّب بحثًا مختلفًا.",
     "resultCount": "{count, plural, zero {لا نتائج} one {نتيجة واحدة} two {نتيجتان} few {# نتائج} many {# نتيجة} other {# نتيجة}}",
-    "clearFilters": "مسح المرشحات"
+    "typeThrower": "لاعب",
+    "typeShopSingular": "متجر",
+    "typeClubSingular": "نادٍ",
+    "socialWebsite": "موقع إلكتروني",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "غير محدد",
+    "city": "مدينة",
+    "inCity": "لاعبو اليو-يو في {city}",
+    "inCountryUnspecifiedRegion": "لاعبو اليو-يو في {country} (المنطقة غير محددة)",
+    "mapCtaHeading": "هل تريد رؤيتهم على الخريطة؟",
+    "mapCtaButton": "فتح خريطة YoYo",
+    "notListedText": "لا ترى نفسك؟ يتم تحديد مواقع اللاعبين بدقة ~16 كم للخصوصية. القائمة أعلاه تشمل الجميع الذين اختاروا أن يكونوا مرئيين للعموم.",
+    "throwerCount": "{count, plural, zero {لا لاعبين} one {لاعب واحد} two {لاعبان} few {# لاعبين} many {# لاعبًا} other {# لاعب}}",
+    "shopCount": "{count, plural, zero {لا متاجر} one {متجر واحد} two {متجران} few {# متاجر} many {# متجرًا} other {# متجر}}",
+    "clubCount": "{count, plural, zero {لا أندية} one {نادٍ واحد} two {ناديان} few {# أندية} many {# ناديًا} other {# نادٍ}}"
   }
 }

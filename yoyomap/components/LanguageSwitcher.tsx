@@ -31,7 +31,9 @@ export default function LanguageSwitcher() {
     const code = e.target.value;
     const validCodes = locales.map(l => l.code);
     if (code && validCodes.includes(code)) {
-      router.replace(pathname, { locale: code });
+      const search = window.location.search;
+      const hash = window.location.hash;
+      router.replace(pathname + search + hash, { locale: code });
     }
   }
 

@@ -80,6 +80,22 @@
     "thCountry": "国",
     "noResults": "該当なし。フィルターをクリアするか別のキーワードで検索してください。",
     "resultCount": "{count, plural, other {# 件}}",
-    "clearFilters": "フィルターをクリア"
+    "typeThrower": "プレイヤー",
+    "typeShopSingular": "ショップ",
+    "typeClubSingular": "クラブ",
+    "socialWebsite": "ウェブサイト",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "未指定",
+    "city": "都市",
+    "inCity": "{city}のヨーヨープレイヤー",
+    "inCountryUnspecifiedRegion": "{country}のヨーヨープレイヤー（地域未指定）",
+    "mapCtaHeading": "地図で見てみますか？",
+    "mapCtaButton": "YoYoマップを開く",
+    "notListedText": "あなたを見つけられませんか？プレイヤーのピンはプライバシーのため約16km分ぼかされています。上のリストは公開を選択した全員です。",
+    "throwerCount": "{count, plural, other {# 人のプレイヤー}}",
+    "shopCount": "{count, plural, other {# 店舗}}",
+    "clubCount": "{count, plural, other {# クラブ}}"
   }
 }

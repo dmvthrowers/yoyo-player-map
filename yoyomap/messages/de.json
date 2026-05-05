@@ -80,6 +80,22 @@
     "thCountry": "Land",
     "noResults": "Keine Treffer. Filter zurücksetzen oder andere Suche versuchen.",
     "resultCount": "{count, plural, one {# Treffer} other {# Treffer}}",
-    "clearFilters": "Filter zurücksetzen"
+    "typeThrower": "Spieler",
+    "typeShopSingular": "Shop",
+    "typeClubSingular": "Club",
+    "socialWebsite": "Website",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "Nicht angegeben",
+    "city": "Stadt",
+    "inCity": "Yo-Yo-Spieler in {city}",
+    "inCountryUnspecifiedRegion": "Yo-Yo-Spieler in {country} (Region nicht angegeben)",
+    "mapCtaHeading": "Möchtest du sie auf einer Karte sehen?",
+    "mapCtaButton": "YoYo-Karte öffnen",
+    "notListedText": "Nicht zu finden? Spielermarker sind zur Wahrung der Privatsphäre um ~16 km versetzt. Die obige Liste zeigt alle, die sich für öffentliche Sichtbarkeit entschieden haben.",
+    "throwerCount": "{count, plural, one {# Spieler} other {# Spieler}}",
+    "shopCount": "{count, plural, one {# Shop} other {# Shops}}",
+    "clubCount": "{count, plural, one {# Club} other {# Clubs}}"
   }
 }

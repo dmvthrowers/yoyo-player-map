@@ -80,6 +80,22 @@
     "thCountry": "देश",
     "noResults": "कोई परिणाम नहीं। फ़िल्टर साफ़ करें या कोई दूसरी खोज आज़माएँ।",
     "resultCount": "{count, plural, one {# परिणाम} other {# परिणाम}}",
-    "clearFilters": "फ़िल्टर साफ़ करें"
+    "typeThrower": "खिलाड़ी",
+    "typeShopSingular": "दुकान",
+    "typeClubSingular": "क्लब",
+    "socialWebsite": "वेबसाइट",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "unspecified": "अनिर्दिष्ट",
+    "city": "शहर",
+    "inCity": "{city} में यो-यो खिलाड़ी",
+    "inCountryUnspecifiedRegion": "{country} में यो-यो खिलाड़ी (क्षेत्र अनिर्दिष्ट)",
+    "mapCtaHeading": "क्या आप उन्हें मानचित्र पर देखना चाहते हैं?",
+    "mapCtaButton": "YoYo मानचित्र खोलें",
+    "notListedText": "खुद को नहीं देख रहे? गोपनीयता के लिए खिलाड़ी पिन ~16 किमी धुंधले हैं। ऊपर की सूची में वे सभी हैं जिन्होंने सार्वजनिक रूप से दिखना चुना है।",
+    "throwerCount": "{count, plural, one {# खिलाड़ी} other {# खिलाड़ी}}",
+    "shopCount": "{count, plural, one {# दुकान} other {# दुकानें}}",
+    "clubCount": "{count, plural, one {# क्लब} other {# क्लब}}"
   }
 }
