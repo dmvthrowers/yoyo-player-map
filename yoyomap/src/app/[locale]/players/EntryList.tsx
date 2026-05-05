@@ -1,10 +1,13 @@
+'use client';
+
 import { Link } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import type { PublicEntry } from '@/lib/locations';
 
-const TYPE_LABEL: Record<PublicEntry['entity_type'], string> = {
-  person: 'Thrower',
-  shop: 'Shop',
-  club: 'Club',
+const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typeThrower' | 'typeShop' | 'typeClub'> = {
+  person: 'typeThrower',
+  shop: 'typeShop',
+  club: 'typeClub',
 };
 
 const SOCIAL_HOSTS: Array<{ key: string; label: string; prefix?: string }> = [
@@ -22,11 +25,12 @@ function socialHref(key: string, value: string): string {
 }
 
 export function EntryCard({ e }: { e: PublicEntry }) {
+  const t = useTranslations('players');
   return (
     <article className="card">
       <header className="flex items-baseline justify-between gap-3 flex-wrap">
         <h3 className="font-display text-2xl text-navy-deep">{e.display_name}</h3>
-        <span className="eyebrow text-brand-red">{TYPE_LABEL[e.entity_type]}</span>
+        <span className="eyebrow text-brand-red">{t(TYPE_LABEL_KEY[e.entity_type])}</span>
       </header>
       <p className="text-sm text-text-body mt-1">
         {[e.city, e.region, e.country].filter(Boolean).join(', ')}
@@ -59,42 +63,44 @@ export function Counts({
   entries: { entity_type: PublicEntry['entity_type'] }[];
   className?: string;
 }) {
+  const t = useTranslations('players');
   const c = {
     person: entries.filter((e) => e.entity_type === 'person').length,
     shop: entries.filter((e) => e.entity_type === 'shop').length,
     club: entries.filter((e) => e.entity_type === 'club').length,
   };
+  const parts = [
+    t('throwerCount', { count: c.person }),
+    c.shop > 0 ? t('shopCount', { count: c.shop }) : null,
+    c.club > 0 ? t('clubCount', { count: c.club }) : null,
+  ].filter(Boolean);
   return (
     <p className={`text-sm text-navy/80 ${className}`}>
-      <strong>{c.person}</strong> thrower{c.person === 1 ? '' : 's'}
-      {c.shop > 0 && (
-        <>
-          , <strong>{c.shop}</strong> shop{c.shop === 1 ? '' : 's'}
-        </>
-      )}
-      {c.club > 0 && (
-        <>
-          , <strong>{c.club}</strong> club{c.club === 1 ? '' : 's'}
-        </>
-      )}
+      {parts.map((part, i) => (
+        <span key={i}>
+          {i > 0 && ', '}
+          {part}
+        </span>
+      ))}
     </p>
   );
 }
 
 export function MapCta() {
+  const t = useTranslations('players');
   return (
     <div className="mt-12 p-6 bg-cream-mid border-2 border-navy/20 text-center">
-      <p className="font-display text-xl text-navy-deep mb-2">Want to see them on a map?</p>
-      <Link href="/map" className="btn-primary">Open the YoYo Map</Link>
+      <p className="font-display text-xl text-navy-deep mb-2">{t('mapCtaHeading')}</p>
+      <Link href="/map" className="btn-primary">{t('mapCtaButton')}</Link>
     </div>
   );
 }
 
 export function NotListed() {
+  const t = useTranslations('players');
   return (
     <p className="text-xs text-navy/60 mt-6 italic">
-      Don&apos;t see yourself? Player pins are blurred ~10 miles for privacy. The list above is
-      everyone who has chosen to be publicly visible.
+      {t('notListedText')}
     </p>
   );
 }

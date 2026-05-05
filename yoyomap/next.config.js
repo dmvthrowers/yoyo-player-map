@@ -48,9 +48,6 @@ const nextConfig = {
       { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
       // Legacy path that appears in old links/bookmarks.
       { source: '/yoyomap', destination: '/en/map', permanent: true },
-      // No favicon.ico/png in public — redirect to the existing SVG icon
-      { source: '/favicon.ico', destination: '/favicon.svg', permanent: false },
-      { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
       {
         source: '/:locale(en|es|de|zh|ja|fr|pt|ru|ar|hi|ko)/yoyomap',
         destination: '/:locale/map',

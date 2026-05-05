@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 export const revalidate = 3600;
 
@@ -44,6 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 }
 
 export default async function CityPage({ params }: { params: Promise<Params> }) {
+  const t = await getTranslations();
   const { locale, country, region, city } = await params;
   const entries = await entriesInCity(country, region, city);
   if (entries.length === 0) {
@@ -51,8 +52,8 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
     // canonical slug (e.g. "north-carolina") so the correct page is served.
     const canonicalRegion = REGION_NORMALIZATION[region];
     if (canonicalRegion) {
-      const locale = await getLocale();
-      redirect({ href: `/players/${country}/${slugify(canonicalRegion)}/${city}`, locale });
+      const resolvedLocale = await getLocale();
+      redirect({ href: `/players/${country}/${slugify(canonicalRegion)}/${city}`, locale: resolvedLocale });
     }
     return notFound();
   }
@@ -70,14 +71,14 @@ export default async function CityPage({ params }: { params: Promise<Params> }) 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
       <nav className="text-xs text-navy/60 mb-3">
-        <Link href="/players" className="hover:text-brand-red">Players</Link> /{' '}
+        <Link href="/players" className="hover:text-brand-red">{t('nav.players')}</Link> /{' '}
         <Link href={`/players/${country}`} className="hover:text-brand-red">{countryName}</Link> /{' '}
-        <Link href={`/players/${country}/${region}`} className="hover:text-brand-red">{regionName || 'Unspecified region'}</Link> /{' '}
+        <Link href={`/players/${country}/${region}`} className="hover:text-brand-red">{regionName || t('players.unspecified')}</Link> /{' '}
         {cityName}
       </nav>
-      <p className="eyebrow text-brand-red">City</p>
+      <p className="eyebrow text-brand-red">{t('players.city')}</p>
       <h1 className="text-4xl md:text-5xl mt-2 text-navy-deep">
-        Yo-Yo Players in {cityName}
+        {t('players.inCity', { city: cityName })}
       </h1>
       <p className="text-lg text-navy/70 mt-1">{[regionName, countryName].filter(Boolean).join(', ')}</p>
       <hr className="rule-red" />
