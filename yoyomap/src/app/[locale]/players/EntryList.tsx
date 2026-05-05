@@ -4,6 +4,12 @@ import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import type { PublicEntry } from '@/lib/locations';
 
+const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typeThrower' | 'typeShop' | 'typeClub'> = {
+  person: 'typeThrower',
+  shop: 'typeShop',
+  club: 'typeClub',
+};
+
 const SOCIAL_HOSTS: Array<{ key: string; label: string; prefix?: string }> = [
   { key: 'website', label: 'Website' },
   { key: 'instagram', label: 'Instagram', prefix: 'https://instagram.com/' },
@@ -20,12 +26,11 @@ function socialHref(key: string, value: string): string {
 
 export function EntryCard({ e }: { e: PublicEntry }) {
   const t = useTranslations('players');
-  const typeKey = e.entity_type === 'person' ? 'typeThrower' : e.entity_type === 'shop' ? 'typeShop' : 'typeClub';
   return (
     <article className="card">
       <header className="flex items-baseline justify-between gap-3 flex-wrap">
         <h3 className="font-display text-2xl text-navy-deep">{e.display_name}</h3>
-        <span className="eyebrow text-brand-red">{t(typeKey)}</span>
+        <span className="eyebrow text-brand-red">{t(TYPE_LABEL_KEY[e.entity_type])}</span>
       </header>
       <p className="text-sm text-text-body mt-1">
         {[e.city, e.region, e.country].filter(Boolean).join(', ')}

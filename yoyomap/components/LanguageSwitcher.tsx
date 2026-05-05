@@ -4,6 +4,7 @@
 import { useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/i18n/navigation';
 import { useParams } from 'next/navigation';
+import { routing } from '@/i18n/routing';
 import React from 'react';
 
 export default function LanguageSwitcher() {
@@ -24,7 +25,7 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const params = useParams();
-  const currentLocale = (params?.locale as string) || 'en';
+  const currentLocale = (params?.locale as string) || routing.defaultLocale;
 
   function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const code = e.target.value;
