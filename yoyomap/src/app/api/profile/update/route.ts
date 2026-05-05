@@ -77,8 +77,18 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     if (!geo) {
       return apiError('unprocessable', "Couldn't locate that city. Check spelling.", requestId);
     }
-    lat = geo.lat;
-    lng = geo.lng;
+    const venuePublic = d.club_venue_public ?? existing.club_venue_public ?? false;
+    const needsJitter =
+      existing.entity_type === 'person' ||
+      (existing.entity_type === 'club' && !venuePublic);
+    if (needsJitter) {
+      const j = jitterCoords(geo.lat, geo.lng);
+      lat = j.lat;
+      lng = j.lng;
+    } else {
+      lat = geo.lat;
+      lng = geo.lng;
+    }
   }
 
   // Re-geocode the precise address for shops, and for clubs that publish their venue.

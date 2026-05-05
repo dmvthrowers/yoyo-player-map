@@ -115,7 +115,9 @@ export async function POST(req: NextRequest) {
         updates.exact_lng = exactGeo.lng;
       }
 
-      // Persons, clubs, and shops all need city coords (raw, let DB jitter)
+      // All entity types need a city-level map pin. Apply jitter for persons
+      // and private-venue clubs to protect their location privacy. Shops and
+      // public-venue clubs show an intentional exact address, so no jitter.
       const cityGeo = await geocodeCity({
         city: entry.city,
         region: entry.region || undefined,
@@ -124,8 +126,12 @@ export async function POST(req: NextRequest) {
       if (!cityGeo) {
         return NextResponse.json({ error: "Couldn't locate that city." }, { status: 400 });
       }
-      updates.lat = cityGeo.lat;
-      updates.lng = cityGeo.lng;
+      const needsJitter =
+        entry.entity_type === 'person' ||
+        (entry.entity_type === 'club' && !entry.club_venue_public);
+      const coords = needsJitter ? jitterCoords(cityGeo.lat, cityGeo.lng) : cityGeo;
+      updates.lat = coords.lat;
+      updates.lng = coords.lng;
 
       const { error: updErr } = await supabase.from('entries').update(updates).eq('id', id);
       if (updErr) {

@@ -292,6 +292,7 @@ async function preparePersonEntry(
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
 
+  const jittered = jitterCoords(geo.lat, geo.lng);
   return {
     columns: {
       entity_type: 'person',
@@ -305,8 +306,8 @@ async function preparePersonEntry(
       country: loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: geo.lat,
-      lng: geo.lng,
+      lat: jittered.lat,
+      lng: jittered.lng,
       age_band: data.ageBand,
       exact_lat: null,
       exact_lng: null,
@@ -415,6 +416,13 @@ async function prepareClubEntry(
     exactLng = venueGeo.lng;
   }
 
+  // Apply jitter for clubs with private venues only. Clubs with public venues
+  // intentionally expose their exact venue location (stored in exact_lat/lng),
+  // so no jitter is needed on the city-level map pin for those.
+  const clubJittered = data.clubVenuePublic
+    ? { lat: cityGeo.lat, lng: cityGeo.lng }
+    : jitterCoords(cityGeo.lat, cityGeo.lng);
+
   return {
     columns: {
       entity_type: 'club',
@@ -428,8 +436,8 @@ async function prepareClubEntry(
       country: loc.countryCode,
       bio: data.bio || null,
       socials: data.socials || {},
-      lat: cityGeo.lat,
-      lng: cityGeo.lng,
+      lat: clubJittered.lat,
+      lng: clubJittered.lng,
       exact_lat: exactLat,
       exact_lng: exactLng,
       club_meeting_info: data.clubMeetingInfo,
