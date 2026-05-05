@@ -5,14 +5,14 @@ import type { Metadata } from 'next';
 import { Link } from '@/i18n/navigation';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
-import '../../globals.css';
+import '../globals.css';
 
 export const metadata: Metadata = {
   icons: { icon: '/favicon.svg' },
 };
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ localized: locale, locale }));
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export default async function Layout({ children, params }: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
