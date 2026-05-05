@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* Tailwind v4 theme — custom brand tokens exposed as utility classes
+   (bg-navy-deep, text-brand-red, font-display, etc.) */
+@theme {
+  /* Brand colors */
+  --color-brand-red: #D42B2B;
+  --color-brand-red-dark: #b01f1f;
+  --color-navy: #1a2744;
+  --color-navy-deep: #0e1833;
+  --color-dark-navy: #0e1833;
+  --color-cream: #f5f0e8;
+  --color-cream-mid: #f0ebe0;
+  --color-hairline: #d4cebc;
+  --color-text-body: #3a4a6a;
+  --color-text-muted: #6a7a9a;
+  --color-cherry-pink: #F9D0D4;
+  --color-muted-rose: #e8b4b8;
+
+  /* Font families */
+  --font-display: Georgia, serif;
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
 /* Custom border color for TrustRow and similar components */
 .border-custom {
   border-color: var(--border);
@@ -26,7 +48,7 @@
 
 @layer base {
   html {
-    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
   }
 
   body {
@@ -37,7 +59,7 @@
   }
 
   h1, h2, h3, h4 {
-    font-family: var(--font-display), Georgia, serif;
+    font-family: var(--font-display);
     font-weight: 900;
     letter-spacing: -0.01em;
     line-height: 1.05;
