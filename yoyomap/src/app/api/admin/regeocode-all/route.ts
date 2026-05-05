@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
 
   let query = supabase
     .from('entries')
-    .select('id, display_name, entity_type, city, region, country, address_line, postal_code')
+    .select('id, display_name, entity_type, city, region, country, address_line, postal_code, club_venue_public')
     .is('deleted_at', null)
     .order('created_at', { ascending: true })
     .limit(BATCH_SIZE);
@@ -110,8 +110,12 @@ export async function POST(req: NextRequest) {
         country: entry.country,
       });
       if (cityGeo) {
-        updates.lat = cityGeo.lat;
-        updates.lng = cityGeo.lng;
+        const needsJitter =
+          entry.entity_type === 'person' ||
+          (entry.entity_type === 'club' && !entry.club_venue_public);
+        const coords = needsJitter ? jitterCoords(cityGeo.lat, cityGeo.lng) : cityGeo;
+        updates.lat = coords.lat;
+        updates.lng = coords.lng;
       } else {
         entryFailed = true;
         reason = 'city_not_found';
