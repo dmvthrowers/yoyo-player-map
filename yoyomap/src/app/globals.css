@@ -8,7 +8,7 @@
   --color-brand-red-dark: #b01f1f;
   --color-navy: #1a2744;
   --color-navy-deep: #0e1833;
-  --color-dark-navy: #0e1833;
+  --color-dark-navy: #0e1833; /* alias for navy-deep used in footer bg-dark-navy */
   --color-cream: #f5f0e8;
   --color-cream-mid: #f0ebe0;
   --color-hairline: #d4cebc;
