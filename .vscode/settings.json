@@ -1,3 +1,7 @@
 {
-    "chat.agent.maxRequests": 300
+    "chat.agent.maxRequests": 300,
+    "sonarlint.rules": {
+        "Web:S6750": { "level": "off" },
+        "typescript:S6750": { "level": "off" }
+    }
 }
