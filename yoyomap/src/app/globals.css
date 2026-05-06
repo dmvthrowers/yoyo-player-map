@@ -4,12 +4,12 @@
    (bg-navy-deep, text-brand-red, font-display, etc.) */
 @theme {
   /* Brand colors */
-  --color-brand-red: #D42B2B;
-  --color-brand-red-dark: #b01f1f;
-  --color-navy: #1a2744;
+  --color-brand-red: #B80000;
+  --color-brand-red-dark: #9c0000;
+  --color-navy: #102040;
   --color-navy-deep: #0e1833;
   --color-dark-navy: #0e1833; /* alias for navy-deep used in footer bg-dark-navy */
-  --color-cream: #f5f0e8;
+  --color-cream: #fffdfa;
   --color-cream-mid: #f0ebe0;
   --color-hairline: #d4cebc;
   --color-text-body: #3a4a6a;
@@ -37,11 +37,11 @@
 
 /* DMV Throwers brand tokens - mirror dmvthrowers.club */
 :root {
-  --red: #d42b2b;
-  --red-dark: #b01f1f;
-  --navy: #1a2744;
+  --red: #B80000;
+  --red-dark: #9c0000;
+  --navy: #102040;
   --navy-deep: #0e1833;
-  --cream: #f5f0e8;
+  --cream: #fffdfa;
   --cream-mid: #f0ebe0;
   --border: #d4cebc;
   --text-body: #3a4a6a;
@@ -103,6 +103,7 @@
   .btn-primary:hover {
     background: var(--red-dark);
   }
+
 
   .btn-primary:disabled {
     opacity: 0.5;
@@ -240,7 +241,7 @@
   .donate-btn {
     display: inline-block;
     white-space: nowrap;
-    border-radius: 0.375rem;
+    border-radius: 0;
     background: var(--red);
     color: #fff;
     padding: 0.375rem 0.75rem;
@@ -248,7 +249,6 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.14em;
-    box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
     transition: background-color 0.2s ease;
   }
 

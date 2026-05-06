@@ -1,7 +1,7 @@
 import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
+import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -15,6 +15,7 @@ export async function generateStaticParams() {
   const seen = new Set<string>();
   const out: Omit<Params, 'locale'>[] = [];
   for (const loc of locations) {
+    if (loc.region && isJunkRegion(loc.region)) continue;
     const c = slugify(loc.country);
     const r = loc.region ? slugify(loc.region) : '_other';
     const ci = slugify(loc.city);
@@ -46,6 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function CityPage({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
   const { locale, country, region, city } = await params;
+  if (region !== '_other' && isJunkRegion(region)) return notFound();
   const entries = await entriesInCity(country, region, city);
   if (entries.length === 0) {
     // If the region slug is a known abbreviation (e.g. "nc"), redirect to the

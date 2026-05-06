@@ -136,7 +136,7 @@ const PersonMarker = memo(({ entry, isUnderserved }: { entry: MapEntry; isUnders
         <CircleMarker
           center={[entry.lat, entry.lng]}
           pathOptions={{
-            color: '#D42B2B',
+            color: '#B80000',
             fillColor: 'transparent',
             weight: 2,
             opacity: 0.6,
@@ -149,8 +149,8 @@ const PersonMarker = memo(({ entry, isUnderserved }: { entry: MapEntry; isUnders
       <CircleMarker
         center={[entry.lat, entry.lng]}
         pathOptions={{
-          color: '#D42B2B',
-          fillColor: '#D42B2B',
+          color: '#B80000',
+          fillColor: '#B80000',
           fillOpacity: 0.6,
           weight: 2,
         }}

@@ -13,7 +13,7 @@ L.Icon.Default.mergeOptions({
 
 const COLORS: Record<string, string> = {
   person: "#3b82f6",
-  shop: "#D42B2B",
+  shop: "#B80000",
   club: "#22c55e",
 };
 
@@ -81,7 +81,7 @@ async function loadEntryDetail(id: string, el: HTMLElement) {
         a.href = href;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
-        a.style.cssText = "color:#D42B2B;margin-right:8px;font-size:11px;";
+        a.style.cssText = "color:#B80000;margin-right:8px;font-size:11px;";
         a.textContent = k;
         div.appendChild(a);
       });
@@ -89,7 +89,7 @@ async function loadEntryDetail(id: string, el: HTMLElement) {
     }
   } catch {
     el.textContent = "";
-    addText(el, "p", "Failed to load details.", "font-size:11px;color:#D42B2B;margin-top:6px;");
+    addText(el, "p", "Failed to load details.", "font-size:11px;color:#B80000;margin-top:6px;");
   }
 }
 
@@ -146,7 +146,7 @@ export default function MapClient({ entries }: Props) {
       container.appendChild(subEl);
 
       const btn = document.createElement("button");
-      btn.style.cssText = "font-size:11px;color:#D42B2B;background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;";
+      btn.style.cssText = "font-size:11px;color:#B80000;background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;";
       btn.textContent = "View details…";
       btn.addEventListener("click", () => loadEntryDetail(entry.id, detailEl));
       container.appendChild(btn);

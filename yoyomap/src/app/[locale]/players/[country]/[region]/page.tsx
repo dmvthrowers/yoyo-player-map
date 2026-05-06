@@ -1,7 +1,7 @@
 import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION } from '@/lib/locations';
+import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../../EntryList';
 import { getTranslations } from 'next-intl/server';
@@ -18,6 +18,7 @@ export async function generateStaticParams() {
   for (const loc of locations) {
     const countrySlug = slugify(loc.country);
     if (loc.region) {
+      if (isJunkRegion(loc.region)) continue;
       const regionSlug = slugify(loc.region);
       const key = `${countrySlug}|${regionSlug}`;
       if (!seen.has(key)) {
@@ -52,6 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
 export default async function Page({ params }: { params: Promise<Params> }) {
   const t = await getTranslations();
   const { locale, country, region } = await params;
+  if (region !== '_other' && isJunkRegion(region)) return notFound();
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region

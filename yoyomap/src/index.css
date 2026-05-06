@@ -57,11 +57,11 @@
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   /* Brand colors as Tailwind utilities */
-  --color-brand-red: #D42B2B;
-  --color-brand-red-dark: #b01f1f;
-  --color-navy: #1a2744;
+  --color-brand-red: #B80000;
+  --color-brand-red-dark: #9c0000;
+  --color-navy: #102040;
   --color-navy-deep: #0e1833;
-  --color-cream: #f5f0e8;
+  --color-cream: #fffdfa;
   --color-cream-mid: #f0ebe0;
   --color-hairline: #d4cebc;
   --color-text-body: #3a4a6a;
@@ -86,8 +86,8 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  /* cream #f5f0e8 */
-  --background: 39 37% 93%;
+  /* cream #fffdfa */
+  --background: 40 100% 99%;
   /* navy-deep #0e1833 */
   --foreground: 222 70% 13%;
   /* hairline #d4cebc */
@@ -98,28 +98,28 @@
   --card-foreground: 222 70% 13%;
   --card-border: 42 20% 80%;
 
-  /* navy #1a2744 */
-  --sidebar: 222 55% 18%;
-  --sidebar-foreground: 39 37% 93%;
-  --sidebar-border: 222 45% 22%;
-  /* brand-red #D42B2B */
-  --sidebar-primary: 0 65% 50%;
+  /* navy #102040 */
+  --sidebar: 220 60% 16%;
+  --sidebar-foreground: 40 100% 99%;
+  --sidebar-border: 220 50% 20%;
+  /* brand-red #B80000 */
+  --sidebar-primary: 0 100% 36%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 222 50% 22%;
-  --sidebar-accent-foreground: 39 37% 93%;
-  --sidebar-ring: 0 65% 50%;
+  --sidebar-accent: 220 55% 20%;
+  --sidebar-accent-foreground: 40 100% 99%;
+  --sidebar-ring: 0 100% 36%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 222 70% 13%;
   --popover-border: 42 20% 80%;
 
-  /* brand-red #D42B2B */
-  --primary: 0 65% 50%;
+  /* brand-red #B80000 */
+  --primary: 0 100% 36%;
   --primary-foreground: 0 0% 100%;
 
-  /* navy #1a2744 */
-  --secondary: 222 55% 18%;
-  --secondary-foreground: 39 37% 93%;
+  /* navy #102040 */
+  --secondary: 220 60% 16%;
+  --secondary-foreground: 40 100% 99%;
 
   /* cream-mid #f0ebe0 */
   --muted: 39 30% 91%;
@@ -128,12 +128,12 @@
   --accent: 39 30% 91%;
   --accent-foreground: 222 70% 13%;
 
-  --destructive: 0 65% 50%;
+  --destructive: 0 100% 36%;
   --destructive-foreground: 0 0% 100%;
 
   --input: 42 20% 80%;
-  --ring: 0 65% 50%;
-  --chart-1: 0 65% 50%;
+  --ring: 0 100% 36%;
+  --chart-1: 0 100% 36%;
   --chart-2: 222 55% 18%;
   --chart-3: 39 37% 93%;
   --chart-4: 222 70% 13%;
@@ -209,12 +209,12 @@
   --muted-foreground: 222 20% 65%;
   --accent: 222 50% 16%;
   --accent-foreground: 39 37% 93%;
-  --destructive: 0 65% 50%;
+  --destructive: 0 100% 36%;
   --destructive-foreground: 0 0% 100%;
 
   --input: 222 40% 22%;
-  --ring: 0 65% 50%;
-  --chart-1: 0 65% 50%;
+  --ring: 0 100% 36%;
+  --chart-1: 0 100% 36%;
   --chart-2: 222 55% 40%;
   --chart-3: 39 37% 70%;
   --chart-4: 222 70% 70%;
@@ -255,7 +255,7 @@
   }
   a { color: inherit; }
   ::selection {
-    background: #D42B2B;
+    background: #B80000;
     color: #fff;
   }
 }
@@ -268,32 +268,32 @@
     @apply inline-flex items-center justify-center bg-brand-red text-white px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
     border-radius: 0;
   }
-  .btn-primary:hover { background-color: #b01f1f; }
+  .btn-primary:hover { background-color: #9c0000; }
 
   .btn-secondary {
     @apply inline-flex items-center justify-center bg-navy text-white px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm transition-colors;
     border-radius: 0;
   }
-  .btn-secondary:hover { background-color: #D42B2B; }
+  .btn-secondary:hover { background-color: #B80000; }
 
   .btn-ghost {
     @apply inline-flex items-center justify-center border-2 border-navy text-navy bg-transparent px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm transition-colors;
     border-radius: 0;
   }
-  .btn-ghost:hover { background-color: #1a2744; color: #fff; }
+  .btn-ghost:hover { background-color: #102040; color: #fff; }
 
   .btn-outline-white {
     @apply inline-flex items-center justify-center border-2 border-white text-white bg-transparent px-6 py-3 font-bold uppercase tracking-[0.18em] text-sm transition-colors;
     border-radius: 0;
   }
-  .btn-outline-white:hover { background-color: #fff; color: #1a2744; }
+  .btn-outline-white:hover { background-color: #fff; color: #102040; }
 
   .input {
     @apply w-full border-2 bg-white px-4 py-3 text-navy-deep focus:outline-none transition-colors;
     border-color: #d4cebc;
     border-radius: 0;
   }
-  .input:focus { border-color: #D42B2B; }
+  .input:focus { border-color: #B80000; }
 
   .label {
     @apply block text-xs font-bold uppercase tracking-[0.18em] text-navy mb-2;
@@ -307,19 +307,19 @@
 
   .eyebrow {
     @apply text-xs font-bold uppercase tracking-[0.22em];
-    color: #D42B2B;
+    color: #B80000;
   }
 
   .rule-red {
     width: 60px;
     height: 3px;
-    background: #D42B2B;
+    background: #B80000;
     border: 0;
     margin: 1rem 0 1.5rem;
   }
 
   .topbar {
-    background-color: #D42B2B;
+    background-color: #B80000;
     @apply text-white text-xs uppercase tracking-[0.18em] font-semibold;
   }
 
@@ -328,7 +328,7 @@
   }
 
   .site-nav {
-    background-color: #f5f0e8;
+    background-color: #fffdfa;
     border-bottom: 1px solid #d4cebc;
   }
 
@@ -336,14 +336,14 @@
     @apply text-xs uppercase font-semibold tracking-[0.14em] py-2 border-b-2 border-transparent transition-colors;
     color: #0e1833;
   }
-  .nav-link:hover { border-color: #D42B2B; color: #D42B2B; }
+  .nav-link:hover { border-color: #B80000; color: #B80000; }
 
   .donate-btn {
-    @apply text-xs uppercase font-bold tracking-[0.14em] text-white px-3 py-1.5 transition-colors shadow-sm whitespace-nowrap;
-    background-color: #D42B2B;
-    border-radius: 4px;
+    @apply text-xs uppercase font-bold tracking-[0.14em] text-white px-3 py-1.5 transition-colors whitespace-nowrap;
+    background-color: #B80000;
+    border-radius: 0;
   }
-  .donate-btn:hover { background-color: #b01f1f; }
+  .donate-btn:hover { background-color: #9c0000; }
 
   .brand-lockup {
     @apply text-2xl md:text-3xl font-black tracking-tight;
@@ -357,7 +357,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  background: #D42B2B;
+  background: #B80000;
   color: #fff;
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
