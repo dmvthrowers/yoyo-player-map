@@ -1,0 +1,68 @@
+# .pre-commit-config.yaml — yoyo-player-map
+#
+# Prevents off-brand colors and privacy violations before commit.
+#
+# Installation (one-time per machine):
+#   pip install pre-commit
+#   cd yoyo-player-map
+#   pre-commit install
+#
+# Run manually against all files:
+#   pre-commit run --all-files
+
+repos:
+
+  # ── Built-in guards ─────────────────────────────────────────────────────────
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-merge-conflict
+      - id: end-of-file-fixer
+        exclude: "^(node_modules|.next|public)/"
+      - id: trailing-whitespace
+        exclude: "^(node_modules|.next|public)/"
+
+  # ── Off-brand red guard ─────────────────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: no-off-brand-red
+        name: "Flag off-brand red — use #B80000 not #D42B2B"
+        language: pygrep
+        entry: '#[Dd]42[Bb]2[Bb]'
+        types: [text]
+        files: '\.(css|ts|tsx|js|jsx|json)$'
+        exclude: "^(node_modules|.next|pnpm-lock\.yaml)/"
+
+  # ── Brand card border-radius guard ─────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: no-border-radius-brand
+        name: "Flag non-zero border-radius on brand card classes"
+        language: pygrep
+        entry: 'brand-card.*border-radius|border-radius.*brand-card'
+        types: [text]
+        files: '\.(css|tsx|jsx)$'
+        exclude: "^node_modules/"
+
+  # ── Privacy guard — no lat/lng or precise coordinates in client code ────────
+  - repo: local
+    hooks:
+      - id: no-precise-coords
+        name: "Flag precise coordinate fields (lat/lng below city level)"
+        language: pygrep
+        # Flags patterns like latitude: 38.1234 (more than 2 decimal places)
+        entry: '(?:latitude|longitude|lat|lng|coords)\s*[=:]\s*-?\d+\.\d{3,}'
+        types: [text]
+        files: '\.(ts|tsx|js|jsx)$'
+        exclude: "^(node_modules|.next)/"
+
+  # ── No hardcoded secrets / env vars ─────────────────────────────────────────
+  - repo: local
+    hooks:
+      - id: no-hardcoded-supabase-keys
+        name: "Flag hardcoded Supabase keys or URLs in source"
+        language: pygrep
+        entry: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9|supabase\.co/rest|supabase\.co/auth'
+        types: [text]
+        files: '\.(ts|tsx|js|jsx)$'
+        exclude: "^(node_modules|.next|\.env)/"
