@@ -10,13 +10,12 @@ export default function StatusPage() {
       .catch(() => setApiStatus("error"));
   }, []);
 
-  const statusColor = apiStatus === "ok" ? "#22c55e" : apiStatus === "error" ? "#D42B2B" : "#f59e0b";
   const statusLabel = apiStatus === "ok" ? "Operational" : apiStatus === "error" ? "Degraded" : "Checking…";
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
       <p className="eyebrow mb-2">System</p>
-      <h1 className="text-4xl mb-8" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Service Status</h1>
+      <h1 className="text-4xl mb-8 font-display text-navy-deep">Service Status</h1>
 
       <div className="space-y-4">
         {[
@@ -25,22 +24,23 @@ export default function StatusPage() {
           { label: "Email Service", status: "ok" as const },
           { label: "Database", status: apiStatus },
         ].map(({ label, status }) => {
-          const color = status === "ok" ? "#22c55e" : status === "error" ? "#D42B2B" : "#f59e0b";
+          const dotClass = status === "ok" ? "bg-green-500" : status === "error" ? "bg-brand-red" : "bg-amber-400";
+          const textClass = status === "ok" ? "text-green-500" : status === "error" ? "text-brand-red" : "text-amber-400";
           const text = status === "ok" ? "Operational" : status === "error" ? "Degraded" : "Checking…";
           return (
             <div key={label} className="card flex items-center justify-between">
-              <span className="font-medium" style={{ color: "#0e1833" }}>{label}</span>
+              <span className="font-medium text-navy-deep">{label}</span>
               <span className="flex items-center gap-2 text-sm font-semibold">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
-                <span style={{ color }}>{text}</span>
+                <span className={`w-2.5 h-2.5 rounded-full ${dotClass}`} />
+                <span className={textClass}>{text}</span>
               </span>
             </div>
           );
         })}
       </div>
 
-      <p className="text-xs mt-8" style={{ color: "#6a7a9a" }}>
-        Having issues? Contact <a href="mailto:contact@dmvthrowers.club" className="underline" style={{ color: "#D42B2B" }}>contact@dmvthrowers.club</a>
+      <p className="text-xs mt-8 text-text-muted">
+        Having issues? Contact <a href="mailto:contact@dmvthrowers.club" className="underline text-brand-red">contact@dmvthrowers.club</a>
       </p>
     </div>
   );

@@ -38,7 +38,7 @@ export default function Navigation() {
       <nav className="site-nav" aria-label="Main Navigation">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-6">
           <Link href="/" className="brand-lockup whitespace-nowrap" onClick={close}>
-            YoYo <span style={{ color: "#D42B2B" }}>Map</span>
+            YoYo <span className="text-brand-red">Map</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-6">
@@ -81,8 +81,7 @@ export default function Navigation() {
           </button>
         </div>
 
-        {menuOpen && (
-          <div id="mobile-menu" className="md:hidden border-t px-4 pb-4 pt-2" style={{ backgroundColor: "#f5f0e8" }}>
+        <div id="mobile-menu" className={`md:hidden border-t bg-cream px-4 pb-4 pt-2${menuOpen ? '' : ' hidden'}`}>
             <ul className="flex flex-col">
               <li><Link href="/map" className="nav-link block py-2" onClick={close}>Map</Link></li>
               <li><Link href="/players" className="nav-link block py-2" onClick={close}>Players</Link></li>
@@ -95,11 +94,11 @@ export default function Navigation() {
                 <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>DMV Throwers ↗</a>
               </li>
               <li>
-                <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" style={{ color: "#D42B2B" }} onClick={close}>VSYC-26 ↗</a>
+                <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>VSYC-26 ↗</a>
               </li>
             </ul>
           </div>
-        )}
+        </div>
       </nav>
     </>
   );

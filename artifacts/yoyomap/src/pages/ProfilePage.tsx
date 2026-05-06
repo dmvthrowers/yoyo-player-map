@@ -52,16 +52,16 @@ function MagicLinkForm() {
   if (sent) {
     return (
       <div className="card text-center py-12">
-        <h2 className="text-2xl mb-3" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Check your email</h2>
-        <p style={{ color: "#3a4a6a" }}>We sent you a magic link. Click it to manage your map entry.</p>
+        <h2 className="text-2xl mb-3 font-display text-navy-deep">Check your email</h2>
+        <p className="text-text-body">We sent you a magic link. Click it to manage your map entry.</p>
       </div>
     );
   }
 
   return (
     <div className="card">
-      <h2 className="text-2xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Manage Your Entry</h2>
-      <p className="text-sm mb-6" style={{ color: "#3a4a6a" }}>Enter your email to receive a magic link and manage your listing.</p>
+      <h2 className="text-2xl mb-2 font-display text-navy-deep">Manage Your Entry</h2>
+      <p className="text-sm mb-6 text-text-body">Enter your email to receive a magic link and manage your listing.</p>
       <form onSubmit={send} className="space-y-4">
         <div>
           <label className="label" htmlFor="profile-email">Email address</label>
@@ -76,7 +76,7 @@ function MagicLinkForm() {
             title="Your email address"
           />
         </div>
-        {error && <p className="text-sm" style={{ color: "#D42B2B" }}>{error}</p>}
+        {error && <p className="text-sm text-brand-red">{error}</p>}
         <button type="submit" className="btn-primary w-full" disabled={sending}>
           {sending ? "Sending…" : "Send Magic Link"}
         </button>
@@ -147,19 +147,19 @@ function EditForm({ token }: { token: string }) {
     }
   }
 
-  if (loading) return <div className="card py-12 text-center" style={{ color: "#6a7a9a" }}>Loading your entry…</div>;
+  if (loading) return <div className="card py-12 text-center text-text-muted">Loading your entry…</div>;
   if (deleted) return (
     <div className="card text-center py-12">
-      <p className="mb-4" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>Your entry has been permanently deleted.</p>
+      <p className="mb-4 font-display text-navy-deep">Your entry has been permanently deleted.</p>
       <Link href="/" className="btn-ghost inline-block">Back to Home</Link>
     </div>
   );
-  if (!entry) return <div className="card py-12 text-center" style={{ color: "#D42B2B" }}>{error || "Entry not found."}</div>;
+  if (!entry) return <div className="card py-12 text-center text-brand-red">{error || "Entry not found."}</div>;
 
   return (
     <div>
-      <h1 className="text-4xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Edit Your Entry</h1>
-      <p className="text-sm mb-6" style={{ color: "#3a4a6a" }}>Changes save when you click the button below.</p>
+      <h1 className="text-4xl mb-2 font-display text-navy-deep">Edit Your Entry</h1>
+      <p className="text-sm mb-6 text-text-body">Changes save when you click the button below.</p>
 
       <div className="card space-y-4 mb-6">
         <div>
@@ -201,8 +201,8 @@ function EditForm({ token }: { token: string }) {
 
         {entry.entity_type === "shop" && (
           <>
-            <hr style={{ borderColor: "rgba(26,39,68,0.1)" }} />
-            <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: "#0e1833" }}>🏪 Shop Details</p>
+            <hr className="border-navy/10" />
+            <p className="text-sm font-semibold uppercase tracking-wide text-navy-deep">🏠 Shop Details</p>
             {[
               ["Contact Name", "contact_name"],
               ["Street Address", "address_line"],
@@ -222,8 +222,8 @@ function EditForm({ token }: { token: string }) {
 
         {entry.entity_type === "club" && (
           <>
-            <hr style={{ borderColor: "rgba(26,39,68,0.1)" }} />
-            <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: "#0e1833" }}>🎲 Club Details</p>
+            <hr className="border-navy/10" />
+            <p className="text-sm font-semibold uppercase tracking-wide text-navy-deep">🏐 Club Details</p>
             <div>
               <label className="label">Contact Name</label>
               <input className="input" value={entry.contact_name || ""} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title="Contact name" />
@@ -237,7 +237,7 @@ function EditForm({ token }: { token: string }) {
               Share venue address publicly
             </label>
             {entry.club_venue_public && (
-              <div className="space-y-3 pl-4 border-l-2" style={{ borderColor: "rgba(212,43,43,0.3)" }}>
+              <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
                 <div>
                   <label className="label">Venue Street Address</label>
                   <input className="input" value={entry.address_line || ""} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title="Venue address" />
@@ -251,22 +251,21 @@ function EditForm({ token }: { token: string }) {
           </>
         )}
 
-        {message && <div className="p-3 text-sm border-2" style={{ borderColor: "#22c55e", backgroundColor: "rgba(34,197,94,0.05)", color: "#15803d" }}>{message}</div>}
-        {error && <div className="p-3 text-sm border-2" style={{ borderColor: "#D42B2B", backgroundColor: "rgba(212,43,43,0.05)", color: "#D42B2B" }}>{error}</div>}
+        {message && <div className="p-3 text-sm border-2 border-green-500 bg-green-500/5 text-green-700">{message}</div>}
+        {error && <div className="p-3 text-sm border-2 border-brand-red bg-brand-red/5 text-brand-red">{error}</div>}
         <button className="btn-primary w-full" disabled={saving} onClick={save}>
           {saving ? "Saving…" : "Save Changes"}
         </button>
       </div>
 
-      <div className="card" style={{ borderColor: "#D42B2B", backgroundColor: "rgba(212,43,43,0.03)" }}>
-        <h2 className="text-xl mb-2" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Delete your entry</h2>
-        <p className="text-sm mb-4" style={{ color: "#3a4a6a" }}>
+      <div className="card border-brand-red bg-brand-red/3">
+        <h2 className="text-xl mb-2 font-display text-navy-deep">Delete your entry</h2>
+        <p className="text-sm mb-4 text-text-body">
           Permanently remove your entry. This cannot be undone. Your email and any consent records are also deleted.
         </p>
         {!confirmDelete ? (
           <button
-            className="btn-ghost"
-            style={{ borderColor: "#D42B2B", color: "#D42B2B" }}
+            className="btn-ghost border-brand-red text-brand-red"
             onClick={() => setConfirmDelete(true)}
           >
             Delete My Entry

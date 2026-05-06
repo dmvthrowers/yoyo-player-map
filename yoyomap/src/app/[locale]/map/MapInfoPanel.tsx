@@ -25,11 +25,12 @@ export default function MapInfoPanel({ counts }: Props) {
     .join(', ');
 
   return (
-    <div className="absolute top-4 left-4 z-[500] bg-cream border-2 border-navy shadow-lg max-w-xs">
+    <div className="absolute top-4 left-4 z-500 bg-cream border-2 border-navy shadow-lg max-w-xs">
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"
-        aria-expanded={open ? "true" : "false"}
+        aria-expanded={open}
+        aria-controls="map-info-panel"
         aria-label={open ? t('map.collapseInfoPanel') : t('map.expandInfoPanel')}
       >
         <span className="font-display text-base leading-none whitespace-nowrap">{t('map.title')}</span>
@@ -44,15 +45,14 @@ export default function MapInfoPanel({ counts }: Props) {
           strokeWidth={2.5}
           strokeLinecap="round"
           strokeLinejoin="round"
-          className={`flex-shrink-0 text-navy/50 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`shrink-0 text-navy/50 transition-transform ${open ? 'rotate-180' : ''}`}
           aria-hidden="true"
         >
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
 
-      {open && (
-        <div className="px-3 pb-3 border-t border-navy/10">
+      <div id="map-info-panel" className={`px-3 pb-3 border-t border-navy/10${open ? '' : ' hidden'}`}>
           <p className="text-[10px] text-navy/60 my-2">
             {t('map.infoPanelDescription')}
           </p>
@@ -60,7 +60,6 @@ export default function MapInfoPanel({ counts }: Props) {
             {t('map.addToMap')}
           </Link>
         </div>
-      )}
     </div>
   );
 }

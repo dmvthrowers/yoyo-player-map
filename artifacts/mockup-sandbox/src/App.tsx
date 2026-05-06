@@ -76,7 +76,7 @@ function PreviewRenderer({
 
   if (error) {
     return (
-      <pre style={{ color: "red", padding: "2rem", fontFamily: "system-ui" }}>
+      <pre className="text-red-500 p-8 font-sans">
         {error}
       </pre>
     );

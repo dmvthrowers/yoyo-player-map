@@ -303,7 +303,7 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
-    <div className="min-w-[220px]">
+    <div className="min-w-55">
       <p className="font-bold text-base text-navy font-playfair">{entry.display_name}</p>
       <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
       {loading? <PopupSkeleton /> : error? <PopupError onRetry={retry} /> : (
@@ -320,7 +320,7 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
 function ShopPopup({ entry }: { entry: MapEntry }) { /* unchanged */
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
   return (
-    <div className="min-w-[220px]">
+    <div className="min-w-55">
       <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
       <p className="font-bold text-base text-navy flex items-center gap-1 font-playfair">
         {entry.display_name}
@@ -346,7 +346,7 @@ function ClubPopup({ entry }: { entry: MapEntry }) { /* unchanged */
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
-    <div className="min-w-[220px]">
+    <div className="min-w-55">
       <p className="text-[10px] uppercase tracking-wider text-[#1B2A49] font-bold mb-1">Yo-Yo Club</p>
       <p className="font-bold text-base text-navy font-playfair">{entry.display_name}</p>
       <p className="text-xs text-navy/70 mb-2">{location}{!loading &&!detail?.club_venue_public && ' (approximate)'}</p>

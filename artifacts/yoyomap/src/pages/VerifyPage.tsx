@@ -55,11 +55,8 @@ export default function VerifyPage() {
       <div className="max-w-md w-full text-center">
         {status === "loading" && (
           <>
-            <div
-              className="mx-auto mb-6 w-12 h-12 rounded-full border-4 border-t-transparent animate-spin"
-              style={{ borderColor: "#D42B2B", borderTopColor: "transparent" }}
-            />
-            <p style={{ color: "#1a2744", fontFamily: "Georgia, serif", fontSize: "1.25rem" }}>
+            <div className="mx-auto mb-6 w-12 h-12 rounded-full border-4 border-brand-red border-t-transparent animate-spin" />
+            <p className="font-display text-navy text-xl">
               Verifying…
             </p>
           </>
@@ -67,25 +64,18 @@ export default function VerifyPage() {
 
         {status === "ok" && (
           <>
-            <div
-              className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
-              style={{ background: "#22c55e" }}
-            >
+            <div className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold bg-green-500">
               ✓
             </div>
-            <h1
-              className="text-3xl font-bold mb-3"
-              style={{ fontFamily: "Georgia, serif", color: "#1a2744" }}
-            >
+            <h1 className="text-3xl font-bold mb-3 font-display text-navy">
               {isConsent ? "Consent recorded!" : "You're on the map!"}
             </h1>
-            <p className="mb-8" style={{ color: "#4a5568" }}>
+            <p className="mb-8 text-[#4a5568]">
               {message}
             </p>
             <Link
               href="/map"
-              className="inline-block px-8 py-3 font-bold text-white uppercase tracking-widest text-sm"
-              style={{ background: "#D42B2B" }}
+              className="inline-block px-8 py-3 font-bold text-white uppercase tracking-widest text-sm bg-brand-red"
             >
               View the Map
             </Link>
@@ -94,25 +84,18 @@ export default function VerifyPage() {
 
         {status === "pending_consent" && (
           <>
-            <div
-              className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
-              style={{ background: "#f59e0b" }}
-            >
+            <div className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold bg-amber-400">
               ✓
             </div>
-            <h1
-              className="text-3xl font-bold mb-3"
-              style={{ fontFamily: "Georgia, serif", color: "#1a2744" }}
-            >
+            <h1 className="text-3xl font-bold mb-3 font-display text-navy">
               Email verified!
             </h1>
-            <p className="mb-8" style={{ color: "#4a5568" }}>
+            <p className="mb-8 text-[#4a5568]">
               {message}
             </p>
             <Link
               href="/"
-              className="inline-block px-8 py-3 font-bold uppercase tracking-widest text-sm"
-              style={{ background: "#f5f0e8", color: "#1a2744" }}
+              className="inline-block px-8 py-3 font-bold uppercase tracking-widest text-sm bg-cream text-navy"
             >
               Back to Home
             </Link>
@@ -121,25 +104,18 @@ export default function VerifyPage() {
 
         {status === "error" && (
           <>
-            <div
-              className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
-              style={{ background: "#D42B2B" }}
-            >
+            <div className="mx-auto mb-6 w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold bg-brand-red">
               ✗
             </div>
-            <h1
-              className="text-3xl font-bold mb-3"
-              style={{ fontFamily: "Georgia, serif", color: "#1a2744" }}
-            >
+            <h1 className="text-3xl font-bold mb-3 font-display text-navy">
               Verification failed
             </h1>
-            <p className="mb-8" style={{ color: "#4a5568" }}>
+            <p className="mb-8 text-[#4a5568]">
               {message}
             </p>
             <Link
               href="/submit"
-              className="inline-block px-8 py-3 font-bold uppercase tracking-widest text-sm"
-              style={{ background: "#1a2744", color: "#f5f0e8" }}
+              className="inline-block px-8 py-3 font-bold uppercase tracking-widest text-sm bg-navy text-cream"
             >
               Submit Again
             </Link>

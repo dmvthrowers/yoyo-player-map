@@ -62,11 +62,12 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
   return (
     <>
       {/* Filter panel */}
-      <div className="absolute bottom-4 right-4 z-[500] bg-cream border-2 border-navy shadow-lg">
+      <div className="absolute bottom-4 right-4 z-500 bg-cream border-2 border-navy shadow-lg">
         <button
           onClick={() => setFilterOpen((o) => !o)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
-          aria-expanded={filterOpen ? "true" : "false"}
+          aria-expanded={filterOpen}
+          aria-controls="filter-panel"
           aria-label={filterOpen ? t('map.collapseFilters') : t('map.expandFilters')}
         >
           <span className="text-xs font-bold uppercase tracking-wider flex-1">{t('map.filter')}</span>
@@ -80,15 +81,14 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
             strokeWidth={2.5}
             strokeLinecap="round"
             strokeLinejoin="round"
-            className={`flex-shrink-0 text-navy/50 transition-transform ${filterOpen ? 'rotate-180' : ''}`}
+            className={`shrink-0 text-navy/50 transition-transform ${filterOpen ? 'rotate-180' : ''}`}
             aria-hidden="true"
           >
             <path d="M6 9l6 6 6-6" />
           </svg>
         </button>
 
-        {filterOpen && (
-          <div className="px-3 pb-3 border-t border-navy/10">
+        <div id="filter-panel" className={`px-3 pb-3 border-t border-navy/10${filterOpen ? '' : ' hidden'}`}>
             <div className="mt-2 relative">
               <input
                 type="search"
@@ -121,7 +121,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                   onChange={() => toggleFilter('showPerson')}
                 />
                 <span className="flex items-center gap-1">
-                  <span className="inline-block w-3 h-3 rounded-full bg-[#D42B2B]" />
+                  <span className="inline-block w-3 h-3 rounded-full bg-brand-red" />
                   {t('map.people')}
                 </span>
               </label>
@@ -163,7 +163,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
               </p>
             )}
           </div>
-        )}
+        </div>
       </div>
 
       <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} />

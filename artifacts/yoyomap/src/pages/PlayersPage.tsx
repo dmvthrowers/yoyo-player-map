@@ -126,8 +126,8 @@ export default function PlayersPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <p className="eyebrow mb-2">Directory</p>
-      <h1 className="text-4xl mb-2" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>Yo-Yo Players Worldwide</h1>
-      <p className="mb-8" style={{ color: "#3a4a6a" }}>Browse players, shops, and clubs from around the world.</p>
+      <h1 className="text-4xl mb-2 text-navy-deep font-display">Yo-Yo Players Worldwide</h1>
+      <p className="mb-8 text-text-body">Browse players, shops, and clubs from around the world.</p>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 mb-4">
         <label className="block sm:col-span-2 lg:col-span-2">
@@ -182,7 +182,7 @@ export default function PlayersPage() {
         )}
       </div>
 
-      <div className="flex items-center justify-between mb-3 text-sm" style={{ color: "#6a7a9a" }}>
+      <div className="flex items-center justify-between mb-3 text-sm text-text-muted">
         <span>{filtered.length} {filtered.length === 1 ? "result" : "results"}</span>
         {isFiltered && (
           <button type="button" onClick={clearFilters} className="underline decoration-2 underline-offset-4 hover:text-brand-red transition-colors">
@@ -192,40 +192,39 @@ export default function PlayersPage() {
       </div>
 
       {loading ? (
-        <div className="card text-center py-12" style={{ color: "#6a7a9a" }}>Loading…</div>
+        <div className="card text-center py-12 text-text-muted">Loading…</div>
       ) : filtered.length === 0 ? (
-        <div className="card text-center py-12" style={{ color: "#6a7a9a" }}>
+        <div className="card text-center py-12 text-text-muted">
           No matches. Try clearing filters or a different search.
         </div>
       ) : (
         <>
-          <div className="hidden md:block overflow-x-auto border-2" style={{ borderColor: "rgba(26,39,68,0.2)" }}>
+          <div className="hidden md:block overflow-x-auto border-2 border-navy/20">
             <table className="w-full text-sm">
-              <thead style={{ backgroundColor: "#f0ebe0", color: "#0e1833" }}>
+              <thead className="bg-cream-mid text-navy-deep">
                 <tr>
-                  <th className="text-left px-3 py-2 font-normal" style={{ fontFamily: "Georgia, serif" }}>Name</th>
-                  <th className="text-left px-3 py-2 font-normal" style={{ fontFamily: "Georgia, serif" }}>Type</th>
-                  <th className="text-left px-3 py-2 font-normal" style={{ fontFamily: "Georgia, serif" }}>City</th>
-                  <th className="text-left px-3 py-2 font-normal" style={{ fontFamily: "Georgia, serif" }}>Region</th>
-                  <th className="text-left px-3 py-2 font-normal" style={{ fontFamily: "Georgia, serif" }}>Country</th>
+                  <th className="text-left px-3 py-2 font-normal font-display">Name</th>
+                  <th className="text-left px-3 py-2 font-normal font-display">Type</th>
+                  <th className="text-left px-3 py-2 font-normal font-display">City</th>
+                  <th className="text-left px-3 py-2 font-normal font-display">Region</th>
+                  <th className="text-left px-3 py-2 font-normal font-display">Country</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((e) => (
-                  <tr key={e.id} className="border-t" style={{ borderColor: "rgba(26,39,68,0.1)" }}>
+                  <tr key={e.id} className="border-t border-navy/10">
                     <td className="px-3 py-2">
                       <Link
                         href={`/map`}
                         className="underline decoration-2 underline-offset-4 hover:text-brand-red transition-colors"
-                        style={{ color: "inherit" }}
                       >
                         {e.display_name}
                       </Link>
                     </td>
-                    <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{TYPE_LABEL[e.entity_type]}</td>
+                    <td className="px-3 py-2 text-text-muted">{TYPE_LABEL[e.entity_type]}</td>
                     <td className="px-3 py-2">{e.city}</td>
-                    <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{e.region || "—"}</td>
-                    <td className="px-3 py-2" style={{ color: "#6a7a9a" }}>{displayCountry(e)}</td>
+                    <td className="px-3 py-2 text-text-muted">{e.region || "—"}</td>
+                    <td className="px-3 py-2 text-text-muted">{displayCountry(e)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -237,10 +236,10 @@ export default function PlayersPage() {
               <li key={e.id}>
                 <div className="card block">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className="text-lg font-black" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>{e.display_name}</p>
+                    <p className="text-lg font-black text-navy-deep font-display">{e.display_name}</p>
                     <span className="eyebrow text-xs">{TYPE_LABEL[e.entity_type]}</span>
                   </div>
-                  <p className="text-sm mt-1" style={{ color: "#6a7a9a" }}>
+                  <p className="text-sm mt-1 text-text-muted">
                     {[e.city, e.region, displayCountry(e)].filter(Boolean).join(", ")}
                   </p>
                 </div>

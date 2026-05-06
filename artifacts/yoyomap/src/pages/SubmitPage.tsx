@@ -138,12 +138,11 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
         title="City"
       />
       {show && filtered.length > 0 && (
-        <ul className="absolute z-10 bg-white border w-full max-h-48 overflow-auto" style={{ borderColor: "#d4cebc" }}>
+        <ul className="absolute z-10 bg-white border border-hairline w-full max-h-48 overflow-auto">
           {filtered.slice(0, 10).map((c) => (
             <li
               key={c.id}
-              className="px-3 py-1.5 hover:bg-cream-mid cursor-pointer text-sm"
-              style={{ color: "#0e1833" }}
+              className="px-3 py-1.5 hover:bg-cream-mid cursor-pointer text-sm text-navy-deep"
               onMouseDown={() => { setCityId(c.id); setInput(c.name); setShow(false); }}
             >
               {c.name}
@@ -156,8 +155,7 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
           type="button"
           disabled={adding}
           onClick={addCity}
-          className="text-xs mt-1 block"
-          style={{ color: "#D42B2B" }}
+          className="text-xs mt-1 block text-brand-red"
         >
           {adding ? "Adding…" : `Add "${input.trim()}"`}
         </button>
@@ -274,10 +272,10 @@ export default function SubmitPage() {
   if (result?.ok) {
     return (
       <div className="max-w-xl mx-auto px-4 py-16 text-center">
-        <h1 className="text-3xl mb-4" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>Check Your Email</h1>
-        <p className="mb-6" style={{ color: "#3a4a6a" }}>{result.message}</p>
+        <h1 className="text-3xl mb-4 font-display text-navy-deep">Check Your Email</h1>
+        <p className="mb-6 text-text-body">{result.message}</p>
         {isMinor && (
-          <p className="text-sm p-3 mb-4" style={{ backgroundColor: "#F9D0D4", color: "#0e1833" }}>
+          <p className="text-sm p-3 mb-4 bg-[#F9D0D4] text-navy-deep">
             A consent email has been sent to your parent or guardian. They must approve before your entry goes live.
           </p>
         )}
@@ -290,8 +288,8 @@ export default function SubmitPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 py-12">
         <p className="eyebrow mb-2">Add to Map</p>
-        <h1 className="text-4xl mb-2" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>What are you adding?</h1>
-        <p className="mb-6" style={{ color: "#3a4a6a" }}>Choose a type to continue.</p>
+        <h1 className="text-4xl mb-2 font-display text-navy-deep">What are you adding?</h1>
+        <p className="mb-6 text-text-body">Choose a type to continue.</p>
         <div className="grid gap-4 md:grid-cols-3">
           {(["person", "shop", "club"] as const).map((type) => {
             const info = {
@@ -303,12 +301,11 @@ export default function SubmitPage() {
               <button
                 key={type}
                 onClick={() => up("entityType", type)}
-                className="card text-left hover:border-brand-red transition-colors cursor-pointer"
-                style={{ borderColor: "#d4cebc" }}
+                className="card text-left hover:border-brand-red transition-colors cursor-pointer border-hairline"
               >
                 <div className="text-3xl mb-3">{info[type].icon}</div>
-                <h2 className="font-bold mb-1" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>{info[type].title}</h2>
-                <p className="text-sm" style={{ color: "#3a4a6a" }}>{info[type].description}</p>
+                <h2 className="font-bold mb-1 font-display text-navy-deep">{info[type].title}</h2>
+                <p className="text-sm text-text-body">{info[type].description}</p>
               </button>
             );
           })}
@@ -319,21 +316,21 @@ export default function SubmitPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-12">
-      <button type="button" onClick={() => up("entityType", "")} className="text-sm mb-4" style={{ color: "#D42B2B" }}>
+      <button type="button" onClick={() => up("entityType", "")} className="text-sm mb-4 text-brand-red">
         ← Change type
       </button>
-      <h1 className="text-4xl mb-6" style={{ color: "#0e1833", fontFamily: "Georgia, serif" }}>
+      <h1 className="text-4xl mb-6 font-display text-navy-deep">
         Add a {form.entityType === "person" ? "Person" : form.entityType === "shop" ? "Shop" : "Club"}
       </h1>
 
       <form onSubmit={onSubmit} className="space-y-6">
         {result && !result.ok && (
-          <div className="border-2 p-3 text-sm" style={{ borderColor: "#D42B2B", backgroundColor: "rgba(212,43,43,0.05)" }}>
+          <div className="border-2 border-brand-red p-3 text-sm bg-brand-red/5">
             {result.message}
           </div>
         )}
 
-        <div style={{ display: "none" }}>
+        <div hidden>
           <input value={form.honeypot} onChange={(e) => up("honeypot", e.target.value)} aria-label="Leave blank" title="Leave blank" placeholder="Leave blank" />
         </div>
 
@@ -359,7 +356,7 @@ export default function SubmitPage() {
                   13–17
                 </label>
               </div>
-              {errors.ageBand && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.ageBand}</p>}
+              {errors.ageBand && <p className="text-xs mt-1 text-brand-red">{errors.ageBand}</p>}
             </div>
           )}
         </div>
@@ -377,7 +374,7 @@ export default function SubmitPage() {
               <option value="">Select country</option>
               {countries.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
-            {errors.country_id && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.country_id}</p>}
+            {errors.country_id && <p className="text-xs mt-1 text-brand-red">{errors.country_id}</p>}
           </div>
           {regions.length > 0 && (
             <div>
@@ -401,22 +398,22 @@ export default function SubmitPage() {
               cityId={form.city_id}
               setCityId={(id) => { up("city_id", id); if (id) setErrors((e) => { const n = { ...e }; delete n.city_id; return n; }); }}
             />
-            {errors.city_id && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.city_id}</p>}
+            {errors.city_id && <p className="text-xs mt-1 text-brand-red">{errors.city_id}</p>}
           </div>
         </div>
 
         {isMinor && (
-          <div className="card space-y-4" style={{ backgroundColor: "#F9D0D4" }}>
-            <h2 className="text-xl" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Parent / Guardian Information</h2>
+          <div className="card space-y-4 bg-[#F9D0D4]">
+            <h2 className="text-xl font-display text-navy-deep">Parent / Guardian Information</h2>
             <div>
               <label className="label">Parent / Guardian Name</label>
               <input className="input" value={form.parentName} onChange={(e) => up("parentName", e.target.value)} title="Parent name" />
-              {errors.parentName && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.parentName}</p>}
+              {errors.parentName && <p className="text-xs mt-1 text-brand-red">{errors.parentName}</p>}
             </div>
             <div>
               <label className="label">Parent / Guardian Email</label>
               <input className="input" type="email" value={form.parentEmail} onChange={(e) => up("parentEmail", e.target.value)} title="Parent email" />
-              {errors.parentEmail && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.parentEmail}</p>}
+              {errors.parentEmail && <p className="text-xs mt-1 text-brand-red">{errors.parentEmail}</p>}
             </div>
             <div>
               <label className="label">Relationship</label>
@@ -425,23 +422,23 @@ export default function SubmitPage() {
                 <option value="parent">Parent</option>
                 <option value="legal guardian">Legal Guardian</option>
               </select>
-              {errors.relationship && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.relationship}</p>}
+              {errors.relationship && <p className="text-xs mt-1 text-brand-red">{errors.relationship}</p>}
             </div>
           </div>
         )}
 
         {form.entityType === "shop" && (
           <div className="card space-y-4">
-            <h2 className="text-lg font-semibold" style={{ color: "#0e1833" }}>Shop Details</h2>
+            <h2 className="text-lg font-semibold text-navy-deep">Shop Details</h2>
             <div>
               <label className="label">Contact Name</label>
               <input className="input" value={form.contactName} onChange={(e) => up("contactName", e.target.value)} title="Contact name" />
-              {errors.contactName && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.contactName}</p>}
+              {errors.contactName && <p className="text-xs mt-1 text-brand-red">{errors.contactName}</p>}
             </div>
             <div>
               <label className="label">Street Address</label>
               <input className="input" value={form.addressLine} onChange={(e) => up("addressLine", e.target.value)} title="Street address" />
-              {errors.addressLine && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.addressLine}</p>}
+              {errors.addressLine && <p className="text-xs mt-1 text-brand-red">{errors.addressLine}</p>}
             </div>
             <div>
               <label className="label">Postal / ZIP Code</label>
@@ -456,23 +453,23 @@ export default function SubmitPage() {
 
         {form.entityType === "club" && (
           <div className="card space-y-4">
-            <h2 className="text-lg font-semibold" style={{ color: "#0e1833" }}>Club Details</h2>
+            <h2 className="text-lg font-semibold text-navy-deep">Club Details</h2>
             <div>
               <label className="label">Contact Name</label>
               <input className="input" value={form.contactName} onChange={(e) => up("contactName", e.target.value)} title="Contact name" />
-              {errors.contactName && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.contactName}</p>}
+              {errors.contactName && <p className="text-xs mt-1 text-brand-red">{errors.contactName}</p>}
             </div>
             <div>
               <label className="label">Meeting Schedule &amp; Info</label>
               <textarea className="input" rows={4} placeholder="When, where, and how often you meet" value={form.clubMeetingInfo} onChange={(e) => up("clubMeetingInfo", e.target.value)} title="Meeting info" />
-              {errors.clubMeetingInfo && <p className="text-xs mt-1" style={{ color: "#D42B2B" }}>{errors.clubMeetingInfo}</p>}
+              {errors.clubMeetingInfo && <p className="text-xs mt-1 text-brand-red">{errors.clubMeetingInfo}</p>}
             </div>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" checked={form.clubVenuePublic} onChange={(e) => up("clubVenuePublic", e.target.checked)} />
               Share venue address publicly on the map
             </label>
             {form.clubVenuePublic && (
-              <div className="space-y-3 pl-4 border-l-2" style={{ borderColor: "rgba(212,43,43,0.3)" }}>
+              <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
                 <div>
                   <label className="label">Venue Street Address</label>
                   <input className="input" value={form.venueAddressLine} onChange={(e) => up("venueAddressLine", e.target.value)} title="Venue address" />
@@ -515,14 +512,14 @@ export default function SubmitPage() {
           </label>
           <label className="flex items-start gap-2 text-sm cursor-pointer">
             <input type="checkbox" className="mt-0.5" checked={form.consentPrivacy} onChange={(e) => up("consentPrivacy", e.target.checked)} />
-            <span>I have read and accept the <Link href="/legal/privacy" className="underline" style={{ color: "#D42B2B" }}>Privacy Policy</Link>.</span>
+            <span>I have read and accept the <Link href="/legal/privacy" className="underline text-brand-red">Privacy Policy</Link>.</span>
           </label>
           <label className="flex items-start gap-2 text-sm cursor-pointer">
             <input type="checkbox" className="mt-0.5" checked={form.consentTerms} onChange={(e) => up("consentTerms", e.target.checked)} />
-            <span>I agree to the <Link href="/legal/terms" className="underline" style={{ color: "#D42B2B" }}>Terms of Service</Link>.</span>
+            <span>I agree to the <Link href="/legal/terms" className="underline text-brand-red">Terms of Service</Link>.</span>
           </label>
           {(errors.consentPublic || errors.consentPrivacy || errors.consentTerms || errors.authorizedRep) && (
-            <p className="text-xs" style={{ color: "#D42B2B" }}>
+            <p className="text-xs text-brand-red">
               {errors.consentPublic || errors.consentPrivacy || errors.consentTerms || errors.authorizedRep}
             </p>
           )}

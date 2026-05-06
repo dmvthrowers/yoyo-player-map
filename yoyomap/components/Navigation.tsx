@@ -7,7 +7,6 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const ariaExpanded = menuOpen ? 'true' : 'false';
   const t = useTranslations();
   const close = () => setMenuOpen(false);
 
@@ -69,7 +68,7 @@ export default function Navigation() {
           <button
             type="button"
             className="md:hidden p-2 -mr-1 text-navy-deep"
-            aria-expanded={ariaExpanded ? "true" : "false"}
+            aria-expanded={menuOpen}
             aria-controls="mobile-menu"
             aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
             onClick={() => setMenuOpen((o) => !o)}
@@ -86,9 +85,8 @@ export default function Navigation() {
           </button>
         </div>
 
-        {/* Mobile dropdown — only rendered when open */}
-        {menuOpen && (
-          <div id="mobile-menu" className="md:hidden border-t bg-cream px-4 pb-4 pt-2">
+        {/* Mobile dropdown — always rendered for aria-controls */}
+        <div id="mobile-menu" className={`md:hidden border-t bg-cream px-4 pb-4 pt-2${menuOpen ? '' : ' hidden'}`}>
             <ul className="flex flex-col">
               <li><Link href="/map" className="nav-link block py-2" onClick={close}>{t('nav.map')}</Link></li>
               <li><Link href="/players" className="nav-link block py-2" onClick={close}>{t('nav.players')}</Link></li>
@@ -120,7 +118,7 @@ export default function Navigation() {
               <LanguageSwitcher />
             </div>
           </div>
-        )}
+        </div>
       </nav>
     </>
   );

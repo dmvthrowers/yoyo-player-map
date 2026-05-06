@@ -72,25 +72,19 @@ export default function MapPage() {
   );
 
   return (
-    <div className="flex flex-col" style={{ height: "calc(100vh - 120px)" }}>
+    <div className="flex flex-col h-[calc(100vh-120px)]">
       <div className="flex flex-1 overflow-hidden">
         <aside
-          className="flex-shrink-0 overflow-y-auto border-r"
-          style={{
-            width: filtersOpen ? 280 : 48,
-            transition: "width 0.2s",
-            borderColor: "#d4cebc",
-            backgroundColor: "#f5f0e8",
-          }}
+          className="shrink-0 overflow-y-auto border-r border-hairline bg-cream"
+          style={{ width: filtersOpen ? 280 : 48, transition: "width 0.2s" }}
         >
           {filtersOpen ? (
             <div className="p-4">
               <div className="flex items-center justify-between mb-4">
-                <p className="font-bold text-sm uppercase tracking-wider" style={{ color: "#0e1833" }}>Filters</p>
+                <p className="font-bold text-sm uppercase tracking-wider text-navy-deep">Filters</p>
                 <button
                   onClick={() => setFiltersOpen(false)}
-                  className="text-xs"
-                  style={{ color: "#6a7a9a" }}
+                  className="text-xs text-text-muted"
                   aria-label="Collapse filters"
                 >
                   ‹
@@ -98,7 +92,7 @@ export default function MapPage() {
               </div>
 
               <div className="relative mb-4">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#6a7a9a" }}>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
                   <SearchIcon />
                 </span>
                 <input
@@ -130,50 +124,49 @@ export default function MapPage() {
                 ))}
               </div>
 
-              <div className="pt-3 border-t text-xs" style={{ borderColor: "#d4cebc", color: "#3a4a6a" }}>
+              <div className="pt-3 border-t border-hairline text-xs text-text-body">
                 <p className="mb-1">
                   <strong>{counts.person}</strong> players · <strong>{counts.shop}</strong> shops · <strong>{counts.club}</strong> clubs
                 </p>
-                <p style={{ color: "#6a7a9a" }}>
+                <p className="text-text-muted">
                   {filtered.length} visible
                 </p>
               </div>
 
-              <div className="pt-4 mt-4 border-t text-xs space-y-1" style={{ borderColor: "#d4cebc" }}>
-                <p className="font-bold uppercase tracking-wider mb-2" style={{ color: "#0e1833" }}>Legend</p>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#3b82f6" }} /><span>Player</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#D42B2B" }} /><span>Shop</span></div>
-                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full" style={{ backgroundColor: "#22c55e" }} /><span>Club</span></div>
+              <div className="pt-4 mt-4 border-t border-hairline text-xs space-y-1">
+                <p className="font-bold uppercase tracking-wider mb-2 text-navy-deep">Legend</p>
+                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-blue-500" /><span>Player</span></div>
+                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-brand-red" /><span>Shop</span></div>
+                <div className="flex items-center gap-2"><span className="w-3 h-3 rounded-full bg-green-500" /><span>Club</span></div>
               </div>
             </div>
           ) : (
             <div className="flex flex-col items-center pt-4 gap-3">
               <button
                 onClick={() => setFiltersOpen(true)}
-                style={{ color: "#6a7a9a" }}
+                className="text-sm text-text-muted"
                 aria-label="Expand filters"
-                className="text-sm"
               >
                 ›
               </button>
-              <span className="text-xs" style={{ color: "#6a7a9a", writingMode: "vertical-rl" }}>Filters</span>
+              <span className="text-xs text-text-muted [writing-mode:vertical-rl]">Filters</span>
             </div>
           )}
         </aside>
 
         <div className="flex-1 relative">
           {loading && (
-            <div className="absolute inset-0 flex items-center justify-center" style={{ backgroundColor: "#f5f0e8", zIndex: 10 }}>
-              <p className="text-sm" style={{ color: "#6a7a9a" }}>Loading map…</p>
+            <div className="absolute inset-0 flex items-center justify-center bg-cream z-10">
+              <p className="text-sm text-text-muted">Loading map…</p>
             </div>
           )}
           {error && (
             <div className="absolute inset-0 flex items-center justify-center">
-              <p className="text-sm" style={{ color: "#D42B2B" }}>{error}</p>
+              <p className="text-sm text-brand-red">{error}</p>
             </div>
           )}
           {!loading && !error && (
-            <Suspense fallback={<div className="flex items-center justify-center h-full text-sm" style={{ color: "#6a7a9a" }}>Loading map…</div>}>
+            <Suspense fallback={<div className="flex items-center justify-center h-full text-sm text-text-muted">Loading map…</div>}>
               <MapClient entries={filtered} />
             </Suspense>
           )}

@@ -51,8 +51,8 @@ export default function ReportPage() {
     return (
       <div className="max-w-xl mx-auto px-4 py-12">
         <div className="card text-center">
-          <h1 className="text-3xl mb-4" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Thanks for letting us know</h1>
-          <p className="mb-6" style={{ color: "#3a4a6a" }}>
+          <h1 className="text-3xl mb-4 font-display text-navy-deep">Thanks for letting us know</h1>
+          <p className="mb-6 text-text-body">
             We review every report. The entry will be hidden immediately while we investigate if the report involves safety concerns.
           </p>
           <Link href="/map" className="btn-ghost inline-block">Back to map</Link>
@@ -64,8 +64,8 @@ export default function ReportPage() {
   return (
     <div className="max-w-xl mx-auto px-4 py-12">
       <form onSubmit={submit} className="card space-y-4">
-        <h1 className="text-3xl" style={{ fontFamily: "Georgia, serif", color: "#0e1833" }}>Report an Entry</h1>
-        <p className="text-sm" style={{ color: "#6a7a9a" }}>
+        <h1 className="text-3xl font-display text-navy-deep">Report an Entry</h1>
+        <p className="text-sm text-text-muted">
           If an entry on the map is unsafe, inaccurate, or inappropriate, tell us here.
         </p>
 
@@ -102,14 +102,14 @@ export default function ReportPage() {
           />
         </div>
 
-        {error && <p className="text-sm" style={{ color: "#D42B2B" }}>{error}</p>}
+        {error && <p className="text-sm text-brand-red">{error}</p>}
 
         <button type="submit" className="btn-primary w-full" disabled={loading}>
           {loading ? "Submitting…" : "Submit Report"}
         </button>
 
         <div className="text-center">
-          <Link href="/map" className="text-sm underline" style={{ color: "#6a7a9a" }}>Cancel</Link>
+          <Link href="/map" className="text-sm underline text-text-muted">Cancel</Link>
         </div>
       </form>
     </div>
