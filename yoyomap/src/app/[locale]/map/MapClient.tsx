@@ -163,7 +163,6 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
               </p>
             )}
           </div>
-        </div>
       </div>
 
       <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} />
