@@ -8,12 +8,12 @@ module.exports = {
     extend: {
       colors: {
         // DMV Throwers brand palette — matches dmvthrowers.club
-        'brand-red': '#D42B2B',
-        'brand-red-dark': '#b01f1f',
-        'navy': '#1a2744',
+        'brand-red': '#B80000',
+        'brand-red-dark': '#9c0000',
+        'navy': '#102040',
         'navy-deep': '#0e1833',
         'dark-navy': '#0e1833',
-        'cream': '#f5f0e8',
+        'cream': '#fffdfa',
         'cream-mid': '#f0ebe0',
         'hairline': '#d4cebc',
         'text-body': '#3a4a6a',

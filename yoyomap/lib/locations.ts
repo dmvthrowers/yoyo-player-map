@@ -60,6 +60,20 @@ export function canonicalRegionName(input: string | null | undefined): string {
   const slug = slugify(input);
   return REGION_NORMALIZATION[slug] || input;
 }
+
+// Returns true if a region name/slug is structurally invalid (numeric-only,
+// too short, pure punctuation). Mirrors the DB CHECK constraint added in v18.
+// Use this to refuse to render broken region pages on the public site even if
+// junk somehow slips into the data layer.
+export function isJunkRegion(input: string | null | undefined): boolean {
+  if (input === null || input === undefined) return false; // null = "no region", not junk
+  const trimmed = String(input).trim();
+  if (trimmed.length < 2) return true;
+  if (/^[0-9]+$/.test(trimmed)) return true;
+  if (/^[\p{P}\s]+$/u.test(trimmed)) return true;
+  return false;
+}
+
 // Country normalization map: maps all known codes/variants to canonical display name
 const COUNTRY_NORMALIZATION: Record<string, string> = {
   us: 'United States',

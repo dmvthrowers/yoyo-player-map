@@ -538,7 +538,7 @@ function Stat({ label, value, color, icon }: { label: string; value: number; col
 function EntityTypeBadge({ type, verified }: { type: AdminEntry['entity_type']; verified?: boolean }) {
   const entityType = type || 'person';
   const colors = {
-    person: 'bg-[#D42B2B]/10 text-[#D42B2B]',
+    person: 'bg-[#B80000]/10 text-[#B80000]',
     shop: 'bg-[#2E8B57]/10 text-[#2E8B57]',
     club: 'bg-[#1B2A49]/10 text-[#1B2A49]',
   };
