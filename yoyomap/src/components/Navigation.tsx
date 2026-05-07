@@ -98,7 +98,6 @@ export default function Navigation() {
               </li>
             </ul>
           </div>
-        </div>
       </nav>
     </>
   );

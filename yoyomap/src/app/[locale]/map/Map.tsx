@@ -75,7 +75,8 @@ function useEntryDetail(id: string) {
       controller.abort();
       clearTimeout(timeout);
     };
-  }, [id, attempt]); // removed 'detail' — avoids extra runs
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, attempt]);
 
   return { detail, loading, error, retry: () => setAttempt((n) => n + 1) };
 }
