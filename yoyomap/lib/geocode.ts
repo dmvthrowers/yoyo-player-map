@@ -175,7 +175,9 @@ export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeRes
       freeform.searchParams.set('format', 'json');
       freeform.searchParams.set('limit', '5');
       freeform.searchParams.set('addressdetails', '1');
-      freeform.searchParams.set('featuretype', 'city');
+      // Do not set featuretype=city: city-states (Berlin, Singapore) are
+      // returned as addresstype "administrative" and would be excluded.
+      // pickCityHit handles filtering to settlement-level types.
       hit = pickCityHit(await fetchNominatim(freeform));
     }
 
