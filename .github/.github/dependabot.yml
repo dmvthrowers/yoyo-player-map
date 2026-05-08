@@ -1,0 +1,52 @@
+version: 2
+
+updates:
+  # ── Root pnpm workspace (lib/*, artifacts/*, scripts) ──────────────────
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+
+  # ── yoyomap standalone Next.js app ─────────────────────────────────────
+  # GitHub Actions — keep all workflow actions up to date.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+
+  # npm — yoyomap standalone app.
+  - package-ecosystem: npm
+    directory: /yoyomap
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+
+  # ── GitHub Actions ──────────────────────────────────────────────────────
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    labels:
+      - dependencies
+    # Group all non-breaking (patch + minor) updates into one PR to reduce
+    # noise; breaking (major) changes get their own PR so they're reviewed
+    # individually.
+    groups:
+      patch-and-minor:
+        update-types:
+          - patch
+          - minor
