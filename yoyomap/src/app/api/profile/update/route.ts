@@ -37,7 +37,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   let body: unknown;
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = updateSchema.safeParse(body);
-  if (!parsed.success) return apiError('bad_request', parsed.error.errors[0]?.message || 'Invalid input.', requestId);
+  if (!parsed.success) return apiError('bad_request', parsed.error.issues[0]?.message || 'Invalid input.', requestId);
 
   const supabase = createAdminClient();
   const { data: tok } = await supabase

@@ -330,7 +330,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const parsed = createCitySchema.safeParse(body);
   if (!parsed.success) {
-    return apiError('bad_request', parsed.error.errors[0]?.message || 'Invalid city.', requestId);
+    return apiError('bad_request', parsed.error.issues[0]?.message || 'Invalid city.', requestId);
   }
 
   const { name, countryId, regionId } = parsed.data;

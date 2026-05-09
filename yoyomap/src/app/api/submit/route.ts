@@ -69,7 +69,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     if (legacyParsed.success) {
       data = { ...legacyParsed.data, entityType: 'person' } as PersonInput;
     } else {
-      const firstError = parsed.error.errors[0];
+      const firstError = parsed.error.issues[0];
       return apiError('bad_request', firstError?.message || 'Invalid submission.', requestId);
     }
   }
