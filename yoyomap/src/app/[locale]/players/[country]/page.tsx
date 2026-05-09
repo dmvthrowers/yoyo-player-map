@@ -1,7 +1,7 @@
 import { Link } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCountry, listLocations, canonicalName, canonicalCountryName } from '@/lib/locations';
+import { entriesInCountry, listLocations, canonicalName, canonicalCountryName, canonicalRegionName, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 import { getTranslations } from 'next-intl/server';
@@ -45,11 +45,12 @@ export default async function Page({ params }: { params: Promise<{ country: stri
   if (allEntries.length === 0) notFound();
   const name = canonicalName(allEntries, 'country') ?? country;
 
-  // Group by region
+  // Group by region. Junk regions (numeric OSM IDs etc.) are treated as no region.
   const regions = new Map<string, { name: string; count: number }>();
   for (const e of allEntries) {
-    const regionLabel = e.region ?? t('players.unspecified');
-    const slug = e.region ? slugify(e.region) : '_other';
+    const effectiveRegion = isJunkRegion(e.region) ? null : e.region;
+    const regionLabel = effectiveRegion ? canonicalRegionName(effectiveRegion) : t('players.unspecified');
+    const slug = effectiveRegion ? slugify(canonicalRegionName(effectiveRegion)) : '_other';
     const cur = regions.get(slug);
     if (cur) cur.count += 1;
     else regions.set(slug, { name: regionLabel, count: 1 });
