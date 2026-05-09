@@ -81,6 +81,16 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
       );
   }, [entries, type, country, region, deferredQuery]);
 
+  const filteredDisplay = useMemo(() => {
+    return filtered.map((e) => {
+      const countryName = canonicalCountryName(e.country);
+      const junk = isJunkRegion(e.region);
+      const regionName = junk ? '' : canonicalRegionName(e.region);
+      const href = locationPath(countryName, junk ? '_other' : (e.region || '_other'), e.city);
+      return { ...e, countryName, regionName, href };
+    });
+  }, [filtered]);
+
   const isFiltered =
     query !== '' || type !== 'all' || country !== 'all' || region !== 'all';
 
@@ -191,21 +201,18 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((e) => {
-                  const countryName = canonicalCountryName(e.country);
-                  const regionName = isJunkRegion(e.region) ? '' : canonicalRegionName(e.region);
-                  const href = locationPath(countryName, isJunkRegion(e.region) ? '_other' : (e.region || '_other'), e.city);
+                {filteredDisplay.map((e) => {
                   return (
                     <tr key={e.id} className="border-t border-navy/10 hover:bg-cream-mid/50">
                       <td className="px-3 py-2">
-                        <Link href={href} className="underline decoration-2 underline-offset-4 hover:text-brand-red">
+                        <Link href={e.href} className="underline decoration-2 underline-offset-4 hover:text-brand-red">
                           {e.display_name}
                         </Link>
                       </td>
                       <td className="px-3 py-2 text-navy/70">{t(TYPE_LABEL_KEY[e.entity_type])}</td>
                       <td className="px-3 py-2">{e.city}</td>
-                      <td className="px-3 py-2 text-navy/70">{regionName || '—'}</td>
-                      <td className="px-3 py-2 text-navy/70">{countryName}</td>
+                      <td className="px-3 py-2 text-navy/70">{e.regionName || '—'}</td>
+                      <td className="px-3 py-2 text-navy/70">{e.countryName}</td>
                     </tr>
                   );
                 })}
@@ -215,19 +222,16 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
 
           {/* Mobile cards */}
           <ul className="md:hidden grid gap-3">
-            {filtered.map((e) => {
-              const countryName = canonicalCountryName(e.country);
-              const regionName = isJunkRegion(e.region) ? '' : canonicalRegionName(e.region);
-              const href = locationPath(countryName, isJunkRegion(e.region) ? '_other' : (e.region || '_other'), e.city);
+            {filteredDisplay.map((e) => {
               return (
                 <li key={e.id}>
-                  <Link href={href} className="card block hover:border-brand-red transition-colors">
+                  <Link href={e.href} className="card block hover:border-brand-red transition-colors">
                     <div className="flex items-baseline justify-between gap-2">
                       <p className="font-display text-lg text-navy-deep">{e.display_name}</p>
                       <span className="eyebrow text-brand-red text-xs">{t(TYPE_LABEL_KEY[e.entity_type])}</span>
                     </div>
                     <p className="text-sm text-navy/70 mt-1">
-                      {[e.city, regionName, countryName].filter(Boolean).join(', ')}
+                      {[e.city, e.regionName, e.countryName].filter(Boolean).join(', ')}
                     </p>
                   </Link>
                 </li>
