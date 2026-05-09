@@ -4,7 +4,7 @@ import { useMemo, useState, useDeferredValue } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import type { PublicEntry } from '@/lib/locations';
-import { canonicalCountryName, canonicalRegionName } from '@/lib/locations';
+import { canonicalCountryName, canonicalRegionName, isJunkRegion } from '@/lib/locations';
 import { locationPath } from '@/lib/locationSlug';
 
 const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typePerson' | 'typeShop' | 'typeClub'> = {
@@ -63,6 +63,7 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
     const set = new Map<string, string>();
     for (const e of entries) {
       if (country !== 'all' && canonicalCountryName(e.country) !== country) continue;
+      if (isJunkRegion(e.region)) continue;
       const name = canonicalRegionName(e.region);
       if (name) set.set(name, name);
     }
@@ -192,8 +193,8 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
               <tbody>
                 {filtered.map((e) => {
                   const countryName = canonicalCountryName(e.country);
-                  const regionName = canonicalRegionName(e.region);
-                  const href = locationPath(countryName, e.region || '_other', e.city);
+                  const regionName = isJunkRegion(e.region) ? '' : canonicalRegionName(e.region);
+                  const href = locationPath(countryName, isJunkRegion(e.region) ? '_other' : (e.region || '_other'), e.city);
                   return (
                     <tr key={e.id} className="border-t border-navy/10 hover:bg-cream-mid/50">
                       <td className="px-3 py-2">
@@ -216,8 +217,8 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
           <ul className="md:hidden grid gap-3">
             {filtered.map((e) => {
               const countryName = canonicalCountryName(e.country);
-              const regionName = canonicalRegionName(e.region);
-              const href = locationPath(countryName, e.region || '_other', e.city);
+              const regionName = isJunkRegion(e.region) ? '' : canonicalRegionName(e.region);
+              const href = locationPath(countryName, isJunkRegion(e.region) ? '_other' : (e.region || '_other'), e.city);
               return (
                 <li key={e.id}>
                   <Link href={href} className="card block hover:border-brand-red transition-colors">
