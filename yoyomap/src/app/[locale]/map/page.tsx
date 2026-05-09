@@ -79,7 +79,7 @@ export default async function MapPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-180px)] relative">
+    <div className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-88px)] relative">
       <MapInfoPanel counts={counts} />
       <Suspense fallback={<div className="p-8">Loading map...</div>}>
         <MapClient entries={entries} />

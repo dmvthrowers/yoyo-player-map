@@ -16,20 +16,23 @@ export function revalidateEntryLocations(loc: {
   city?: string | null;
 }) {
   // Always invalidate the global views.
-  revalidatePath('/map');
-  revalidatePath('/players');
+  // Paths must include the [locale] dynamic segment so Next.js invalidates all
+  // locale variants (e.g. /en/map, /ja/map). revalidatePath('[locale]/x', 'page')
+  // acts as a wildcard that matches every value of [locale].
+  revalidatePath('/[locale]/map', 'page');
+  revalidatePath('/[locale]/players', 'page');
   revalidatePath('/sitemap.xml');
 
   if (!loc.country) return;
   const c = slugify(loc.country);
   if (!c) return;
-  revalidatePath(`/players/${c}`);
+  revalidatePath(`/[locale]/players/${c}`, 'page');
   if (!loc.region) return;
   const r = slugify(loc.region);
   if (!r) return;
-  revalidatePath(`/players/${c}/${r}`);
+  revalidatePath(`/[locale]/players/${c}/${r}`, 'page');
   if (!loc.city) return;
   const ci = slugify(loc.city);
   if (!ci) return;
-  revalidatePath(`/players/${c}/${r}/${ci}`);
+  revalidatePath(`/[locale]/players/${c}/${r}/${ci}`, 'page');
 }
