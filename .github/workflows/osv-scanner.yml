@@ -13,15 +13,17 @@ name: OSV-Scanner
 
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
   merge_group:
-    branches: [ "main" ]
+    branches: ["main"]
   schedule:
-    - cron: '45 6 * * 6'
+    - cron: "45 6 * * 6"
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
+  # Required by the reusable OSV workflow to inspect workflow runs/artifacts
+  actions: read
   # Require writing security events to upload SARIF file to security tab
   security-events: write
   # Read commit contents
