@@ -1,4 +1,5 @@
 import { revalidatePath } from 'next/cache';
+import { routing } from '../i18n/routing';
 import { slugify } from './locationSlug';
 
 /**
@@ -15,10 +16,9 @@ export function revalidateEntryLocations(loc: {
   region?: string | null;
   city?: string | null;
 }) {
-  // Always invalidate the global views.
-  // Paths must include the [locale] dynamic segment so Next.js invalidates all
-  // locale variants (e.g. /en/map, /ja/map). revalidatePath('[locale]/x', 'page')
-  // acts as a wildcard that matches every value of [locale].
+  // Global views: /[locale]/map and /[locale]/players.
+  // revalidatePath('/[locale]/path', 'page') uses the bracket syntax as a wildcard
+  // so Next.js invalidates every locale variant (e.g. /en/map, /ja/map).
   revalidatePath('/[locale]/map', 'page');
   revalidatePath('/[locale]/players', 'page');
   revalidatePath('/sitemap.xml');
@@ -26,13 +26,18 @@ export function revalidateEntryLocations(loc: {
   if (!loc.country) return;
   const c = slugify(loc.country);
   if (!c) return;
-  revalidatePath(`/[locale]/players/${c}`, 'page');
-  if (!loc.region) return;
-  const r = slugify(loc.region);
-  if (!r) return;
-  revalidatePath(`/[locale]/players/${c}/${r}`, 'page');
-  if (!loc.city) return;
-  const ci = slugify(loc.city);
-  if (!ci) return;
-  revalidatePath(`/[locale]/players/${c}/${r}/${ci}`, 'page');
+
+  // Location-specific pages: loop over each locale with the literal slug so the
+  // path is unambiguous (mixing [locale] with a concrete slug value is not reliable).
+  for (const locale of routing.locales) {
+    revalidatePath(`/${locale}/players/${c}`);
+    if (!loc.region) continue;
+    const r = slugify(loc.region);
+    if (!r) continue;
+    revalidatePath(`/${locale}/players/${c}/${r}`);
+    if (!loc.city) continue;
+    const ci = slugify(loc.city);
+    if (!ci) continue;
+    revalidatePath(`/${locale}/players/${c}/${r}/${ci}`);
+  }
 }
