@@ -42,7 +42,7 @@
     "react-hook-form": "^7.75.0",
     "react-leaflet": "^4.2.1",
     "react-leaflet-cluster": "^2.1.0",
-    "resend": "^4.0.1",
+    "resend": "^6.12.3",
     "vaul": "^1.1.2",
     "workflow": "^4.2.4",
     "wouter": "^3.9.0",
