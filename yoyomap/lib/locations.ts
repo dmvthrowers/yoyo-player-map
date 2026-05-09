@@ -76,41 +76,145 @@ export function isJunkRegion(input: string | null | undefined): boolean {
 
 // Country normalization map: maps all known codes/variants to canonical display name
 const COUNTRY_NORMALIZATION: Record<string, string> = {
+  // United States
   us: 'United States',
   usa: 'United States',
   "united-states": 'United States',
+  // Canada
   ca: 'Canada',
   canada: 'Canada',
+  // United Kingdom
   uk: 'United Kingdom',
   "united-kingdom": 'United Kingdom',
   gb: 'United Kingdom',
+  "great-britain": 'United Kingdom',
+  // New Zealand
   nz: 'New Zealand',
   "new-zealand": 'New Zealand',
+  // Spain
   es: 'Spain',
   spain: 'Spain',
+  // France
   fr: 'France',
   france: 'France',
+  // Germany
   de: 'Germany',
   germany: 'Germany',
+  // Brazil
   br: 'Brazil',
   brazil: 'Brazil',
+  // Japan
   jp: 'Japan',
   japan: 'Japan',
+  // Honduras
   hn: 'Honduras',
   honduras: 'Honduras',
+  // Belgium
   be: 'Belgium',
   belgium: 'Belgium',
+  // Ukraine
   ua: 'Ukraine',
   ukraine: 'Ukraine',
+  // Hungary
   hu: 'Hungary',
   hungary: 'Hungary',
+  // Czech Republic
   cz: 'Czech Republic',
   "czech-republic": 'Czech Republic',
+  // Singapore
   sg: 'Singapore',
   singapore: 'Singapore',
+  // Mexico
   mx: 'Mexico',
   mexico: 'Mexico',
-  // Add more as needed
+  // United Arab Emirates
+  ae: 'United Arab Emirates',
+  "united-arab-emirates": 'United Arab Emirates',
+  uae: 'United Arab Emirates',
+  // Denmark
+  dk: 'Denmark',
+  denmark: 'Denmark',
+  // Estonia
+  ee: 'Estonia',
+  estonia: 'Estonia',
+  // Slovenia
+  si: 'Slovenia',
+  slovenia: 'Slovenia',
+  // Australia
+  au: 'Australia',
+  australia: 'Australia',
+  // Austria
+  at: 'Austria',
+  austria: 'Austria',
+  // China
+  cn: 'China',
+  china: 'China',
+  // Finland
+  fi: 'Finland',
+  finland: 'Finland',
+  // India
+  "in": 'India',
+  india: 'India',
+  // Indonesia
+  id: 'Indonesia',
+  indonesia: 'Indonesia',
+  // Ireland
+  ie: 'Ireland',
+  ireland: 'Ireland',
+  // Israel
+  il: 'Israel',
+  israel: 'Israel',
+  // Italy
+  it: 'Italy',
+  italy: 'Italy',
+  // Latvia
+  lv: 'Latvia',
+  latvia: 'Latvia',
+  // Lithuania
+  lt: 'Lithuania',
+  lithuania: 'Lithuania',
+  // Malaysia
+  my: 'Malaysia',
+  malaysia: 'Malaysia',
+  // Netherlands
+  nl: 'Netherlands',
+  netherlands: 'Netherlands',
+  // Norway
+  no: 'Norway',
+  norway: 'Norway',
+  // Philippines
+  ph: 'Philippines',
+  philippines: 'Philippines',
+  // Poland
+  pl: 'Poland',
+  poland: 'Poland',
+  // Portugal
+  pt: 'Portugal',
+  portugal: 'Portugal',
+  // Romania
+  ro: 'Romania',
+  romania: 'Romania',
+  // Russia
+  ru: 'Russia',
+  russia: 'Russia',
+  // South Korea
+  kr: 'South Korea',
+  "south-korea": 'South Korea',
+  // Sweden
+  se: 'Sweden',
+  sweden: 'Sweden',
+  // Switzerland
+  ch: 'Switzerland',
+  switzerland: 'Switzerland',
+  // Taiwan
+  tw: 'Taiwan',
+  taiwan: 'Taiwan',
+  // Thailand
+  th: 'Thailand',
+  thailand: 'Thailand',
+  // Turkey
+  tr: 'Turkey',
+  turkey: 'Turkey',
 };
 
 // Returns canonical display name for a country slug or raw name
