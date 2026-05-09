@@ -11,9 +11,9 @@ const emailSchema = z.string().trim().email().toLowerCase();
 
 
 // Normalized location schemas: use foreign keys (numbers)
-const cityIdSchema = z.number({ invalid_type_error: 'Please select a city from the list' }).int().positive();
+const cityIdSchema = z.number({ error: 'Please select a city from the list' }).int().positive();
 const regionIdSchema = z.number().int().positive().optional().or(z.literal(null));
-const countryIdSchema = z.number({ invalid_type_error: 'Please select a country' }).int().positive();
+const countryIdSchema = z.number({ error: 'Please select a country' }).int().positive();
 
 const bioSchema = z.string().trim().max(280).optional().or(z.literal(''));
 
@@ -25,9 +25,9 @@ const socialsSchema = z.object({
 }).optional();
 
 const consentCheckboxes = {
-  consentPrivacy: z.literal(true, { errorMap: () => ({ message: 'You must accept the privacy policy' }) }),
-  consentTerms: z.literal(true, { errorMap: () => ({ message: 'You must accept the terms of service' }) }),
-  consentPublic: z.literal(true, { errorMap: () => ({ message: 'You must acknowledge that your entry will be public' }) }),
+  consentPrivacy: z.literal(true, { error: 'You must accept the privacy policy' }),
+  consentTerms: z.literal(true, { error: 'You must accept the terms of service' }),
+  consentPublic: z.literal(true, { error: 'You must acknowledge that your entry will be public' }),
 };
 
 const honeypotSchema = z.string().max(0).optional();
@@ -73,7 +73,7 @@ const shopSchema = z.object({
   hours: z.string().trim().max(500).optional().or(z.literal('')),
   contactName: z.string().trim().max(100),
   authorizedRep: z.literal(true, { 
-    errorMap: () => ({ message: 'You must confirm you are authorized to list this business' }) 
+    error: 'You must confirm you are authorized to list this business' 
   }),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
@@ -100,7 +100,7 @@ const clubSchema = z.object({
   venuePostalCode: z.string().trim().max(20).optional().or(z.literal('')),
   contactName: z.string().trim().max(100),
   authorizedRep: z.literal(true, { 
-    errorMap: () => ({ message: 'You must confirm you are authorized to list this club' }) 
+    error: 'You must confirm you are authorized to list this club' 
   }),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
