@@ -84,9 +84,9 @@ export default function PlayersTable({ entries, hideLocationFilters = false }: P
   const filteredDisplay = useMemo(() => {
     return filtered.map((e) => {
       const countryName = canonicalCountryName(e.country);
-      const junk = isJunkRegion(e.region);
-      const regionName = junk ? '' : canonicalRegionName(e.region);
-      const href = locationPath(countryName, junk ? '_other' : (e.region || '_other'), e.city);
+      const isJunk = isJunkRegion(e.region);
+      const regionName = isJunk ? '' : canonicalRegionName(e.region);
+      const href = locationPath(countryName, isJunk ? '_other' : (e.region || '_other'), e.city);
       return { ...e, countryName, regionName, href };
     });
   }, [filtered]);
