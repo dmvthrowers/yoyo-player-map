@@ -14,5 +14,11 @@
     "next": "^15.2.3",
     "typescript": "~5.9.2",
     "prettier": "^3.8.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "fast-uri": ">=3.1.2",
+      "fast-xml-builder": ">=1.1.7"
+    }
   }
 }
