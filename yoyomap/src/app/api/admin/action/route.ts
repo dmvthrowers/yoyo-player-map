@@ -18,6 +18,7 @@ const locationStatusSchema = z.enum([
   'awaiting_owner_response',
   'dead_pin',
 ]);
+const LOCATION_CONFIRM_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 const singleActionSchema = z.object({
   action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide', 'regeocode_entry', 'send_reminder']),
@@ -91,7 +92,7 @@ export async function POST(req: NextRequest) {
     let queued = 0;
     let failed = 0;
     const now = new Date();
-    const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    const expiresAt = new Date(now.getTime() + LOCATION_CONFIRM_TOKEN_TTL_MS).toISOString();
 
     for (const entry of entries ?? []) {
       const token = generateToken();

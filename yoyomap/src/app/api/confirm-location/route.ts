@@ -109,7 +109,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     // geocodeCity expects `undefined` when region is omitted, but the DB column
     // uses `NULL` for "no region", so we keep both representations explicit.
     const region = parsed.data.region ?? undefined;
-    const regionForWrite = parsed.data.region ?? null;
+    const regionForDb = parsed.data.region ?? null;
     const geo = await geocodeCity({
       city: parsed.data.city!,
       region,
@@ -123,7 +123,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     const coords = needsJitter ? jitterCoords(geo.lat, geo.lng) : geo;
 
     updates.city = parsed.data.city;
-    updates.region = regionForWrite;
+    updates.region = regionForDb;
     updates.country = parsed.data.country;
     updates.lat = coords.lat;
     updates.lng = coords.lng;
