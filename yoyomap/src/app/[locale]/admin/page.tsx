@@ -681,20 +681,19 @@ function EntityTypeBadge({ type, verified }: { type: AdminEntry['entity_type']; 
 }
 
 function StatusBadge({ entry }: { entry: AdminEntry }) {
-  if (entry.deleted_at) return <span className="text-navy/40">deleted</span>;
-  if (entry.is_flagged) return <span className="text-brand-red font-semibold">flagged</span>;
+  if (entry.deleted_at) return <StatusChip tone="muted" label="deleted" />;
+  if (entry.is_flagged) return <StatusChip tone="danger" label="flagged" />;
   if (entry.auto_hidden_by_reports) {
     return (
-      <span className="inline-flex items-center gap-1 text-amber-600 font-semibold">
+      <StatusChip tone="warning" label="auto-hidden">
         <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
           <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
         </svg>
-        auto-hidden
-      </span>
+      </StatusChip>
     );
   }
-  if (entry.is_visible) return <span className="text-green-700">visible</span>;
-  return <span className="text-navy/60">pending</span>;
+  if (entry.is_visible) return <StatusChip tone="success" label="visible" />;
+  return <StatusChip tone="neutral" label="pending" />;
 }
 
 function prettyLocationStatus(status: AdminEntry['location_status']) {
@@ -706,14 +705,40 @@ function prettyLocationStatus(status: AdminEntry['location_status']) {
 }
 
 function LocationStatusBadge({ status }: { status: AdminEntry['location_status'] }) {
-  const colors: Record<AdminEntry['location_status'], string> = {
-    verified: 'text-green-700',
-    auto_geocoded: 'text-navy/70',
-    needs_research: 'text-amber-700',
-    awaiting_owner_response: 'text-blue-700',
-    dead_pin: 'text-brand-red',
+  const tones: Record<AdminEntry['location_status'], 'success' | 'neutral' | 'warning' | 'info' | 'danger'> = {
+    verified: 'success',
+    auto_geocoded: 'neutral',
+    needs_research: 'warning',
+    awaiting_owner_response: 'info',
+    dead_pin: 'danger',
   };
-  return <span className={`text-xs font-semibold ${colors[status]}`}>{prettyLocationStatus(status)}</span>;
+  return <StatusChip tone={tones[status]} label={prettyLocationStatus(status)} />;
+}
+
+function StatusChip({
+  tone,
+  label,
+  children,
+}: {
+  tone: 'success' | 'neutral' | 'warning' | 'info' | 'danger' | 'muted';
+  label: string;
+  children?: React.ReactNode;
+}) {
+  const colors: Record<'success' | 'neutral' | 'warning' | 'info' | 'danger' | 'muted', string> = {
+    success: 'bg-green-100 text-green-800 ring-green-700/15',
+    neutral: 'bg-navy/10 text-navy/80 ring-navy/15',
+    warning: 'bg-amber-100 text-amber-800 ring-amber-700/20',
+    info: 'bg-blue-100 text-blue-800 ring-blue-700/15',
+    danger: 'bg-brand-red/10 text-brand-red ring-brand-red/20',
+    muted: 'bg-navy/5 text-navy/45 ring-navy/10',
+  };
+
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ${colors[tone]}`}>
+      {children}
+      {label}
+    </span>
+  );
 }
 
 function EntryActions({ entry, act }: { entry: AdminEntry; act: (action: string, id: string) => void }) {
