@@ -106,6 +106,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const updates: Record<string, unknown> = { location_status: 'verified' };
 
   if (mode === 'update') {
+    // geocodeCity expects `undefined` when region is omitted, but the DB column
+    // uses `NULL` for "no region", so we keep both representations explicit.
     const region = parsed.data.region ?? undefined;
     const regionForWrite = parsed.data.region ?? null;
     const geo = await geocodeCity({
