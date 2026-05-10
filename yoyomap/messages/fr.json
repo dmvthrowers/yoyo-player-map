@@ -9,25 +9,437 @@
     "vsyc": "VSYC-26",
     "language": "Langue :",
     "languageSelect": "Choisir la langue",
+    "players": "Players",
+    "languages": {
+      "en": "English",
+      "es": "Español",
+      "de": "Deutsch",
+      "zh": "中文",
+      "ja": "日本語",
+      "fr": "Français",
+      "pt": "Português",
+      "ru": "Русский",
+      "ar": "العربية",
+      "hi": "हिन्दी",
+      "ko": "한국어"
+    },
     "dmvThrowers": "DMV Throwers",
     "brand": "YoYo Map",
     "donateTitle": "Support DMV Throwers on Ko-fi",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu",
-    "players": "Players"
+    "closeMenu": "Close menu"
   },
   "home": {
     "title": "Trouvez votre communauté.",
     "subtitle": "Jetez ensemble.",
     "cta": "Explorer la carte",
-    "add": "Ajoutez-vous"
+    "add": "Ajoutez-vous",
+    "hero": {
+      "eyebrow": "The Global Yo-Yo Community",
+      "description": "Connect with yo-yo players, shops, and clubs near you. Privacy-first, opt-in, city-level only."
+    },
+    "trust": [
+      {
+        "title": "100%",
+        "subtitle": "Privacy First",
+        "description": "City-level only. No tracking. Delete anytime."
+      },
+      {
+        "title": "24/7",
+        "subtitle": "Community Driven",
+        "description": "Built by players, for players. Open source."
+      },
+      {
+        "title": "∞",
+        "subtitle": "Global Reach",
+        "description": "Players from every continent. Growing daily."
+      }
+    ],
+    "how": {
+      "eyebrow": "Getting Started",
+      "title": "How It Works",
+      "steps": [
+        {
+          "step": "1",
+          "title": "Add Yourself",
+          "body": "Submit your city-level location. No exact addresses needed."
+        },
+        {
+          "step": "2",
+          "title": "Find Others",
+          "body": "Browse the map to find players, shops, and clubs near you."
+        },
+        {
+          "step": "3",
+          "title": "Connect",
+          "body": "Reach out through provided social links and throw together!"
+        }
+      ]
+    },
+    "privacy": {
+      "eyebrow": "Your Data, Your Control",
+      "title": "What We Don't Do",
+      "list": [
+        "We don't track your location",
+        "We don't sell your data",
+        "We don't require exact addresses",
+        "We don't share without consent",
+        "We don't store sensitive info",
+        "We don't prevent deletion"
+      ]
+    },
+    "ctaBand": {
+      "eyebrow": "Ready to Join?",
+      "title": "Add Yourself to the Map",
+      "description": "Help grow the yo-yo community. It only takes a minute.",
+      "button": "Get Started"
+    }
   },
   "footer": {
+    "title": "YoYo Map",
     "description": "Un projet communautaire de DMV Throwers Yo-Yo & Skill Toy Club.",
-    "all_welcome": "Tous les niveaux sont les bienvenus."
+    "dmvThrowers": "DMV Throwers",
+    "home": "Home",
+    "vsyc": "VSYC-26",
+    "legal": "Legal",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "security": "Security",
+    "securityBulletin": "Security Bulletin",
+    "serviceStatus": "Service Status",
+    "project": "Project",
+    "github": "GitHub",
+    "copyright": "© 2024 DMV Throwers. All rights reserved.",
+    "all_welcome": "Tous les niveaux sont les bienvenus.",
+    "contact": "Contact"
+  },
+  "players": {
+    "browseLocations": "Browse by Location",
+    "title": "Yo-Yo Players Worldwide",
+    "description": "Browse players, shops, and clubs by country, state, and city.",
+    "noLocations": "No locations yet. Be the first to <addYourself>add yourself</addYourself>!",
+    "addYourself": "add yourself",
+    "country": "Country",
+    "region": "Region",
+    "city": "Ville",
+    "cities": "Cities",
+    "regions": "Regions",
+    "unspecified": "Non spécifié",
+    "inCountry": "Yo-Yo Players in {name}",
+    "inRegion": "Yo-Yo Players in {region}",
+    "inCity": "Joueurs de Yo-Yo à {city}",
+    "inCountryUnspecifiedRegion": "Joueurs de Yo-Yo en {country} (Région non spécifiée)",
+    "locationCount": "{count, plural, one {# location} other {# locations}}",
+    "peopleCount": "{count, plural, one {# player} other {# players}}",
+    "shopsCount": "{count, plural, one {# shop} other {# shops}}",
+    "clubsCount": "{count, plural, one {# club} other {# clubs}}",
+    "notListed": "Not listed?",
+    "addYourselfCta": "Add yourself to the map",
+    "viewOnMap": "View on Map",
+    "directoryHeading": "Trouvez vos gens",
+    "directoryDescription": "Parcourez l'annuaire complet des joueurs, boutiques et clubs publics. Cliquez sur une ligne pour voir leur page de ville.",
+    "searchPlaceholder": "Rechercher par nom, ville, région ou pays…",
+    "filterAll": "Tous",
+    "filterCountry": "Pays",
+    "filterRegion": "Région",
+    "filterType": "Type",
+    "typePerson": "Joueurs",
+    "typeShop": "Boutiques",
+    "typeClub": "Clubs",
+    "thName": "Nom",
+    "thType": "Type",
+    "thCity": "Ville",
+    "thRegion": "Région",
+    "thCountry": "Pays",
+    "noResults": "Aucun résultat. Effacez les filtres ou essayez une autre recherche.",
+    "resultCount": "{count, plural, one {# résultat} other {# résultats}}",
+    "clearFilters": "Clear filters",
+    "typeThrower": "Joueur",
+    "typeShopSingular": "Boutique",
+    "typeClubSingular": "Club",
+    "socialWebsite": "Site web",
+    "socialInstagram": "Instagram",
+    "socialYouTube": "YouTube",
+    "socialDiscord": "Discord",
+    "mapCtaHeading": "Vous voulez les voir sur une carte ?",
+    "mapCtaButton": "Ouvrir la carte YoYo",
+    "notListedText": "Vous ne vous voyez pas ? Les marqueurs de joueurs sont décalés d'environ 16 km pour protéger la vie privée. La liste ci-dessus inclut tous ceux qui ont choisi d'être visibles publiquement.",
+    "throwerCount": "{count, plural, one {# joueur} other {# joueurs}}",
+    "shopCount": "{count, plural, one {# boutique} other {# boutiques}}",
+    "clubCount": "{count, plural, one {# club} other {# clubs}}"
+  },
+  "map": {
+    "title": "Yo-Yo Player Map",
+    "description": "Find yo-yo players, shops, and clubs near you.",
+    "loading": "Loading map...",
+    "filters": {
+      "title": "Filters",
+      "showPeople": "Show Players",
+      "showShops": "Show Shops",
+      "showClubs": "Show Clubs",
+      "showUnderserved": "Highlight Underserved Areas"
+    },
+    "legend": {
+      "title": "Legend",
+      "player": "Player",
+      "shop": "Shop",
+      "club": "Club",
+      "underserved": "Underserved Area"
+    },
+    "stats": {
+      "players": "Players",
+      "shops": "Shops",
+      "clubs": "Clubs"
+    },
+    "countThrowers": "{count, plural, one {# thrower} other {# throwers}}",
+    "countShops": "{count, plural, one {# shop} other {# shops}}",
+    "countClubs": "{count, plural, one {# club} other {# clubs}}",
+    "collapseInfoPanel": "Collapse info panel",
+    "expandInfoPanel": "Expand info panel",
+    "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
+    "addToMap": "Add to map",
+    "collapseFilters": "Collapse filters",
+    "expandFilters": "Expand filters",
+    "filter": "Filter",
+    "people": "People",
+    "shops": "Shops",
+    "clubs": "Clubs",
+    "highlightUnderserved": "Highlight underserved areas",
+    "underservedDescription": "Areas with fewer than 3 players highlighted in red.",
+    "searchPlaceholder": "Search name, city, region…",
+    "searchAriaLabel": "Search players, shops, and clubs",
+    "clearSearch": "Clear search",
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "effectiveDate": "Effective Date: January 1, 2024",
+      "sections": [
+        {
+          "title": "Overview",
+          "body": "YoYo Map is committed to protecting your privacy. This policy explains how we collect, use, and protect your information."
+        },
+        {
+          "title": "Information We Collect",
+          "body": "We collect only the information you voluntarily provide when adding yourself to the map."
+        },
+        {
+          "title": "Data You Provide",
+          "body": "When you submit to the map, you may provide:",
+          "listTitle": "Submitted Data",
+          "list": [
+            "Display name",
+            "City (approximate location)",
+            "Bio or description",
+            "Social media links",
+            "Entity type (player, shop, or club)",
+            "Contact information (optional)"
+          ],
+          "autoTitle": "Automatically Collected",
+          "auto": [
+            "Basic analytics (page views, no personal data)",
+            "Error logs for debugging"
+          ]
+        },
+        {
+          "title": "How We Use Your Data",
+          "body": "Your data is used to:",
+          "list": [
+            "Display your pin on the map",
+            "Allow others to find and connect with you",
+            "Improve the service",
+            "Respond to your requests"
+          ]
+        },
+        {
+          "title": "Data Sharing",
+          "body": "We do not sell or rent your personal information."
+        },
+        {
+          "title": "Data Retention",
+          "body": "We retain your data until you request deletion.",
+          "list": [
+            "You can request deletion at any time",
+            "Deletion requests are processed within 30 days",
+            "Some data may be retained for legal purposes",
+            "Anonymized data may be retained for analytics"
+          ]
+        },
+        {
+          "title": "Security",
+          "body": "We implement reasonable security measures to protect your data."
+        },
+        {
+          "title": "Your Rights",
+          "body": "You have the right to:",
+          "everyoneTitle": "Everyone",
+          "everyone": [
+            "Access your data",
+            "Request correction",
+            "Request deletion"
+          ],
+          "gdprTitle": "GDPR (EU/EEA)",
+          "gdprBody": "Additional rights under GDPR including data portability.",
+          "caTitle": "CCPA (California)",
+          "caBody": "Right to know, delete, and opt-out of sale.",
+          "vaTitle": "VCDPA (Virginia)",
+          "vaBody": "Similar rights to GDPR and CCPA."
+        },
+        {
+          "title": "Cookies",
+          "body": "We use minimal cookies for essential functionality only."
+        },
+        {
+          "title": "Third Party Services",
+          "body": "We use:",
+          "list": [
+            "Vercel (hosting)",
+            "Supabase (database)",
+            "OpenStreetMap (mapping)",
+            "Resend (email, optional)"
+          ]
+        },
+        {
+          "title": "Children's Privacy",
+          "body": "This service is not intended for children under 13."
+        },
+        {
+          "title": "Changes to This Policy",
+          "body": "We may update this policy. Check back periodically."
+        },
+        {
+          "title": "Contact Us",
+          "body": "Questions? Email dmvthrowers@gmail.com"
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "effectiveDate": "Effective Date: January 1, 2024",
+      "backTo": "Back to:",
+      "home": "Home",
+      "privacy": "Privacy Policy",
+      "sections": [
+        {
+          "title": "Acceptance",
+          "body": "By using YoYo Map, you agree to these terms."
+        },
+        {
+          "title": "Description",
+          "body": "YoYo Map is a community map for finding yo-yo players, shops, and clubs."
+        },
+        {
+          "title": "User Conduct",
+          "body": "You agree not to:",
+          "list": [
+            "Submit false or misleading information",
+            "Harass or abuse other users",
+            "Attempt to access others' data",
+            "Use the service for illegal purposes",
+            "Spam or advertise without permission",
+            "Interfere with service operation"
+          ]
+        },
+        {
+          "title": "Content",
+          "body": "You are responsible for content you submit."
+        },
+        {
+          "title": "Privacy",
+          "body": "Your use is also governed by our Privacy Policy."
+        },
+        {
+          "title": "Intellectual Property",
+          "body": "The service and its content are protected by copyright."
+        },
+        {
+          "title": "Disclaimer",
+          "body": "The service is provided 'as is' without warranties."
+        },
+        {
+          "title": "Limitation of Liability",
+          "body": "We are not liable for damages arising from use of the service."
+        },
+        {
+          "title": "Indemnification",
+          "body": "You agree to indemnify us from claims arising from your use."
+        },
+        {
+          "title": "Termination",
+          "body": "We may terminate access for violations."
+        },
+        {
+          "title": "Governing Law",
+          "body": "These terms are governed by Virginia law."
+        },
+        {
+          "title": "Changes",
+          "body": "We may modify these terms with notice."
+        },
+        {
+          "title": "Severability",
+          "body": "Invalid provisions do not affect others."
+        },
+        {
+          "title": "Contact",
+          "body": "Questions? Email dmvthrowers@gmail.com"
+        }
+      ]
+    },
+    "security": {
+      "title": "Security",
+      "description": "Security information and vulnerability disclosures for YoYo Map.",
+      "reportTitle": "Reporting a Vulnerability",
+      "reportBody": "To report a security vulnerability, please email dmvthrowers@gmail.com with a description of the issue. We will respond within 72 hours.",
+      "bulletinsTitle": "Security Bulletins",
+      "noBulletins": "No active security bulletins at this time."
+    }
   },
   "profile": {
-    "loading": "Loading profile..."
+    "title": "Your Profile",
+    "description": "Manage your map listing.",
+    "requestLink": "Request Magic Link",
+    "emailPlaceholder": "Enter your email",
+    "sending": "Sending...",
+    "sent": "Check your email for the magic link!",
+    "error": "Something went wrong. Please try again.",
+    "loading": "Loading profile...",
+    "checkEmail": "Check your email",
+    "checkEmailHelp": "We sent you a magic link. Click it to manage your map entry.",
+    "manageEntry": "Manage Your Entry",
+    "manageEntryHelp": "Enter your email to receive a magic link and manage your listing.",
+    "emailLabel": "Email address",
+    "emailTitle": "Enter your email address",
+    "sendMagicLink": "Send Magic Link",
+    "editEntry": "Edit Your Entry",
+    "editEntryHelp": "Changes save when you click the button below.",
+    "loadingEntry": "Loading your entry…",
+    "displayName": "Display name",
+    "city": "City",
+    "region": "Region",
+    "bio": "Bio",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "discord": "Discord",
+    "website": "Website",
+    "saved": "Saved.",
+    "saveChanges": "Save Changes",
+    "saving": "Saving…",
+    "contactName": "Contact Name",
+    "addressLine": "Street Address",
+    "postalCode": "Postal / ZIP Code",
+    "hours": "Business Hours",
+    "meetingInfo": "Meeting Schedule & Info",
+    "venuePublic": "Share venue address publicly",
+    "venueAddressLine": "Venue Street Address",
+    "venuePostalCode": "Venue Postal / ZIP Code",
+    "deleteEntry": "Delete your entry",
+    "deleteEntryHelp": "Permanently remove your entry. This cannot be undone. Your email and any consent records are also deleted.",
+    "deleteMyEntry": "Delete My Entry",
+    "deleteConfirm": "Yes, delete permanently",
+    "cancel": "Cancel",
+    "deletedMessage": "Your entry has been permanently deleted."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -46,56 +458,80 @@
         "title": "Club",
         "description": "Add a yoyo club or community group"
       }
-    }
+    },
+    "toastCheckEmail": "Check your email",
+    "toastVerifyLink": "Click the link we sent you to verify your submission.",
+    "savedEmailComing": "You're on the map!",
+    "savedEmailTrouble": "You're on the map!",
+    "checkYourEmail": "Check your email",
+    "parentConsentHelp": "A consent email has been sent to your parent or guardian. They must approve before your entry goes live.",
+    "backToHome": "Back to Home",
+    "displayName": "Display name",
+    "yourEmail": "Your email",
+    "age18plus": "18 or older",
+    "age13to17": "13–17",
+    "selectCountry": "Select country",
+    "selectRegion": "Select region (optional)",
+    "parentInfo": "Parent / Guardian Information",
+    "parentName": "Parent / Guardian name",
+    "parentEmail": "Parent / Guardian email",
+    "selectRelationship": "Select relationship",
+    "parent": "Parent",
+    "guardian": "Legal Guardian",
+    "consentPublic": "I consent to my information being publicly displayed on the map.",
+    "consentPrivacy": "I have read and accept the",
+    "privacyPolicy": "Privacy Policy",
+    "consentTerms": "I agree to the",
+    "terms": "Terms of Service",
+    "authorizedRep": "I am authorized to represent this organization.",
+    "submitting": "Submitting…",
+    "submit": "Submit",
+    "changeType": "Change type",
+    "addType": "Add a {type}",
+    "business": "business",
+    "club": "club",
+    "errorAgeBand": "Please select your age group.",
+    "errorCountry": "Please select a country.",
+    "errorCitySelectAdd": "Please select \"{city}\" from the list or click Add to create it.",
+    "errorCitySelectAddGeneric": "Please select or add a city.",
+    "errorConsentPublic": "You must consent to public display.",
+    "errorConsentPrivacy": "You must accept the privacy policy.",
+    "errorConsentTerms": "You must accept the terms of service.",
+    "errorAuthorizedRep": "You must confirm you are authorized to represent this {type}.",
+    "errorParentName": "Parent / guardian name is required.",
+    "errorParentEmail": "Parent / guardian email is required.",
+    "errorRelationship": "Please select a relationship.",
+    "errorContactName": "Contact name is required.",
+    "errorAddressLine": "Street address is required.",
+    "errorMeetingInfo": "Meeting info is required (at least 10 characters).",
+    "bio": "Bio",
+    "bioPlaceholder": "Tell us a bit about yourself or your organization",
+    "socialLinks": "Social Links (optional)",
+    "contactName": "Contact Name",
+    "contactNamePlaceholder": "Name of the primary contact",
+    "addressLine": "Street Address",
+    "addressLinePlaceholder": "123 Main St",
+    "postalCode": "Postal / ZIP Code",
+    "hours": "Business Hours",
+    "hoursPlaceholder": "e.g. Mon–Fri 10am–6pm, Sat 11am–4pm",
+    "meetingInfo": "Meeting Schedule & Info",
+    "meetingInfoPlaceholder": "When, where, and how often you meet",
+    "venuePublic": "Share venue address publicly on the map",
+    "venueAddressLine": "Venue Street Address",
+    "venuePostalCode": "Venue Postal / ZIP Code",
+    "addCityHint": "Don't see your city?",
+    "addCityButton": "Add \"{city}\"",
+    "addCityAdding": "Adding..."
   },
-  "map": {
-    "countThrowers": "{count, plural, one {# thrower} other {# throwers}}",
-    "countShops": "{count, plural, one {# shop} other {# shops}}",
-    "countClubs": "{count, plural, one {# club} other {# clubs}}",
-    "collapseInfoPanel": "Collapse info panel",
-    "infoPanelDescription": "Browse yoyo people, shops, and clubs near you",
-    "addToMap": "Add to map",
-    "collapseFilters": "Collapse filters",
-    "filter": "Filter",
-    "people": "People",
-    "shops": "Shops",
-    "clubs": "Clubs",
-    "highlightUnderserved": "Highlight underserved areas"
-  },
-  "players": {
-    "directoryHeading": "Trouvez vos gens",
-    "directoryDescription": "Parcourez l'annuaire complet des joueurs, boutiques et clubs publics. Cliquez sur une ligne pour voir leur page de ville.",
-    "searchPlaceholder": "Rechercher par nom, ville, région ou pays…",
-    "filterAll": "Tous",
-    "filterCountry": "Pays",
-    "filterRegion": "Région",
-    "filterType": "Type",
-    "typePerson": "Joueurs",
-    "typeShop": "Boutiques",
-    "typeClub": "Clubs",
-    "thName": "Nom",
-    "thType": "Type",
-    "thCity": "Ville",
-    "thRegion": "Région",
-    "thCountry": "Pays",
-    "noResults": "Aucun résultat. Effacez les filtres ou essayez une autre recherche.",
-    "resultCount": "{count, plural, one {# résultat} other {# résultats}}",
-    "typeThrower": "Joueur",
-    "typeShopSingular": "Boutique",
-    "typeClubSingular": "Club",
-    "socialWebsite": "Site web",
-    "socialInstagram": "Instagram",
-    "socialYouTube": "YouTube",
-    "socialDiscord": "Discord",
-    "unspecified": "Non spécifié",
-    "city": "Ville",
-    "inCity": "Joueurs de Yo-Yo à {city}",
-    "inCountryUnspecifiedRegion": "Joueurs de Yo-Yo en {country} (Région non spécifiée)",
-    "mapCtaHeading": "Vous voulez les voir sur une carte ?",
-    "mapCtaButton": "Ouvrir la carte YoYo",
-    "notListedText": "Vous ne vous voyez pas ? Les marqueurs de joueurs sont décalés d'environ 16 km pour protéger la vie privée. La liste ci-dessus inclut tous ceux qui ont choisi d'être visibles publiquement.",
-    "throwerCount": "{count, plural, one {# joueur} other {# joueurs}}",
-    "shopCount": "{count, plural, one {# boutique} other {# boutiques}}",
-    "clubCount": "{count, plural, one {# club} other {# clubs}}"
+  "contact": {
+    "eyebrow": "Get in Touch",
+    "title": "Contact Us",
+    "description": "We'd love to hear from you! Reach out with questions, suggestions, or club inquiries.",
+    "emailClub": "Email (Club)",
+    "emailContest": "Email (Contest)",
+    "instagram": "Instagram",
+    "phone": "Phone",
+    "coordinator": "Coordinator",
+    "backToHome": "Back to Home"
   }
 }

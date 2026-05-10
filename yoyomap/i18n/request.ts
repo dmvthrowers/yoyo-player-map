@@ -20,8 +20,14 @@ export default getRequestConfig(async ({ requestLocale }) => {
     };
   }
 
-  // For other locales, merge with English as fallback
-  const localeMessages = (await import(`../messages/${locale}.json`)).default;
+  // For other locales, merge with English as fallback.
+  // If a locale file is missing, gracefully fall back to English only.
+  let localeMessages = {};
+  try {
+    localeMessages = (await import(`../messages/${locale}.json`)).default;
+  } catch {
+    localeMessages = {};
+  }
   
   return {
     locale,
