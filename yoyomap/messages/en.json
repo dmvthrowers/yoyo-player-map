@@ -518,7 +518,10 @@
     "meetingInfoPlaceholder": "When, where, and how often you meet",
     "venuePublic": "Share venue address publicly on the map",
     "venueAddressLine": "Venue Street Address",
-    "venuePostalCode": "Venue Postal / ZIP Code"
+    "venuePostalCode": "Venue Postal / ZIP Code",
+    "addCityHint": "Don't see your city?",
+    "addCityButton": "Add \"{city}\"",
+    "addCityAdding": "Adding..."
   },
   "contact": {
     "eyebrow": "Get in Touch",

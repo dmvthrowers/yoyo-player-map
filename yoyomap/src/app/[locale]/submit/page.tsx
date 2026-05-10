@@ -77,6 +77,7 @@ function useAllCities(countryId: number | null, regionId: number | null, refresh
 function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
   countryId: number | null; regionId: number | null; cityId: number | null; setCityId: (id: number | null) => void;
 }) {
+  const t = useTranslations();
   const [refreshKey, setRefreshKey] = useState(0);
   const allCities = useAllCities(countryId, regionId, refreshKey);
   const [input, setInput] = useState('');
@@ -110,7 +111,19 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
           ))}
         </ul>
       )}
-      {isNew && <button type="button" disabled={adding} onClick={addCity} className="text-xs text-brand-red mt-1">{adding? 'Adding...' : `Add "${input.trim()}"`}</button>}
+      {isNew && (
+        <div className="mt-2">
+          <p className="text-xs text-text-muted mb-1">{t('submit.addCityHint')}</p>
+          <button
+            type="button"
+            disabled={adding}
+            onClick={addCity}
+            className="bg-navy text-cream py-2 px-4 min-h-11 text-xs font-bold uppercase tracking-wider w-full disabled:opacity-50"
+          >
+            {adding ? t('submit.addCityAdding') : t('submit.addCityButton', { city: input.trim() })}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
