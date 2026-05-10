@@ -5,6 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
 import { sendLocationConfirmEmail } from '@/lib/email';
+import { generateToken } from '@/lib/tokens';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
     const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
 
     for (const entry of entries ?? []) {
-      const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+      const token = generateToken();
       const { error: tokenError } = await supabase.from('verification_tokens').insert({
         entry_id: entry.id,
         token,

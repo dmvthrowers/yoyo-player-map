@@ -106,10 +106,11 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const updates: Record<string, unknown> = { location_status: 'verified' };
 
   if (mode === 'update') {
-    const region = parsed.data.region ?? null;
+    const region = parsed.data.region ?? undefined;
+    const regionForWrite = parsed.data.region ?? null;
     const geo = await geocodeCity({
       city: parsed.data.city!,
-      region: parsed.data.region || undefined,
+      region,
       country: parsed.data.country!,
     });
     if (!geo) return apiError('unprocessable', "Couldn't locate that city. Check spelling.", requestId);
@@ -120,7 +121,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     const coords = needsJitter ? jitterCoords(geo.lat, geo.lng) : geo;
 
     updates.city = parsed.data.city;
-    updates.region = region;
+    updates.region = regionForWrite;
     updates.country = parsed.data.country;
     updates.lat = coords.lat;
     updates.lng = coords.lng;
