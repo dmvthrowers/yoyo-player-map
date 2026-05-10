@@ -19,6 +19,7 @@ const locationStatusSchema = z.enum([
   'dead_pin',
 ]);
 const LOCATION_CONFIRM_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const OUTREACH_BATCH_SIZE = 20;
 
 const singleActionSchema = z.object({
   action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide', 'regeocode_entry', 'send_reminder']),
@@ -50,6 +51,52 @@ function checkAdmin(req: NextRequest): boolean {
   ta.copy(a);
   tb.copy(b);
   return crypto.timingSafeEqual(a, b) && ta.length === tb.length;
+}
+
+type OutreachEntry = {
+  id: string;
+  email: string;
+  display_name: string;
+  city: string;
+  region: string | null;
+  country: string;
+};
+
+type OutreachResult =
+  | { status: 'sent' | 'queued' }
+  | { status: 'failed'; entryId: string };
+
+async function sendOutreachForEntry(
+  supabase: ReturnType<typeof createAdminClient>,
+  entry: OutreachEntry,
+  expiresAt: string
+): Promise<OutreachResult> {
+  const token = generateToken();
+  const { error: tokenError } = await supabase.from('verification_tokens').insert({
+    entry_id: entry.id,
+    token,
+    purpose: 'location_confirm',
+    expires_at: expiresAt,
+  });
+  if (tokenError) {
+    return { status: 'failed', entryId: entry.id };
+  }
+
+  const outcome = await sendLocationConfirmEmail(
+    entry.email,
+    entry.display_name,
+    token,
+    entry.city,
+    entry.region,
+    entry.country
+  );
+  if (outcome.status === 'sent' || outcome.status === 'deduped') {
+    return { status: 'sent' };
+  }
+  if (outcome.status === 'queued') {
+    return { status: 'queued' };
+  }
+  return { status: 'failed', entryId: entry.id };
 }
 
 export async function POST(req: NextRequest) {
@@ -94,33 +141,27 @@ export async function POST(req: NextRequest) {
     const now = new Date();
     const expiresAt = new Date(now.getTime() + LOCATION_CONFIRM_TOKEN_TTL_MS).toISOString();
 
-    for (const entry of entries ?? []) {
-      const token = generateToken();
-      const { error: tokenError } = await supabase.from('verification_tokens').insert({
-        entry_id: entry.id,
-        token,
-        purpose: 'location_confirm',
-        expires_at: expiresAt,
-      });
-      if (tokenError) {
-        failed += 1;
-        continue;
-      }
-
-      const outcome = await sendLocationConfirmEmail(
-        entry.email,
-        entry.display_name,
-        token,
-        entry.city,
-        entry.region,
-        entry.country
+    const failedEntryIds: string[] = [];
+    const allEntries = entries ?? [];
+    for (let i = 0; i < allEntries.length; i += OUTREACH_BATCH_SIZE) {
+      const batch = allEntries.slice(i, i + OUTREACH_BATCH_SIZE);
+      const batchResults = await Promise.allSettled(
+        batch.map((entry) => sendOutreachForEntry(supabase, entry, expiresAt))
       );
-      if (outcome.status === 'sent' || outcome.status === 'deduped') {
-        sent += 1;
-      } else if (outcome.status === 'queued') {
-        queued += 1;
-      } else {
-        failed += 1;
+
+      for (const result of batchResults) {
+        if (result.status === 'rejected') {
+          failed += 1;
+          continue;
+        }
+        if (result.value.status === 'sent') {
+          sent += 1;
+        } else if (result.value.status === 'queued') {
+          queued += 1;
+        } else if (result.value.status === 'failed') {
+          failed += 1;
+          failedEntryIds.push(result.value.entryId);
+        }
       }
     }
 
@@ -132,7 +173,7 @@ export async function POST(req: NextRequest) {
 
     await logAudit('admin.send_location_outreach_bulk', {
       actor: 'admin',
-      meta: { ip, idsCount: ids.length, sent, queued, failed },
+      meta: { ip, idsCount: ids.length, sent, queued, failed, failedEntryIds },
     });
 
     return NextResponse.json({ ok: true, sent, queued, failed });

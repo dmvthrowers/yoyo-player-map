@@ -5,6 +5,7 @@ import { geocodeCity, jitterCoords } from '@/lib/geocode';
 import { getClientIp, logAudit } from '@/lib/rate-limit';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 import { apiError, withErrorHandling } from '@/lib/api-error';
+import { normalizeCountryIso2, normalizeRegionForDb, normalizeRegionForGeocode } from './normalization';
 
 export const runtime = 'nodejs';
 
@@ -106,14 +107,16 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const updates: Record<string, unknown> = { location_status: 'verified' };
 
   if (mode === 'update') {
-    // geocodeCity expects `undefined` when region is omitted, but the DB column
-    // uses `NULL` for "no region", so we keep both representations explicit.
-    const region = parsed.data.region ?? undefined;
-    const regionForDb = parsed.data.region ?? null;
+    const country = normalizeCountryIso2(parsed.data.country ?? '');
+    if (!country) {
+      return apiError('bad_request', 'Country must be a valid 2-letter ISO code.', requestId);
+    }
+    const region = normalizeRegionForGeocode(parsed.data.region);
+    const regionForDb = normalizeRegionForDb(parsed.data.region);
     const geo = await geocodeCity({
       city: parsed.data.city!,
       region,
-      country: parsed.data.country!,
+      country,
     });
     if (!geo) return apiError('unprocessable', "Couldn't locate that city. Check spelling.", requestId);
 
@@ -124,7 +127,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
     updates.city = parsed.data.city;
     updates.region = regionForDb;
-    updates.country = parsed.data.country;
+    updates.country = country;
     updates.lat = coords.lat;
     updates.lng = coords.lng;
   }
