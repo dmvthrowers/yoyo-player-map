@@ -215,7 +215,7 @@ function render(q: QueuedEmail): RenderedEmail {
       };
     }
     case 'location_confirm': {
-      const link = `${APP_URL}/en/confirm-location/${encodeURIComponent(q.token)}`;
+      const link = `${APP_URL}/confirm-location/${encodeURIComponent(q.token)}`;
       const place = [q.city, q.region, q.country].filter(Boolean).join(', ');
       return {
         to: q.email,

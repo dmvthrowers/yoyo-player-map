@@ -106,7 +106,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const updates: Record<string, unknown> = { location_status: 'verified' };
 
   if (mode === 'update') {
-    const region = parsed.data.region ? parsed.data.region : null;
+    const region = parsed.data.region ?? null;
     const geo = await geocodeCity({
       city: parsed.data.city!,
       region: parsed.data.region || undefined,
