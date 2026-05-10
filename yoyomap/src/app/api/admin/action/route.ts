@@ -4,15 +4,37 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
+import { sendLocationConfirmEmail } from '@/lib/email';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
-const schema = z.object({
+const locationStatusSchema = z.enum([
+  'verified',
+  'auto_geocoded',
+  'needs_research',
+  'awaiting_owner_response',
+  'dead_pin',
+]);
+
+const singleActionSchema = z.object({
   action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide', 'regeocode_entry', 'send_reminder']),
   id: z.string().uuid(),
 });
+
+const bulkStatusSchema = z.object({
+  action: z.literal('set_location_status'),
+  ids: z.array(z.string().uuid()).min(1).max(500),
+  locationStatus: locationStatusSchema,
+});
+
+const outreachSchema = z.object({
+  action: z.literal('send_location_outreach'),
+  ids: z.array(z.string().uuid()).min(1).max(500),
+});
+
+const schema = z.discriminatedUnion('action', [singleActionSchema, bulkStatusSchema, outreachSchema]);
 
 function checkAdmin(req: NextRequest): boolean {
   const token = req.headers.get('x-admin-token') ?? '';
@@ -37,8 +59,84 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Invalid' }, { status: 400 });
 
   const supabase = createAdminClient();
-  const { action, id } = parsed.data;
+  const action = parsed.data.action;
   const ip = getClientIp(req.headers);
+
+  if (action === 'set_location_status') {
+    const { ids, locationStatus } = parsed.data;
+    const { error } = await supabase
+      .from('entries')
+      .update({ location_status: locationStatus })
+      .in('id', ids)
+      .is('deleted_at', null);
+    if (error) return NextResponse.json({ error: 'Bulk location status update failed.' }, { status: 500 });
+    await logAudit('admin.set_location_status_bulk', {
+      actor: 'admin',
+      meta: { ip, idsCount: ids.length, locationStatus },
+    });
+    return NextResponse.json({ ok: true, updated: ids.length });
+  }
+
+  if (action === 'send_location_outreach') {
+    const ids = parsed.data.ids;
+    const { data: entries, error } = await supabase
+      .from('entries')
+      .select('id, email, display_name, city, region, country')
+      .in('id', ids)
+      .is('deleted_at', null);
+    if (error) return NextResponse.json({ error: 'Could not load entries for outreach.' }, { status: 500 });
+
+    let sent = 0;
+    let queued = 0;
+    let failed = 0;
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    for (const entry of entries ?? []) {
+      const token = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+      const { error: tokenError } = await supabase.from('verification_tokens').insert({
+        entry_id: entry.id,
+        token,
+        purpose: 'location_confirm',
+        expires_at: expiresAt,
+      });
+      if (tokenError) {
+        failed += 1;
+        continue;
+      }
+
+      const outcome = await sendLocationConfirmEmail(
+        entry.email,
+        entry.display_name,
+        token,
+        entry.city,
+        entry.region,
+        entry.country
+      );
+      if (outcome.status === 'sent' || outcome.status === 'deduped') {
+        sent += 1;
+      } else if (outcome.status === 'queued') {
+        queued += 1;
+      } else {
+        failed += 1;
+      }
+    }
+
+    await supabase
+      .from('entries')
+      .update({ location_status: 'awaiting_owner_response' })
+      .in('id', ids)
+      .is('deleted_at', null);
+
+    await logAudit('admin.send_location_outreach_bulk', {
+      actor: 'admin',
+      meta: { ip, idsCount: ids.length, sent, queued, failed },
+    });
+
+    return NextResponse.json({ ok: true, sent, queued, failed });
+  }
+
+  const { id } = parsed.data;
 
   // Snapshot location up front so we can bust caches after the action.
   // Only the visibility-changing actions need this; others fetch lazily.

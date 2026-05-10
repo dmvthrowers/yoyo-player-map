@@ -78,6 +78,8 @@ create table if not exists public.entries (
   is_visible     boolean not null default false,   -- Hidden until email verified
   is_flagged     boolean not null default false,
   flagged_reason text,
+  location_status text not null default 'auto_geocoded'
+    check (location_status in ('verified', 'auto_geocoded', 'needs_research', 'awaiting_owner_response', 'dead_pin')),
   verified_at    timestamptz,
   deleted_at     timestamptz                        -- Soft delete
 );
@@ -85,6 +87,7 @@ create table if not exists public.entries (
 create index entries_visible_idx on public.entries (is_visible) where deleted_at is null;
 create index entries_email_idx on public.entries (email);
 create index entries_country_region_idx on public.entries (country, region);
+create index entries_location_status_idx on public.entries (location_status) where deleted_at is null;
 
 -- =============================================================================
 -- parent_consents: audit trail for under-18 users
@@ -129,7 +132,7 @@ create table if not exists public.verification_tokens (
   created_at   timestamptz not null default now(),
   entry_id     uuid not null references public.entries(id) on delete cascade,
   token        text not null unique,
-  purpose      text not null check (purpose in ('email_verify', 'edit_link', 'delete_link')),
+  purpose      text not null check (purpose in ('email_verify', 'edit_link', 'delete_link', 'location_confirm')),
   expires_at   timestamptz not null,
   used_at      timestamptz
 );

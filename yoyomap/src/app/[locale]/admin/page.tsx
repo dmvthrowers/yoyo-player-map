@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 
 interface AdminEntry {
   id: string;
@@ -20,6 +20,7 @@ interface AdminEntry {
   deleted_at: string | null;
   last_reminder_at: string | null;
   reminder_count: number;
+  location_status: 'verified' | 'auto_geocoded' | 'needs_research' | 'awaiting_owner_response' | 'dead_pin';
 }
 
 interface AdminData {
@@ -46,11 +47,19 @@ interface AdminData {
       club: number;
     };
     verifiedOwners: number;
+    locationStatus: {
+      verified: number;
+      auto_geocoded: number;
+      needs_research: number;
+      awaiting_owner_response: number;
+      dead_pin: number;
+    };
   };
 }
 
 type EntityFilter = 'all' | 'person' | 'shop' | 'club';
 type StatusFilter = 'all' | 'visible' | 'pending' | 'flagged' | 'auto_hidden';
+type LocationStatusFilter = 'all' | AdminEntry['location_status'];
 
 const AdminPage = () => {
   const [pass, setPass] = useState('');
@@ -60,6 +69,8 @@ const AdminPage = () => {
   const [error, setError] = useState('');
   const [entityFilter, setEntityFilter] = useState<EntityFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [locationStatusFilter, setLocationStatusFilter] = useState<LocationStatusFilter>('all');
+  const [bulkStatus, setBulkStatus] = useState<AdminEntry['location_status']>('needs_research');
   // Pagination, sorting, search
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(100);
@@ -174,6 +185,62 @@ const AdminPage = () => {
       setLoading(false);
     }
   }
+
+  async function bulkSetLocationStatus() {
+    const ids = filteredEntries.filter((e) => !e.deleted_at).map((e) => e.id);
+    if (ids.length === 0) {
+      setError('No entries in the current filter.');
+      return;
+    }
+    if (!confirm(`Set location status to "${prettyLocationStatus(bulkStatus)}" for ${ids.length} entries?`)) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': pass },
+        body: JSON.stringify({ action: 'set_location_status', ids, locationStatus: bulkStatus }),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        setError(body?.error || 'Bulk status update failed.');
+      } else {
+        setError(`Updated ${body?.updated ?? ids.length} entries.`);
+        load(pass);
+      }
+    } catch {
+      setError('Network error during bulk status update.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function sendLocationOutreach() {
+    const ids = filteredEntries.filter((e) => !e.deleted_at).map((e) => e.id);
+    if (ids.length === 0) {
+      setError('No entries in the current filter.');
+      return;
+    }
+    if (!confirm(`Send "Confirm your city" outreach to ${ids.length} entries?`)) return;
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-token': pass },
+        body: JSON.stringify({ action: 'send_location_outreach', ids }),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        setError(body?.error || 'Outreach send failed.');
+      } else {
+        setError(`Outreach complete — sent: ${body?.sent ?? 0}, queued: ${body?.queued ?? 0}, failed: ${body?.failed ?? 0}`);
+        load(pass);
+      }
+    } catch {
+      setError('Network error during outreach send.');
+    } finally {
+      setLoading(false);
+    }
+  }
   async function regeocodeAll(force = false) {
     const msg = force
       ? 'FORCE RE-GEOCODE: This will re-geocode EVERY entry, even those already geocoded. This can take a long time and may hit rate limits. Are you sure?'
@@ -230,26 +297,27 @@ const AdminPage = () => {
   }
 
   // Filter entries based on selected filters
-  const filteredEntries = useMemo(() => {
-    if (!data) return [];
-    return data.entries.filter((e) => {
-      // Entity type filter
-      if (entityFilter !== 'all') {
-        const entryType = e.entity_type || 'person';
-        if (entryType !== entityFilter) return false;
-      }
-      
-      // Status filter
-      if (statusFilter !== 'all') {
-        if (statusFilter === 'visible' && (!e.is_visible || e.deleted_at || e.auto_hidden_by_reports)) return false;
-        if (statusFilter === 'pending' && (e.is_visible || e.is_flagged || e.deleted_at || e.auto_hidden_by_reports)) return false;
-        if (statusFilter === 'flagged' && (!e.is_flagged || e.deleted_at)) return false;
-        if (statusFilter === 'auto_hidden' && (!e.auto_hidden_by_reports || e.deleted_at)) return false;
-      }
-      
-      return true;
-    });
-  }, [data, entityFilter, statusFilter]);
+  const filteredEntries = (data?.entries ?? []).filter((e) => {
+    // Entity type filter
+    if (entityFilter !== 'all') {
+      const entryType = e.entity_type || 'person';
+      if (entryType !== entityFilter) return false;
+    }
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      if (statusFilter === 'visible' && (!e.is_visible || e.deleted_at || e.auto_hidden_by_reports)) return false;
+      if (statusFilter === 'pending' && (e.is_visible || e.is_flagged || e.deleted_at || e.auto_hidden_by_reports)) return false;
+      if (statusFilter === 'flagged' && (!e.is_flagged || e.deleted_at)) return false;
+      if (statusFilter === 'auto_hidden' && (!e.auto_hidden_by_reports || e.deleted_at)) return false;
+    }
+
+    if (locationStatusFilter !== 'all' && e.location_status !== locationStatusFilter) {
+      return false;
+    }
+
+    return true;
+  });
 
   if (!authed) {
     return (
@@ -310,6 +378,14 @@ const AdminPage = () => {
         <Stat label="Shops" value={data.stats.byType.shop} icon={<ShopIcon />} />
         <Stat label="Clubs" value={data.stats.byType.club} icon={<ClubIcon />} />
         <Stat label="Verified Shops" value={data.stats.verifiedOwners} icon={<VerifiedIcon />} />
+      </div>
+
+      <div className="grid md:grid-cols-5 gap-3 mb-8 text-center">
+        <Stat label="Loc: Verified" value={data.stats.locationStatus.verified} />
+        <Stat label="Loc: Auto" value={data.stats.locationStatus.auto_geocoded} />
+        <Stat label="Loc: Research" value={data.stats.locationStatus.needs_research} />
+        <Stat label="Loc: Awaiting" value={data.stats.locationStatus.awaiting_owner_response} />
+        <Stat label="Loc: Dead Pin" value={data.stats.locationStatus.dead_pin} />
       </div>
 
       {/* Reports section */}
@@ -427,6 +503,51 @@ const AdminPage = () => {
             <option value="auto_hidden">Auto-hidden</option>
           </select>
 
+          <select
+            className="input py-1 text-sm w-auto"
+            value={locationStatusFilter}
+            onChange={(e) => setLocationStatusFilter(e.target.value as LocationStatusFilter)}
+            title="Filter by location status"
+          >
+            <option value="all">All location statuses</option>
+            <option value="verified">Location verified</option>
+            <option value="auto_geocoded">Auto geocoded</option>
+            <option value="needs_research">Needs research</option>
+            <option value="awaiting_owner_response">Awaiting owner response</option>
+            <option value="dead_pin">Dead pin</option>
+          </select>
+
+          <select
+            className="input py-1 text-sm w-auto"
+            value={bulkStatus}
+            onChange={(e) => setBulkStatus(e.target.value as AdminEntry['location_status'])}
+            title="Bulk set location status for filtered entries"
+          >
+            <option value="verified">Set: verified</option>
+            <option value="auto_geocoded">Set: auto_geocoded</option>
+            <option value="needs_research">Set: needs_research</option>
+            <option value="awaiting_owner_response">Set: awaiting_owner_response</option>
+            <option value="dead_pin">Set: dead_pin</option>
+          </select>
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs"
+            disabled={loading}
+            onClick={bulkSetLocationStatus}
+            title="Apply the chosen location status to all currently filtered entries."
+          >
+            Bulk set location status
+          </button>
+          <button
+            type="button"
+            className="btn-ghost py-1 px-3 text-xs"
+            disabled={loading}
+            onClick={sendLocationOutreach}
+            title="Send confirm-city outreach email to all currently filtered entries."
+          >
+            Send location outreach
+          </button>
+
           {/* Sort controls */}
           <select
             className="input py-1 text-sm w-auto"
@@ -493,6 +614,7 @@ const AdminPage = () => {
                 <th>City</th>
                 <th>Age</th>
                 <th>Status</th>
+                <th>Location</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -508,6 +630,9 @@ const AdminPage = () => {
                   <td>{e.age_band || '-'}</td>
                   <td>
                     <StatusBadge entry={e} />
+                  </td>
+                  <td>
+                    <LocationStatusBadge status={e.location_status} />
                   </td>
                   <td className="space-x-1">
                     {!e.deleted_at && (
@@ -570,6 +695,25 @@ function StatusBadge({ entry }: { entry: AdminEntry }) {
   }
   if (entry.is_visible) return <span className="text-green-700">visible</span>;
   return <span className="text-navy/60">pending</span>;
+}
+
+function prettyLocationStatus(status: AdminEntry['location_status']) {
+  if (status === 'auto_geocoded') return 'auto geocoded';
+  if (status === 'needs_research') return 'needs research';
+  if (status === 'awaiting_owner_response') return 'awaiting owner response';
+  if (status === 'dead_pin') return 'dead pin';
+  return 'verified';
+}
+
+function LocationStatusBadge({ status }: { status: AdminEntry['location_status'] }) {
+  const colors: Record<AdminEntry['location_status'], string> = {
+    verified: 'text-green-700',
+    auto_geocoded: 'text-navy/70',
+    needs_research: 'text-amber-700',
+    awaiting_owner_response: 'text-blue-700',
+    dead_pin: 'text-brand-red',
+  };
+  return <span className={`text-xs font-semibold ${colors[status]}`}>{prettyLocationStatus(status)}</span>;
 }
 
 function EntryActions({ entry, act }: { entry: AdminEntry; act: (action: string, id: string) => void }) {
