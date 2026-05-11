@@ -170,8 +170,22 @@
   },
   "map": {
     "title": "Yo-Yo Player Map",
+    "pageTitle": "Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You",
+    "pageDescription": "Browse the global community map of yo-yo players, shops, and clubs. Privacy-first, opt-in, city-level locations only.",
     "description": "Find yo-yo players, shops, and clubs near you.",
     "loading": "Loading map...",
+    "loadingFallback": "Loading map…",
+    "popup": {
+      "approximate": "(approximate)",
+      "couldntLoad": "Couldn't load details.",
+      "tryAgain": "Try again",
+      "shopBadge": "Yo-Yo Shop",
+      "hours": "Hours:",
+      "clubBadge": "Yo-Yo Club",
+      "meetings": "Meetings:",
+      "reportPin": "Report this pin",
+      "website": "Website"
+    },
     "filters": {
       "title": "Filters",
       "showPeople": "Show Players",
@@ -439,7 +453,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Network error. Please try again.",
+    "errorNetworkConnection": "Network error. Please check your connection and try again.",
+    "errorSomethingWrong": "Something went wrong.",
+    "errorLinkExpired": "Link invalid or expired.",
+    "errorServerInvalid": "Server error: invalid response.",
+    "errorUpdateFailed": "Update failed.",
+    "errorDeleteFailed": "Delete failed.",
+    "shopDetails": "Shop Details",
+    "clubDetails": "Club Details"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +544,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Shop Details",
+    "clubDetails": "Club Details",
+    "networkError": "Network error"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +559,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Report an Entry",
+    "subtitle": "If an entry on the map is unsafe, inaccurate, or inappropriate, tell us here.",
+    "whatWrong": "What's wrong?",
+    "selectReason": "Select a reason…",
+    "reasonSpam": "Spam or fake entry",
+    "reasonHarassment": "Harassment or threatening content",
+    "reasonImpersonation": "Impersonation",
+    "reasonMinorUnsafe": "Unsafe content involving a minor",
+    "reasonOther": "Something else",
+    "details": "Details (optional)",
+    "detailsPlaceholder": "What happened? What should we know?",
+    "yourEmail": "Your email (optional)",
+    "yourEmailPlaceholder": "So we can follow up",
+    "sending": "Sending…",
+    "send": "Send Report",
+    "noEntry": "No entry specified. Go back to the map and click a pin first.",
+    "errorFailed": "Failed to submit.",
+    "errorNetwork": "Network error.",
+    "thanksTitle": "Thanks for letting us know",
+    "thanksBody": "We review every report. The entry will be hidden immediately while we investigate if the report involves safety concerns.",
+    "backToMap": "Back to map",
+    "loading": "Loading…"
   }
 }

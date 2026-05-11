@@ -93,7 +93,7 @@ export default async function PrivacyPage() {
       ))}
       <p className="mt-4">EIN 41-4879324</p>
       <div className="mt-12 p-4 bg-navy/5 border-l-4 border-navy text-sm">
-        <strong>Back to:</strong> <Link href="/" className="text-brand-red underline">Home</Link> · <Link href="/legal/terms" className="text-brand-red underline">Terms of Service</Link>
+        <strong>{t('legal.terms.backTo')}</strong> <Link href="/" className="text-brand-red underline">{t('legal.terms.home')}</Link> · <Link href="/legal/terms" className="text-brand-red underline">{t('footer.terms')}</Link>
       </div>
     </div>
   );

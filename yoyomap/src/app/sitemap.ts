@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { listLocations } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
+import { routing } from '@/i18n/routing';
 
 const BASE = 'https://map.dmvthrowers.club';
 
@@ -10,14 +11,26 @@ export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const staticEntries: MetadataRoute.Sitemap = [
-    { url: `${BASE}/`,              lastModified: now, changeFrequency: 'weekly',  priority: 1.0 },
-    { url: `${BASE}/map`,           lastModified: now, changeFrequency: 'daily',   priority: 0.9 },
-    { url: `${BASE}/players`,       lastModified: now, changeFrequency: 'daily',   priority: 0.9 },
-    { url: `${BASE}/submit`,        lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${BASE}/legal/privacy`, lastModified: now, changeFrequency: 'yearly',  priority: 0.3 },
-    { url: `${BASE}/legal/terms`,   lastModified: now, changeFrequency: 'yearly',  priority: 0.3 },
+  const locales = routing.locales;
+
+  // Static pages — one entry per locale since localePrefix is 'always'
+  const staticPaths = [
+    { path: '',        changeFrequency: 'weekly'  as const, priority: 1.0 },
+    { path: '/map',    changeFrequency: 'daily'   as const, priority: 0.9 },
+    { path: '/players',changeFrequency: 'daily'   as const, priority: 0.9 },
+    { path: '/submit', changeFrequency: 'monthly' as const, priority: 0.7 },
+    { path: '/legal/privacy', changeFrequency: 'yearly' as const, priority: 0.3 },
+    { path: '/legal/terms',   changeFrequency: 'yearly' as const, priority: 0.3 },
   ];
+
+  const staticEntries: MetadataRoute.Sitemap = staticPaths.flatMap(({ path, changeFrequency, priority }) =>
+    locales.map((locale) => ({
+      url: `${BASE}/${locale}${path}`,
+      lastModified: now,
+      changeFrequency,
+      priority,
+    }))
+  );
 
   // If Supabase is unreachable or env vars are missing, still return a valid
   // sitemap with the static routes — never let this throw and produce a 500.
@@ -42,21 +55,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
+    // Location pages are the same content in all locales; list English canonical only
+    // to avoid duplicate-content penalties, but add alternate-locale hreflang via metadata.
     locationEntries = [
       ...[...countries].map((c) => ({
-        url: `${BASE}/players/${c}`,
+        url: `${BASE}/en/players/${c}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.7,
       })),
       ...[...regions].map((r) => ({
-        url: `${BASE}/players/${r}`,
+        url: `${BASE}/en/players/${r}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.6,
       })),
       ...cities.map((c) => ({
-        url: `${BASE}/players/${c.country}/${c.region}/${c.city}`,
+        url: `${BASE}/en/players/${c.country}/${c.region}/${c.city}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.5,

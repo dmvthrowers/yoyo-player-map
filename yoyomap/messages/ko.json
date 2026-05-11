@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "지도를 불러오는 중…",
+    "popup": {
+      "approximate": "(대략적인 위치)",
+      "couldntLoad": "세부 정보를 불러올 수 없습니다.",
+      "tryAgain": "다시 시도",
+      "shopBadge": "요요 상점",
+      "hours": "영업 시간:",
+      "clubBadge": "요요 클럽",
+      "meetings": "모임:",
+      "reportPin": "이 핀 신고하기",
+      "website": "웹사이트"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "네트워크 오류입니다. 다시 시도해 주세요.",
+    "errorLinkExpired": "링크가 잘못되었거나 만료되었습니다.",
+    "errorServerInvalid": "서버 오류: 잘못된 응답입니다.",
+    "errorUpdateFailed": "업데이트에 실패했습니다.",
+    "errorDeleteFailed": "삭제에 실패했습니다.",
+    "shopDetails": "상점 세부 정보",
+    "clubDetails": "클럽 세부 정보",
+    "errorNetworkConnection": "네트워크 오류입니다. 연결 상태를 확인하고 다시 시도해 주세요.",
+    "errorSomethingWrong": "문제가 발생했습니다."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "상점 세부 정보",
+    "clubDetails": "클럽 세부 정보",
+    "networkError": "네트워크 오류"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "항목 신고하기",
+    "subtitle": "지도에 있는 항목이 안전하지 않거나 부정확하거나 부적절한 경우 여기에 알려주세요.",
+    "whatWrong": "무엇이 잘못되었나요?",
+    "selectReason": "이유를 선택하세요…",
+    "reasonSpam": "스팸 또는 가짜 항목",
+    "reasonHarassment": "괴롭힘 또는 위협적인 콘텐츠",
+    "reasonImpersonation": "사칭",
+    "reasonMinorUnsafe": "미성년자와 관련된 안전하지 않은 콘텐츠",
+    "reasonOther": "다른 것",
+    "details": "세부 사항 (선택)",
+    "detailsPlaceholder": "무슨 일이 있었나요? 알아야 할 것은 무엇인가요?",
+    "yourEmail": "이메일 주소 (선택)",
+    "yourEmailPlaceholder": "후속 조치를 위해",
+    "sending": "전송 중…",
+    "send": "신고 보내기",
+    "noEntry": "항목이 지정되지 않았습니다. 지도로 돌아가서 먼저 핀을 클릭하세요.",
+    "errorFailed": "전송에 실패했습니다.",
+    "errorNetwork": "네트워크 오류.",
+    "thanksTitle": "알려주셔서 감사합니다",
+    "thanksBody": "모든 신고를 검토합니다. 신고가 안전 문제를 포함하는 경우 조사하는 동안 항목이 즉시 숨겨집니다.",
+    "backToMap": "지도로 돌아가기",
+    "loading": "로딩 중…"
   }
 }

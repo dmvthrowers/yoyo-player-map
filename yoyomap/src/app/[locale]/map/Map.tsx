@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useState, memo, useMemo, useEffect, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import type { MapEntry, MapEntryDetail } from './page';
 import type { MapFilters } from './MapClient';
 import { haversineMiles, UNDERSERVED_THRESHOLD_MI } from '@/lib/geo';
@@ -79,17 +80,6 @@ function useEntryDetail(id: string) {
   }, [id, attempt]);
 
   return { detail, loading, error, retry: () => setAttempt((n) => n + 1) };
-}
-
-function PopupError({ onRetry }: { onRetry: () => void }) {
-  return (
-    <div className="mb-2 text-xs text-navy/70">
-      <p className="mb-1">Couldn&apos;t load details.</p>
-      <button type="button" onClick={onRetry} className="text-brand-red underline hover:no-underline">
-        Try again
-      </button>
-    </div>
-  );
 }
 
 function PopupSkeleton() {
@@ -302,12 +292,13 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
 // Popups unchanged except SocialsLinks
 function PersonPopup({ entry }: { entry: MapEntry }) {
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
+  const t = useTranslations('map');
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
     <div className="min-w-55">
       <p className="font-bold text-base text-navy font-playfair">{entry.display_name}</p>
-      <p className="text-xs text-navy/70 mb-2">{location} (approximate)</p>
-      {loading? <PopupSkeleton /> : error? <PopupError onRetry={retry} /> : (
+      <p className="text-xs text-navy/70 mb-2">{location} {t('popup.approximate')}</p>
+      {loading ? <PopupSkeleton /> : error ? <PopupError onRetry={retry} /> : (
         <>
           {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
           <SocialsLinks socials={detail?.socials || {}} />
@@ -320,9 +311,10 @@ function PersonPopup({ entry }: { entry: MapEntry }) {
 
 function ShopPopup({ entry }: { entry: MapEntry }) { /* unchanged */
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
+  const t = useTranslations('map');
   return (
     <div className="min-w-55">
-      <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">Yo-Yo Shop</p>
+      <p className="text-[10px] uppercase tracking-wider text-[#2E8B57] font-bold mb-1">{t('popup.shopBadge')}</p>
       <p className="font-bold text-base text-navy flex items-center gap-1 font-playfair">
         {entry.display_name}
         {entry.verified_owner && (
@@ -330,10 +322,10 @@ function ShopPopup({ entry }: { entry: MapEntry }) { /* unchanged */
         )}
       </p>
       <p className="text-xs text-navy/70 mb-2">{[entry.city, entry.region, entry.country].filter(Boolean).join(', ')}</p>
-      {loading? <PopupSkeleton /> : error? <PopupError onRetry={retry} /> : (
+      {loading ? <PopupSkeleton /> : error ? <PopupError onRetry={retry} /> : (
         <>
           {detail?.address_line && <p className="text-xs text-navy/80 mb-1">{detail.address_line}{detail.postal_code && `, ${detail.postal_code}`}</p>}
-          {detail?.hours && <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1"><span className="font-semibold">Hours:</span> {detail.hours}</div>}
+          {detail?.hours && <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1"><span className="font-semibold">{t('popup.hours')}</span> {detail.hours}</div>}
           {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
           <SocialsLinks socials={detail?.socials || {}} />
         </>
@@ -345,15 +337,16 @@ function ShopPopup({ entry }: { entry: MapEntry }) { /* unchanged */
 
 function ClubPopup({ entry }: { entry: MapEntry }) { /* unchanged */
   const { detail, loading, error, retry } = useEntryDetail(entry.id);
+  const t = useTranslations('map');
   const location = [entry.city, entry.region, entry.country].filter(Boolean).join(', ');
   return (
     <div className="min-w-55">
-      <p className="text-[10px] uppercase tracking-wider text-[#1B2A49] font-bold mb-1">Yo-Yo Club</p>
+      <p className="text-[10px] uppercase tracking-wider text-[#1B2A49] font-bold mb-1">{t('popup.clubBadge')}</p>
       <p className="font-bold text-base text-navy font-playfair">{entry.display_name}</p>
-      <p className="text-xs text-navy/70 mb-2">{location}{!loading &&!detail?.club_venue_public && ' (approximate)'}</p>
-      {loading? <PopupSkeleton /> : error? <PopupError onRetry={retry} /> : (
+      <p className="text-xs text-navy/70 mb-2">{location}{!loading && !detail?.club_venue_public && ` ${t('popup.approximate')}`}</p>
+      {loading ? <PopupSkeleton /> : error ? <PopupError onRetry={retry} /> : (
         <>
-          {detail?.club_meeting_info && <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1"><span className="font-semibold">Meetings:</span> {detail.club_meeting_info}</div>}
+          {detail?.club_meeting_info && <div className="text-xs text-navy/80 mb-2 bg-cream p-2 -mx-1"><span className="font-semibold">{t('popup.meetings')}</span> {detail.club_meeting_info}</div>}
           {detail?.bio && <p className="text-sm text-navy mb-2">{detail.bio}</p>}
           <SocialsLinks socials={detail?.socials || {}} />
         </>
@@ -364,12 +357,13 @@ function ClubPopup({ entry }: { entry: MapEntry }) { /* unchanged */
 }
 
 function SocialsLinks({ socials }: { socials: Record<string, string> }) {
+  const t = useTranslations('map');
   if (!socials || Object.keys(socials).length === 0) return null;
 
   const safeUrl = (url: string) => {
     try {
-      const u = new URL(url.startsWith('http')? url : `https://${url}`);
-      return ['http:', 'https:'].includes(u.protocol)? u.toString() : null;
+      const u = new URL(url.startsWith('http') ? url : `https://${url}`);
+      return ['http:', 'https:'].includes(u.protocol) ? u.toString() : null;
     } catch { return null; }
   };
 
@@ -379,13 +373,13 @@ function SocialsLinks({ socials }: { socials: Record<string, string> }) {
         <a href={`https://instagram.com/${socials.instagram.replace(/^@/, '')}`} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">IG</a>
       )}
       {socials.youtube && (() => {
-        const url = socials.youtube.startsWith('http')? socials.youtube : `https://youtube.com/@${socials.youtube}`;
+        const url = socials.youtube.startsWith('http') ? socials.youtube : `https://youtube.com/@${socials.youtube}`;
         const safe = safeUrl(url);
-        return safe? <a href={safe} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">YT</a> : null;
+        return safe ? <a href={safe} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">YT</a> : null;
       })()}
       {socials.website && (() => {
         const safe = safeUrl(socials.website);
-        return safe? <a href={safe} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">Website</a> : null;
+        return safe ? <a href={safe} target="_blank" rel="noopener noreferrer" className="text-brand-red underline">{t('popup.website')}</a> : null;
       })()}
       {socials.discord && <span className="text-navy/70">Discord: {socials.discord}</span>}
     </div>
@@ -393,9 +387,22 @@ function SocialsLinks({ socials }: { socials: Record<string, string> }) {
 }
 
 function ReportLink({ entryId }: { entryId: string }) {
+  const t = useTranslations('map');
   return (
     <div className="mt-2 pt-2 border-t border-navy/10">
-      <a href={`/report?id=${entryId}`} className="text-xs text-navy/50 underline">Report this pin</a>
+      <a href={`/report?id=${entryId}`} className="text-xs text-navy/50 underline">{t('popup.reportPin')}</a>
+    </div>
+  );
+}
+
+function PopupError({ onRetry }: { onRetry: () => void }) {
+  const t = useTranslations('map');
+  return (
+    <div className="mb-2 text-xs text-navy/70">
+      <p className="mb-1">{t('popup.couldntLoad')}</p>
+      <button type="button" onClick={onRetry} className="text-brand-red underline hover:no-underline">
+        {t('popup.tryAgain')}
+      </button>
     </div>
   );
 }

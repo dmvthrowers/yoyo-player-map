@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "Cargando mapa…",
+    "popup": {
+      "approximate": "(aproximado)",
+      "couldntLoad": "No se pudieron cargar los detalles.",
+      "tryAgain": "Volver a intentar",
+      "shopBadge": "Tienda de Yo-Yo",
+      "hours": "Horario:",
+      "clubBadge": "Club de Yo-Yo",
+      "meetings": "Reuniones:",
+      "reportPin": "Reportar este marcador",
+      "website": "Sitio web"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Error de red. Inténtalo de nuevo.",
+    "errorLinkExpired": "Enlace inválido o expirado.",
+    "errorServerInvalid": "Error del servidor: respuesta inválida.",
+    "errorUpdateFailed": "Error al guardar.",
+    "errorDeleteFailed": "Error al eliminar.",
+    "shopDetails": "Detalles de la tienda",
+    "clubDetails": "Detalles del club",
+    "errorNetworkConnection": "Error de red. Comprueba tu conexión e inténtalo de nuevo.",
+    "errorSomethingWrong": "Algo salió mal."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Detalles de la tienda",
+    "clubDetails": "Detalles del club",
+    "networkError": "Error de red"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Reportar una entrada",
+    "subtitle": "Si una entrada en el mapa es insegura, inexacta o inapropiada, dinos aquí.",
+    "whatWrong": "¿Qué está mal?",
+    "selectReason": "Seleccionar una razón…",
+    "reasonSpam": "Spam o entrada falsa",
+    "reasonHarassment": "Acoso o contenido amenazante",
+    "reasonImpersonation": "Suplantación de identidad",
+    "reasonMinorUnsafe": "Contenido inapropiado con un menor",
+    "reasonOther": "Otra cosa",
+    "details": "Detalles (opcional)",
+    "detailsPlaceholder": "¿Qué ocurrió? ¿Qué debemos saber?",
+    "yourEmail": "Tu correo electrónico (opcional)",
+    "yourEmailPlaceholder": "Para que podamos hacer seguimiento",
+    "sending": "Enviando…",
+    "send": "Enviar reporte",
+    "noEntry": "No se especificó ninguna entrada. Vuelve al mapa y haz clic en un marcador primero.",
+    "errorFailed": "No se pudo enviar.",
+    "errorNetwork": "Error de red.",
+    "thanksTitle": "Gracias por avisarnos",
+    "thanksBody": "Revisamos cada reporte. La entrada se ocultará inmediatamente mientras investigamos si el reporte implica preocupaciones de seguridad.",
+    "backToMap": "Volver al mapa",
+    "loading": "Cargando…"
   }
 }

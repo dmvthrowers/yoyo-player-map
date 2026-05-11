@@ -12,14 +12,19 @@ export interface MapFilters {
   showUnderserved: boolean;
 }
 
+function MapLoadingFallback() {
+  const t = useTranslations('map');
+  return (
+    <div className="flex items-center justify-center h-full bg-navy text-cream">
+      <p className="font-display text-2xl">{t('loadingFallback')}</p>
+    </div>
+  );
+}
+
 // Dynamic import — Leaflet requires window, must not SSR
 const Map = dynamic(() => import('./Map'), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full bg-navy text-cream">
-      <p className="font-display text-2xl">Loading map...</p>
-    </div>
-  ),
+  loading: () => <MapLoadingFallback />,
 });
 
 export default function MapClient({ entries }: { entries: MapEntry[] }) {

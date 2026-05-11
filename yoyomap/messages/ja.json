@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "地図を読み込んでいます…",
+    "popup": {
+      "approximate": "（おおよその位置）",
+      "couldntLoad": "詳細を読み込めませんでした。",
+      "tryAgain": "再試行",
+      "shopBadge": "ヨーヨーショップ",
+      "hours": "営業時間：",
+      "clubBadge": "ヨーヨークラブ",
+      "meetings": "ミーティング：",
+      "reportPin": "このピンを報告",
+      "website": "ウェブサイト"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "ネットワークエラーです。もう一度お試しください。",
+    "errorLinkExpired": "リンクが無効または期限切れです。",
+    "errorServerInvalid": "サーバーエラー：無効なレスポンスです。",
+    "errorUpdateFailed": "更新に失敗しました。",
+    "errorDeleteFailed": "削除に失敗しました。",
+    "shopDetails": "ショップ詳細",
+    "clubDetails": "クラブ詳細",
+    "errorNetworkConnection": "ネットワークエラーです。接続を確認してもう一度お試しください。",
+    "errorSomethingWrong": "問題が発生しました。"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "ショップ詳細",
+    "clubDetails": "クラブ詳細",
+    "networkError": "ネットワークエラー"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "エントリを報告",
+    "subtitle": "マップ上のエントリが安全でない、不正確、または不適切な場合はこちらでお知らせください。",
+    "whatWrong": "何が問題ですか？",
+    "selectReason": "理由を選択してください…",
+    "reasonSpam": "スパムまたは偽のエントリ",
+    "reasonHarassment": "ハラスメントまたは脅迫的なコンテンツ",
+    "reasonImpersonation": "なりすまし",
+    "reasonMinorUnsafe": "未成年者に関する安全でないコンテンツ",
+    "reasonOther": "その他",
+    "details": "詳細（任意）",
+    "detailsPlaceholder": "何が起きましたか？何を知らせたいですか？",
+    "yourEmail": "メールアドレス（任意）",
+    "yourEmailPlaceholder": "フォローアップのため",
+    "sending": "送信中…",
+    "send": "報告を送信",
+    "noEntry": "エントリが指定されていません。マップに戻ってピンをクリックしてください。",
+    "errorFailed": "送信に失敗しました。",
+    "errorNetwork": "ネットワークエラー。",
+    "thanksTitle": "ご報告ありがとうございます",
+    "thanksBody": "すべての報告を確認します。報告が安全上の懸念を含む場合、エントリは調査中すぐに非表示になります。",
+    "backToMap": "マップに戻る",
+    "loading": "読み込み中…"
   }
 }

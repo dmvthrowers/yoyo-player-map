@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "正在加载地图…",
+    "popup": {
+      "approximate": "（近似位置）",
+      "couldntLoad": "无法加载详情。",
+      "tryAgain": "重试",
+      "shopBadge": "悠悠球商店",
+      "hours": "营业时间：",
+      "clubBadge": "悠悠球俱乐部",
+      "meetings": "活动时间：",
+      "reportPin": "举报此标记",
+      "website": "网站"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "网络错误，请重试。",
+    "errorLinkExpired": "链接无效或已过期。",
+    "errorServerInvalid": "服务器错误：响应无效。",
+    "errorUpdateFailed": "更新失败。",
+    "errorDeleteFailed": "删除失败。",
+    "shopDetails": "商店详情",
+    "clubDetails": "俱乐部详情",
+    "errorNetworkConnection": "网络错误。请检查您的连接并重试。",
+    "errorSomethingWrong": "出现了问题。"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "商店详情",
+    "clubDetails": "俱乐部详情",
+    "networkError": "网络错误"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "举报条目",
+    "subtitle": "如果地图上的条目不安全、不准确或不适当，请在此告知我们。",
+    "whatWrong": "有什么问题？",
+    "selectReason": "选择原因…",
+    "reasonSpam": "垃圾信息或虚假条目",
+    "reasonHarassment": "骚扰或威胁性内容",
+    "reasonImpersonation": "冒充他人",
+    "reasonMinorUnsafe": "涉及未成年人的不安全内容",
+    "reasonOther": "其他原因",
+    "details": "详细说明（可选）",
+    "detailsPlaceholder": "发生了什么？我们需要了解什么？",
+    "yourEmail": "您的电子邮件（可选）",
+    "yourEmailPlaceholder": "以便我们跟进",
+    "sending": "发送中…",
+    "send": "发送举报",
+    "noEntry": "未指定条目，请返回地图并先点击一个标记。",
+    "errorFailed": "提交失败。",
+    "errorNetwork": "网络错误。",
+    "thanksTitle": "感谢您的举报",
+    "thanksBody": "我们会审查每一份举报。如果举报涉及安全问题，该条目将立即被隐藏待调查。",
+    "backToMap": "返回地图",
+    "loading": "加载中…"
   }
 }

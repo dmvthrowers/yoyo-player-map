@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "मानचित्र लोड हो रहा है…",
+    "popup": {
+      "approximate": "(अनुमानित)",
+      "couldntLoad": "विवरण लोड नहीं हो सका।",
+      "tryAgain": "फिर से प्रयास करें",
+      "shopBadge": "यो-यो शॉप",
+      "hours": "कार्य समय:",
+      "clubBadge": "यो-यो क्लब",
+      "meetings": "बैठकें:",
+      "reportPin": "इस पिन की रिपोर्ट करें",
+      "website": "वेबसाइट"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",
+    "errorLinkExpired": "लिंक अमान्य या समाप्त हो गया है।",
+    "errorServerInvalid": "सर्वर त्रुटि: अमान्य प्रतिक्रिया।",
+    "errorUpdateFailed": "अपडेट विफल।",
+    "errorDeleteFailed": "हटाना विफल।",
+    "shopDetails": "शॉप विवरण",
+    "clubDetails": "क्लब विवरण",
+    "errorNetworkConnection": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जाँचें और पुनः प्रयास करें।",
+    "errorSomethingWrong": "कुछ गलत हो गया।"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "शॉप विवरण",
+    "clubDetails": "क्लब विवरण",
+    "networkError": "नेटवर्क त्रुटि"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "एंट्री की रिपोर्ट करें",
+    "subtitle": "यदि मानचित्र पर कोई एंट्री असुरक्षित, गलत या अनुचित है, तो हमें यहाँ बताएं।",
+    "whatWrong": "क्या गलत है?",
+    "selectReason": "एक कारण चुनें…",
+    "reasonSpam": "स्पैम या नकली एंट्री",
+    "reasonHarassment": "उत्पीड़न या धमकी भरी सामग्री",
+    "reasonImpersonation": "पहचान की चोरी",
+    "reasonMinorUnsafe": "नाबालिग से जुड़ी असुरक्षित सामग्री",
+    "reasonOther": "कुछ और",
+    "details": "विवरण (वैकल्पिक)",
+    "detailsPlaceholder": "क्या हुआ? हमें क्या जानना चाहिए?",
+    "yourEmail": "आपका ईमेल (वैकल्पिक)",
+    "yourEmailPlaceholder": "ताकि हम अनुसरण कर सकें",
+    "sending": "भेज रहे हैं…",
+    "send": "रिपोर्ट भेजें",
+    "noEntry": "कोई एंट्री निर्दिष्ट नहीं। मानचित्र पर वापस जाएं और पहले एक पिन पर क्लिक करें।",
+    "errorFailed": "भेजने में विफल।",
+    "errorNetwork": "नेटवर्क त्रुटि।",
+    "thanksTitle": "हमें बताने के लिए धन्यवाद",
+    "thanksBody": "हम हर रिपोर्ट की समीक्षा करते हैं। यदि रिपोर्ट सुरक्षा चिंताओं से संबंधित है, तो जांच के दौरान एंट्री तुरंत छुपा दी जाएगी।",
+    "backToMap": "मानचित्र पर वापस जाएं",
+    "loading": "लोड हो रहा है…"
   }
 }

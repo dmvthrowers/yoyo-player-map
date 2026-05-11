@@ -1,15 +1,21 @@
 'use client';
 
-import { useState } from "react";
-import { Link, useLocation } from "wouter";
+import { useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Link, usePathname } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
+import { useLocale } from 'next-intl';
 
 export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loc] = useLocation();
+  const [langOpen, setLangOpen] = useState(false);
+  const t = useTranslations('nav');
+  const pathname = usePathname();
+  const locale = useLocale();
   const close = () => setMenuOpen(false);
 
   function navCls(path: string) {
-    return `nav-link whitespace-nowrap${loc === path ? " border-brand-red text-brand-red" : ""}`;
+    return `nav-link whitespace-nowrap${pathname === path ? ' border-brand-red text-brand-red' : ''}`;
   }
 
   return (
@@ -22,7 +28,7 @@ export default function Navigation() {
             rel="noopener noreferrer"
             className="topbar-link"
           >
-            DMV Throwers ↗
+            {t('dmvThrowers')} ↗
           </a>
           <a
             href="https://dmvthrowers.club/vsyc26.html"
@@ -30,7 +36,7 @@ export default function Navigation() {
             rel="noopener noreferrer"
             className="topbar-link"
           >
-            VSYC-26 ↗
+            {t('vsyc')} ↗
           </a>
         </div>
       </div>
@@ -43,22 +49,53 @@ export default function Navigation() {
 
           <div className="hidden md:flex items-center gap-6">
             <ul className="flex items-center gap-6">
-              <li><Link href="/map" className={navCls("/map")}>Map</Link></li>
-              <li><Link href="/players" className={navCls("/players")}>Players</Link></li>
-              <li><Link href="/submit" className={navCls("/submit")}>Submit</Link></li>
-              <li><Link href="/profile" className={navCls("/profile")}>Profile</Link></li>
+              <li><Link href="/map" className={navCls('/map')}>{t('map')}</Link></li>
+              <li><Link href="/players" className={navCls('/players')}>{t('players')}</Link></li>
+              <li><Link href="/submit" className={navCls('/submit')}>{t('submit')}</Link></li>
+              <li><Link href="/profile" className={navCls('/profile')}>{t('profile')}</Link></li>
               <li>
                 <a
                   href="https://ko-fi.com/dmvthrowers"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="donate-btn"
-                  title="Support DMV Throwers on Ko-fi"
+                  title={t('donateTitle')}
                 >
-                  Donate ☕
+                  {t('donate')}
                 </a>
               </li>
             </ul>
+            {/* Language switcher */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setLangOpen((o) => !o)}
+                aria-expanded={langOpen}
+                aria-label={t('languageSelect')}
+                className="nav-link text-xs flex items-center gap-1"
+              >
+                <span aria-hidden="true">🌐</span>
+                <span className="uppercase">{locale}</span>
+              </button>
+              {langOpen && (
+                <div className="absolute right-0 top-full mt-1 bg-cream border-2 border-navy shadow-lg z-50 min-w-[130px]">
+                  <ul className="py-1">
+                    {routing.locales.map((l) => (
+                      <li key={l}>
+                        <Link
+                          href={pathname}
+                          locale={l}
+                          className={`block px-3 py-1.5 text-sm hover:bg-navy/10 ${l === locale ? 'font-bold text-brand-red' : ''}`}
+                          onClick={() => setLangOpen(false)}
+                        >
+                          {t(`languages.${l}`)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
 
           <button
@@ -66,7 +103,7 @@ export default function Navigation() {
             className="md:hidden p-2 -mr-1 text-navy-deep"
             aria-expanded={menuOpen}
             aria-controls="mobile-menu"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? t('closeMenu') : t('openMenu')}
             onClick={() => setMenuOpen((o) => !o)}
           >
             {menuOpen ? (
@@ -82,22 +119,38 @@ export default function Navigation() {
         </div>
 
         <div id="mobile-menu" className={`md:hidden border-t bg-cream px-4 pb-4 pt-2${menuOpen ? '' : ' hidden'}`}>
-            <ul className="flex flex-col">
-              <li><Link href="/map" className="nav-link block py-2" onClick={close}>Map</Link></li>
-              <li><Link href="/players" className="nav-link block py-2" onClick={close}>Players</Link></li>
-              <li><Link href="/submit" className="nav-link block py-2" onClick={close}>Submit</Link></li>
-              <li><Link href="/profile" className="nav-link block py-2" onClick={close}>Profile</Link></li>
-              <li className="py-2">
-                <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" className="donate-btn inline-block" onClick={close}>Donate ☕</a>
-              </li>
-              <li>
-                <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>DMV Throwers ↗</a>
-              </li>
-              <li>
-                <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>VSYC-26 ↗</a>
-              </li>
-            </ul>
-          </div>
+          <ul className="flex flex-col">
+            <li><Link href="/map" className="nav-link block py-2" onClick={close}>{t('map')}</Link></li>
+            <li><Link href="/players" className="nav-link block py-2" onClick={close}>{t('players')}</Link></li>
+            <li><Link href="/submit" className="nav-link block py-2" onClick={close}>{t('submit')}</Link></li>
+            <li><Link href="/profile" className="nav-link block py-2" onClick={close}>{t('profile')}</Link></li>
+            <li className="py-2">
+              <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" className="donate-btn inline-block" onClick={close}>{t('donate')}</a>
+            </li>
+            <li>
+              <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('dmvThrowers')} ↗</a>
+            </li>
+            <li>
+              <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>{t('vsyc')} ↗</a>
+            </li>
+            <li className="pt-2 border-t border-navy/10 mt-2">
+              <p className="text-xs text-navy/60 mb-1">{t('language')}</p>
+              <div className="flex flex-wrap gap-2">
+                {routing.locales.map((l) => (
+                  <Link
+                    key={l}
+                    href={pathname}
+                    locale={l}
+                    className={`text-xs px-2 py-1 border ${l === locale ? 'border-brand-red text-brand-red font-bold' : 'border-navy/30 text-navy/70'}`}
+                    onClick={close}
+                  >
+                    {l.toUpperCase()}
+                  </Link>
+                ))}
+              </div>
+            </li>
+          </ul>
+        </div>
       </nav>
     </>
   );

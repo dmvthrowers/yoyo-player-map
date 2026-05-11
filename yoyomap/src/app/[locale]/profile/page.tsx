@@ -44,12 +44,12 @@ function RequestMagicLink() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Something went wrong.');
+        setError(data.error || t('profile.errorSomethingWrong'));
       } else {
         setSent(true);
       }
     } catch {
-      setError('Network error. Please try again.');
+      setError(t('profile.errorNetwork'));
     } finally {
       setLoading(false);
     }
@@ -126,17 +126,17 @@ function ManageEntry({ token }: { token: string }) {
         const res = await fetch(`/api/auth/verify-link?token=${encodeURIComponent(token)}`);
         const data = await res.json();
         if (!res.ok) {
-          setError(data.error || 'Link invalid or expired.');
+          setError(data.error || t('profile.errorLinkExpired'));
         } else {
           setEntry(data.entry);
         }
       } catch {
-        setError('Network error.');
+        setError(t('profile.errorNetwork'));
       } finally {
         setLoading(false);
       }
     })();
-  }, [token]);
+  }, [token, t]);
 
   async function save() {
     if (!entry) return;
@@ -167,11 +167,11 @@ function ManageEntry({ token }: { token: string }) {
       try {
         data = await res.json();
       } catch (e) {
-        setError('Server error: invalid response.');
+        setError(t('profile.errorServerInvalid'));
         return;
       }
       if (!res.ok) {
-        setError(data.error || 'Update failed.');
+        setError(data.error || t('profile.errorUpdateFailed'));
       } else {
         setMessage(t('profile.saved'));
         // Reload fresh from server so the form reflects exactly what was persisted
@@ -186,7 +186,7 @@ function ManageEntry({ token }: { token: string }) {
         }
       }
     } catch (err) {
-      setError('Network error. Please check your connection and try again.');
+      setError(t('profile.errorNetworkConnection'));
     } finally {
       setSaving(false);
     }
@@ -203,13 +203,13 @@ function ManageEntry({ token }: { token: string }) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Delete failed.');
+        setError(data.error || t('profile.errorDeleteFailed'));
       } else {
         setEntry(null);
         setMessage(t('profile.deletedMessage'));
       }
     } catch {
-      setError('Network error.');
+      setError(t('profile.errorNetwork'));
     } finally {
       setSaving(false);
     }
@@ -266,7 +266,7 @@ function ManageEntry({ token }: { token: string }) {
         {entry.entity_type === 'shop' && (
           <>
             <hr className="border-navy/10" />
-            <p className="font-semibold text-sm uppercase tracking-wide">🏪 Shop Details</p>
+            <p className="font-semibold text-sm uppercase tracking-wide">🏪 {t('profile.shopDetails')}</p>
             <div>
               <label className="label">{t('profile.contactName')}</label>
               <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
@@ -290,7 +290,7 @@ function ManageEntry({ token }: { token: string }) {
         {entry.entity_type === 'club' && (
           <>
             <hr className="border-navy/10" />
-            <p className="font-semibold text-sm uppercase tracking-wide">🎲 Club Details</p>
+            <p className="font-semibold text-sm uppercase tracking-wide">🎲 {t('profile.clubDetails')}</p>
             <div>
               <label className="label">{t('profile.contactName')}</label>
               <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />

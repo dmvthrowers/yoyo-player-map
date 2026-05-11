@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "Загрузка карты…",
+    "popup": {
+      "approximate": "(приблизительно)",
+      "couldntLoad": "Не удалось загрузить детали.",
+      "tryAgain": "Попробовать снова",
+      "shopBadge": "Магазин йо-йо",
+      "hours": "Часы работы:",
+      "clubBadge": "Клуб йо-йо",
+      "meetings": "Встречи:",
+      "reportPin": "Пожаловаться на маркер",
+      "website": "Сайт"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Ошибка сети. Пожалуйста, попробуйте снова.",
+    "errorLinkExpired": "Ссылка недействительна или устарела.",
+    "errorServerInvalid": "Ошибка сервера: неверный ответ.",
+    "errorUpdateFailed": "Не удалось обновить.",
+    "errorDeleteFailed": "Не удалось удалить.",
+    "shopDetails": "Информация о магазине",
+    "clubDetails": "Информация о клубе",
+    "errorNetworkConnection": "Ошибка сети. Пожалуйста, проверьте соединение и попробуйте снова.",
+    "errorSomethingWrong": "Что-то пошло не так."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Информация о магазине",
+    "clubDetails": "Информация о клубе",
+    "networkError": "Ошибка сети"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Пожаловаться на запись",
+    "subtitle": "Если запись на карте небезопасна, неточна или неуместна, сообщите нам об этом здесь.",
+    "whatWrong": "Что не так?",
+    "selectReason": "Выберите причину…",
+    "reasonSpam": "Спам или поддельная запись",
+    "reasonHarassment": "Преследование или угрозы",
+    "reasonImpersonation": "Выдача себя за другого",
+    "reasonMinorUnsafe": "Небезопасный контент с участием несовершеннолетних",
+    "reasonOther": "Что-то другое",
+    "details": "Подробности (необязательно)",
+    "detailsPlaceholder": "Что произошло? Что нам следует знать?",
+    "yourEmail": "Ваш email (необязательно)",
+    "yourEmailPlaceholder": "Чтобы мы могли связаться с вами",
+    "sending": "Отправка…",
+    "send": "Отправить жалобу",
+    "noEntry": "Запись не указана. Вернитесь на карту и сначала нажмите на маркер.",
+    "errorFailed": "Не удалось отправить.",
+    "errorNetwork": "Ошибка сети.",
+    "thanksTitle": "Спасибо, что сообщили нам",
+    "thanksBody": "Мы рассматриваем каждую жалобу. Запись будет немедленно скрыта на время расследования, если жалоба связана с проблемами безопасности.",
+    "backToMap": "Вернуться на карту",
+    "loading": "Загрузка…"
   }
 }
