@@ -4,15 +4,40 @@ import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
+import { sendLocationConfirmEmail } from '@/lib/email';
+import { generateToken } from '@/lib/tokens';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
 
-const schema = z.object({
+const locationStatusSchema = z.enum([
+  'verified',
+  'auto_geocoded',
+  'needs_research',
+  'awaiting_owner_response',
+  'dead_pin',
+]);
+const LOCATION_CONFIRM_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+const OUTREACH_BATCH_SIZE = 20;
+
+const singleActionSchema = z.object({
   action: z.enum(['flag_entry', 'unflag_entry', 'delete_entry', 'resolve_report', 'clear_auto_hide', 'regeocode_entry', 'send_reminder']),
   id: z.string().uuid(),
 });
+
+const bulkStatusSchema = z.object({
+  action: z.literal('set_location_status'),
+  ids: z.array(z.string().uuid()).min(1).max(500),
+  locationStatus: locationStatusSchema,
+});
+
+const outreachSchema = z.object({
+  action: z.literal('send_location_outreach'),
+  ids: z.array(z.string().uuid()).min(1).max(500),
+});
+
+const schema = z.discriminatedUnion('action', [singleActionSchema, bulkStatusSchema, outreachSchema]);
 
 function checkAdmin(req: NextRequest): boolean {
   const token = req.headers.get('x-admin-token') ?? '';
@@ -28,6 +53,52 @@ function checkAdmin(req: NextRequest): boolean {
   return crypto.timingSafeEqual(a, b) && ta.length === tb.length;
 }
 
+type OutreachEntry = {
+  id: string;
+  email: string;
+  display_name: string;
+  city: string;
+  region: string | null;
+  country: string;
+};
+
+type OutreachResult =
+  | { status: 'sent' | 'queued' }
+  | { status: 'failed'; entryId: string };
+
+async function sendOutreachForEntry(
+  supabase: ReturnType<typeof createAdminClient>,
+  entry: OutreachEntry,
+  expiresAt: string
+): Promise<OutreachResult> {
+  const token = generateToken();
+  const { error: tokenError } = await supabase.from('verification_tokens').insert({
+    entry_id: entry.id,
+    token,
+    purpose: 'location_confirm',
+    expires_at: expiresAt,
+  });
+  if (tokenError) {
+    return { status: 'failed', entryId: entry.id };
+  }
+
+  const outcome = await sendLocationConfirmEmail(
+    entry.email,
+    entry.display_name,
+    token,
+    entry.city,
+    entry.region,
+    entry.country
+  );
+  if (outcome.status === 'sent' || outcome.status === 'deduped') {
+    return { status: 'sent' };
+  }
+  if (outcome.status === 'queued') {
+    return { status: 'queued' };
+  }
+  return { status: 'failed', entryId: entry.id };
+}
+
 export async function POST(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -37,8 +108,78 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) return NextResponse.json({ error: 'Invalid' }, { status: 400 });
 
   const supabase = createAdminClient();
-  const { action, id } = parsed.data;
+  const action = parsed.data.action;
   const ip = getClientIp(req.headers);
+
+  if (action === 'set_location_status') {
+    const { ids, locationStatus } = parsed.data;
+    const { error } = await supabase
+      .from('entries')
+      .update({ location_status: locationStatus })
+      .in('id', ids)
+      .is('deleted_at', null);
+    if (error) return NextResponse.json({ error: 'Bulk location status update failed.' }, { status: 500 });
+    await logAudit('admin.set_location_status_bulk', {
+      actor: 'admin',
+      meta: { ip, idsCount: ids.length, locationStatus },
+    });
+    return NextResponse.json({ ok: true, updated: ids.length });
+  }
+
+  if (action === 'send_location_outreach') {
+    const ids = parsed.data.ids;
+    const { data: entries, error } = await supabase
+      .from('entries')
+      .select('id, email, display_name, city, region, country')
+      .in('id', ids)
+      .is('deleted_at', null);
+    if (error) return NextResponse.json({ error: 'Could not load entries for outreach.' }, { status: 500 });
+
+    let sent = 0;
+    let queued = 0;
+    let failed = 0;
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + LOCATION_CONFIRM_TOKEN_TTL_MS).toISOString();
+
+    const failedEntryIds: string[] = [];
+    const allEntries = entries ?? [];
+    for (let i = 0; i < allEntries.length; i += OUTREACH_BATCH_SIZE) {
+      const batch = allEntries.slice(i, i + OUTREACH_BATCH_SIZE);
+      const batchResults = await Promise.allSettled(
+        batch.map((entry) => sendOutreachForEntry(supabase, entry, expiresAt))
+      );
+
+      for (const result of batchResults) {
+        if (result.status === 'rejected') {
+          failed += 1;
+          continue;
+        }
+        if (result.value.status === 'sent') {
+          sent += 1;
+        } else if (result.value.status === 'queued') {
+          queued += 1;
+        } else if (result.value.status === 'failed') {
+          failed += 1;
+          failedEntryIds.push(result.value.entryId);
+        }
+      }
+    }
+
+    await supabase
+      .from('entries')
+      .update({ location_status: 'awaiting_owner_response' })
+      .in('id', ids)
+      .is('deleted_at', null);
+
+    await logAudit('admin.send_location_outreach_bulk', {
+      actor: 'admin',
+      meta: { ip, idsCount: ids.length, sent, queued, failed, failedEntryIds },
+    });
+
+    return NextResponse.json({ ok: true, sent, queued, failed });
+  }
+
+  const { id } = parsed.data;
 
   // Snapshot location up front so we can bust caches after the action.
   // Only the visibility-changing actions need this; others fetch lazily.

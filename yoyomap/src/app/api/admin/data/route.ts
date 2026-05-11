@@ -35,7 +35,7 @@ export async function GET(req: NextRequest) {
   let entriesQuery = supabase
     .from('entries')
     .select(
-      'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
+      'id, display_name, email, city, region, country, age_band, entity_type, verified_owner, is_visible, is_flagged, auto_hidden_by_reports, location_status, deleted_at, created_at, verified_at, last_reminder_at, reminder_count'
     )
     .order(sort, { ascending: direction })
     .range((page - 1) * pageSize, page * pageSize - 1);
@@ -60,6 +60,11 @@ export async function GET(req: NextRequest) {
     { count: shopCount },
     { count: clubCount },
     { count: verifiedOwners },
+    { count: statusVerified },
+    { count: statusAutoGeocoded },
+    { count: statusNeedsResearch },
+    { count: statusAwaitingOwner },
+    { count: statusDeadPin },
   ] = await Promise.all([
     entriesQuery,
     supabase
@@ -79,6 +84,11 @@ export async function GET(req: NextRequest) {
     supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'shop'),
     supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'club'),
     supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('entity_type', 'shop').eq('verified_owner', true),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('location_status', 'verified'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('location_status', 'auto_geocoded'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('location_status', 'needs_research'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('location_status', 'awaiting_owner_response'),
+    supabase.from('entries').select('*', { count: 'exact', head: true }).is('deleted_at', null).eq('location_status', 'dead_pin'),
   ]);
 
   const stats = {
@@ -95,6 +105,13 @@ export async function GET(req: NextRequest) {
       club: clubCount ?? 0,
     },
     verifiedOwners: verifiedOwners ?? 0,
+    locationStatus: {
+      verified: statusVerified ?? 0,
+      auto_geocoded: statusAutoGeocoded ?? 0,
+      needs_research: statusNeedsResearch ?? 0,
+      awaiting_owner_response: statusAwaitingOwner ?? 0,
+      dead_pin: statusDeadPin ?? 0,
+    },
   };
 
   return NextResponse.json({ entries: entries ?? [], reports: reports ?? [], stats });
