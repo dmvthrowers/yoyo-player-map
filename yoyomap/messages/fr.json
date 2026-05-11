@@ -612,5 +612,18 @@
     "errorLinkExpired": "Lien invalide ou expiré.",
     "errorCouldntSave": "Impossible d'enregistrer les modifications.",
     "errorNetwork": "Erreur réseau."
+  },
+  "status": {
+    "title": "État des services",
+    "description": "Liens de statut opérationnel et notes sur l'impact des pannes pour la pile YoYo Map.",
+    "eyebrow": "Opérations",
+    "heading": "État des services",
+    "intro": "Cette page suit l'état des services externes dont dépend YoYo Map. Lorsqu'un fournisseur propose une API de statut officielle, nous affichons un récapitulatif en direct. Sinon, nous renvoyons directement vers la page de statut du fournisseur.",
+    "whatInterrupted": "Ce qui serait perturbé :",
+    "lastVendorUpdate": "Dernière mise à jour fournisseur : {updatedAt} UTC",
+    "linkedStatusPage": "Page de statut liée",
+    "feedUnavailable": "Flux de statut indisponible",
+    "statusAvailable": "Statut disponible",
+    "disclaimer": "Un badge vert signifie que le fournisseur signale un fonctionnement normal, pas que chaque fonctionnalité de YoYo Map est garantie. Si le site semble défaillant alors qu'un fournisseur affiche du vert, vérifiez les incidents récents, les problèmes de cache de déploiement et les erreurs de console/réseau du navigateur."
   }
 }

@@ -612,5 +612,18 @@
     "errorLinkExpired": "链接无效或已过期。",
     "errorCouldntSave": "无法保存更改。",
     "errorNetwork": "网络错误。"
+  },
+  "status": {
+    "title": "服务状态",
+    "description": "YoYo Map 技术栈的运行状态链接及故障影响说明。",
+    "eyebrow": "运营",
+    "heading": "服务状态",
+    "intro": "此页面追踪 YoYo Map 依赖的外部服务状态。当服务商提供官方状态 API 时，我们会显示实时汇总；否则，我们直接链接到服务商的状态页面。",
+    "whatInterrupted": "可能受影响的功能：",
+    "lastVendorUpdate": "服务商最后更新：{updatedAt} UTC",
+    "linkedStatusPage": "状态页面链接",
+    "feedUnavailable": "状态数据不可用",
+    "statusAvailable": "状态可用",
+    "disclaimer": "绿色徽章表示服务商报告正常运行，并不保证 YoYo Map 的每个功能都正常。如果站点看起来异常但服务商显示绿色，请查看近期事故、部署缓存问题以及浏览器控制台/网络错误。"
   }
 }

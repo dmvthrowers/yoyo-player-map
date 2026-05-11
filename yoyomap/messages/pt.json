@@ -612,5 +612,18 @@
     "errorLinkExpired": "Link inválido ou expirado.",
     "errorCouldntSave": "Não foi possível guardar as alterações.",
     "errorNetwork": "Erro de rede."
+  },
+  "status": {
+    "title": "Estado do serviço",
+    "description": "Links de estado operacional e notas de impacto de falhas para a pilha YoYo Map.",
+    "eyebrow": "Operações",
+    "heading": "Estado do serviço",
+    "intro": "Esta página acompanha o estado dos serviços externos de que o YoYo Map depende. Quando um fornecedor oferece uma API de estado oficial, mostramos um resumo em direto. Caso contrário, ligamos diretamente à página de estado do fornecedor.",
+    "whatInterrupted": "O que ficaria interrompido:",
+    "lastVendorUpdate": "Última atualização do fornecedor: {updatedAt} UTC",
+    "linkedStatusPage": "Página de estado ligada",
+    "feedUnavailable": "Feed de estado indisponível",
+    "statusAvailable": "Estado disponível",
+    "disclaimer": "Um emblema verde significa que o fornecedor reporta operação normal, não que cada função do YoYo Map está garantida. Se o site parecer com problemas enquanto um fornecedor mostra verde, verifique incidentes recentes, problemas de cache de deploy e erros de consola/rede do browser."
   }
 }

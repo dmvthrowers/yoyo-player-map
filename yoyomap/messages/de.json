@@ -612,5 +612,18 @@
     "errorLinkExpired": "Link ungültig oder abgelaufen.",
     "errorCouldntSave": "Änderungen konnten nicht gespeichert werden.",
     "errorNetwork": "Netzwerkfehler."
+  },
+  "status": {
+    "title": "Service-Status",
+    "description": "Betriebsstatus und Ausfallauswirkungen für den YoYo Map-Stack.",
+    "eyebrow": "Betrieb",
+    "heading": "Service-Status",
+    "intro": "Diese Seite zeigt den Status der externen Dienste, von denen YoYo Map abhängt. Wenn ein Anbieter eine offizielle Status-API anbietet, zeigen wir eine Live-Zusammenfassung. Andernfalls verlinken wir direkt auf die Statusseite des Anbieters.",
+    "whatInterrupted": "Was wäre beeinträchtigt:",
+    "lastVendorUpdate": "Letzte Anbieteraktualisierung: {updatedAt} UTC",
+    "linkedStatusPage": "Verlinkte Statusseite",
+    "feedUnavailable": "Status-Feed nicht verfügbar",
+    "statusAvailable": "Status verfügbar",
+    "disclaimer": "Ein grünes Abzeichen hier bedeutet, dass der Anbieter normalen Betrieb meldet, nicht dass jede YoYo Map-Funktion garantiert funktioniert. Wenn die Website defekt erscheint, während ein Anbieter grün zeigt, prüfe aktuelle Vorfälle, Cache-Probleme und Browser-Konsolen-/Netzwerkfehler."
   }
 }

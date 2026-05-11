@@ -580,6 +580,19 @@
     "errorCouldntSave": "Could not save changes.",
     "errorNetwork": "Network error."
   },
+  "status": {
+    "title": "Service Status",
+    "description": "Operational status links and outage impact notes for the YoYo Map stack.",
+    "eyebrow": "Operations",
+    "heading": "Service status",
+    "intro": "This page tracks the external services YoYo Map depends on. Where a provider offers an official status API, we show a live rollup. Everywhere else, we link directly to the vendor's status page or reference surface.",
+    "whatInterrupted": "What would be interrupted:",
+    "lastVendorUpdate": "Last vendor update: {updatedAt} UTC",
+    "linkedStatusPage": "Linked status page",
+    "feedUnavailable": "Status feed unavailable",
+    "statusAvailable": "Status available",
+    "disclaimer": "A green badge here means the vendor reports normal operation, not that every YoYo Map feature is guaranteed healthy. If the site feels broken while a provider shows green, check recent incidents, cached deploy issues, and browser console/network failures too."
+  },
   "contact": {
     "eyebrow": "Get in Touch",
     "title": "Contact Us",

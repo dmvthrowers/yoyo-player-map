@@ -612,5 +612,18 @@
     "errorLinkExpired": "링크가 잘못되었거나 만료되었습니다.",
     "errorCouldntSave": "변경 사항을 저장할 수 없습니다.",
     "errorNetwork": "네트워크 오류."
+  },
+  "status": {
+    "title": "서비스 상태",
+    "description": "YoYo Map 스택의 운영 상태 링크 및 장애 영향 메모.",
+    "eyebrow": "운영",
+    "heading": "서비스 상태",
+    "intro": "이 페이지는 YoYo Map이 의존하는 외부 서비스의 상태를 추적합니다. 공급업체가 공식 상태 API를 제공하는 경우 실시간 요약을 표시합니다. 그렇지 않으면 공급업체의 상태 페이지로 직접 링크합니다.",
+    "whatInterrupted": "영향을 받는 기능:",
+    "lastVendorUpdate": "공급업체 최종 업데이트: {updatedAt} UTC",
+    "linkedStatusPage": "연결된 상태 페이지",
+    "feedUnavailable": "상태 피드 사용 불가",
+    "statusAvailable": "상태 사용 가능",
+    "disclaimer": "녹색 배지는 공급업체가 정상 운영을 보고함을 의미하며, YoYo Map의 모든 기능이 보장된다는 뜻은 아닙니다. 공급업체가 녹색을 표시하는 동안 사이트에 문제가 있어 보인다면 최근 인시던트, 배포 캐시 문제, 브라우저 콘솔/네트워크 오류를 확인하세요."
   }
 }
