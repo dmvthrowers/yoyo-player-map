@@ -144,7 +144,7 @@ export default function Navigation() {
                     className={`text-xs px-2 py-1 border ${l === locale ? 'border-brand-red text-brand-red font-bold' : 'border-navy/30 text-navy/70'}`}
                     onClick={close}
                   >
-                    {l.toUpperCase()}
+                    {t(`languages.${l}`)}
                   </Link>
                 ))}
               </div>

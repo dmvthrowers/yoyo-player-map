@@ -56,7 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
 
     // Location pages are the same content in all locales; list English canonical only
-    // to avoid duplicate-content penalties, but add alternate-locale hreflang via metadata.
+    // to avoid duplicate-content penalties. Alternate locale links for these pages
+    // are handled at the page level via Next.js metadata alternates configuration.
     locationEntries = [
       ...[...countries].map((c) => ({
         url: `${BASE}/en/players/${c}`,
