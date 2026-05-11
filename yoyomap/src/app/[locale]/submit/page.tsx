@@ -207,7 +207,7 @@ export default function SubmitPage() {
       const data = await res.json();
       if (!res.ok) setResult({ ok: false, message: data.error?.message });
       else { setShowToast(true); setResult({ ok: true, message: data.message, isMinor, emailStatus: data.emailStatus, retryAt: data.retryAt }); }
-    } catch { setResult({ ok: false, message: t('submit.networkError') }); }
+    } catch { setResult({ ok: false, message: t('submit.errorNetwork') }); }
     finally { setSubmitting(false); }
   }
 

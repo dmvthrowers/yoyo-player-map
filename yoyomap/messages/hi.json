@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "शॉप विवरण",
     "clubDetails": "क्लब विवरण",
-    "networkError": "नेटवर्क त्रुटि"
+    "errorNetwork": "नेटवर्क त्रुटि"
   },
   "contact": {
     "eyebrow": "Get in Touch",

@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "ショップ詳細",
     "clubDetails": "クラブ詳細",
-    "networkError": "ネットワークエラー"
+    "errorNetwork": "ネットワークエラー"
   },
   "contact": {
     "eyebrow": "Get in Touch",

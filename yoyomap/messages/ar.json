@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "تفاصيل المتجر",
     "clubDetails": "تفاصيل النادي",
-    "networkError": "خطأ في الشبكة"
+    "errorNetwork": "خطأ في الشبكة"
   },
   "contact": {
     "eyebrow": "Get in Touch",

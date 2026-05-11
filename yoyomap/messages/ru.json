@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "Информация о магазине",
     "clubDetails": "Информация о клубе",
-    "networkError": "Ошибка сети"
+    "errorNetwork": "Ошибка сети"
   },
   "contact": {
     "eyebrow": "Get in Touch",

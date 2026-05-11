@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "Detalhes da loja",
     "clubDetails": "Detalhes do clube",
-    "networkError": "Erro de rede"
+    "errorNetwork": "Erro de rede"
   },
   "contact": {
     "eyebrow": "Get in Touch",

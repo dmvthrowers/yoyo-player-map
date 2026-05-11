@@ -545,7 +545,7 @@
     "addCityAdding": "Adding...",
     "shopDetails": "商店详情",
     "clubDetails": "俱乐部详情",
-    "networkError": "网络错误"
+    "errorNetwork": "网络错误"
   },
   "contact": {
     "eyebrow": "Get in Touch",
