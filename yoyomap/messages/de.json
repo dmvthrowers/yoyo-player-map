@@ -581,5 +581,36 @@
     "thanksBody": "Wir prüfen jeden Bericht. Der Eintrag wird sofort ausgeblendet, während wir untersuchen, ob der Bericht Sicherheitsbedenken aufwirft.",
     "backToMap": "Zurück zur Karte",
     "loading": "Wird geladen…"
+  },
+  "error": {
+    "eyebrow": "Etwas ist schiefgelaufen",
+    "title": "Ein Fehler ist aufgetreten",
+    "description": "Diese Seite konnte nicht geladen werden. Der Fehler wurde protokolliert — versuche es erneut oder gehe zurück zur Karte.",
+    "tryAgain": "Erneut versuchen",
+    "backToMap": "Zurück zur Karte",
+    "reference": "Referenz: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nichts hier",
+    "description": "Diese Seite existiert nicht — oder der Link ist abgelaufen. Versuche die Karte oder gehe nach Hause.",
+    "openMap": "Karte öffnen",
+    "home": "Startseite"
+  },
+  "confirmLocation": {
+    "loading": "Wird geladen…",
+    "title": "Bestätige deine Stadt",
+    "entry": "Eintrag:",
+    "city": "Stadt",
+    "regionState": "Region / Bundesland",
+    "countryIso": "Land (ISO-2)",
+    "saving": "Wird gespeichert…",
+    "confirmCurrent": "Aktuelle Stadt bestätigen",
+    "saveUpdated": "Aktualisierte Stadt speichern",
+    "doneTitle": "Danke — Standort bestätigt",
+    "doneBody": "Dein Kartenstandort wurde als verifiziert markiert.",
+    "errorLinkExpired": "Link ungültig oder abgelaufen.",
+    "errorCouldntSave": "Änderungen konnten nicht gespeichert werden.",
+    "errorNetwork": "Netzwerkfehler."
   }
 }

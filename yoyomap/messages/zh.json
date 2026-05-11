@@ -581,5 +581,36 @@
     "thanksBody": "我们会审查每一份举报。如果举报涉及安全问题，该条目将立即被隐藏待调查。",
     "backToMap": "返回地图",
     "loading": "加载中…"
+  },
+  "error": {
+    "eyebrow": "出现错误",
+    "title": "遇到了问题",
+    "description": "此页面加载失败。错误已被记录 — 请重试，或返回地图。",
+    "tryAgain": "重试",
+    "backToMap": "返回地图",
+    "reference": "参考: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "这里什么都没有",
+    "description": "该页面不存在 — 或您访问的链接已过期。请尝试地图或返回首页。",
+    "openMap": "打开地图",
+    "home": "首页"
+  },
+  "confirmLocation": {
+    "loading": "加载中…",
+    "title": "确认您的城市",
+    "entry": "条目：",
+    "city": "城市",
+    "regionState": "地区 / 省份",
+    "countryIso": "国家 (ISO-2)",
+    "saving": "保存中…",
+    "confirmCurrent": "确认当前城市",
+    "saveUpdated": "保存更新的城市",
+    "doneTitle": "感谢 — 位置已确认",
+    "doneBody": "您的地图位置已被标记为已验证。",
+    "errorLinkExpired": "链接无效或已过期。",
+    "errorCouldntSave": "无法保存更改。",
+    "errorNetwork": "网络错误。"
   }
 }

@@ -581,5 +581,36 @@
     "thanksBody": "Revisamos cada reporte. La entrada se ocultará inmediatamente mientras investigamos si el reporte implica preocupaciones de seguridad.",
     "backToMap": "Volver al mapa",
     "loading": "Cargando…"
+  },
+  "error": {
+    "eyebrow": "Algo salió mal",
+    "title": "Encontramos un problema",
+    "description": "Esta página no pudo cargarse. El error ha sido registrado — intenta de nuevo o vuelve al mapa.",
+    "tryAgain": "Volver a intentar",
+    "backToMap": "Volver al mapa",
+    "reference": "Referencia: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nada aquí",
+    "description": "Esa página no existe — o el enlace que seguiste ha expirado. Prueba el mapa o regresa al inicio.",
+    "openMap": "Abrir mapa",
+    "home": "Inicio"
+  },
+  "confirmLocation": {
+    "loading": "Cargando…",
+    "title": "Confirma tu ciudad",
+    "entry": "Entrada:",
+    "city": "Ciudad",
+    "regionState": "Región / Estado",
+    "countryIso": "País (ISO-2)",
+    "saving": "Guardando…",
+    "confirmCurrent": "Confirmar ciudad actual",
+    "saveUpdated": "Guardar ciudad actualizada",
+    "doneTitle": "Gracias — ubicación confirmada",
+    "doneBody": "Tu ubicación en el mapa ha sido marcada como verificada.",
+    "errorLinkExpired": "Enlace inválido o expirado.",
+    "errorCouldntSave": "No se pudieron guardar los cambios.",
+    "errorNetwork": "Error de red."
   }
 }

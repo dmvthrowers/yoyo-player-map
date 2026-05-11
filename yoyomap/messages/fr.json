@@ -581,5 +581,36 @@
     "thanksBody": "Nous examinons chaque signalement. L'entrée sera masquée immédiatement pendant notre investigation si le signalement concerne des préoccupations de sécurité.",
     "backToMap": "Retour à la carte",
     "loading": "Chargement…"
+  },
+  "error": {
+    "eyebrow": "Une erreur s'est produite",
+    "title": "Nous avons rencontré un problème",
+    "description": "Cette page n'a pas pu se charger. L'erreur a été enregistrée — réessayez ou retournez à la carte.",
+    "tryAgain": "Réessayer",
+    "backToMap": "Retour à la carte",
+    "reference": "Référence : {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Rien ici",
+    "description": "Cette page n'existe pas — ou le lien que vous avez suivi a expiré. Essayez la carte ou rentrez à l'accueil.",
+    "openMap": "Ouvrir la carte",
+    "home": "Accueil"
+  },
+  "confirmLocation": {
+    "loading": "Chargement…",
+    "title": "Confirmez votre ville",
+    "entry": "Entrée :",
+    "city": "Ville",
+    "regionState": "Région / État",
+    "countryIso": "Pays (ISO-2)",
+    "saving": "Enregistrement…",
+    "confirmCurrent": "Confirmer la ville actuelle",
+    "saveUpdated": "Enregistrer la ville mise à jour",
+    "doneTitle": "Merci — emplacement confirmé",
+    "doneBody": "Votre emplacement sur la carte a été marqué comme vérifié.",
+    "errorLinkExpired": "Lien invalide ou expiré.",
+    "errorCouldntSave": "Impossible d'enregistrer les modifications.",
+    "errorNetwork": "Erreur réseau."
   }
 }

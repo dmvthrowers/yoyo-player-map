@@ -549,6 +549,37 @@
     "clubDetails": "Club Details",
     "networkError": "Network error"
   },
+  "error": {
+    "eyebrow": "Something broke",
+    "title": "We hit a snag",
+    "description": "This page failed to load. The error's been logged — try again, or head back to the map.",
+    "tryAgain": "Try again",
+    "backToMap": "Back to map",
+    "reference": "Reference: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nothing here",
+    "description": "That page doesn't exist — or the link you followed expired. Try the map, or head home.",
+    "openMap": "Open map",
+    "home": "Home"
+  },
+  "confirmLocation": {
+    "loading": "Loading…",
+    "title": "Confirm your city",
+    "entry": "Entry:",
+    "city": "City",
+    "regionState": "Region / State",
+    "countryIso": "Country (ISO-2)",
+    "saving": "Saving…",
+    "confirmCurrent": "Confirm current city",
+    "saveUpdated": "Save updated city",
+    "doneTitle": "Thanks — location confirmed",
+    "doneBody": "Your map location has been marked as verified.",
+    "errorLinkExpired": "Link invalid or expired.",
+    "errorCouldntSave": "Could not save changes.",
+    "errorNetwork": "Network error."
+  },
   "contact": {
     "eyebrow": "Get in Touch",
     "title": "Contact Us",

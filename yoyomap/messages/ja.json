@@ -581,5 +581,36 @@
     "thanksBody": "すべての報告を確認します。報告が安全上の懸念を含む場合、エントリは調査中すぐに非表示になります。",
     "backToMap": "マップに戻る",
     "loading": "読み込み中…"
+  },
+  "error": {
+    "eyebrow": "問題が発生しました",
+    "title": "エラーが起きました",
+    "description": "このページの読み込みに失敗しました。エラーは記録されています — もう一度お試しになるか、マップに戻ってください。",
+    "tryAgain": "再試行",
+    "backToMap": "マップに戻る",
+    "reference": "参照: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "ここには何もありません",
+    "description": "そのページは存在しません — またはリンクが期限切れです。マップを試すか、ホームに戻ってください。",
+    "openMap": "マップを開く",
+    "home": "ホーム"
+  },
+  "confirmLocation": {
+    "loading": "読み込み中…",
+    "title": "お住まいの都市を確認してください",
+    "entry": "エントリ：",
+    "city": "都市",
+    "regionState": "地域 / 都道府県",
+    "countryIso": "国 (ISO-2)",
+    "saving": "保存中…",
+    "confirmCurrent": "現在の都市を確認",
+    "saveUpdated": "更新した都市を保存",
+    "doneTitle": "ありがとうございます — 場所が確認されました",
+    "doneBody": "マップの場所が確認済みとしてマークされました。",
+    "errorLinkExpired": "リンクが無効または期限切れです。",
+    "errorCouldntSave": "変更を保存できませんでした。",
+    "errorNetwork": "ネットワークエラー。"
   }
 }

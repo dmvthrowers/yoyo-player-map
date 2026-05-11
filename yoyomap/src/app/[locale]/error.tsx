@@ -5,6 +5,7 @@
 // global-error.tsx for that). Server errors and client errors both land here.
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
 export default function Error({
@@ -14,6 +15,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('error');
+
   useEffect(() => {
     // Vercel captures console.error into function logs; digest correlates
     // back to the server-rendered request.
@@ -22,17 +25,15 @@ export default function Error({
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-      <p className="text-[11px] uppercase tracking-widest text-brand-red font-bold mb-2">Something broke</p>
-      <h1 className="font-display text-4xl text-navy mb-4">We hit a snag</h1>
-      <p className="text-navy/80 mb-8">
-        This page failed to load. The error&apos;s been logged — try again, or head back to the map.
-      </p>
+      <p className="text-[11px] uppercase tracking-widest text-brand-red font-bold mb-2">{t('eyebrow')}</p>
+      <h1 className="font-display text-4xl text-navy mb-4">{t('title')}</h1>
+      <p className="text-navy/80 mb-8">{t('description')}</p>
       <div className="flex flex-wrap gap-3 justify-center">
-        <button onClick={reset} className="btn-primary">Try again</button>
-        <Link href="/map" className="btn-secondary">Back to map</Link>
+        <button onClick={reset} className="btn-primary">{t('tryAgain')}</button>
+        <Link href="/map" className="btn-secondary">{t('backToMap')}</Link>
       </div>
       {error.digest && (
-        <p className="mt-8 text-[10px] text-navy/40">Reference: {error.digest}</p>
+        <p className="mt-8 text-[10px] text-navy/40">{t('reference', { digest: error.digest })}</p>
       )}
     </div>
   );
