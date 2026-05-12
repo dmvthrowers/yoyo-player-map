@@ -1,3 +1,7 @@
+import { unstable_cache } from 'next/cache';
+import { supabase } from '@/lib/supabase';
+import { slugify } from './locationSlug';
+
 // Region normalization map: maps known abbreviations/variants to canonical display name
 export const REGION_NORMALIZATION: Record<string, string> = {
   // US states (add more as needed)
@@ -222,9 +226,6 @@ export function canonicalCountryName(input: string): string {
   const slug = slugify(input);
   return COUNTRY_NORMALIZATION[slug] || input;
 }
-import { unstable_cache } from 'next/cache';
-import { supabase } from '@/lib/supabase';
-import { slugify } from './locationSlug';
 
 export interface PublicEntry {
   id: string;
