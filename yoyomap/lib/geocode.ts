@@ -23,8 +23,13 @@ import { createAdminClient } from './supabase/admin';
 
 const NOMINATIM_UA = 'DMVThrowersYoYoMap/1.0 (contact@dmvthrowers.club)';
 
-// Reuse a single admin client — avoids new connections per geocode
-const supabaseAdmin = createAdminClient();
+// Lazy singleton — defers createAdminClient() until first geocode call so a
+// missing SUPABASE_SERVICE_ROLE_KEY doesn't crash unrelated API routes at import.
+let _getSupabaseAdmin(): ReturnType<typeof createAdminClient> | null = null;
+function getSupabaseAdmin() {
+  if (!_getSupabaseAdmin()) _getSupabaseAdmin() = createAdminClient();
+  return _getSupabaseAdmin();
+}
 
 // ---------------------------------------------------------------------------
 // Rate limiter: serialize Nominatim requests, min 1100ms between starts.
@@ -67,7 +72,7 @@ export interface GeocodeResult extends z.infer<typeof GeocodeResultSchema> {}
 
 async function readCache(queryHash: string): Promise<GeocodeResult | null> {
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await getSupabaseAdmin()
      .from('geocode_cache')
      .select('result')
      .eq('query_hash', queryHash)
@@ -83,7 +88,7 @@ async function readCache(queryHash: string): Promise<GeocodeResult | null> {
 
 async function writeCache(queryHash: string, kind: 'city' | 'address', result: GeocodeResult): Promise<void> {
   try {
-    await supabaseAdmin
+    await getSupabaseAdmin()
      .from('geocode_cache')
      .upsert({ query_hash: queryHash, query_kind: kind, result }, { onConflict: 'query_hash' });
   } catch (e) {

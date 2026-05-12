@@ -6,7 +6,8 @@ export const runtime = 'nodejs';
 // On-demand revalidation triggered by submit/profile-update flows.
 export async function POST(req: NextRequest) {
   const secret = req.nextUrl.searchParams.get('secret');
-  if (process.env.REVALIDATE_SECRET && secret !== process.env.REVALIDATE_SECRET) {
+  const expected = process.env.REVALIDATE_SECRET;
+  if (!expected || secret !== expected) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

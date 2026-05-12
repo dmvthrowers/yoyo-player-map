@@ -3,15 +3,19 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { createAdminClient } from './supabase/admin';
 
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL!,
-  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+const redis =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+    ? new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN,
+      })
+    : null;
 
 // Cache Ratelimit instances by key so they're not reconstructed on every call.
 const limiterCache = new Map<string, Ratelimit>();
 
-function getLimiter(action: string, max: number, windowMinutes: number): Ratelimit {
+function getLimiter(action: string, max: number, windowMinutes: number): Ratelimit | null {
+  if (!redis) return null;
   const key = `${action}:${max}:${windowMinutes}`;
   if (!limiterCache.has(key)) {
     limiterCache.set(key, new Ratelimit({
@@ -29,11 +33,16 @@ export async function checkRateLimit(
   max: number,
   windowMinutes: number
 ): Promise<boolean> {
+  const limiter = getLimiter(action, max, windowMinutes);
+  if (!limiter) {
+    console.warn('[rate-limit] Redis not configured — skipping rate limit for', action);
+    return true;
+  }
   try {
-    const { success } = await getLimiter(action, max, windowMinutes).limit(ip);
+    const { success } = await limiter.limit(ip);
     return success;
   } catch (error) {
-    console.error('Rate limit check failed:', error);
+    console.error('[rate-limit] check failed:', error);
     return true;
   }
 }
@@ -45,12 +54,13 @@ export async function logAudit(
   opts: { actor?: string; targetId?: string; meta?: Record<string, unknown> } = {}
 ): Promise<void> {
   const supabase = createAdminClient();
-  await supabase.from('audit_log').insert({
+  const { error } = await supabase.from('audit_log').insert({
     action,
     actor: opts.actor ?? 'system',
     target_id: opts.targetId ?? null,
     meta: opts.meta ?? {},
   });
+  if (error) console.error('[logAudit] insert failed:', action, error.message);
 }
 
 export function getClientIp(headers: Headers): string {
