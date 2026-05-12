@@ -6,8 +6,9 @@ settings:
 
 overrides:
   undici: '>=7.25.0'
-  postcss: '>=8.5.10'
+  postcss: '>=8.5.13'
   devalue: '>=5.8.0'
+  esbuild: '>=0.25.0'
   fast-xml-builder: '>=1.1.7'
   fast-uri: '>=3.1.2'
 
@@ -147,7 +148,7 @@ importers:
         version: 0.5.17
       autoprefixer:
         specifier: ^10.4.19
-        version: 10.5.0(postcss@8.5.12)
+        version: 10.5.0(postcss@8.5.14)
       eslint:
         specifier: ^9.12.0
         version: 9.39.4(jiti@2.7.0)
@@ -155,8 +156,8 @@ importers:
         specifier: 16.2.6
         version: 16.2.6(@typescript-eslint/parser@8.59.2(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
       postcss:
-        specifier: '>=8.5.10'
-        version: 8.5.12
+        specifier: '>=8.5.13'
+        version: 8.5.14
       tailwindcss:
         specifier: ^4.2.4
         version: 4.2.4
@@ -2660,7 +2661,7 @@ packages:
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
     peerDependencies:
-      postcss: '>=8.5.10'
+      postcss: '>=8.5.13'
 
   available-typed-arrays@1.0.7:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
@@ -4399,8 +4400,8 @@ packages:
   postcss-value-parser@4.2.0:
     resolution: {integrity: sha512-1NNCs6uurfkVbeXG4S8JFT9t19m45ICnif8zWLd5oPSZ50QnwMfK+H3jv408d4jw/7Bttv5axS5IiHoLaVNHeQ==}
 
-  postcss@8.5.12:
-    resolution: {integrity: sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==}
+  postcss@8.5.14:
+    resolution: {integrity: sha512-SoSL4+OSEtR99LHFZQiJLkT59C5B1amGO1NzTwj7TT1qCUgUO6hxOvzkOYxD+vMrXBM3XJIKzokoERdqQq/Zmg==}
     engines: {node: ^10 || ^12 || >=14}
 
   prelude-ls@1.2.1:
@@ -7054,7 +7055,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.3.0
       '@tailwindcss/oxide': 4.3.0
-      postcss: 8.5.12
+      postcss: 8.5.14
       tailwindcss: 4.3.0
 
   '@tokenizer/inflate@0.4.1':
@@ -7804,13 +7805,13 @@ snapshots:
 
   async@3.2.6: {}
 
-  autoprefixer@10.5.0(postcss@8.5.12):
+  autoprefixer@10.5.0(postcss@8.5.14):
     dependencies:
       browserslist: 4.28.2
       caniuse-lite: 1.0.30001790
       fraction.js: 5.3.4
       picocolors: 1.1.1
-      postcss: 8.5.12
+      postcss: 8.5.14
       postcss-value-parser: 4.2.0
 
   available-typed-arrays@1.0.7:
@@ -9437,7 +9438,7 @@ snapshots:
       '@next/env': 15.5.18
       '@swc/helpers': 0.5.15
       caniuse-lite: 1.0.30001792
-      postcss: 8.5.12
+      postcss: 8.5.14
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       styled-jsx: 5.1.6(@babel/core@7.29.0)(react@18.3.1)
@@ -9671,7 +9672,7 @@ snapshots:
 
   postcss-value-parser@4.2.0: {}
 
-  postcss@8.5.12:
+  postcss@8.5.14:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
