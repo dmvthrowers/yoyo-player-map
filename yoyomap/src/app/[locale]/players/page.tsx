@@ -6,7 +6,7 @@ import { slugify } from '@/lib/locationSlug';
 import { getTranslations } from 'next-intl/server';
 import PlayersTable from './PlayersTable';
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: 'Yo-Yo Players Worldwide — Browse by Location',

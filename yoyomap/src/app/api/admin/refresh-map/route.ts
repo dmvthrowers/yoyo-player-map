@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
   if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
+    revalidateTag('public-entries');
     revalidatePath('/[locale]/map', 'page');
     revalidatePath('/[locale]/players', 'page');
     return NextResponse.json({ success: true, message: 'Map refresh triggered.' });
