@@ -40,7 +40,7 @@ async function verifyEntry(
 ) {
   const { data: tok, error } = await supabase
     .from('verification_tokens')
-    .select('*, entries(*)')
+    .select('id, used_at, expires_at, purpose, entries(id, age_band, parent_consent_id, country, region, city)')
     .eq('token', token)
     .eq('purpose', 'email_verify')
     .maybeSingle();

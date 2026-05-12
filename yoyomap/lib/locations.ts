@@ -222,6 +222,7 @@ export function canonicalCountryName(input: string): string {
   const slug = slugify(input);
   return COUNTRY_NORMALIZATION[slug] || input;
 }
+import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 import { slugify } from './locationSlug';
 
@@ -238,10 +239,10 @@ export interface PublicEntry {
   lng: number | null;
 }
 
-// React cache() dedupes within a single render pass — so country/region/city
-// pages that all call this only hit Supabase once per request lifecycle.
-// Combined with ISR (revalidate=3600) the cost is ~1 query per hour per page.
-export async function fetchAllPublicEntries(): Promise<PublicEntry[]> {
+// unstable_cache persists across requests in Next.js data cache (24hr).
+// All players pages share one Supabase result per day. Busted immediately
+// by revalidateTag('public-entries') on any entry write operation.
+export const fetchAllPublicEntries = unstable_cache(async (): Promise<PublicEntry[]> => {
   try {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -270,7 +271,7 @@ export async function fetchAllPublicEntries(): Promise<PublicEntry[]> {
     console.error('[locations] fetch failed, returning empty dataset:', e);
     return [];
   }
-}
+}, ['public-entries'], { revalidate: 86400, tags: ['public-entries'] });
 
 export interface LocationKey {
   country: string;

@@ -249,6 +249,10 @@ const createCitySchema = z.object({
 });
 
 export const GET = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'locations.get', 30, 1);
+  if (!allowed) return apiError('rate_limited', 'Too many requests.', requestId);
+
   const parsed = getQuerySchema.safeParse({
     type: req.nextUrl.searchParams.get('type'),
     countryId: req.nextUrl.searchParams.get('countryId') ?? undefined,
@@ -274,7 +278,9 @@ export const GET = withErrorHandling(async (requestId: string, req: NextRequest)
         return apiError('upstream_error', 'Could not load countries.', requestId);
       }
 
-      return NextResponse.json({ countries: data ?? [] });
+      return NextResponse.json({ countries: data ?? [] }, {
+        headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+      });
     }
 
     case 'regions': {
@@ -289,7 +295,9 @@ export const GET = withErrorHandling(async (requestId: string, req: NextRequest)
         return apiError('upstream_error', 'Could not load regions.', requestId);
       }
 
-      return NextResponse.json({ regions: data ?? [] });
+      return NextResponse.json({ regions: data ?? [] }, {
+        headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+      });
     }
 
     case 'cities': {
@@ -309,7 +317,9 @@ export const GET = withErrorHandling(async (requestId: string, req: NextRequest)
         return apiError('upstream_error', 'Could not load cities.', requestId);
       }
 
-      return NextResponse.json({ cities: data ?? [] });
+      return NextResponse.json({ cities: data ?? [] }, {
+        headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' },
+      });
     }
   }
 });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase';
 import { apiError, newRequestId } from '@/lib/api-error';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 // Lazy-loaded popup detail. The /map page ships a lean entry list; clicking a
 // pin triggers a fetch here. We cache aggressively at the CDN (s-maxage=3600)
@@ -21,6 +22,10 @@ export async function GET(
 ) {
   const requestId = newRequestId();
   try {
+    const ip = getClientIp(_req.headers);
+    const allowed = await checkRateLimit(ip, 'entry.detail', 60, 1);
+    if (!allowed) return apiError('rate_limited', 'Too many requests.', requestId);
+
     const { id } = await context.params;
     if (!UUID_RE.test(id)) {
       return apiError('bad_request', 'Invalid entry id.', requestId);

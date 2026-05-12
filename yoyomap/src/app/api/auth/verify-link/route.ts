@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 export async function GET(req: NextRequest) {
+  const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'verify_link.get', 10, 60);
+  if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+
   const token = req.nextUrl.searchParams.get('token');
   if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 });
 
