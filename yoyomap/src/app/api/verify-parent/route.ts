@@ -59,7 +59,7 @@ async function verifyEntry(
   await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('id', tok.id);
 
   // Verify the entry
-  const entry = tok.entries as {
+  const entry = tok.entries as unknown as {
     id: string;
     age_band: string | null;
     parent_consent_id: string | null;
