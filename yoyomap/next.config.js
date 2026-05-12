@@ -46,6 +46,18 @@ const nextConfig = {
       // Browsers and bots always request these; serve the SVG favicon we have.
       { source: '/favicon.ico', destination: '/favicon.svg', permanent: false },
       { source: '/favicon.png', destination: '/favicon.svg', permanent: false },
+      // Default-locale fallbacks for shared direct links.
+      { source: '/map', destination: '/en/map', permanent: false },
+      { source: '/players', destination: '/en/players', permanent: false },
+      { source: '/submit', destination: '/en/submit', permanent: false },
+      { source: '/profile', destination: '/en/profile', permanent: false },
+      { source: '/report', destination: '/en/report', permanent: false },
+      { source: '/status', destination: '/en/status', permanent: false },
+      { source: '/contact', destination: '/en/contact', permanent: false },
+      { source: '/legal/privacy', destination: '/en/legal/privacy', permanent: false },
+      { source: '/legal/terms', destination: '/en/legal/terms', permanent: false },
+      { source: '/legal/security', destination: '/en/legal/security', permanent: false },
+      { source: '/confirm-location/:token', destination: '/en/confirm-location/:token', permanent: false },
       // Legacy path that appears in old links/bookmarks.
       { source: '/yoyomap', destination: '/en/map', permanent: true },
       {
