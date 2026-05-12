@@ -1,11 +1,12 @@
 
 import { Link } from '@/i18n/navigation';
 import type { Metadata } from 'next';
-import { fetchAllPublicEntries, canonicalCountryName } from '@/lib/locations';
+import { fetchLeanEntries, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { getTranslations } from 'next-intl/server';
 import PlayersTable from './PlayersTable';
 
+export const dynamic = 'force-static';
 export const revalidate = 86400;
 
 export const metadata: Metadata = {
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
 
 export default async function Page() {
   const t = await getTranslations();
-  const entries = await fetchAllPublicEntries();
+  const entries = await fetchLeanEntries();
   // Distinct (country|region|city) per country, to match the "# locations" label.
   const countries = new Map<string, { name: string; cities: Set<string> }>();
   for (const e of entries) {

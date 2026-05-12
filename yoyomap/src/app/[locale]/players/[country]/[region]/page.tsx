@@ -1,7 +1,7 @@
 import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
+import { leanEntriesInRegion, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed } from '../../EntryList';
 import { getTranslations } from 'next-intl/server';
@@ -40,7 +40,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { country, region } = await params;
-  const entries = await entriesInRegion(country, region);
+  const entries = await leanEntriesInRegion(country, region);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? region;
   return {
@@ -57,7 +57,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
   let entries;
   if (region === '_other') {
     // Show all entries for this country with no region
-    const all = await entriesInRegion(country, '');
+    const all = await leanEntriesInRegion(country, '');
     entries = all.filter((e) => !e.region || e.region.trim() === '');
     if (entries.length === 0) return notFound();
     const countryName = entries[0]?.country ?? country;
@@ -79,7 +79,7 @@ export default async function Page({ params }: { params: Promise<Params> }) {
       </div>
     );
   } else {
-    entries = await entriesInRegion(country, region);
+    entries = await leanEntriesInRegion(country, region);
     if (entries.length === 0) {
       // If the region slug is a known abbreviation (e.g. "nc"), redirect to the
       // canonical slug (e.g. "north-carolina") so the correct page is served.

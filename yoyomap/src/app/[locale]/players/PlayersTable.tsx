@@ -3,20 +3,20 @@
 import { useMemo, useState, useDeferredValue } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import type { PublicEntry } from '@/lib/locations';
+import type { LeanEntry } from '@/lib/locations';
 import { canonicalCountryName, canonicalRegionName, isJunkRegion } from '@/lib/locations';
 import { locationPath } from '@/lib/locationSlug';
 
-const TYPE_LABEL_KEY: Record<PublicEntry['entity_type'], 'typePerson' | 'typeShop' | 'typeClub'> = {
+const TYPE_LABEL_KEY: Record<LeanEntry['entity_type'], 'typePerson' | 'typeShop' | 'typeClub'> = {
   person: 'typePerson',
   shop: 'typeShop',
   club: 'typeClub',
 };
 
-type EntityFilter = 'all' | PublicEntry['entity_type'];
+type EntityFilter = 'all' | LeanEntry['entity_type'];
 
 interface Props {
-  entries: PublicEntry[];
+  entries: LeanEntry[];
   hideLocationFilters?: boolean;
 }
 
@@ -26,7 +26,7 @@ function fold(s: string | null | undefined): string {
   return s.normalize('NFKD').replace(COMBINING_MARKS, '').toLowerCase();
 }
 
-function matchesSearch(entry: PublicEntry, query: string): boolean {
+function matchesSearch(entry: LeanEntry, query: string): boolean {
   const words = fold(query).split(/\s+/).filter(Boolean);
   if (words.length === 0) return true;
   const fields = [

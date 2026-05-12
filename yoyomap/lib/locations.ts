@@ -227,19 +227,47 @@ export function canonicalCountryName(input: string): string {
   return COUNTRY_NORMALIZATION[slug] || input;
 }
 
-export interface PublicEntry {
+export interface LeanEntry {
   id: string;
   display_name: string;
   city: string;
   region: string | null;
   country: string;
-  bio: string | null;
-  socials: Record<string, string>;
   entity_type: 'person' | 'shop' | 'club';
   lat: number | null;
   lng: number | null;
 }
 
+export interface PublicEntry extends LeanEntry {
+  bio: string | null;
+  socials: Record<string, string>;
+}
+
+// Lean fetch — no bio/socials. Used by players directory pages that only need
+// location data (country/region/city lists, PlayersTable). Busted by the same
+// 'public-entries' tag as fetchAllPublicEntries.
+export const fetchLeanEntries = unstable_cache(async (): Promise<LeanEntry[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('map_entries')
+      .select('id, display_name, city, region, country, entity_type, lat, lng');
+    if (error) {
+      console.error('[locations] lean fetch failed — code:', error.code, '| message:', error.message);
+      return [];
+    }
+    return (data ?? []).map((e) => ({
+      ...e,
+      entity_type: (e.entity_type ?? 'person') as LeanEntry['entity_type'],
+      lat: e.lat ?? null,
+      lng: e.lng ?? null,
+    }));
+  } catch (e) {
+    console.error('[locations] lean fetch error:', e);
+    return [];
+  }
+}, ['lean-entries'], { revalidate: 86400, tags: ['public-entries'] });
+
+// Full fetch — includes bio + socials. Used only by pages that render EntryCard.
 // unstable_cache persists across requests in Next.js data cache (24hr).
 // All players pages share one Supabase result per day. Busted immediately
 // by revalidateTag('public-entries') on any entry write operation.
@@ -282,7 +310,7 @@ export interface LocationKey {
 
 // Distinct (country, region, city) combos with their canonical casing.
 export async function listLocations(): Promise<LocationKey[]> {
-  const entries = await fetchAllPublicEntries();
+  const entries = await fetchLeanEntries();
   const seen = new Map<string, LocationKey>();
   for (const e of entries) {
     const key = `${e.country}|${e.region ?? ''}|${e.city}`;
@@ -291,6 +319,23 @@ export async function listLocations(): Promise<LocationKey[]> {
     }
   }
   return [...seen.values()];
+}
+
+// Lean region filter — for region pages that only render PlayersTable + city links.
+export async function leanEntriesInRegion(
+  countrySlug: string,
+  regionSlug: string,
+): Promise<LeanEntry[]> {
+  const all = await fetchLeanEntries();
+  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
+  return all.filter((e) => {
+    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
+    const regionVariants = [e.region, canonicalRegionName(e.region)];
+    return (
+      countryMatch &&
+      regionVariants.some((r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug)
+    );
+  });
 }
 
 export async function entriesInCountry(countrySlug: string): Promise<PublicEntry[]> {
@@ -341,7 +386,7 @@ export async function entriesInCity(
 }
 
 // Resolve a slug back to canonical name (using the first matching entry).
-export function canonicalName(entries: PublicEntry[], field: 'country' | 'region' | 'city'): string | null {
+export function canonicalName(entries: LeanEntry[], field: 'country' | 'region' | 'city'): string | null {
   const v = entries[0]?.[field];
   return v ?? null;
 }
