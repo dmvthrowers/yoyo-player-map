@@ -314,6 +314,32 @@ export const fetchAllPublicEntries = unstable_cache(async (): Promise<PublicEntr
   }
 }, ['public-entries'], { revalidate: 86400, tags: ['public-entries'] });
 
+async function fetchPublicEntriesByIds(ids: string[]): Promise<PublicEntry[]> {
+  if (ids.length === 0) return [];
+  try {
+    logQueryPath('supabase.select.full.by_ids', { count: ids.length });
+    const { data, error } = await supabase
+      .from('map_entries')
+      .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng')
+      .in('id', ids);
+    if (error) {
+      console.error('[locations] scoped full fetch failed — code:', error.code, '| message:', error.message);
+      return [];
+    }
+    const byId = new Map((data ?? []).map((e) => [e.id, {
+      ...e,
+      entity_type: (e.entity_type ?? 'person') as PublicEntry['entity_type'],
+      socials: e.socials ?? {},
+      lat: e.lat ?? null,
+      lng: e.lng ?? null,
+    }]));
+    return ids.map((id) => byId.get(id)).filter((e): e is PublicEntry => Boolean(e));
+  } catch (e) {
+    console.error('[locations] scoped full fetch error:', e);
+    return [];
+  }
+}
+
 export interface LocationKey {
   country: string;
   region: string | null;
@@ -382,8 +408,8 @@ export async function entriesInCountry(countrySlug: string): Promise<PublicEntry
   logQueryPath('branch.players.country.full', { countrySlug });
   return unstable_cache(
     async (): Promise<PublicEntry[]> => {
-      const all = await fetchAllPublicEntries();
-      return all.filter((e) => slugify(canonicalCountryName(e.country)) === countrySlug);
+      const lean = await leanEntriesInCountry(countrySlug);
+      return fetchPublicEntriesByIds(lean.map((e) => e.id));
     },
     ['public-entries-country', countrySlug],
     { revalidate: 86400, tags: ['public-entries'] },
@@ -395,18 +421,8 @@ export async function entriesInRegion(
   countrySlug: string,
   regionSlug: string,
 ): Promise<PublicEntry[]> {
-  const all = await fetchAllPublicEntries();
-  // Expand URL abbreviations (e.g. 'nc' → 'north-carolina') so that either
-  // form matches entries whose region is stored as the full name.
-  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
-  return all.filter((e) => {
-    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
-    const regionVariants = [e.region, canonicalRegionName(e.region)];
-    return (
-      countryMatch &&
-      regionVariants.some((r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug)
-    );
-  });
+  const lean = await leanEntriesInRegion(countrySlug, regionSlug);
+  return fetchPublicEntriesByIds(lean.map((e) => e.id));
 }
 
 
@@ -415,21 +431,8 @@ export async function entriesInCity(
   regionSlug: string,
   citySlug: string,
 ): Promise<PublicEntry[]> {
-  const all = await fetchAllPublicEntries();
-  // Expand URL abbreviations (e.g. 'nc' → 'north-carolina') so that either
-  // form matches entries whose region is stored as the full name.
-  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
-  return all.filter((e) => {
-    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
-    const hasNoRegion = !e.region || e.region.trim() === '';
-    const regionMatch =
-      regionSlug === '_other'
-        ? hasNoRegion
-        : [e.region, canonicalRegionName(e.region)].some(
-            (r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug,
-          );
-    return countryMatch && regionMatch && slugify(e.city) === citySlug;
-  });
+  const lean = await leanEntriesInCity(countrySlug, regionSlug, citySlug);
+  return fetchPublicEntriesByIds(lean.map((e) => e.id));
 }
 
 // Resolve a slug back to canonical name (using the first matching entry).

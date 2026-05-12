@@ -1,4 +1,4 @@
-import { fetchAllPublicEntries } from './locations';
+import { fetchLeanEntries } from './locations';
 import { slugify } from './locationSlug';
 import { haversineMiles } from './geo';
 
@@ -24,7 +24,7 @@ export interface NearbyCity extends CityCentroid {
 // at the mean lat/lng of its members. Cities whose entries have no coordinates
 // are excluded — we can't measure distance to them.
 async function buildCityCentroids(): Promise<CityCentroid[]> {
-  const entries = await fetchAllPublicEntries();
+  const entries = await fetchLeanEntries();
   const buckets = new Map<string, {
     countrySlug: string; regionSlug: string; citySlug: string;
     countryName: string; regionName: string; cityName: string;
