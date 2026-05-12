@@ -7,6 +7,7 @@ import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 import { getTranslations } from 'next-intl/server';
 import PlayersTable from '../PlayersTable';
 
+export const dynamic = 'force-static';
 export const revalidate = 86400;
 
 interface Params { country: string }

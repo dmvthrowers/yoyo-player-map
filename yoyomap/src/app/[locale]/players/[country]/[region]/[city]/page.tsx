@@ -6,6 +6,7 @@ import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 import { getLocale, getTranslations } from 'next-intl/server';
 
+export const dynamic = 'force-static';
 export const revalidate = 86400;
 
 interface Params { locale: string; country: string; region: string; city: string }
