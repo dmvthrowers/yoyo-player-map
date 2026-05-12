@@ -170,8 +170,22 @@
   },
   "map": {
     "title": "Yo-Yo Player Map",
+    "pageTitle": "Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You",
+    "pageDescription": "Browse the global community map of yo-yo players, shops, and clubs. Privacy-first, opt-in, city-level locations only.",
     "description": "Find yo-yo players, shops, and clubs near you.",
     "loading": "Loading map...",
+    "loadingFallback": "Loading map…",
+    "popup": {
+      "approximate": "(approximate)",
+      "couldntLoad": "Couldn't load details.",
+      "tryAgain": "Try again",
+      "shopBadge": "Yo-Yo Shop",
+      "hours": "Hours:",
+      "clubBadge": "Yo-Yo Club",
+      "meetings": "Meetings:",
+      "reportPin": "Report this pin",
+      "website": "Website"
+    },
     "filters": {
       "title": "Filters",
       "showPeople": "Show Players",
@@ -439,7 +453,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Network error. Please try again.",
+    "errorNetworkConnection": "Network error. Please check your connection and try again.",
+    "errorSomethingWrong": "Something went wrong.",
+    "errorLinkExpired": "Link invalid or expired.",
+    "errorServerInvalid": "Server error: invalid response.",
+    "errorUpdateFailed": "Update failed.",
+    "errorDeleteFailed": "Delete failed.",
+    "shopDetails": "Shop Details",
+    "clubDetails": "Club Details"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +544,54 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Shop Details",
+    "clubDetails": "Club Details",
+    "errorNetwork": "Network error"
+  },
+  "error": {
+    "eyebrow": "Something broke",
+    "title": "We hit a snag",
+    "description": "This page failed to load. The error's been logged — try again, or head back to the map.",
+    "tryAgain": "Try again",
+    "backToMap": "Back to map",
+    "reference": "Reference: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nothing here",
+    "description": "That page doesn't exist — or the link you followed expired. Try the map, or head home.",
+    "openMap": "Open map",
+    "home": "Home"
+  },
+  "confirmLocation": {
+    "loading": "Loading…",
+    "title": "Confirm your city",
+    "entry": "Entry:",
+    "city": "City",
+    "regionState": "Region / State",
+    "countryIso": "Country (ISO-2)",
+    "saving": "Saving…",
+    "confirmCurrent": "Confirm current city",
+    "saveUpdated": "Save updated city",
+    "doneTitle": "Thanks — location confirmed",
+    "doneBody": "Your map location has been marked as verified.",
+    "errorLinkExpired": "Link invalid or expired.",
+    "errorCouldntSave": "Could not save changes.",
+    "errorNetwork": "Network error."
+  },
+  "status": {
+    "title": "Service Status",
+    "description": "Operational status links and outage impact notes for the YoYo Map stack.",
+    "eyebrow": "Operations",
+    "heading": "Service status",
+    "intro": "This page tracks the external services YoYo Map depends on. Where a provider offers an official status API, we show a live rollup. Everywhere else, we link directly to the vendor's status page or reference surface.",
+    "whatInterrupted": "What would be interrupted:",
+    "lastVendorUpdate": "Last vendor update: {updatedAt} UTC",
+    "linkedStatusPage": "Linked status page",
+    "feedUnavailable": "Status feed unavailable",
+    "statusAvailable": "Status available",
+    "disclaimer": "A green badge here means the vendor reports normal operation, not that every YoYo Map feature is guaranteed healthy. If the site feels broken while a provider shows green, check recent incidents, cached deploy issues, and browser console/network failures too."
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +603,29 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Report an Entry",
+    "subtitle": "If an entry on the map is unsafe, inaccurate, or inappropriate, tell us here.",
+    "whatWrong": "What's wrong?",
+    "selectReason": "Select a reason…",
+    "reasonSpam": "Spam or fake entry",
+    "reasonHarassment": "Harassment or threatening content",
+    "reasonImpersonation": "Impersonation",
+    "reasonMinorUnsafe": "Unsafe content involving a minor",
+    "reasonOther": "Something else",
+    "details": "Details (optional)",
+    "detailsPlaceholder": "What happened? What should we know?",
+    "yourEmail": "Your email (optional)",
+    "yourEmailPlaceholder": "So we can follow up",
+    "sending": "Sending…",
+    "send": "Send Report",
+    "noEntry": "No entry specified. Go back to the map and click a pin first.",
+    "errorFailed": "Failed to submit.",
+    "errorNetwork": "Network error.",
+    "thanksTitle": "Thanks for letting us know",
+    "thanksBody": "We review every report. The entry will be hidden immediately while we investigate if the report involves safety concerns.",
+    "backToMap": "Back to map",
+    "loading": "Loading…"
   }
 }

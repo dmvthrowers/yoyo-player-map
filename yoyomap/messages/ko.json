@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "지도를 불러오는 중…",
+    "popup": {
+      "approximate": "(대략적인 위치)",
+      "couldntLoad": "세부 정보를 불러올 수 없습니다.",
+      "tryAgain": "다시 시도",
+      "shopBadge": "요요 상점",
+      "hours": "영업 시간:",
+      "clubBadge": "요요 클럽",
+      "meetings": "모임:",
+      "reportPin": "이 핀 신고하기",
+      "website": "웹사이트"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "네트워크 오류입니다. 다시 시도해 주세요.",
+    "errorLinkExpired": "링크가 잘못되었거나 만료되었습니다.",
+    "errorServerInvalid": "서버 오류: 잘못된 응답입니다.",
+    "errorUpdateFailed": "업데이트에 실패했습니다.",
+    "errorDeleteFailed": "삭제에 실패했습니다.",
+    "shopDetails": "상점 세부 정보",
+    "clubDetails": "클럽 세부 정보",
+    "errorNetworkConnection": "네트워크 오류입니다. 연결 상태를 확인하고 다시 시도해 주세요.",
+    "errorSomethingWrong": "문제가 발생했습니다."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "상점 세부 정보",
+    "clubDetails": "클럽 세부 정보",
+    "errorNetwork": "네트워크 오류"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "항목 신고하기",
+    "subtitle": "지도에 있는 항목이 안전하지 않거나 부정확하거나 부적절한 경우 여기에 알려주세요.",
+    "whatWrong": "무엇이 잘못되었나요?",
+    "selectReason": "이유를 선택하세요…",
+    "reasonSpam": "스팸 또는 가짜 항목",
+    "reasonHarassment": "괴롭힘 또는 위협적인 콘텐츠",
+    "reasonImpersonation": "사칭",
+    "reasonMinorUnsafe": "미성년자와 관련된 안전하지 않은 콘텐츠",
+    "reasonOther": "다른 것",
+    "details": "세부 사항 (선택)",
+    "detailsPlaceholder": "무슨 일이 있었나요? 알아야 할 것은 무엇인가요?",
+    "yourEmail": "이메일 주소 (선택)",
+    "yourEmailPlaceholder": "후속 조치를 위해",
+    "sending": "전송 중…",
+    "send": "신고 보내기",
+    "noEntry": "항목이 지정되지 않았습니다. 지도로 돌아가서 먼저 핀을 클릭하세요.",
+    "errorFailed": "전송에 실패했습니다.",
+    "errorNetwork": "네트워크 오류.",
+    "thanksTitle": "알려주셔서 감사합니다",
+    "thanksBody": "모든 신고를 검토합니다. 신고가 안전 문제를 포함하는 경우 조사하는 동안 항목이 즉시 숨겨집니다.",
+    "backToMap": "지도로 돌아가기",
+    "loading": "로딩 중…"
+  },
+  "error": {
+    "eyebrow": "문제가 발생했습니다",
+    "title": "오류가 생겼습니다",
+    "description": "이 페이지를 불러오지 못했습니다. 오류가 기록되었습니다 — 다시 시도하거나 지도로 돌아가세요.",
+    "tryAgain": "다시 시도",
+    "backToMap": "지도로 돌아가기",
+    "reference": "참조: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "여기에는 아무것도 없습니다",
+    "description": "해당 페이지가 존재하지 않거나 링크가 만료되었습니다. 지도를 이용하거나 홈으로 돌아가세요.",
+    "openMap": "지도 열기",
+    "home": "홈"
+  },
+  "confirmLocation": {
+    "loading": "로딩 중…",
+    "title": "도시를 확인해 주세요",
+    "entry": "항목:",
+    "city": "도시",
+    "regionState": "지역 / 주",
+    "countryIso": "국가 (ISO-2)",
+    "saving": "저장 중…",
+    "confirmCurrent": "현재 도시 확인",
+    "saveUpdated": "업데이트된 도시 저장",
+    "doneTitle": "감사합니다 — 위치가 확인되었습니다",
+    "doneBody": "지도에서 귀하의 위치가 확인됨으로 표시되었습니다.",
+    "errorLinkExpired": "링크가 잘못되었거나 만료되었습니다.",
+    "errorCouldntSave": "변경 사항을 저장할 수 없습니다.",
+    "errorNetwork": "네트워크 오류."
+  },
+  "status": {
+    "title": "서비스 상태",
+    "description": "YoYo Map 스택의 운영 상태 링크 및 장애 영향 메모.",
+    "eyebrow": "운영",
+    "heading": "서비스 상태",
+    "intro": "이 페이지는 YoYo Map이 의존하는 외부 서비스의 상태를 추적합니다. 공급업체가 공식 상태 API를 제공하는 경우 실시간 요약을 표시합니다. 그렇지 않으면 공급업체의 상태 페이지로 직접 링크합니다.",
+    "whatInterrupted": "영향을 받는 기능:",
+    "lastVendorUpdate": "공급업체 최종 업데이트: {updatedAt} UTC",
+    "linkedStatusPage": "연결된 상태 페이지",
+    "feedUnavailable": "상태 피드 사용 불가",
+    "statusAvailable": "상태 사용 가능",
+    "disclaimer": "녹색 배지는 공급업체가 정상 운영을 보고함을 의미하며, YoYo Map의 모든 기능이 보장된다는 뜻은 아닙니다. 공급업체가 녹색을 표시하는 동안 사이트에 문제가 있어 보인다면 최근 인시던트, 배포 캐시 문제, 브라우저 콘솔/네트워크 오류를 확인하세요."
   }
 }

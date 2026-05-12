@@ -1,22 +1,36 @@
 
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 import MapClient from './MapClient';
 import MapInfoPanel from './MapInfoPanel';
 import { supabase } from '@/lib/supabase';
 import { MAP_TABLE } from '@/lib/supabase/client';
 
 
-export const metadata: Metadata = {
-  title: 'Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You',
-  description: 'Browse the global community map of yo-yo players, shops, and clubs. Privacy-first, opt-in, city-level locations only.',
-  alternates: { canonical: '/map' },
-  openGraph: {
-    title: 'Yo-Yo Player Map',
-    description: 'Find yo-yo players, shops, and clubs near you on a privacy-first community map.',
-    url: '/map',
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'map' });
+  return {
+    title: t('pageTitle'),
+    description: t('pageDescription'),
+    alternates: { canonical: '/map' },
+    openGraph: {
+      title: t('pageTitle'),
+      description: t('pageDescription'),
+      url: '/map',
+    },
+  };
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 
 // Edge cache/prerender flags (P0-1)
@@ -68,7 +82,9 @@ async function getEntries(): Promise<MapEntry[]> {
   }
 }
 
-export default async function MapPage() {
+export default async function MapPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const entries = await getEntries();
 
   // Count by entity type

@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "جارٍ تحميل الخريطة…",
+    "popup": {
+      "approximate": "(تقريبي)",
+      "couldntLoad": "تعذّر تحميل التفاصيل.",
+      "tryAgain": "حاول مجدداً",
+      "shopBadge": "متجر يو-يو",
+      "hours": "ساعات العمل:",
+      "clubBadge": "نادي يو-يو",
+      "meetings": "الاجتماعات:",
+      "reportPin": "الإبلاغ عن هذا الدبوس",
+      "website": "الموقع الإلكتروني"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "خطأ في الشبكة. يُرجى المحاولة مجدداً.",
+    "errorLinkExpired": "الرابط غير صالح أو منتهي الصلاحية.",
+    "errorServerInvalid": "خطأ في الخادم: استجابة غير صالحة.",
+    "errorUpdateFailed": "فشل التحديث.",
+    "errorDeleteFailed": "فشل الحذف.",
+    "shopDetails": "تفاصيل المتجر",
+    "clubDetails": "تفاصيل النادي",
+    "errorNetworkConnection": "خطأ في الشبكة. يُرجى التحقق من اتصالك والمحاولة مجدداً.",
+    "errorSomethingWrong": "حدث خطأ ما."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "تفاصيل المتجر",
+    "clubDetails": "تفاصيل النادي",
+    "errorNetwork": "خطأ في الشبكة"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "الإبلاغ عن إدخال",
+    "subtitle": "إذا كان إدخال على الخريطة غير آمن أو غير دقيق أو غير لائق، أخبرنا هنا.",
+    "whatWrong": "ما المشكلة؟",
+    "selectReason": "اختر سبباً…",
+    "reasonSpam": "رسائل مزعجة أو إدخال مزيف",
+    "reasonHarassment": "مضايقة أو محتوى تهديدي",
+    "reasonImpersonation": "انتحال شخصية",
+    "reasonMinorUnsafe": "محتوى غير آمن يتضمن قاصراً",
+    "reasonOther": "شيء آخر",
+    "details": "التفاصيل (اختياري)",
+    "detailsPlaceholder": "ماذا حدث؟ ما الذي يجب أن نعرفه؟",
+    "yourEmail": "بريدك الإلكتروني (اختياري)",
+    "yourEmailPlaceholder": "حتى نتمكن من المتابعة معك",
+    "sending": "جارٍ الإرسال…",
+    "send": "إرسال البلاغ",
+    "noEntry": "لم يُحدَّد أي إدخال. عُد إلى الخريطة وانقر على دبوس أولاً.",
+    "errorFailed": "فشل الإرسال.",
+    "errorNetwork": "خطأ في الشبكة.",
+    "thanksTitle": "شكراً لإخبارنا",
+    "thanksBody": "نراجع كل بلاغ. سيُخفى الإدخال فوراً أثناء تحقيقنا إذا كان البلاغ يتعلق بمخاوف تتعلق بالسلامة.",
+    "backToMap": "العودة إلى الخريطة",
+    "loading": "جارٍ التحميل…"
+  },
+  "error": {
+    "eyebrow": "حدث خطأ ما",
+    "title": "واجهنا مشكلة",
+    "description": "فشل تحميل هذه الصفحة. تم تسجيل الخطأ — حاول مجدداً أو عُد إلى الخريطة.",
+    "tryAgain": "حاول مجدداً",
+    "backToMap": "العودة إلى الخريطة",
+    "reference": "المرجع: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "لا شيء هنا",
+    "description": "هذه الصفحة غير موجودة — أو انتهت صلاحية الرابط. جرّب الخريطة أو عُد إلى الصفحة الرئيسية.",
+    "openMap": "فتح الخريطة",
+    "home": "الرئيسية"
+  },
+  "confirmLocation": {
+    "loading": "جارٍ التحميل…",
+    "title": "تأكيد مدينتك",
+    "entry": "الإدخال:",
+    "city": "المدينة",
+    "regionState": "المنطقة / الولاية",
+    "countryIso": "الدولة (ISO-2)",
+    "saving": "جارٍ الحفظ…",
+    "confirmCurrent": "تأكيد المدينة الحالية",
+    "saveUpdated": "حفظ المدينة المحدّثة",
+    "doneTitle": "شكراً — تم تأكيد الموقع",
+    "doneBody": "تم تحديد موقعك على الخريطة كموقع تم التحقق منه.",
+    "errorLinkExpired": "الرابط غير صالح أو منتهي الصلاحية.",
+    "errorCouldntSave": "تعذّر حفظ التغييرات.",
+    "errorNetwork": "خطأ في الشبكة."
+  },
+  "status": {
+    "title": "حالة الخدمة",
+    "description": "روابط الحالة التشغيلية وملاحظات تأثير الانقطاعات لمنصة YoYo Map.",
+    "eyebrow": "العمليات",
+    "heading": "حالة الخدمة",
+    "intro": "تتتبع هذه الصفحة حالة الخدمات الخارجية التي يعتمد عليها YoYo Map. عندما يوفر مزود خدمة واجهة برمجة تطبيقات رسمية للحالة، نعرض ملخصاً فورياً. وإلا، فإننا نرتبط مباشرةً بصفحة حالة المزود.",
+    "whatInterrupted": "ما الذي سيُعطَّل:",
+    "lastVendorUpdate": "آخر تحديث من المزود: {updatedAt} UTC",
+    "linkedStatusPage": "صفحة الحالة المرتبطة",
+    "feedUnavailable": "خلاصة الحالة غير متاحة",
+    "statusAvailable": "الحالة متاحة",
+    "disclaimer": "الشارة الخضراء تعني أن المزود يُفيد بعمل طبيعي، ولا تضمن أن كل ميزة في YoYo Map تعمل. إذا بدا الموقع معطلاً بينما يُظهر المزود اللون الأخضر، تحقق من الحوادث الأخيرة ومشاكل ذاكرة التخزين المؤقت للنشر وأخطاء وحدة التحكم/الشبكة في المتصفح."
   }
 }

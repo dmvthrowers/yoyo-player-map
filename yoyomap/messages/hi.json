@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "मानचित्र लोड हो रहा है…",
+    "popup": {
+      "approximate": "(अनुमानित)",
+      "couldntLoad": "विवरण लोड नहीं हो सका।",
+      "tryAgain": "फिर से प्रयास करें",
+      "shopBadge": "यो-यो शॉप",
+      "hours": "कार्य समय:",
+      "clubBadge": "यो-यो क्लब",
+      "meetings": "बैठकें:",
+      "reportPin": "इस पिन की रिपोर्ट करें",
+      "website": "वेबसाइट"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।",
+    "errorLinkExpired": "लिंक अमान्य या समाप्त हो गया है।",
+    "errorServerInvalid": "सर्वर त्रुटि: अमान्य प्रतिक्रिया।",
+    "errorUpdateFailed": "अपडेट विफल।",
+    "errorDeleteFailed": "हटाना विफल।",
+    "shopDetails": "शॉप विवरण",
+    "clubDetails": "क्लब विवरण",
+    "errorNetworkConnection": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जाँचें और पुनः प्रयास करें।",
+    "errorSomethingWrong": "कुछ गलत हो गया।"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "शॉप विवरण",
+    "clubDetails": "क्लब विवरण",
+    "errorNetwork": "नेटवर्क त्रुटि"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "एंट्री की रिपोर्ट करें",
+    "subtitle": "यदि मानचित्र पर कोई एंट्री असुरक्षित, गलत या अनुचित है, तो हमें यहाँ बताएं।",
+    "whatWrong": "क्या गलत है?",
+    "selectReason": "एक कारण चुनें…",
+    "reasonSpam": "स्पैम या नकली एंट्री",
+    "reasonHarassment": "उत्पीड़न या धमकी भरी सामग्री",
+    "reasonImpersonation": "पहचान की चोरी",
+    "reasonMinorUnsafe": "नाबालिग से जुड़ी असुरक्षित सामग्री",
+    "reasonOther": "कुछ और",
+    "details": "विवरण (वैकल्पिक)",
+    "detailsPlaceholder": "क्या हुआ? हमें क्या जानना चाहिए?",
+    "yourEmail": "आपका ईमेल (वैकल्पिक)",
+    "yourEmailPlaceholder": "ताकि हम अनुसरण कर सकें",
+    "sending": "भेज रहे हैं…",
+    "send": "रिपोर्ट भेजें",
+    "noEntry": "कोई एंट्री निर्दिष्ट नहीं। मानचित्र पर वापस जाएं और पहले एक पिन पर क्लिक करें।",
+    "errorFailed": "भेजने में विफल।",
+    "errorNetwork": "नेटवर्क त्रुटि।",
+    "thanksTitle": "हमें बताने के लिए धन्यवाद",
+    "thanksBody": "हम हर रिपोर्ट की समीक्षा करते हैं। यदि रिपोर्ट सुरक्षा चिंताओं से संबंधित है, तो जांच के दौरान एंट्री तुरंत छुपा दी जाएगी।",
+    "backToMap": "मानचित्र पर वापस जाएं",
+    "loading": "लोड हो रहा है…"
+  },
+  "error": {
+    "eyebrow": "कुछ गलत हो गया",
+    "title": "एक समस्या आई",
+    "description": "यह पृष्ठ लोड नहीं हो सका। त्रुटि दर्ज कर ली गई है — पुनः प्रयास करें या मानचित्र पर वापस जाएं।",
+    "tryAgain": "फिर से प्रयास करें",
+    "backToMap": "मानचित्र पर वापस जाएं",
+    "reference": "संदर्भ: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "यहाँ कुछ नहीं है",
+    "description": "वह पृष्ठ मौजूद नहीं है — या आपका लिंक समाप्त हो गया। मानचित्र आज़माएं या होम पर वापस जाएं।",
+    "openMap": "मानचित्र खोलें",
+    "home": "होम"
+  },
+  "confirmLocation": {
+    "loading": "लोड हो रहा है…",
+    "title": "अपना शहर की पुष्टि करें",
+    "entry": "प्रविष्टि:",
+    "city": "शहर",
+    "regionState": "क्षेत्र / राज्य",
+    "countryIso": "देश (ISO-2)",
+    "saving": "सहेज रहे हैं…",
+    "confirmCurrent": "वर्तमान शहर की पुष्टि करें",
+    "saveUpdated": "अपडेट किया गया शहर सहेजें",
+    "doneTitle": "धन्यवाद — स्थान की पुष्टि हो गई",
+    "doneBody": "मानचित्र पर आपका स्थान सत्यापित के रूप में चिह्नित कर दिया गया है।",
+    "errorLinkExpired": "लिंक अमान्य या समाप्त हो गया है।",
+    "errorCouldntSave": "परिवर्तन सहेजे नहीं जा सके।",
+    "errorNetwork": "नेटवर्क त्रुटि।"
+  },
+  "status": {
+    "title": "सेवा की स्थिति",
+    "description": "YoYo Map स्टैक के लिए परिचालन स्थिति लिंक और आउटेज प्रभाव नोट्स।",
+    "eyebrow": "संचालन",
+    "heading": "सेवा की स्थिति",
+    "intro": "यह पृष्ठ उन बाहरी सेवाओं की स्थिति ट्रैक करता है जिन पर YoYo Map निर्भर करता है। जब कोई प्रदाता आधिकारिक स्टेटस API प्रदान करता है, तो हम लाइव सारांश दिखाते हैं। अन्यथा, हम सीधे विक्रेता के स्टेटस पृष्ठ से लिंक करते हैं।",
+    "whatInterrupted": "क्या बाधित होगा:",
+    "lastVendorUpdate": "अंतिम विक्रेता अपडेट: {updatedAt} UTC",
+    "linkedStatusPage": "लिंक की गई स्टेटस पृष्ठ",
+    "feedUnavailable": "स्टेटस फ़ीड अनुपलब्ध",
+    "statusAvailable": "स्थिति उपलब्ध",
+    "disclaimer": "हरे बैज का अर्थ है कि विक्रेता सामान्य संचालन की रिपोर्ट कर रहा है, न कि यह कि YoYo Map की हर सुविधा गारंटीशुदा है। यदि कोई विक्रेता हरा दिखाते समय साइट टूटी हुई लगे, तो हाल के घटनाओं, तैनाती कैश समस्याओं और ब्राउज़र कंसोल/नेटवर्क त्रुटियों की जाँच करें।"
   }
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
 
 type EntryPayload = {
   id: string;
@@ -22,6 +23,7 @@ function getErrorMessage(body: ApiErrorBody | null, fallback: string) {
 }
 
 export default function ConfirmLocationClient({ token }: { token: string }) {
+  const t = useTranslations('confirmLocation');
   const [entry, setEntry] = useState<EntryPayload | null>(null);
   const [city, setCity] = useState('');
   const [region, setRegion] = useState('');
@@ -37,7 +39,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
         const res = await fetch(`/api/confirm-location?token=${encodeURIComponent(token)}`);
         const body = await res.json().catch(() => null);
         if (!res.ok) {
-          setError(getErrorMessage(body, 'Link invalid or expired.'));
+          setError(getErrorMessage(body, t('errorLinkExpired')));
           return;
         }
         const next = body?.entry as EntryPayload;
@@ -46,12 +48,12 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
         setRegion(next.region || '');
         setCountry(next.country || '');
       } catch {
-        setError('Network error.');
+        setError(t('errorNetwork'));
       } finally {
         setLoading(false);
       }
     })();
-  }, [token]);
+  }, [token, t]);
 
   async function submit(mode: 'confirm' | 'update') {
     setSaving(true);
@@ -70,12 +72,12 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) {
-        setError(getErrorMessage(body, 'Could not save changes.'));
+        setError(getErrorMessage(body, t('errorCouldntSave')));
         return;
       }
       setDone(true);
     } catch {
-      setError('Network error.');
+      setError(t('errorNetwork'));
     } finally {
       setSaving(false);
     }
@@ -84,7 +86,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
   if (loading) {
     return (
       <div className="max-w-xl mx-auto px-4 py-12">
-        <div className="card">Loading…</div>
+        <div className="card">{t('loading')}</div>
       </div>
     );
   }
@@ -93,8 +95,8 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
     return (
       <div className="max-w-xl mx-auto px-4 py-12">
         <div className="card">
-          <h1 className="text-3xl mb-3">Thanks — location confirmed</h1>
-          <p className="text-navy/80">Your map location has been marked as verified.</p>
+          <h1 className="text-3xl mb-3">{t('doneTitle')}</h1>
+          <p className="text-navy/80">{t('doneBody')}</p>
         </div>
       </div>
     );
@@ -103,15 +105,15 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
   return (
     <div className="max-w-xl mx-auto px-4 py-12">
       <div className="card space-y-4">
-        <h1 className="text-3xl">Confirm your city</h1>
+        <h1 className="text-3xl">{t('title')}</h1>
         {entry && (
           <p className="text-sm text-navy/70">
-            Entry: <strong>{entry.displayName}</strong>
+            {t('entry')} <strong>{entry.displayName}</strong>
           </p>
         )}
 
         <div>
-          <label className="label">City</label>
+          <label className="label">{t('city')}</label>
           <input
             className="input"
             value={city}
@@ -119,7 +121,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
           />
         </div>
         <div>
-          <label className="label">Region / State</label>
+          <label className="label">{t('regionState')}</label>
           <input
             className="input"
             value={region}
@@ -127,7 +129,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
           />
         </div>
         <div>
-          <label className="label">Country (ISO-2)</label>
+          <label className="label">{t('countryIso')}</label>
           <input
             className="input"
             value={country}
@@ -145,7 +147,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
             disabled={saving}
             onClick={() => submit('confirm')}
           >
-            {saving ? 'Saving…' : 'Confirm current city'}
+            {saving ? t('saving') : t('confirmCurrent')}
           </button>
           <button
             type="button"
@@ -153,7 +155,7 @@ export default function ConfirmLocationClient({ token }: { token: string }) {
             disabled={saving}
             onClick={() => submit('update')}
           >
-            Save updated city
+            {t('saveUpdated')}
           </button>
         </div>
       </div>

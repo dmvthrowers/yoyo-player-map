@@ -1,7 +1,7 @@
 'use client';
 
+import { Suspense, useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useMemo, useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import type { MapEntry } from './page';
 
@@ -12,15 +12,8 @@ export interface MapFilters {
   showUnderserved: boolean;
 }
 
-// Dynamic import — Leaflet requires window, must not SSR
-const Map = dynamic(() => import('./Map'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full bg-navy text-cream">
-      <p className="font-display text-2xl">Loading map...</p>
-    </div>
-  ),
-});
+// Dynamic import — Leaflet requires window, must not SSR.
+const Map = dynamic(() => import('./Map'), { ssr: false });
 
 export default function MapClient({ entries }: { entries: MapEntry[] }) {
   const [filterOpen, setFilterOpen] = useState(true);
@@ -165,7 +158,13 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
           </div>
       </div>
 
-      <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} />
+      <Suspense fallback={
+        <div className="flex items-center justify-center h-full bg-navy text-cream">
+          <p className="font-display text-2xl">{t('map.loadingFallback')}</p>
+        </div>
+      }>
+        <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} />
+      </Suspense>
     </>
   );
 }

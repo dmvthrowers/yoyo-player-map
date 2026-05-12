@@ -207,7 +207,7 @@ export default function SubmitPage() {
       const data = await res.json();
       if (!res.ok) setResult({ ok: false, message: data.error?.message });
       else { setShowToast(true); setResult({ ok: true, message: data.message, isMinor, emailStatus: data.emailStatus, retryAt: data.retryAt }); }
-    } catch { setResult({ ok: false, message: 'Network error' }); }
+    } catch { setResult({ ok: false, message: t('submit.errorNetwork') }); }
     finally { setSubmitting(false); }
   }
 
@@ -337,7 +337,7 @@ export default function SubmitPage() {
         {/* Shop-specific fields */}
         {form.entityType === 'shop' && (
           <div className="card space-y-4">
-            <h2 className="font-semibold text-lg">🏪 Shop Details</h2>
+            <h2 className="font-semibold text-lg">🏪 {t('submit.shopDetails')}</h2>
             <div>
               <label className="label">{t('submit.contactName')}</label>
               <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
@@ -369,7 +369,7 @@ export default function SubmitPage() {
         {/* Club-specific fields */}
         {form.entityType === 'club' && (
           <div className="card space-y-4">
-            <h2 className="font-semibold text-lg">🎲 Club Details</h2>
+            <h2 className="font-semibold text-lg">🎲 {t('submit.clubDetails')}</h2>
             <div>
               <label className="label">{t('submit.contactName')}</label>
               <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />

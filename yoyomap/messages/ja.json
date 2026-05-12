@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "地図を読み込んでいます…",
+    "popup": {
+      "approximate": "（おおよその位置）",
+      "couldntLoad": "詳細を読み込めませんでした。",
+      "tryAgain": "再試行",
+      "shopBadge": "ヨーヨーショップ",
+      "hours": "営業時間：",
+      "clubBadge": "ヨーヨークラブ",
+      "meetings": "ミーティング：",
+      "reportPin": "このピンを報告",
+      "website": "ウェブサイト"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "ネットワークエラーです。もう一度お試しください。",
+    "errorLinkExpired": "リンクが無効または期限切れです。",
+    "errorServerInvalid": "サーバーエラー：無効なレスポンスです。",
+    "errorUpdateFailed": "更新に失敗しました。",
+    "errorDeleteFailed": "削除に失敗しました。",
+    "shopDetails": "ショップ詳細",
+    "clubDetails": "クラブ詳細",
+    "errorNetworkConnection": "ネットワークエラーです。接続を確認してもう一度お試しください。",
+    "errorSomethingWrong": "問題が発生しました。"
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "ショップ詳細",
+    "clubDetails": "クラブ詳細",
+    "errorNetwork": "ネットワークエラー"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "エントリを報告",
+    "subtitle": "マップ上のエントリが安全でない、不正確、または不適切な場合はこちらでお知らせください。",
+    "whatWrong": "何が問題ですか？",
+    "selectReason": "理由を選択してください…",
+    "reasonSpam": "スパムまたは偽のエントリ",
+    "reasonHarassment": "ハラスメントまたは脅迫的なコンテンツ",
+    "reasonImpersonation": "なりすまし",
+    "reasonMinorUnsafe": "未成年者に関する安全でないコンテンツ",
+    "reasonOther": "その他",
+    "details": "詳細（任意）",
+    "detailsPlaceholder": "何が起きましたか？何を知らせたいですか？",
+    "yourEmail": "メールアドレス（任意）",
+    "yourEmailPlaceholder": "フォローアップのため",
+    "sending": "送信中…",
+    "send": "報告を送信",
+    "noEntry": "エントリが指定されていません。マップに戻ってピンをクリックしてください。",
+    "errorFailed": "送信に失敗しました。",
+    "errorNetwork": "ネットワークエラー。",
+    "thanksTitle": "ご報告ありがとうございます",
+    "thanksBody": "すべての報告を確認します。報告が安全上の懸念を含む場合、エントリは調査中すぐに非表示になります。",
+    "backToMap": "マップに戻る",
+    "loading": "読み込み中…"
+  },
+  "error": {
+    "eyebrow": "問題が発生しました",
+    "title": "エラーが起きました",
+    "description": "このページの読み込みに失敗しました。エラーは記録されています — もう一度お試しになるか、マップに戻ってください。",
+    "tryAgain": "再試行",
+    "backToMap": "マップに戻る",
+    "reference": "参照: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "ここには何もありません",
+    "description": "そのページは存在しません — またはリンクが期限切れです。マップを試すか、ホームに戻ってください。",
+    "openMap": "マップを開く",
+    "home": "ホーム"
+  },
+  "confirmLocation": {
+    "loading": "読み込み中…",
+    "title": "お住まいの都市を確認してください",
+    "entry": "エントリ：",
+    "city": "都市",
+    "regionState": "地域 / 都道府県",
+    "countryIso": "国 (ISO-2)",
+    "saving": "保存中…",
+    "confirmCurrent": "現在の都市を確認",
+    "saveUpdated": "更新した都市を保存",
+    "doneTitle": "ありがとうございます — 場所が確認されました",
+    "doneBody": "マップの場所が確認済みとしてマークされました。",
+    "errorLinkExpired": "リンクが無効または期限切れです。",
+    "errorCouldntSave": "変更を保存できませんでした。",
+    "errorNetwork": "ネットワークエラー。"
+  },
+  "status": {
+    "title": "サービスステータス",
+    "description": "YoYo Map スタックの運用状況リンクと障害の影響に関するメモ。",
+    "eyebrow": "オペレーション",
+    "heading": "サービスステータス",
+    "intro": "このページは YoYo Map が依存する外部サービスのステータスを追跡します。プロバイダーが公式ステータス API を提供している場合はリアルタイムの概要を表示し、そうでない場合はプロバイダーのステータスページに直接リンクします。",
+    "whatInterrupted": "影響を受ける機能：",
+    "lastVendorUpdate": "プロバイダーの最終更新：{updatedAt} UTC",
+    "linkedStatusPage": "ステータスページへのリンク",
+    "feedUnavailable": "ステータスフィードは利用できません",
+    "statusAvailable": "ステータス利用可能",
+    "disclaimer": "緑色のバッジはプロバイダーが正常運用を報告していることを示しますが、YoYo Map のすべての機能が保証されているわけではありません。プロバイダーが緑を示している状態でサイトが正常に動作しない場合は、最近のインシデント、デプロイキャッシュの問題、ブラウザのコンソールやネットワークエラーを確認してください。"
   }
 }

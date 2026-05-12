@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "Karte wird geladen…",
+    "popup": {
+      "approximate": "(ungefähr)",
+      "couldntLoad": "Details konnten nicht geladen werden.",
+      "tryAgain": "Erneut versuchen",
+      "shopBadge": "Yo-Yo-Shop",
+      "hours": "Öffnungszeiten:",
+      "clubBadge": "Yo-Yo-Club",
+      "meetings": "Treffen:",
+      "reportPin": "Diesen Pin melden",
+      "website": "Website"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Netzwerkfehler. Bitte versuche es erneut.",
+    "errorLinkExpired": "Link ungültig oder abgelaufen.",
+    "errorServerInvalid": "Serverfehler: ungültige Antwort.",
+    "errorUpdateFailed": "Aktualisierung fehlgeschlagen.",
+    "errorDeleteFailed": "Löschen fehlgeschlagen.",
+    "shopDetails": "Shop-Details",
+    "clubDetails": "Club-Details",
+    "errorNetworkConnection": "Netzwerkfehler. Bitte überprüfe deine Verbindung und versuche es erneut.",
+    "errorSomethingWrong": "Etwas ist schiefgelaufen."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Shop-Details",
+    "clubDetails": "Club-Details",
+    "errorNetwork": "Netzwerkfehler"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Eintrag melden",
+    "subtitle": "Wenn ein Eintrag auf der Karte unsicher, ungenau oder unangemessen ist, teile es uns hier mit.",
+    "whatWrong": "Was stimmt nicht?",
+    "selectReason": "Grund auswählen…",
+    "reasonSpam": "Spam oder falscher Eintrag",
+    "reasonHarassment": "Belästigung oder bedrohliche Inhalte",
+    "reasonImpersonation": "Identitätsdiebstahl",
+    "reasonMinorUnsafe": "Unangemessene Inhalte mit Minderjährigen",
+    "reasonOther": "Etwas anderes",
+    "details": "Details (optional)",
+    "detailsPlaceholder": "Was ist passiert? Was sollen wir wissen?",
+    "yourEmail": "Deine E-Mail (optional)",
+    "yourEmailPlaceholder": "Damit wir uns melden können",
+    "sending": "Wird gesendet…",
+    "send": "Meldung senden",
+    "noEntry": "Kein Eintrag angegeben. Gehe zurück zur Karte und klicke zuerst auf einen Pin.",
+    "errorFailed": "Senden fehlgeschlagen.",
+    "errorNetwork": "Netzwerkfehler.",
+    "thanksTitle": "Danke für deine Meldung",
+    "thanksBody": "Wir prüfen jeden Bericht. Der Eintrag wird sofort ausgeblendet, während wir untersuchen, ob der Bericht Sicherheitsbedenken aufwirft.",
+    "backToMap": "Zurück zur Karte",
+    "loading": "Wird geladen…"
+  },
+  "error": {
+    "eyebrow": "Etwas ist schiefgelaufen",
+    "title": "Ein Fehler ist aufgetreten",
+    "description": "Diese Seite konnte nicht geladen werden. Der Fehler wurde protokolliert — versuche es erneut oder gehe zurück zur Karte.",
+    "tryAgain": "Erneut versuchen",
+    "backToMap": "Zurück zur Karte",
+    "reference": "Referenz: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nichts hier",
+    "description": "Diese Seite existiert nicht — oder der Link ist abgelaufen. Versuche die Karte oder gehe nach Hause.",
+    "openMap": "Karte öffnen",
+    "home": "Startseite"
+  },
+  "confirmLocation": {
+    "loading": "Wird geladen…",
+    "title": "Bestätige deine Stadt",
+    "entry": "Eintrag:",
+    "city": "Stadt",
+    "regionState": "Region / Bundesland",
+    "countryIso": "Land (ISO-2)",
+    "saving": "Wird gespeichert…",
+    "confirmCurrent": "Aktuelle Stadt bestätigen",
+    "saveUpdated": "Aktualisierte Stadt speichern",
+    "doneTitle": "Danke — Standort bestätigt",
+    "doneBody": "Dein Kartenstandort wurde als verifiziert markiert.",
+    "errorLinkExpired": "Link ungültig oder abgelaufen.",
+    "errorCouldntSave": "Änderungen konnten nicht gespeichert werden.",
+    "errorNetwork": "Netzwerkfehler."
+  },
+  "status": {
+    "title": "Service-Status",
+    "description": "Betriebsstatus und Ausfallauswirkungen für den YoYo Map-Stack.",
+    "eyebrow": "Betrieb",
+    "heading": "Service-Status",
+    "intro": "Diese Seite zeigt den Status der externen Dienste, von denen YoYo Map abhängt. Wenn ein Anbieter eine offizielle Status-API anbietet, zeigen wir eine Live-Zusammenfassung. Andernfalls verlinken wir direkt auf die Statusseite des Anbieters.",
+    "whatInterrupted": "Was wäre beeinträchtigt:",
+    "lastVendorUpdate": "Letzte Anbieteraktualisierung: {updatedAt} UTC",
+    "linkedStatusPage": "Verlinkte Statusseite",
+    "feedUnavailable": "Status-Feed nicht verfügbar",
+    "statusAvailable": "Status verfügbar",
+    "disclaimer": "Ein grünes Abzeichen hier bedeutet, dass der Anbieter normalen Betrieb meldet, nicht dass jede YoYo Map-Funktion garantiert funktioniert. Wenn die Website defekt erscheint, während ein Anbieter grün zeigt, prüfe aktuelle Vorfälle, Cache-Probleme und Browser-Konsolen-/Netzwerkfehler."
   }
 }

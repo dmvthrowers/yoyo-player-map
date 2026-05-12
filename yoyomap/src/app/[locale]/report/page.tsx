@@ -2,10 +2,12 @@
 
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
 function ReportInner() {
   const params = useSearchParams();
+  const t = useTranslations('report');
   const entryId = params?.get('id') || '';
   const [reason, setReason] = useState('');
   const [details, setDetails] = useState('');
@@ -25,12 +27,12 @@ function ReportInner() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || 'Failed to submit.');
+        setError(data.error || t('errorFailed'));
       } else {
         setDone(true);
       }
     } catch {
-      setError('Network error.');
+      setError(t('errorNetwork'));
     } finally {
       setLoading(false);
     }
@@ -39,74 +41,74 @@ function ReportInner() {
   if (done) {
     return (
       <div className="card text-center">
-        <h1 className="text-3xl mb-4">Thanks for letting us know</h1>
+        <h1 className="text-3xl mb-4">{t('thanksTitle')}</h1>
         <p className="text-navy/80 mb-6">
-          We review every report. The entry will be hidden immediately while we investigate if the report involves safety concerns.
+          {t('thanksBody')}
         </p>
-        <Link href="/map" className="btn-ghost">Back to map</Link>
+        <Link href="/map" className="btn-ghost">{t('backToMap')}</Link>
       </div>
     );
   }
 
   return (
     <form onSubmit={submit} className="card space-y-4">
-      <h1 className="text-3xl">Report an Entry</h1>
+      <h1 className="text-3xl">{t('title')}</h1>
       <p className="text-sm text-navy/70">
-        If an entry on the map is unsafe, inaccurate, or inappropriate, tell us here.
+        {t('subtitle')}
       </p>
 
       <div>
-        <label className="label">What&apos;s wrong?</label>
-        <select className="input" required value={reason} onChange={(e) => setReason(e.target.value)} title="Reason for report">
-          <option value="">Select a reason…</option>
-          <option value="spam">Spam or fake entry</option>
-          <option value="harassment">Harassment or threatening content</option>
-          <option value="impersonation">Impersonation</option>
-          <option value="minor_unsafe">Unsafe content involving a minor</option>
-          <option value="other">Something else</option>
+        <label className="label">{t('whatWrong')}</label>
+        <select className="input" required value={reason} onChange={(e) => setReason(e.target.value)} title={t('whatWrong')}>
+          <option value="">{t('selectReason')}</option>
+          <option value="spam">{t('reasonSpam')}</option>
+          <option value="harassment">{t('reasonHarassment')}</option>
+          <option value="impersonation">{t('reasonImpersonation')}</option>
+          <option value="minor_unsafe">{t('reasonMinorUnsafe')}</option>
+          <option value="other">{t('reasonOther')}</option>
         </select>
       </div>
 
       <div>
-        <label className="label">Details (optional)</label>
+        <label className="label">{t('details')}</label>
         <textarea
           className="input"
           rows={4}
           maxLength={1000}
           value={details}
           onChange={(e) => setDetails(e.target.value)}
-          placeholder="What happened? What should we know?"
+          placeholder={t('detailsPlaceholder')}
         />
       </div>
 
       <div>
-        <label className="label">Your email (optional)</label>
+        <label className="label">{t('yourEmail')}</label>
         <input
           className="input"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="So we can follow up"
+          placeholder={t('yourEmailPlaceholder')}
         />
       </div>
 
       {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm">{error}</div>}
 
       <button type="submit" className="btn-primary w-full" disabled={loading || !entryId}>
-        {loading ? 'Sending…' : 'Send Report'}
+        {loading ? t('sending') : t('send')}
       </button>
-      {!entryId && <p className="text-xs text-brand-red">No entry specified. Go back to the map and click a pin first.</p>}
+      {!entryId && <p className="text-xs text-brand-red">{t('noEntry')}</p>}
     </form>
   );
 }
 
 export default function ReportPage() {
+  const t = useTranslations('report');
   return (
-      <div className="max-w-2xl mx-auto px-4 py-12">
-      <Suspense fallback={<div>Loading…</div>}>
+    <div className="max-w-2xl mx-auto px-4 py-12">
+      <Suspense fallback={<div>{t('loading')}</div>}>
         <ReportInner />
       </Suspense>
-      </div>
-    );
+    </div>
+  );
 }
-

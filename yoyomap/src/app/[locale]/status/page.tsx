@@ -1,10 +1,16 @@
 import type { Metadata } from 'next';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
 
 type StatusLevel = 'operational' | 'degraded' | 'outage' | 'monitor';
 
+// label: vendor-provided description string (always English, from their API),
+//        or null when we supply our own fallback key.
+// unavailable: true when the status feed could not be fetched (our fallback).
 type LiveStatus = {
   level: StatusLevel;
-  label: string;
+  label: string | null;
+  unavailable?: boolean;
   updatedAt?: string | null;
 };
 
@@ -19,11 +25,19 @@ type ServiceCard = {
   notes?: string;
 };
 
-export const metadata: Metadata = {
-  title: 'Service Status',
-  description: 'Operational status links and outage impact notes for the YoYo Map stack.',
-  alternates: { canonical: '/status' },
-};
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'status' });
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: { canonical: '/status' },
+  };
+}
 
 export const revalidate = 300;
 
@@ -152,7 +166,8 @@ async function fetchLiveStatus(service: ServiceCard): Promise<LiveStatus | null>
     if (!res.ok) {
       return {
         level: 'monitor',
-        label: 'Status feed unavailable',
+        label: null,
+        unavailable: true,
         updatedAt: null,
       };
     }
@@ -164,13 +179,14 @@ async function fetchLiveStatus(service: ServiceCard): Promise<LiveStatus | null>
 
     return {
       level: mapIndicator(indicator),
-      label: description || 'Status available',
+      label: description || null,
       updatedAt: updatedAt || null,
     };
   } catch {
     return {
       level: 'monitor',
-      label: 'Status feed unavailable',
+      label: null,
+      unavailable: true,
       updatedAt: null,
     };
   }
@@ -202,38 +218,43 @@ function badgeClasses(level: StatusLevel) {
   }
 }
 
-function formatUpdatedAt(input: string | null | undefined) {
+function formatUpdatedAt(input: string | null | undefined, locale: string) {
   if (!input) return null;
 
   const date = new Date(input);
   if (Number.isNaN(date.getTime())) return null;
 
-  return new Intl.DateTimeFormat('en-US', {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: 'medium',
     timeStyle: 'short',
     timeZone: 'UTC',
   }).format(date);
 }
 
-export default async function StatusPage() {
+export default async function StatusPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations('status');
   const statuses = await Promise.all(SERVICES.map((service) => fetchLiveStatus(service)));
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
       <div className="max-w-3xl">
-        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-red">Operations</p>
-        <h1 className="mt-3 text-4xl font-display text-navy-deep">Service status</h1>
-        <p className="mt-4 text-base text-navy/75">
-          This page tracks the external services YoYo Map depends on. Where a provider offers an official status API,
-          we show a live rollup. Everywhere else, we link directly to the vendor&apos;s status page or reference surface.
-        </p>
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-red">{t('eyebrow')}</p>
+        <h1 className="mt-3 text-4xl font-display text-navy-deep">{t('heading')}</h1>
+        <p className="mt-4 text-base text-navy/75">{t('intro')}</p>
       </div>
 
       <div className="mt-10 grid gap-4 md:grid-cols-2">
         {SERVICES.map((service, index) => {
           const live = statuses[index];
           const badge = badgeClasses(live?.level ?? 'monitor');
-          const updatedAt = formatUpdatedAt(live?.updatedAt);
+          const updatedAt = formatUpdatedAt(live?.updatedAt, locale);
+          const statusLabel = live == null
+            ? t('linkedStatusPage')
+            : live.unavailable
+              ? t('feedUnavailable')
+              : (live.label ?? t('statusAvailable'));
 
           return (
             <section
@@ -251,14 +272,14 @@ export default async function StatusPage() {
                   className={`inline-flex items-center gap-2 border px-3 py-1 text-xs font-semibold ${badge.pill}`}
                 >
                   <span className={`h-2.5 w-2.5 ${badge.dot}`} aria-hidden="true" />
-                  <span>{live?.label ?? 'Linked status page'}</span>
+                  <span>{statusLabel}</span>
                 </div>
               </div>
 
               <p className="mt-4 text-sm leading-6 text-navy/75">{service.description}</p>
 
               <div className="mt-4 border-l-4 border-brand-red/70 bg-brand-red/5 px-4 py-3 text-sm text-navy/85">
-                <strong className="text-navy-deep">What would be interrupted:</strong> {service.impact}
+                <strong className="text-navy-deep">{t('whatInterrupted')}</strong> {service.impact}
               </div>
 
               {service.notes ? (
@@ -275,7 +296,7 @@ export default async function StatusPage() {
                   {service.linkLabel}
                 </a>
                 {updatedAt ? (
-                  <p className="text-xs text-navy/45">Last vendor update: {updatedAt} UTC</p>
+                  <p className="text-xs text-navy/45">{t('lastVendorUpdate', { updatedAt })}</p>
                 ) : null}
               </div>
             </section>
@@ -284,10 +305,7 @@ export default async function StatusPage() {
       </div>
 
       <div className="mt-10 border border-navy/10 bg-cream px-5 py-4 text-sm text-navy/75">
-        <p>
-          A green badge here means the vendor reports normal operation, not that every YoYo Map feature is guaranteed healthy.
-          If the site feels broken while a provider shows green, check recent incidents, cached deploy issues, and browser console/network failures too.
-        </p>
+        <p>{t('disclaimer')}</p>
       </div>
     </div>
   );

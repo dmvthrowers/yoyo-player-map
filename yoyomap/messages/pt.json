@@ -209,7 +209,19 @@
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
-    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}"
+    "resultCount": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "loadingFallback": "A carregar o mapa…",
+    "popup": {
+      "approximate": "(aproximado)",
+      "couldntLoad": "Não foi possível carregar os detalhes.",
+      "tryAgain": "Tentar novamente",
+      "shopBadge": "Loja de Yo-Yo",
+      "hours": "Horário:",
+      "clubBadge": "Clube de Yo-Yo",
+      "meetings": "Reuniões:",
+      "reportPin": "Denunciar este marcador",
+      "website": "Website"
+    }
   },
   "legal": {
     "privacy": {
@@ -439,7 +451,16 @@
     "deleteMyEntry": "Delete My Entry",
     "deleteConfirm": "Yes, delete permanently",
     "cancel": "Cancel",
-    "deletedMessage": "Your entry has been permanently deleted."
+    "deletedMessage": "Your entry has been permanently deleted.",
+    "errorNetwork": "Erro de rede. Tente novamente.",
+    "errorLinkExpired": "Link inválido ou expirado.",
+    "errorServerInvalid": "Erro do servidor: resposta inválida.",
+    "errorUpdateFailed": "Falha na atualização.",
+    "errorDeleteFailed": "Falha ao eliminar.",
+    "shopDetails": "Detalhes da loja",
+    "clubDetails": "Detalhes do clube",
+    "errorNetworkConnection": "Erro de rede. Por favor, verifique a sua ligação e tente novamente.",
+    "errorSomethingWrong": "Algo correu mal."
   },
   "submit": {
     "addToMap": "Add to map",
@@ -521,7 +542,10 @@
     "venuePostalCode": "Venue Postal / ZIP Code",
     "addCityHint": "Don't see your city?",
     "addCityButton": "Add \"{city}\"",
-    "addCityAdding": "Adding..."
+    "addCityAdding": "Adding...",
+    "shopDetails": "Detalhes da loja",
+    "clubDetails": "Detalhes do clube",
+    "errorNetwork": "Erro de rede"
   },
   "contact": {
     "eyebrow": "Get in Touch",
@@ -533,5 +557,73 @@
     "phone": "Phone",
     "coordinator": "Coordinator",
     "backToHome": "Back to Home"
+  },
+  "report": {
+    "title": "Denunciar uma entrada",
+    "subtitle": "Se uma entrada no mapa for insegura, imprecisa ou inadequada, diga-nos aqui.",
+    "whatWrong": "O que está errado?",
+    "selectReason": "Selecionar um motivo…",
+    "reasonSpam": "Spam ou entrada falsa",
+    "reasonHarassment": "Assédio ou conteúdo ameaçador",
+    "reasonImpersonation": "Falsificação de identidade",
+    "reasonMinorUnsafe": "Conteúdo inseguro envolvendo um menor",
+    "reasonOther": "Outra coisa",
+    "details": "Detalhes (opcional)",
+    "detailsPlaceholder": "O que aconteceu? O que devemos saber?",
+    "yourEmail": "O seu e-mail (opcional)",
+    "yourEmailPlaceholder": "Para que possamos dar seguimento",
+    "sending": "A enviar…",
+    "send": "Enviar denúncia",
+    "noEntry": "Nenhuma entrada especificada. Volte ao mapa e clique primeiro num marcador.",
+    "errorFailed": "Falha ao enviar.",
+    "errorNetwork": "Erro de rede.",
+    "thanksTitle": "Obrigado por nos avisar",
+    "thanksBody": "Analisamos cada denúncia. A entrada será ocultada imediatamente enquanto investigamos se a denúncia envolve preocupações de segurança.",
+    "backToMap": "Voltar ao mapa",
+    "loading": "A carregar…"
+  },
+  "error": {
+    "eyebrow": "Algo correu mal",
+    "title": "Encontrámos um problema",
+    "description": "Esta página não carregou. O erro foi registado — tente novamente ou volte ao mapa.",
+    "tryAgain": "Tentar novamente",
+    "backToMap": "Voltar ao mapa",
+    "reference": "Referência: {digest}"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "Nada aqui",
+    "description": "Essa página não existe — ou o link que seguiu expirou. Tente o mapa ou volte ao início.",
+    "openMap": "Abrir mapa",
+    "home": "Início"
+  },
+  "confirmLocation": {
+    "loading": "A carregar…",
+    "title": "Confirme a sua cidade",
+    "entry": "Entrada:",
+    "city": "Cidade",
+    "regionState": "Região / Estado",
+    "countryIso": "País (ISO-2)",
+    "saving": "A guardar…",
+    "confirmCurrent": "Confirmar cidade atual",
+    "saveUpdated": "Guardar cidade atualizada",
+    "doneTitle": "Obrigado — localização confirmada",
+    "doneBody": "A sua localização no mapa foi marcada como verificada.",
+    "errorLinkExpired": "Link inválido ou expirado.",
+    "errorCouldntSave": "Não foi possível guardar as alterações.",
+    "errorNetwork": "Erro de rede."
+  },
+  "status": {
+    "title": "Estado do serviço",
+    "description": "Links de estado operacional e notas de impacto de falhas para a pilha YoYo Map.",
+    "eyebrow": "Operações",
+    "heading": "Estado do serviço",
+    "intro": "Esta página acompanha o estado dos serviços externos de que o YoYo Map depende. Quando um fornecedor oferece uma API de estado oficial, mostramos um resumo em direto. Caso contrário, ligamos diretamente à página de estado do fornecedor.",
+    "whatInterrupted": "O que ficaria interrompido:",
+    "lastVendorUpdate": "Última atualização do fornecedor: {updatedAt} UTC",
+    "linkedStatusPage": "Página de estado ligada",
+    "feedUnavailable": "Feed de estado indisponível",
+    "statusAvailable": "Estado disponível",
+    "disclaimer": "Um emblema verde significa que o fornecedor reporta operação normal, não que cada função do YoYo Map está garantida. Se o site parecer com problemas enquanto um fornecedor mostra verde, verifique incidentes recentes, problemas de cache de deploy e erros de consola/rede do browser."
   }
 }
