@@ -1,22 +1,21 @@
 
 import { Ratelimit } from '@upstash/ratelimit';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import { createAdminClient } from './supabase/admin';
 
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+});
 
-/**
- * Edge-compatible IP-based rate limit using Upstash/Vercel KV.
- * Returns true if the action is allowed, false if rate-limited.
- */
 export async function checkRateLimit(
   ip: string,
   action: string,
   max: number,
   windowMinutes: number
 ): Promise<boolean> {
-  // Use a unique key per action and IP
   const limiter = new Ratelimit({
-    redis: kv,
+    redis,
     limiter: Ratelimit.slidingWindow(max, `${windowMinutes} m`),
     prefix: `rl:${action}`,
   });
@@ -25,7 +24,6 @@ export async function checkRateLimit(
     return success;
   } catch (error) {
     console.error('Rate limit check failed:', error);
-    // Fail open — don't block legitimate users if the check errors
     return true;
   }
 }
