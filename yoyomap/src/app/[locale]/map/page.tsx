@@ -2,6 +2,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { unstable_cache } from 'next/cache';
 import { routing } from '@/i18n/routing';
 import MapClient from './MapClient';
 import MapInfoPanel from './MapInfoPanel';
@@ -66,21 +67,27 @@ export interface MapEntryDetail extends MapEntry {
 }
 
 // Only select columns needed for initial map render (P0-2)
-async function getEntries(): Promise<MapEntry[]> {
-  try {
-    const { data, error } = await supabase
-      .from(MAP_TABLE)
-      .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
-    if (error) {
-      console.error('Failed to load map entries:', error);
+// unstable_cache collapses all 11 locale variants into one Supabase query per
+// revalidation cycle instead of firing 11 concurrent requests simultaneously.
+const getEntries = unstable_cache(
+  async (): Promise<MapEntry[]> => {
+    try {
+      const { data, error } = await supabase
+        .from(MAP_TABLE)
+        .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
+      if (error) {
+        console.error('Failed to load map entries:', error);
+        return [];
+      }
+      return (data ?? []);
+    } catch (e) {
+      console.error('Map fetch error:', e);
       return [];
     }
-    return (data ?? []);
-  } catch (e) {
-    console.error('Map fetch error:', e);
-    return [];
-  }
-}
+  },
+  ['map-entries'],
+  { revalidate: 86400, tags: ['public-entries'] },
+);
 
 export default async function MapPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
