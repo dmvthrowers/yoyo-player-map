@@ -1,7 +1,7 @@
 import { Link } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCountry, listLocations, canonicalName, canonicalCountryName, canonicalRegionName, isJunkRegion } from '@/lib/locations';
+import { entriesInCountry, leanEntriesInCountry, listLocations, canonicalName, canonicalCountryName, canonicalRegionName, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 import { getTranslations } from 'next-intl/server';
@@ -29,7 +29,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { country } = await params;
-  const entries = await entriesInCountry(country);
+  const entries = await leanEntriesInCountry(country);
   const name = canonicalName(entries, 'country') ?? country;
   return {
     title: `Yo-Yo Players in ${name}`,
@@ -42,7 +42,7 @@ export default async function Page({ params }: { params: Promise<{ country: stri
   const t = await getTranslations();
   const { country } = await params;
   // Find all entries that match the canonical slug
-  const allEntries = await entriesInCountry(country);
+  const allEntries = await leanEntriesInCountry(country);
   if (allEntries.length === 0) notFound();
   const name = canonicalName(allEntries, 'country') ?? country;
 
@@ -62,6 +62,9 @@ export default async function Page({ params }: { params: Promise<{ country: stri
     return a[1].name.localeCompare(b[1].name, undefined, { sensitivity: 'base' });
   });
 
+  const renderEntryCards = sorted.length === 1 && sorted[0][0] === '_other';
+  const cardEntries = renderEntryCards ? await entriesInCountry(country) : [];
+
   // ...existing code...
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
@@ -74,10 +77,10 @@ export default async function Page({ params }: { params: Promise<{ country: stri
       <Counts entries={allEntries} className="mb-8" />
 
       <h2 className="font-display text-2xl text-navy-deep mb-4">{t('players.regions')}</h2>
-      {sorted.length === 1 && sorted[0][0] === '_other' ? (
+      {renderEntryCards ? (
         // If only 'Unspecified' region, show entries directly
         <div className="grid gap-4 mb-8">
-          {allEntries.map((e) => (
+          {cardEntries.map((e) => (
             <EntryCard key={e.id} e={e} />
           ))}
         </div>

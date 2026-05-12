@@ -2,6 +2,16 @@ import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 import { slugify } from './locationSlug';
 
+// Last updated: 2026-05-12
+
+const QUERY_PATH_LOGS_ENABLED = process.env.LOCATION_QUERY_LOGS === '1';
+
+function logQueryPath(label: string, details?: Record<string, string | number | boolean>) {
+  if (!QUERY_PATH_LOGS_ENABLED) return;
+  if (details) console.info('[locations:path]', label, details);
+  else console.info('[locations:path]', label);
+}
+
 // Region normalization map: maps known abbreviations/variants to canonical display name
 export const REGION_NORMALIZATION: Record<string, string> = {
   // US states (add more as needed)
@@ -248,6 +258,7 @@ export interface PublicEntry extends LeanEntry {
 // 'public-entries' tag as fetchAllPublicEntries.
 export const fetchLeanEntries = unstable_cache(async (): Promise<LeanEntry[]> => {
   try {
+    logQueryPath('supabase.select.lean');
     const { data, error } = await supabase
       .from('map_entries')
       .select('id, display_name, city, region, country, entity_type, lat, lng');
@@ -273,6 +284,7 @@ export const fetchLeanEntries = unstable_cache(async (): Promise<LeanEntry[]> =>
 // by revalidateTag('public-entries') on any entry write operation.
 export const fetchAllPublicEntries = unstable_cache(async (): Promise<PublicEntry[]> => {
   try {
+    logQueryPath('supabase.select.full');
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (!url || !key) {
@@ -326,6 +338,7 @@ export async function leanEntriesInRegion(
   countrySlug: string,
   regionSlug: string,
 ): Promise<LeanEntry[]> {
+  logQueryPath('branch.players.region.lean', { countrySlug, regionSlug });
   const all = await fetchLeanEntries();
   const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
   return all.filter((e) => {
@@ -338,9 +351,43 @@ export async function leanEntriesInRegion(
   });
 }
 
-export async function entriesInCountry(countrySlug: string): Promise<PublicEntry[]> {
-  const all = await fetchAllPublicEntries();
+export async function leanEntriesInCountry(countrySlug: string): Promise<LeanEntry[]> {
+  logQueryPath('branch.players.country.lean', { countrySlug });
+  const all = await fetchLeanEntries();
   return all.filter((e) => slugify(canonicalCountryName(e.country)) === countrySlug);
+}
+
+export async function leanEntriesInCity(
+  countrySlug: string,
+  regionSlug: string,
+  citySlug: string,
+): Promise<LeanEntry[]> {
+  logQueryPath('branch.players.city.lean', { countrySlug, regionSlug, citySlug });
+  const all = await fetchLeanEntries();
+  const expandedRegionSlug = slugify(canonicalRegionName(regionSlug));
+  return all.filter((e) => {
+    const countryMatch = slugify(canonicalCountryName(e.country)) === countrySlug;
+    const hasNoRegion = !e.region || e.region.trim() === '';
+    const regionMatch =
+      regionSlug === '_other'
+        ? hasNoRegion
+        : [e.region, canonicalRegionName(e.region)].some(
+            (r) => slugify(r) === regionSlug || slugify(r) === expandedRegionSlug,
+          );
+    return countryMatch && regionMatch && slugify(e.city) === citySlug;
+  });
+}
+
+export async function entriesInCountry(countrySlug: string): Promise<PublicEntry[]> {
+  logQueryPath('branch.players.country.full', { countrySlug });
+  return unstable_cache(
+    async (): Promise<PublicEntry[]> => {
+      const all = await fetchAllPublicEntries();
+      return all.filter((e) => slugify(canonicalCountryName(e.country)) === countrySlug);
+    },
+    ['public-entries-country', countrySlug],
+    { revalidate: 86400, tags: ['public-entries'] },
+  )();
 }
 
 

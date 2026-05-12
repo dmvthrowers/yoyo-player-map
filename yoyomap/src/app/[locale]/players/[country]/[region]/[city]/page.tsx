@@ -1,7 +1,7 @@
 import { Link, redirect } from '@/i18n/navigation';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { entriesInCity, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
+import { entriesInCity, leanEntriesInCity, listLocations, canonicalName, REGION_NORMALIZATION, isJunkRegion } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -31,7 +31,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
   const { country, region, city } = await params;
-  const entries = await entriesInCity(country, region, city);
+  const entries = await leanEntriesInCity(country, region, city);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);
   const cityName = canonicalName(entries, 'city') ?? city;
