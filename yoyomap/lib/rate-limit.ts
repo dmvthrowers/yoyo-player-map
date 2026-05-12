@@ -8,19 +8,29 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
+// Cache Ratelimit instances by key so they're not reconstructed on every call.
+const limiterCache = new Map<string, Ratelimit>();
+
+function getLimiter(action: string, max: number, windowMinutes: number): Ratelimit {
+  const key = `${action}:${max}:${windowMinutes}`;
+  if (!limiterCache.has(key)) {
+    limiterCache.set(key, new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(max, `${windowMinutes} m`),
+      prefix: `rl:${action}`,
+    }));
+  }
+  return limiterCache.get(key)!;
+}
+
 export async function checkRateLimit(
   ip: string,
   action: string,
   max: number,
   windowMinutes: number
 ): Promise<boolean> {
-  const limiter = new Ratelimit({
-    redis,
-    limiter: Ratelimit.slidingWindow(max, `${windowMinutes} m`),
-    prefix: `rl:${action}`,
-  });
   try {
-    const { success } = await limiter.limit(ip);
+    const { success } = await getLimiter(action, max, windowMinutes).limit(ip);
     return success;
   } catch (error) {
     console.error('Rate limit check failed:', error);
