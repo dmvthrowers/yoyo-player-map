@@ -25,10 +25,10 @@ const NOMINATIM_UA = 'DMVThrowersYoYoMap/1.0 (contact@dmvthrowers.club)';
 
 // Lazy singleton — defers createAdminClient() until first geocode call so a
 // missing SUPABASE_SERVICE_ROLE_KEY doesn't crash unrelated API routes at import.
-let _getSupabaseAdmin(): ReturnType<typeof createAdminClient> | null = null;
+let _supabaseAdmin: ReturnType<typeof createAdminClient> | null = null;
 function getSupabaseAdmin() {
-  if (!_getSupabaseAdmin()) _getSupabaseAdmin() = createAdminClient();
-  return _getSupabaseAdmin();
+  if (!_supabaseAdmin) _supabaseAdmin = createAdminClient();
+  return _supabaseAdmin;
 }
 
 // ---------------------------------------------------------------------------
