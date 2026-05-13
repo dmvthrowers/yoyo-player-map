@@ -31,7 +31,7 @@ export type EmailSendOutcome =
 const DEDUP_WINDOW_MS: Partial<Record<QueuedEmail['template'], number>> = {
   entry_reminder: 60 * 60_000, // 1 hour — cron should never double-fire
   manage_entry: 60_000,        // 1 min — user-triggered magic link
-  manage_entries: 60_000,
+  manage_entries: 60_000,      // 1 min — user-triggered multi-entry magic link
   location_confirm: 60 * 60_000,
 };
 

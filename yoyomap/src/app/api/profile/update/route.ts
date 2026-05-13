@@ -109,6 +109,16 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const venueWasPrivate = isClub && existing.club_venue_public !== true;
   const newAddress = d.address_line ?? existing.address_line;
   const newPostal = d.postal_code ?? existing.postal_code;
+  const clubAddressLine = isClub
+    ? (isClubVenuePublic
+        ? (d.address_line !== undefined ? d.address_line || null : existing.address_line)
+        : null)
+    : undefined;
+  const clubPostalCode = isClub
+    ? (isClubVenuePublic
+        ? (d.postal_code !== undefined ? d.postal_code || null : existing.postal_code)
+        : null)
+    : undefined;
   const addressChanged =
     (d.address_line !== undefined && (d.address_line || null) !== existing.address_line) ||
     (d.postal_code !== undefined && (d.postal_code || null) !== existing.postal_code);
@@ -152,25 +162,22 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
       socials: d.socials || {},
       lat,
       lng,
-      exact_lat: exactLat,
-      exact_lng: exactLng,
-      // Type-specific fields — only written if present in payload AND matches entity type.
-      // Guards prevent a client bug from writing club/shop fields onto a person row,
-      // which would permanently violate entries_type_invariants and block all future updates.
-      ...(existing.entity_type === 'club' && d.club_meeting_info !== undefined && { club_meeting_info: d.club_meeting_info || null }),
-      ...(existing.entity_type === 'club' && d.club_venue_public !== undefined && { club_venue_public: d.club_venue_public }),
-       ...((isShop || isClub) && d.address_line !== undefined && {
-         address_line: isClub && !isClubVenuePublic ? null : d.address_line || null,
-       }),
-       ...((isShop || isClub) && d.postal_code !== undefined && {
-         postal_code: isClub && !isClubVenuePublic ? null : d.postal_code || null,
-       }),
+       exact_lat: exactLat,
+       exact_lng: exactLng,
+       // Type-specific fields — only written if present in payload AND matches entity type.
+       // Guards prevent a client bug from writing club/shop fields onto a person row,
+       // which would permanently violate entries_type_invariants and block all future updates.
+       ...(existing.entity_type === 'club' && d.club_meeting_info !== undefined && { club_meeting_info: d.club_meeting_info || null }),
+       ...(existing.entity_type === 'club' && d.club_venue_public !== undefined && { club_venue_public: d.club_venue_public }),
        ...(existing.entity_type === 'shop' && d.hours !== undefined && { hours: d.hours || null }),
        ...((existing.entity_type === 'shop' || existing.entity_type === 'club') && d.contact_name !== undefined && { contact_name: d.contact_name || null }),
-       ...(isClub && d.club_venue_public === false && {
-         address_line: null,
-         postal_code: null,
-       }),
+       ...(isShop
+         ? {
+             ...(d.address_line !== undefined && { address_line: d.address_line || null }),
+             ...(d.postal_code !== undefined && { postal_code: d.postal_code || null }),
+           }
+         : {}),
+       ...(isClub ? { address_line: clubAddressLine, postal_code: clubPostalCode } : {}),
      })
     .eq('id', tok.entry_id);
 
