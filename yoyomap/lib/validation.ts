@@ -24,15 +24,15 @@ const bioSchema = z.string().trim().max(280).transform(stripControls).optional()
 const socialsSchema = z.object({
   // Instagram handles: letters, numbers, underscores, periods, 1–30 chars.
   instagram: z.string().trim().max(30)
-    .regex(/^[a-zA-Z0-9._]{1,30}$/, 'Instagram handle may only contain letters, numbers, underscores, and periods (max 30 chars)')
+    .regex(/^[a-zA-Z0-9._]+$/, 'Instagram handle may only contain letters, numbers, underscores, and periods (max 30 chars)')
     .optional().or(z.literal('')),
   // YouTube channel URLs must use https.
   youtube: z.string().trim().url().max(100)
     .refine((v) => v.startsWith('https://'), 'YouTube URL must start with https://')
     .optional().or(z.literal('')),
   // Discord usernames: letters, numbers, underscores, periods, hyphens, 2–32 chars.
-  discord: z.string().trim().max(32)
-    .regex(/^[a-zA-Z0-9._\-#]{2,32}$/, 'Discord username may only contain letters, numbers, underscores, periods, hyphens, and # (2–32 chars)')
+  discord: z.string().trim().min(2).max(32)
+    .regex(/^[a-zA-Z0-9._\-#]+$/, 'Discord username may only contain letters, numbers, underscores, periods, hyphens, and # (2–32 chars)')
     .optional().or(z.literal('')),
   // Website URLs must use https.
   website: z.string().trim().url().max(200)
