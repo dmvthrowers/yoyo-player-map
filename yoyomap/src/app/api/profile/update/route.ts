@@ -4,7 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { logAudit, getClientIp, checkRateLimit } from '@/lib/rate-limit';
 import { hashToken } from '@/lib/tokens';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
@@ -39,6 +39,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   if (!allowed) return apiError('rate_limited', 'Too many requests. Try again later.', requestId);
 
   let body: unknown;
+  if (bodyTooLarge(req, 16 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', parsed.error.issues[0]?.message || 'Invalid input.', requestId);

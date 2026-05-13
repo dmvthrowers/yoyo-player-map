@@ -3,7 +3,7 @@ import { reportSchema, AUTO_HIDE_REASONS } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { sendReportNotificationEmail } from '@/lib/email';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -18,6 +18,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   let body: unknown;
+  if (bodyTooLarge(req, 4 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = reportSchema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', 'Invalid report.', requestId);

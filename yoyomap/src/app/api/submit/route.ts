@@ -8,7 +8,7 @@ import {
   sendParentConsentEmail,
 } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -51,6 +51,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   let body: unknown;
+  if (bodyTooLarge(req, 24 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try {
     body = await req.json();
   } catch {
