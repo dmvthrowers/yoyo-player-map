@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { logAudit, getClientIp, checkRateLimit } from '@/lib/rate-limit';
+import { hashToken } from '@/lib/tokens';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
@@ -11,16 +12,20 @@ const schema = z.object({ token: z.string().min(1) });
 
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'profile.delete', 5, 60);
+  if (!allowed) return apiError('rate_limited', 'Too many requests. Try again later.', requestId);
+
   let body: unknown;
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = schema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', 'Invalid input.', requestId);
 
+  const tokenHash = await hashToken(parsed.data.token);
   const supabase = createAdminClient();
   const { data: tok } = await supabase
     .from('verification_tokens')
     .select('entry_id, expires_at, purpose, used_at')
-    .eq('token', parsed.data.token)
+    .eq('token', tokenHash)
     .maybeSingle();
 
   if (!tok || tok.purpose !== 'edit_link' || tok.used_at || new Date(tok.expires_at) < new Date()) {
@@ -47,8 +52,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     await supabase.from('parent_consents').delete().eq('id', entry.parent_consent_id);
   }
 
-  // Mark token used
-  await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('token', parsed.data.token);
+  // Note: verification_tokens are deleted by CASCADE when the entry is deleted above.
+  // The explicit update below is a no-op but harmless.
+  await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('token', tokenHash);
 
   await logAudit('entry.deleted', { actor: entry.email, targetId: entry.id, meta: { ip, type: 'self' } });
   revalidateEntryLocations({ country: entry.country, region: entry.region, city: entry.city });

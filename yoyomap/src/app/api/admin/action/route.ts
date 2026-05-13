@@ -4,7 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
 import { sendLocationConfirmEmail } from '@/lib/email';
-import { generateToken } from '@/lib/tokens';
+import { generateToken, hashToken } from '@/lib/tokens';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdmin } from '@/lib/admin-auth';
 import { revalidateEntryLocations } from '@/lib/revalidate';
@@ -60,7 +60,7 @@ async function sendOutreachForEntry(
   const token = generateToken();
   const { error: tokenError } = await supabase.from('verification_tokens').insert({
     entry_id: entry.id,
-    token,
+    token: await hashToken(token),
     purpose: 'location_confirm',
     expires_at: expiresAt,
   });

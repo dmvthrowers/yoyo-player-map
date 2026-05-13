@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { generateToken } from '@/lib/tokens';
+import { generateToken, hashToken } from '@/lib/tokens';
 import { sendManageEntryEmail, sendManageEntriesEmail } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling } from '@/lib/api-error';
@@ -40,9 +40,10 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const tokens = entries.map(() => generateToken());
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
+  const hashedTokens = await Promise.all(tokens.map(hashToken));
   const inserts = entries.map((entry, index) => ({
     entry_id: entry.id,
-    token: tokens[index],
+    token: hashedTokens[index],
     purpose: 'edit_link',
     expires_at: expiresAt,
   }));

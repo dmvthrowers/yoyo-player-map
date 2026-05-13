@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, jitterCoords } from '@/lib/geocode';
-import { getClientIp, logAudit } from '@/lib/rate-limit';
+import { getClientIp, logAudit, checkRateLimit } from '@/lib/rate-limit';
+import { hashToken } from '@/lib/tokens';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 import { apiError, withErrorHandling } from '@/lib/api-error';
 import { normalizeCountryIso2, normalizeRegionForDb, normalizeRegionForGeocode } from './normalization';
@@ -31,6 +32,10 @@ function tokenExpired(expiresAt: string): boolean {
 }
 
 export const GET = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'confirm_location.get', 20, 60);
+  if (!allowed) return apiError('rate_limited', 'Too many requests. Try again later.', requestId);
+
   const token = req.nextUrl.searchParams.get('token');
   if (!token) return apiError('bad_request', 'Missing token.', requestId);
 
@@ -38,7 +43,7 @@ export const GET = withErrorHandling(async (requestId: string, req: NextRequest)
   const { data: tok, error } = await supabase
     .from('verification_tokens')
     .select('id, entry_id, purpose, used_at, expires_at')
-    .eq('token', token)
+    .eq('token', await hashToken(token))
     .eq('purpose', 'location_confirm')
     .maybeSingle();
 
@@ -69,6 +74,10 @@ export const GET = withErrorHandling(async (requestId: string, req: NextRequest)
 });
 
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'confirm_location.post', 10, 60);
+  if (!allowed) return apiError('rate_limited', 'Too many requests. Try again later.', requestId);
+
   let body: unknown;
   try {
     body = await req.json();
@@ -81,13 +90,12 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   const supabase = createAdminClient();
-  const ip = getClientIp(req.headers);
   const { token, mode } = parsed.data;
 
   const { data: tok } = await supabase
     .from('verification_tokens')
     .select('id, entry_id, purpose, used_at, expires_at')
-    .eq('token', token)
+    .eq('token', await hashToken(token))
     .eq('purpose', 'location_confirm')
     .maybeSingle();
 

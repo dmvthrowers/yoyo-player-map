@@ -56,8 +56,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     await logAudit('entry.flagged', { targetId: entryId, meta: { ip, reason } });
     // On-demand revalidate map and player pages
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
-        { method: 'POST' });
+      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map`,
+        { method: 'POST', headers: { 'Authorization': `Bearer ${process.env.REVALIDATE_SECRET}` } });
     } catch (e) {}
   } else if (AUTO_HIDE_REASONS.includes(reason as typeof AUTO_HIDE_REASONS[number])) {
     // New behavior: auto-hide for business/identity issues (reversible by admin)
@@ -68,8 +68,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     await logAudit('entry.auto_hidden', { targetId: entryId, meta: { ip, reason, entityType: entry.entity_type } });
     // On-demand revalidate map and player pages
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
-        { method: 'POST' });
+      await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map`,
+        { method: 'POST', headers: { 'Authorization': `Bearer ${process.env.REVALIDATE_SECRET}` } });
     } catch (e) {}
   }
 

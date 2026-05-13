@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { hashToken } from '@/lib/tokens';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +17,7 @@ export async function GET(req: NextRequest) {
   const { data: tok, error } = await supabase
     .from('verification_tokens')
     .select('*, entries(id, display_name, city, region, country, bio, socials, is_visible, deleted_at, entity_type, club_meeting_info, club_venue_public, contact_name, address_line, postal_code, hours)')
-    .eq('token', token)
+    .eq('token', await hashToken(token))
     .eq('purpose', 'edit_link')
     .maybeSingle();
 
