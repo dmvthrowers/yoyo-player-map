@@ -1,5 +1,4 @@
 export const dynamic = "force-static";
-export const runtime = "nodejs";
 import React from "react";
 import fs from "fs/promises";
 import path from "path";

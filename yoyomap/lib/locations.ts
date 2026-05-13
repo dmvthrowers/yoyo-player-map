@@ -254,8 +254,7 @@ export interface PublicEntry extends LeanEntry {
 }
 
 // Lean fetch — no bio/socials. Used by players directory pages that only need
-// location data (country/region/city lists, PlayersTable). Busted by the same
-// 'public-entries' tag as fetchAllPublicEntries.
+// location data (country/region/city lists, PlayersTable).
 export const fetchLeanEntries = unstable_cache(async (): Promise<LeanEntry[]> => {
   try {
     logQueryPath('supabase.select.lean');
@@ -277,42 +276,6 @@ export const fetchLeanEntries = unstable_cache(async (): Promise<LeanEntry[]> =>
     return [];
   }
 }, ['lean-entries'], { revalidate: 86400, tags: ['public-entries'] });
-
-// Full fetch — includes bio + socials. Used only by pages that render EntryCard.
-// unstable_cache persists across requests in Next.js data cache (24hr).
-// All players pages share one Supabase result per day. Busted immediately
-// by revalidateTag('public-entries') on any entry write operation.
-export const fetchAllPublicEntries = unstable_cache(async (): Promise<PublicEntry[]> => {
-  try {
-    logQueryPath('supabase.select.full');
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) {
-      console.error('[locations] NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY is not set');
-      return [];
-    }
-    const { data, error } = await supabase
-      .from('map_entries')
-      .select('id, display_name, city, region, country, bio, socials, entity_type, lat, lng');
-    if (error) {
-      console.error('[locations] failed to fetch entries — code:', error.code, '| message:', error.message, '| hint:', error.hint);
-      return [];
-    }
-    if (!data || data.length === 0) {
-      console.warn('[locations] fetchAllPublicEntries returned 0 entries — check Supabase RLS policies for the anon role on map_entries');
-    }
-    return (data ?? []).map((e) => ({
-      ...e,
-      entity_type: (e.entity_type ?? 'person') as PublicEntry['entity_type'],
-      socials: e.socials ?? {},
-      lat: e.lat ?? null,
-      lng: e.lng ?? null,
-    }));
-  } catch (e) {
-    console.error('[locations] fetch failed, returning empty dataset:', e);
-    return [];
-  }
-}, ['public-entries'], { revalidate: 86400, tags: ['public-entries'] });
 
 async function fetchPublicEntriesByIds(ids: string[]): Promise<PublicEntry[]> {
   if (ids.length === 0) return [];
