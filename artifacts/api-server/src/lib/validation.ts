@@ -1,14 +1,13 @@
 import { z } from "zod";
 
+const stripControls = (s: string) =>
+  s.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+
 const displayNameSchema = z
   .string()
   .trim()
-  .min(2)
-  .max(40)
-  .regex(
-    /^[a-zA-Z0-9 _\-.']+$/,
-    "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only",
-  );
+  .transform(stripControls)
+  .pipe(z.string().min(2).max(40));
 
 const emailSchema = z.string().trim().email().toLowerCase();
 const cityIdSchema = z
