@@ -1,12 +1,12 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { sendReminderForEntry } from '@/lib/reminders';
 import { sendLocationConfirmEmail } from '@/lib/email';
-import { generateToken } from '@/lib/tokens';
+import { generateToken, hashToken } from '@/lib/tokens';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { requireAdmin } from '@/lib/admin-auth';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
@@ -39,20 +39,6 @@ const outreachSchema = z.object({
 
 const schema = z.discriminatedUnion('action', [singleActionSchema, bulkStatusSchema, outreachSchema]);
 
-function checkAdmin(req: NextRequest): boolean {
-  const token = req.headers.get('x-admin-token') ?? '';
-  const expected = process.env.ADMIN_PASSWORD ?? '';
-  if (!token || !expected) return false;
-  const ta = Buffer.from(token);
-  const tb = Buffer.from(expected);
-  const len = Math.max(ta.length, tb.length);
-  const a = Buffer.alloc(len);
-  const b = Buffer.alloc(len);
-  ta.copy(a);
-  tb.copy(b);
-  return crypto.timingSafeEqual(a, b) && ta.length === tb.length;
-}
-
 type OutreachEntry = {
   id: string;
   email: string;
@@ -74,7 +60,7 @@ async function sendOutreachForEntry(
   const token = generateToken();
   const { error: tokenError } = await supabase.from('verification_tokens').insert({
     entry_id: entry.id,
-    token,
+    token: await hashToken(token),
     purpose: 'location_confirm',
     expires_at: expiresAt,
   });
@@ -100,7 +86,8 @@ async function sendOutreachForEntry(
 }
 
 export async function POST(req: NextRequest) {
-  if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const authError = await requireAdmin(req);
+  if (authError) return authError;
 
   let body: unknown;
   try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid body' }, { status: 400 }); }

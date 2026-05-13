@@ -1,6 +1,18 @@
 import { NextResponse } from 'next/server';
 
 /**
+ * Returns true when the Content-Length header exceeds maxBytes.
+ * Call this BEFORE req.json() to reject oversized bodies early, preventing
+ * unnecessary memory allocation and CPU work (e.g. recursive object walks).
+ * Note: Content-Length may be absent for chunked transfers; when missing this
+ * returns false (permissive) — Vercel's edge/node limits provide the backstop.
+ */
+export function bodyTooLarge(req: { headers: { get(name: string): string | null } }, maxBytes: number): boolean {
+  const cl = req.headers.get('content-length');
+  return cl !== null && parseInt(cl, 10) > maxBytes;
+}
+
+/**
  * Standard error envelope returned by API routes. Kept narrow on purpose —
  * never leak stack traces, SQL text, or third-party error bodies to the
  * client. The `requestId` lets support correlate a user-reported failure

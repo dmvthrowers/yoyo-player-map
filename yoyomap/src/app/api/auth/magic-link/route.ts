@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { generateToken } from '@/lib/tokens';
+import { generateToken, hashToken } from '@/lib/tokens';
 import { sendManageEntryEmail, sendManageEntriesEmail } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -19,6 +19,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   let body: unknown;
+  if (bodyTooLarge(req, 2 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = schema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', 'Invalid email.', requestId);
@@ -40,9 +43,10 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   const tokens = entries.map(() => generateToken());
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1 hour
+  const hashedTokens = await Promise.all(tokens.map(hashToken));
   const inserts = entries.map((entry, index) => ({
     entry_id: entry.id,
-    token: tokens[index],
+    token: hashedTokens[index],
     purpose: 'edit_link',
     expires_at: expiresAt,
   }));

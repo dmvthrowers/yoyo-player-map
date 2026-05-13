@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
-import { logAudit, getClientIp } from '@/lib/rate-limit';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { logAudit, getClientIp, checkRateLimit } from '@/lib/rate-limit';
+import { hashToken } from '@/lib/tokens';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'nodejs';
@@ -34,7 +35,13 @@ const updateSchema = z.object({
 
 export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
+  const allowed = await checkRateLimit(ip, 'profile.update', 10, 15);
+  if (!allowed) return apiError('rate_limited', 'Too many requests. Try again later.', requestId);
+
   let body: unknown;
+  if (bodyTooLarge(req, 16 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', parsed.error.issues[0]?.message || 'Invalid input.', requestId);
@@ -43,7 +50,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const { data: tok } = await supabase
     .from('verification_tokens')
     .select('entry_id, expires_at, purpose, used_at')
-    .eq('token', parsed.data.token)
+    .eq('token', await hashToken(parsed.data.token))
     .maybeSingle();
 
   if (!tok || tok.purpose !== 'edit_link' || tok.used_at || new Date(tok.expires_at) < new Date()) {
@@ -175,8 +182,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   // On-demand revalidate the map page (ISR cache bust)
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
-      { method: 'POST' });
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map`,
+      { method: 'POST', headers: { 'Authorization': `Bearer ${process.env.REVALIDATE_SECRET}` } });
   } catch (e) {
     // Ignore errors, not critical for user
   }

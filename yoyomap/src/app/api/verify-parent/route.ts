@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
+import { hashToken } from '@/lib/tokens';
 import { revalidateEntryLocations } from '@/lib/revalidate';
 
 export const runtime = 'edge';
@@ -41,7 +42,7 @@ async function verifyEntry(
   const { data: tok, error } = await supabase
     .from('verification_tokens')
     .select('id, used_at, expires_at, purpose, entries(id, age_band, parent_consent_id, country, region, city)')
-    .eq('token', token)
+    .eq('token', await hashToken(token))
     .eq('purpose', 'email_verify')
     .maybeSingle();
 
@@ -92,7 +93,7 @@ async function verifyConsent(
   const { data: consent, error } = await supabase
     .from('parent_consents')
     .select('*')
-    .eq('consent_token', token)
+    .eq('consent_token', await hashToken(token))
     .maybeSingle();
 
   if (error || !consent) {

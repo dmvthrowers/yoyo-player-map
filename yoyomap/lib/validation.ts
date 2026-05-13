@@ -15,13 +15,29 @@ const cityIdSchema = z.number({ error: 'Please select a city from the list' }).i
 const regionIdSchema = z.number().int().positive().optional().or(z.literal(null));
 const countryIdSchema = z.number({ error: 'Please select a country' }).int().positive();
 
-const bioSchema = z.string().trim().max(280).optional().or(z.literal(''));
+// Strips ASCII control characters (null bytes, BEL, BS, etc.) while keeping
+// tab (0x09), LF (0x0A), and CR (0x0D) which are harmless in text fields.
+const stripControls = (s: string) => s.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
+
+const bioSchema = z.string().trim().max(280).transform(stripControls).optional().or(z.literal(''));
 
 const socialsSchema = z.object({
-  instagram: z.string().trim().max(50).optional().or(z.literal('')),
-  youtube: z.string().trim().max(100).optional().or(z.literal('')),
-  discord: z.string().trim().max(50).optional().or(z.literal('')),
-  website: z.string().trim().url().max(200).optional().or(z.literal('')),
+  // Instagram handles: letters, numbers, underscores, periods, 1–30 chars.
+  instagram: z.string().trim().max(30)
+    .regex(/^[a-zA-Z0-9._]+$/, 'Instagram handle may only contain letters, numbers, underscores, and periods (max 30 chars)')
+    .optional().or(z.literal('')),
+  // YouTube channel URLs must use https.
+  youtube: z.string().trim().url().max(100)
+    .refine((v) => v.startsWith('https://'), 'YouTube URL must start with https://')
+    .optional().or(z.literal('')),
+  // Discord usernames: letters, numbers, underscores, periods, hyphens, 2–32 chars.
+  discord: z.string().trim().min(2).max(32)
+    .regex(/^[a-zA-Z0-9._\-#]+$/, 'Discord username may only contain letters, numbers, underscores, periods, hyphens, and # (2–32 chars)')
+    .optional().or(z.literal('')),
+  // Website URLs must use https.
+  website: z.string().trim().url().max(200)
+    .refine((v) => v.startsWith('https://'), 'Website URL must start with https://')
+    .optional().or(z.literal('')),
 }).optional();
 
 const consentCheckboxes = {
@@ -47,7 +63,9 @@ const personSchema = z.object({
   socials: socialsSchema,
   ageBand: z.enum(['13-17', '18+']),
   // Required for under-18
-  parentName: z.string().trim().max(100).optional().or(z.literal('')),
+  parentName: z.string().trim().max(100)
+    .regex(/^[a-zA-Z0-9 _\-.']+$/, "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only")
+    .optional().or(z.literal('')),
   parentEmail: z.string().trim().email().toLowerCase().optional().or(z.literal('')),
   relationship: z.enum(['parent', 'legal guardian']).optional(),
   ...consentCheckboxes,
@@ -70,8 +88,9 @@ const shopSchema = z.object({
   // Shop-specific fields
   addressLine: z.string().trim().min(5).max(200),
   postalCode: z.string().trim().max(20).optional().or(z.literal('')),
-  hours: z.string().trim().max(500).optional().or(z.literal('')),
-  contactName: z.string().trim().max(100),
+  hours: z.string().trim().max(500).transform(stripControls).optional().or(z.literal('')),
+  contactName: z.string().trim().max(100)
+    .regex(/^[a-zA-Z0-9 _\-.']+$/, "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only"),
   authorizedRep: z.literal(true, { 
     error: 'You must confirm you are authorized to list this business' 
   }),
@@ -93,12 +112,13 @@ const clubSchema = z.object({
   bio: bioSchema,
   socials: socialsSchema,
   // Club-specific fields
-  clubMeetingInfo: z.string().trim().min(10).max(500),
+  clubMeetingInfo: z.string().trim().min(10).max(500).transform(stripControls),
   clubVenuePublic: z.boolean(),
   // Only required if venue is public
   venueAddressLine: z.string().trim().max(200).optional().or(z.literal('')),
   venuePostalCode: z.string().trim().max(20).optional().or(z.literal('')),
-  contactName: z.string().trim().max(100),
+  contactName: z.string().trim().max(100)
+    .regex(/^[a-zA-Z0-9 _\-.']+$/, "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only"),
   authorizedRep: z.literal(true, { 
     error: 'You must confirm you are authorized to list this club' 
   }),
@@ -153,7 +173,9 @@ export const legacySubmitSchema = z.object({
   bio: bioSchema,
   ageBand: z.enum(['13-17', '18+']),
   socials: socialsSchema,
-  parentName: z.string().trim().max(100).optional().or(z.literal('')),
+  parentName: z.string().trim().max(100)
+    .regex(/^[a-zA-Z0-9 _\-.']+$/, "Use letters, numbers, spaces, dashes, underscores, dots, or apostrophes only")
+    .optional().or(z.literal('')),
   parentEmail: z.string().trim().email().toLowerCase().optional().or(z.literal('')),
   relationship: z.enum(['parent', 'legal guardian']).optional(),
   ...consentCheckboxes,

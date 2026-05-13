@@ -1,25 +1,12 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireAdmin } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
 
-function checkAdmin(req: NextRequest): boolean {
-  const token = req.headers.get('x-admin-token') ?? '';
-  const expected = process.env.ADMIN_PASSWORD ?? '';
-  if (!token || !expected) return false;
-  const ta = Buffer.from(token);
-  const tb = Buffer.from(expected);
-  const len = Math.max(ta.length, tb.length);
-  const a = Buffer.alloc(len);
-  const b = Buffer.alloc(len);
-  ta.copy(a);
-  tb.copy(b);
-  return crypto.timingSafeEqual(a, b) && ta.length === tb.length;
-}
-
 export async function GET(req: NextRequest) {
-  if (!checkAdmin(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const authError = await requireAdmin(req);
+  if (authError) return authError;
 
   const supabase = createAdminClient();
 
@@ -27,8 +14,14 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get('page') || '1', 10);
   const pageSize = Math.min(parseInt(searchParams.get('pageSize') || '100', 10), 500);
-  const sort = searchParams.get('sort') || 'created_at';
-  const direction = searchParams.get('direction') === 'asc' ? true : false;
+  const ALLOWED_SORT_FIELDS = ['created_at', 'display_name', 'verified_at', 'is_visible', 'is_flagged', 'city', 'age_band', 'entity_type'] as const;
+  const rawSort = searchParams.get('sort') ?? 'created_at';
+  // Only accept values that are pure identifier characters and present in the allowlist.
+  const sort = /^[a-z_]+$/.test(rawSort) && (ALLOWED_SORT_FIELDS as readonly string[]).includes(rawSort)
+    ? rawSort
+    : 'created_at';
+  const rawDirection = searchParams.get('direction');
+  const direction = rawDirection === 'asc' ? true : rawDirection === 'desc' ? false : false;
   const search = searchParams.get('search')?.trim() || '';
 
   // Build entries query

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 import { checkRateLimit, getClientIp, logAudit } from '@/lib/rate-limit';
 import { slugify } from '@/lib/locationSlug';
 
@@ -332,6 +332,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   let body: unknown;
+  if (bodyTooLarge(req, 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try {
     body = await req.json();
   } catch {

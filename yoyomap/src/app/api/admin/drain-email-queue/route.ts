@@ -1,7 +1,7 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { drainEmailQueue } from '@/lib/email';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { requireAdminOrCron } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
 
@@ -14,33 +14,10 @@ export const runtime = 'nodejs';
  * Schedule this to run shortly after 00:00 UTC (to pick up daily-quota
  * rows) and every ~5 minutes (to pick up per-second throttle rows).
  */
-function checkAuth(req: NextRequest): boolean {
-  const adminExpected = process.env.ADMIN_PASSWORD ?? '';
-  const cronExpected = process.env.CRON_SECRET ?? '';
-
-  const adminToken = req.headers.get('x-admin-token') ?? '';
-  if (adminToken && adminExpected && safeEq(adminToken, adminExpected)) return true;
-
-  const authHeader = req.headers.get('authorization') ?? '';
-  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
-  if (bearer && cronExpected && safeEq(bearer, cronExpected)) return true;
-
-  return false;
-}
-
-function safeEq(a: string, b: string): boolean {
-  const ta = Buffer.from(a);
-  const tb = Buffer.from(b);
-  const len = Math.max(ta.length, tb.length);
-  const pa = Buffer.alloc(len);
-  const pb = Buffer.alloc(len);
-  ta.copy(pa);
-  tb.copy(pb);
-  return crypto.timingSafeEqual(pa, pb) && ta.length === tb.length;
-}
 
 async function handle(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const authError = await requireAdminOrCron(req);
+  if (authError) return authError;
 
   const summary = await drainEmailQueue(100);
   await logAudit('admin.drain_email_queue', {

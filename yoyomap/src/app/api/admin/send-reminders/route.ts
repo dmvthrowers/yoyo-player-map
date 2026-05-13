@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import {
@@ -7,6 +6,7 @@ import {
   MIN_HOURS_BETWEEN_REMINDERS,
 } from '@/lib/reminders';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
+import { requireAdminOrCron } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
 
@@ -18,33 +18,10 @@ export const runtime = 'nodejs';
  * Gates (enforced inside sendReminderForEntry): reminder_count < MAX, and
  * at least MIN_HOURS_BETWEEN_REMINDERS since the last send.
  */
-function checkAuth(req: NextRequest): boolean {
-  const adminExpected = process.env.ADMIN_PASSWORD ?? '';
-  const cronExpected = process.env.CRON_SECRET ?? '';
-
-  const adminToken = req.headers.get('x-admin-token') ?? '';
-  if (adminToken && adminExpected && safeEq(adminToken, adminExpected)) return true;
-
-  const authHeader = req.headers.get('authorization') ?? '';
-  const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
-  if (bearer && cronExpected && safeEq(bearer, cronExpected)) return true;
-
-  return false;
-}
-
-function safeEq(a: string, b: string): boolean {
-  const ta = Buffer.from(a);
-  const tb = Buffer.from(b);
-  const len = Math.max(ta.length, tb.length);
-  const pa = Buffer.alloc(len);
-  const pb = Buffer.alloc(len);
-  ta.copy(pa);
-  tb.copy(pb);
-  return crypto.timingSafeEqual(pa, pb) && ta.length === tb.length;
-}
 
 async function handle(req: NextRequest) {
-  if (!checkAuth(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const authError = await requireAdminOrCron(req);
+  if (authError) return authError;
 
   const supabase = createAdminClient();
   const ip = getClientIp(req.headers);

@@ -64,9 +64,14 @@ export async function logAudit(
 }
 
 export function getClientIp(headers: Headers): string {
+  // x-real-ip is set by Vercel's edge network and is not client-spoofable in
+  // production. x-forwarded-for is the fallback; the first entry is the client
+  // IP on Vercel. This trust boundary only holds when deployed on Vercel — in
+  // local development both headers can be absent or spoofed, which is acceptable
+  // because Redis rate limiting is also typically absent locally.
   return (
-    headers.get('x-forwarded-for')?.split(',')[0].trim() ||
     headers.get('x-real-ip') ||
+    headers.get('x-forwarded-for')?.split(',')[0].trim() ||
     'unknown'
   );
 }

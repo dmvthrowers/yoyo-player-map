@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { submitSchema, legacySubmitSchema, type SubmitInput, type PersonInput, type ShopInput, type ClubInput } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
-import { generateToken } from '@/lib/tokens';
+import { generateToken, hashToken } from '@/lib/tokens';
 import {
   sendEntryVerificationEmail,
   sendParentConsentEmail,
 } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
-import { apiError, withErrorHandling } from '@/lib/api-error';
+import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -51,6 +51,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   let body: unknown;
+  if (bodyTooLarge(req, 24 * 1024)) {
+    return apiError('bad_request', 'Request body too large.', requestId);
+  }
   try {
     body = await req.json();
   } catch {
@@ -115,7 +118,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
         parent_name: data.parentName!,
         parent_email: data.parentEmail!,
         relationship: data.relationship!,
-        consent_token: parentConsentToken,
+        consent_token: await hashToken(parentConsentToken),
       })
       .select('id')
       .single();
@@ -148,7 +151,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // 24 hours
   const { error: tokenErr } = await supabase.from('verification_tokens').insert({
     entry_id: entry.id,
-    token: emailToken,
+    token: await hashToken(emailToken),
     purpose: 'email_verify',
     expires_at: expiresAt,
   });
@@ -226,8 +229,8 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
 
   // On-demand revalidate the map page (ISR cache bust)
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map?secret=${process.env.REVALIDATE_SECRET}`,
-      { method: 'POST' });
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate-map`,
+      { method: 'POST', headers: { 'Authorization': `Bearer ${process.env.REVALIDATE_SECRET}` } });
   } catch (e) {
     // Ignore errors, not critical for user
   }
