@@ -13,6 +13,8 @@ const redis =
 
 // Cache Ratelimit instances by key so they're not reconstructed on every call.
 const limiterCache = new Map<string, Ratelimit>();
+const UUID_PATTERN =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function getLimiter(action: string, max: number, windowMinutes: number): Ratelimit | null {
   if (!redis) return null;
@@ -53,12 +55,18 @@ export async function logAudit(
   action: string,
   opts: { actor?: string; targetId?: string; meta?: Record<string, unknown> } = {}
 ): Promise<void> {
+  const normalizedTargetId = opts.targetId && UUID_PATTERN.test(opts.targetId) ? opts.targetId : null;
+  const meta: Record<string, unknown> = opts.meta ? { ...opts.meta } : {};
+  if (opts.targetId && !normalizedTargetId && meta.audit_target_id_raw === undefined) {
+    meta.audit_target_id_raw = opts.targetId;
+  }
+
   const supabase = createAdminClient();
   const { error } = await supabase.from('audit_log').insert({
     action,
     actor: opts.actor ?? 'system',
-    target_id: opts.targetId ?? null,
-    meta: opts.meta ?? {},
+    target_id: normalizedTargetId,
+    meta,
   });
   if (error) console.error('[logAudit] insert failed:', action, error.message);
 }

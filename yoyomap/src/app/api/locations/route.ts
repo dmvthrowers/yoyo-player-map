@@ -388,8 +388,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   }
 
   await logAudit('locations.city_create', {
-    targetId: String(data.id),
-    meta: { ip, countryId, regionId: regionId ?? null, name: normalizedName },
+    meta: { ip, cityId: data.id, countryId, regionId: regionId ?? null, name: normalizedName },
   });
 
   return NextResponse.json({ city: data }, { headers: { 'x-request-id': requestId } });
