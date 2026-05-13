@@ -43,7 +43,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   if (!entry) return apiError('not_found', 'Entry not found.', requestId);
 
   // Hard delete — GDPR right to erasure.
-  // Cascade: verification_tokens FK onto entries is ON DELETE CASCADE.
+  // Cascade: verification_tokens FK onto entries is ON DELETE CASCADE, so the
+  // token used for this request is atomically deleted with the entry — there is
+  // no need to separately mark it used, and replay attacks are impossible.
   // Parent consents use ON DELETE RESTRICT, so we delete the entry first,
   // then the consent.
   const { error: delEntryErr } = await supabase.from('entries').delete().eq('id', entry.id);
