@@ -1,3 +1,4 @@
+import 'server-only';
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from './rate-limit';
