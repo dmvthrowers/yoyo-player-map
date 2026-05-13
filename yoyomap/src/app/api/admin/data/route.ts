@@ -27,7 +27,9 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get('page') || '1', 10);
   const pageSize = Math.min(parseInt(searchParams.get('pageSize') || '100', 10), 500);
-  const sort = searchParams.get('sort') || 'created_at';
+  const ALLOWED_SORT_FIELDS = ['created_at', 'display_name', 'verified_at', 'is_visible', 'is_flagged', 'city', 'age_band', 'entity_type'] as const;
+  const rawSort = searchParams.get('sort') || 'created_at';
+  const sort = (ALLOWED_SORT_FIELDS as readonly string[]).includes(rawSort) ? rawSort : 'created_at';
   const direction = searchParams.get('direction') === 'asc' ? true : false;
   const search = searchParams.get('search')?.trim() || '';
 

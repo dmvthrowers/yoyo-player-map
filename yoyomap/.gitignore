@@ -1,0 +1,19 @@
+# Environment files — these MUST NEVER be committed; they contain secrets.
+# Copy .env.local.example and fill in your own values.
+.env.local
+.env.*.local
+.env
+
+# Next.js
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tsbuildinfo
+
+# System files
+.DS_Store
+Thumbs.db
