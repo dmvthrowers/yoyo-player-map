@@ -12,6 +12,36 @@
 -- entries: shop/club text columns
 -- ---------------------------------------------------------------------------
 
+-- Legacy-data backfill: keep only allowed socials keys and cap payload size.
+-- If a legacy payload still exceeds 600 chars after key filtering, reset it
+-- to an empty object so the defensive CHECK can be added safely.
+WITH normalized_socials AS (
+  SELECT
+    e.id,
+    COALESCE(
+      (
+        SELECT jsonb_object_agg(k, v)
+        FROM jsonb_each(COALESCE(e.socials, '{}'::jsonb)) AS kv(k, v)
+        WHERE k IN ('instagram', 'youtube', 'discord', 'website')
+      ),
+      '{}'::jsonb
+    ) AS cleaned_socials
+  FROM public.entries e
+)
+UPDATE public.entries e
+SET socials = CASE
+  WHEN char_length(ns.cleaned_socials::text) <= 600 THEN ns.cleaned_socials
+  ELSE '{}'::jsonb
+END
+FROM normalized_socials ns
+WHERE e.id = ns.id
+  AND e.socials IS DISTINCT FROM (
+    CASE
+      WHEN char_length(ns.cleaned_socials::text) <= 600 THEN ns.cleaned_socials
+      ELSE '{}'::jsonb
+    END
+  );
+
 ALTER TABLE public.entries
   ADD CONSTRAINT entries_address_line_length
     CHECK (address_line IS NULL OR char_length(address_line) <= 200),
