@@ -29,8 +29,6 @@ export type EmailSendOutcome =
 // suppressed to protect Resend's 100/day free-tier cap. report_notification
 // is intentionally omitted — every report should page the admin.
 const DEDUP_WINDOW_MS: Partial<Record<QueuedEmail['template'], number>> = {
-  entry_verify: 10 * 60_000,   // 10 min — prevents double-submit dupes
-  parent_consent: 10 * 60_000, // 10 min
   entry_reminder: 60 * 60_000, // 1 hour — cron should never double-fire
   manage_entry: 60_000,        // 1 min — user-triggered magic link
   manage_entries: 60_000,

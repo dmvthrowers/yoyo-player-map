@@ -90,6 +90,71 @@ create index entries_country_region_idx on public.entries (country, region);
 create index entries_location_status_idx on public.entries (location_status) where deleted_at is null;
 
 -- =============================================================================
+-- Entity type extensions (person / shop / club)
+-- =============================================================================
+alter table public.entries
+  add column if not exists entity_type text not null default 'person'
+    check (entity_type in ('person', 'shop', 'club')),
+  add column if not exists exact_lat double precision,
+  add column if not exists exact_lng double precision,
+  add column if not exists address_line text,
+  add column if not exists postal_code text,
+  add column if not exists hours text,
+  add column if not exists club_meeting_info text,
+  add column if not exists club_venue_public boolean,
+  add column if not exists contact_name text,
+  add column if not exists verified_owner boolean not null default false,
+  add column if not exists auto_hidden_by_reports boolean not null default false;
+
+alter table public.entries
+  alter column age_band drop not null;
+
+alter table public.entries
+  drop constraint if exists entries_type_invariants;
+
+alter table public.entries
+  add constraint entries_type_invariants check (
+    case entity_type
+      when 'person' then
+        age_band is not null
+        and exact_lat is null
+        and exact_lng is null
+        and address_line is null
+        and postal_code is null
+        and hours is null
+        and club_meeting_info is null
+        and club_venue_public is null
+
+      when 'shop' then
+        exact_lat is not null
+        and exact_lng is not null
+        and address_line is not null
+        and age_band is null
+        and club_meeting_info is null
+        and club_venue_public is null
+
+      when 'club' then
+        club_venue_public is not null
+        and age_band is null
+        and hours is null
+        and (
+          (club_venue_public = false
+            and exact_lat is null
+            and exact_lng is null
+            and address_line is null
+            and postal_code is null)
+          or
+          (club_venue_public = true
+            and exact_lat is not null
+            and exact_lng is not null
+            and address_line is not null)
+        )
+
+      else false
+    end
+  );
+
+-- =============================================================================
 -- parent_consents: audit trail for under-18 users
 -- =============================================================================
 create table if not exists public.parent_consents (
@@ -219,13 +284,37 @@ select
   e.country,
   e.bio,
   e.socials,
-  e.lat,
-  e.lng,
+  e.entity_type,
+  case
+    when e.entity_type = 'shop' then e.exact_lat
+    when e.entity_type = 'club' and e.club_venue_public = true then e.exact_lat
+    else e.lat
+  end as lat,
+  case
+    when e.entity_type = 'shop' then e.exact_lng
+    when e.entity_type = 'club' and e.club_venue_public = true then e.exact_lng
+    else e.lng
+  end as lng,
+  case
+    when e.entity_type = 'shop' then e.address_line
+    when e.entity_type = 'club' and e.club_venue_public = true then e.address_line
+    else null
+  end as address_line,
+  case
+    when e.entity_type = 'shop' then e.postal_code
+    when e.entity_type = 'club' and e.club_venue_public = true then e.postal_code
+    else null
+  end as postal_code,
+  case when e.entity_type = 'shop' then e.hours else null end as hours,
+  case when e.entity_type = 'shop' then e.verified_owner else null end as verified_owner,
+  case when e.entity_type = 'club' then e.club_meeting_info else null end as club_meeting_info,
+  case when e.entity_type = 'club' then e.club_venue_public else null end as club_venue_public,
   e.created_at
 from public.entries e
 where e.is_visible = true
   and e.is_flagged = false
-  and e.deleted_at is null;
+  and e.deleted_at is null
+  and e.auto_hidden_by_reports = false;
 
 -- =============================================================================
 -- Row Level Security
