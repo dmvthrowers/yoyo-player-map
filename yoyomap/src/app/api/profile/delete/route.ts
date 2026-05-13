@@ -52,10 +52,6 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     await supabase.from('parent_consents').delete().eq('id', entry.parent_consent_id);
   }
 
-  // Note: verification_tokens are deleted by CASCADE when the entry is deleted above.
-  // The explicit update below is a no-op but harmless.
-  await supabase.from('verification_tokens').update({ used_at: new Date().toISOString() }).eq('token', tokenHash);
-
   await logAudit('entry.deleted', { actor: entry.email, targetId: entry.id, meta: { ip, type: 'self' } });
   revalidateEntryLocations({ country: entry.country, region: entry.region, city: entry.city });
   return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });

@@ -1,6 +1,6 @@
-import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { timingSafeEq } from '@/lib/admin-auth';
 
 export const runtime = 'nodejs';
 
@@ -10,17 +10,7 @@ export async function POST(req: NextRequest) {
   const authHeader = req.headers.get('authorization') ?? '';
   const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
 
-  if (!expected || !bearer) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  // Timing-safe comparison to prevent oracle attacks on the secret.
-  const ta = Buffer.from(bearer);
-  const tb = Buffer.from(expected);
-  const len = Math.max(ta.length, tb.length);
-  const a = Buffer.alloc(len); ta.copy(a);
-  const b = Buffer.alloc(len); tb.copy(b);
-  if (!crypto.timingSafeEqual(a, b) || ta.length !== tb.length) {
+  if (!expected || !bearer || !timingSafeEq(bearer, expected)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

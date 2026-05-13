@@ -19,6 +19,8 @@ function timingSafeEq(a: string, b: string): boolean {
   return crypto.timingSafeEqual(pa, pb) && ta.length === tb.length;
 }
 
+export { timingSafeEq };
+
 /**
  * Rate-limit + verify admin token. Returns a 429/401 NextResponse on
  * failure, null on success. Use for admin-only routes.
