@@ -28,9 +28,13 @@ export async function GET(req: NextRequest) {
   const page = parseInt(searchParams.get('page') || '1', 10);
   const pageSize = Math.min(parseInt(searchParams.get('pageSize') || '100', 10), 500);
   const ALLOWED_SORT_FIELDS = ['created_at', 'display_name', 'verified_at', 'is_visible', 'is_flagged', 'city', 'age_band', 'entity_type'] as const;
-  const rawSort = searchParams.get('sort') || 'created_at';
-  const sort = (ALLOWED_SORT_FIELDS as readonly string[]).includes(rawSort) ? rawSort : 'created_at';
-  const direction = searchParams.get('direction') === 'asc' ? true : false;
+  const rawSort = searchParams.get('sort') ?? 'created_at';
+  // Only accept values that are pure identifier characters and present in the allowlist.
+  const sort = /^[a-z_]+$/.test(rawSort) && (ALLOWED_SORT_FIELDS as readonly string[]).includes(rawSort)
+    ? rawSort
+    : 'created_at';
+  const rawDirection = searchParams.get('direction');
+  const direction = rawDirection === 'asc' ? true : rawDirection === 'desc' ? false : false;
   const search = searchParams.get('search')?.trim() || '';
 
   // Build entries query
