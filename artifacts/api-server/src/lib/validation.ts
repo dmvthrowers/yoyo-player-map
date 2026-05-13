@@ -6,9 +6,8 @@ const stripControls = (s: string) =>
 const displayNameSchema = z
   .string()
   .trim()
-  .min(2)
-  .max(40)
-  .transform(stripControls);
+  .transform(stripControls)
+  .pipe(z.string().min(2).max(40));
 
 const emailSchema = z.string().trim().email().toLowerCase();
 const cityIdSchema = z

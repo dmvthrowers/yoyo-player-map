@@ -8,8 +8,7 @@ import { z } from 'zod';
 // tab (0x09), LF (0x0A), and CR (0x0D) which are harmless in text fields.
 const stripControls = (s: string) => s.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '');
 
-const displayNameSchema = z.string().trim().min(2).max(40)
-  .transform(stripControls);
+const displayNameSchema = z.string().trim().transform(stripControls).pipe(z.string().min(2).max(40));
 
 const emailSchema = z.string().trim().email().toLowerCase();
 
@@ -63,8 +62,7 @@ const personSchema = z.object({
   socials: socialsSchema,
   ageBand: z.enum(['13-17', '18+']),
   // Required for under-18
-  parentName: z.string().trim().max(100)
-    .transform(stripControls)
+  parentName: z.string().trim().transform(stripControls).pipe(z.string().max(100))
     .optional().or(z.literal('')),
   parentEmail: z.string().trim().email().toLowerCase().optional().or(z.literal('')),
   relationship: z.enum(['parent', 'legal guardian']).optional(),
@@ -89,8 +87,7 @@ const shopSchema = z.object({
   addressLine: z.string().trim().min(5).max(200),
   postalCode: z.string().trim().max(20).optional().or(z.literal('')),
   hours: z.string().trim().max(500).transform(stripControls).optional().or(z.literal('')),
-  contactName: z.string().trim().max(100)
-    .transform(stripControls),
+  contactName: z.string().trim().transform(stripControls).pipe(z.string().max(100)),
   authorizedRep: z.literal(true, { 
     error: 'You must confirm you are authorized to list this business' 
   }),
@@ -117,8 +114,7 @@ const clubSchema = z.object({
   // Only required if venue is public
   venueAddressLine: z.string().trim().max(200).optional().or(z.literal('')),
   venuePostalCode: z.string().trim().max(20).optional().or(z.literal('')),
-  contactName: z.string().trim().max(100)
-    .transform(stripControls),
+  contactName: z.string().trim().transform(stripControls).pipe(z.string().max(100)),
   authorizedRep: z.literal(true, { 
     error: 'You must confirm you are authorized to list this club' 
   }),
@@ -173,8 +169,7 @@ export const legacySubmitSchema = z.object({
   bio: bioSchema,
   ageBand: z.enum(['13-17', '18+']),
   socials: socialsSchema,
-  parentName: z.string().trim().max(100)
-    .transform(stripControls)
+  parentName: z.string().trim().transform(stripControls).pipe(z.string().max(100))
     .optional().or(z.literal('')),
   parentEmail: z.string().trim().email().toLowerCase().optional().or(z.literal('')),
   relationship: z.enum(['parent', 'legal guardian']).optional(),
