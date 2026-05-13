@@ -64,9 +64,11 @@ export async function logAudit(
 }
 
 export function getClientIp(headers: Headers): string {
+  // x-real-ip is set by Vercel's edge network and is not client-spoofable.
+  // x-forwarded-for is the fallback; the first entry is the client IP on Vercel.
   return (
-    headers.get('x-forwarded-for')?.split(',')[0].trim() ||
     headers.get('x-real-ip') ||
+    headers.get('x-forwarded-for')?.split(',')[0].trim() ||
     'unknown'
   );
 }
