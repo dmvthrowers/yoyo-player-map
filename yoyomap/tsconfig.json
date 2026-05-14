@@ -20,14 +20,6 @@
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": [
-    "node_modules",
-    "src/App.tsx",
-    "src/main.tsx",
-    "vite.config.ts",
-    "src/components",
-    "src/hooks",
-    "src/lib",
-    "src/pages",
-    "src/spa-pages"
+    "node_modules"
   ]
 }

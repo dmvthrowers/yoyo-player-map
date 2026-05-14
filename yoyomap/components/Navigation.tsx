@@ -2,13 +2,19 @@
 "use client";
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations();
+  const pathname = usePathname();
   const close = () => setMenuOpen(false);
+
+  function navCls(path: string, extra = '') {
+    const active = pathname === path || pathname.startsWith(path + '/');
+    return `nav-link whitespace-nowrap${active ? ' border-brand-red text-brand-red' : ''}${extra ? ' ' + extra : ''}`;
+  }
 
   return (
     <>
@@ -31,6 +37,14 @@ export default function Navigation() {
           >
             {t('nav.vsyc')} ↗
           </a>
+          <a
+            href="https://events.dmvthrowers.club/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="topbar-link"
+          >
+            {t('nav.clubEvents')} ↗
+          </a>
           <div className="pl-3 border-l border-white/30">
             <LanguageSwitcher />
           </div>
@@ -46,10 +60,10 @@ export default function Navigation() {
           {/* Desktop nav — hidden below md breakpoint */}
           <div className="hidden md:flex items-center gap-6">
             <ul className="flex items-center gap-6">
-              <li><Link href="/map" className="nav-link whitespace-nowrap">{t('nav.map')}</Link></li>
-              <li><Link href="/players" className="nav-link whitespace-nowrap">{t('nav.players')}</Link></li>
-              <li><Link href="/submit" className="nav-link whitespace-nowrap">{t('nav.submit')}</Link></li>
-              <li><Link href="/profile" className="nav-link whitespace-nowrap">{t('nav.profile')}</Link></li>
+              <li><Link href="/map" className={navCls('/map')}>{t('nav.map')}</Link></li>
+              <li><Link href="/players" className={navCls('/players')}>{t('nav.players')}</Link></li>
+              <li><Link href="/submit" className={navCls('/submit')}>{t('nav.submit')}</Link></li>
+              <li><Link href="/profile" className={navCls('/profile')}>{t('nav.profile')}</Link></li>
               <li>
                 <a
                   href="https://ko-fi.com/dmvthrowers"
@@ -88,10 +102,10 @@ export default function Navigation() {
         {/* Mobile dropdown — always rendered for aria-controls */}
         <div id="mobile-menu" className={`md:hidden border-t bg-cream px-4 pb-4 pt-2${menuOpen ? '' : ' hidden'}`}>
             <ul className="flex flex-col">
-              <li><Link href="/map" className="nav-link block py-2" onClick={close}>{t('nav.map')}</Link></li>
-              <li><Link href="/players" className="nav-link block py-2" onClick={close}>{t('nav.players')}</Link></li>
-              <li><Link href="/submit" className="nav-link block py-2" onClick={close}>{t('nav.submit')}</Link></li>
-              <li><Link href="/profile" className="nav-link block py-2" onClick={close}>{t('nav.profile')}</Link></li>
+              <li><Link href="/map" className={navCls('/map', 'block py-2')} onClick={close}>{t('nav.map')}</Link></li>
+              <li><Link href="/players" className={navCls('/players', 'block py-2')} onClick={close}>{t('nav.players')}</Link></li>
+              <li><Link href="/submit" className={navCls('/submit', 'block py-2')} onClick={close}>{t('nav.submit')}</Link></li>
+              <li><Link href="/profile" className={navCls('/profile', 'block py-2')} onClick={close}>{t('nav.profile')}</Link></li>
               <li className="py-2">
                 <a
                   href="https://ko-fi.com/dmvthrowers"
@@ -101,6 +115,11 @@ export default function Navigation() {
                   onClick={close}
                 >
                   {t('nav.donate')}
+                </a>
+              </li>
+              <li>
+                <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>
+                  {t('nav.clubEvents')} ↗
                 </a>
               </li>
               <li>
