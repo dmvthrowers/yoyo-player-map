@@ -130,6 +130,9 @@ export default function Navigation() {
           <ul className="flex flex-col">
             <li><Link href="/map" className="nav-link block py-2" onClick={close}>{t('map')}</Link></li>
             <li><Link href="/players" className="nav-link block py-2" onClick={close}>{t('players')}</Link></li>
+            <li>
+              <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('clubEvents')} ↗</a>
+            </li>
             <li><Link href="/submit" className="nav-link block py-2" onClick={close}>{t('submit')}</Link></li>
             <li><Link href="/profile" className="nav-link block py-2" onClick={close}>{t('profile')}</Link></li>
             <li className="py-2">
@@ -140,9 +143,6 @@ export default function Navigation() {
             </li>
             <li>
               <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>{t('vsyc')} ↗</a>
-            </li>
-            <li>
-              <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('clubEvents')} ↗</a>
             </li>
             <li className="pt-2 border-t border-navy/10 mt-2">
               <p className="text-xs text-navy/60 mb-1">{t('language')}</p>
