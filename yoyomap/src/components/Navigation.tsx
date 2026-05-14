@@ -38,6 +38,14 @@ export default function Navigation() {
           >
             {t('vsyc')} ↗
           </a>
+          <a
+            href="https://events.dmvthrowers.club/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="topbar-link"
+          >
+            {t('clubEvents')} ↗
+          </a>
         </div>
       </div>
 
@@ -132,6 +140,9 @@ export default function Navigation() {
             </li>
             <li>
               <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>{t('vsyc')} ↗</a>
+            </li>
+            <li>
+              <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('clubEvents')} ↗</a>
             </li>
             <li className="pt-2 border-t border-navy/10 mt-2">
               <p className="text-xs text-navy/60 mb-1">{t('language')}</p>
