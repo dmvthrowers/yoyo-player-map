@@ -136,13 +136,13 @@ export default function Navigation() {
               <a href="https://ko-fi.com/dmvthrowers" target="_blank" rel="noopener noreferrer" className="donate-btn inline-block" onClick={close}>{t('donate')}</a>
             </li>
             <li>
+              <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('clubEvents')} ↗</a>
+            </li>
+            <li>
               <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('dmvThrowers')} ↗</a>
             </li>
             <li>
               <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>{t('vsyc')} ↗</a>
-            </li>
-            <li>
-              <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>{t('clubEvents')} ↗</a>
             </li>
             <li className="pt-2 border-t border-navy/10 mt-2">
               <p className="text-xs text-navy/60 mb-1">{t('language')}</p>
