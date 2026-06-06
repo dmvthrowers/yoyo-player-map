@@ -38,7 +38,7 @@ export default function Navigation() {
             {t('nav.vsyc')} ↗
           </a>
           <a
-            href="https://events.dmvthrowers.club/"
+            href="https://yoyoarchive.org/yya-events"
             target="_blank"
             rel="noopener noreferrer"
             className="topbar-link"
@@ -118,7 +118,7 @@ export default function Navigation() {
                 </a>
               </li>
               <li>
-                <a href="https://events.dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>
+                <a href="https://yoyoarchive.org/yya-events" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>
                   {t('nav.clubEvents')} ↗
                 </a>
               </li>
