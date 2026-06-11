@@ -14,10 +14,17 @@ const ADMIN_RATE_LIMIT_WINDOW_MINUTES = 15;
 // silently degrade.
 const ADMIN_PASSWORD_MIN_LENGTH = 16;
 
+let warnedWeakPassword = false;
+
 function adminPassword(): string | null {
   const pw = process.env.ADMIN_PASSWORD ?? '';
   if (pw.length < ADMIN_PASSWORD_MIN_LENGTH) {
-    console.error(`[admin-auth] ADMIN_PASSWORD is unset or shorter than ${ADMIN_PASSWORD_MIN_LENGTH} chars; rejecting all admin requests.`);
+    // Warn once per process — this path also runs for every unauthorized
+    // probe, so logging per-request would let attackers flood the logs.
+    if (!warnedWeakPassword) {
+      warnedWeakPassword = true;
+      console.error(`[admin-auth] ADMIN_PASSWORD is unset or shorter than ${ADMIN_PASSWORD_MIN_LENGTH} chars; rejecting all admin requests.`);
+    }
     return null;
   }
   return pw;

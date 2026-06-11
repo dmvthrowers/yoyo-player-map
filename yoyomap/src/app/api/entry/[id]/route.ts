@@ -10,6 +10,7 @@ import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 // when an entry is hidden, flagged, or deleted, the map_entries view stops
 // returning it immediately, but the CDN keeps serving the cached detail until
 // it expires — so the TTL bounds how long PII lingers after a takedown.
+// stale-while-revalidate is kept to a 60 s grace so the bound stays ~5 min.
 //
 // Returned shape mirrors MapEntryDetail in app/map/page.tsx.
 
@@ -52,7 +53,7 @@ export async function GET(
 
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60',
         'x-request-id': requestId,
       },
     });
