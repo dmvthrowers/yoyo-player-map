@@ -4,8 +4,12 @@ import { apiError, newRequestId } from '@/lib/api-error';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 // Lazy-loaded popup detail. The /map page ships a lean entry list; clicking a
-// pin triggers a fetch here. We cache aggressively at the CDN (s-maxage=3600)
-// so repeat popups across users are served from Vercel's edge, not Supabase.
+// pin triggers a fetch here. We cache at the CDN (s-maxage=300) so repeat
+// popups across users are served from Vercel's edge, not Supabase. Kept short
+// because responses can include a street address (shops, venue-public clubs):
+// when an entry is hidden, flagged, or deleted, the map_entries view stops
+// returning it immediately, but the CDN keeps serving the cached detail until
+// it expires — so the TTL bounds how long PII lingers after a takedown.
 //
 // Returned shape mirrors MapEntryDetail in app/map/page.tsx.
 
@@ -48,7 +52,7 @@ export async function GET(
 
     return NextResponse.json(data, {
       headers: {
-        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=3600',
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
         'x-request-id': requestId,
       },
     });
