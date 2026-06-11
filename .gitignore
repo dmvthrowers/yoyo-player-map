@@ -14,6 +14,12 @@ out-tsc
 # dependencies
 node_modules
 
+# This repo uses pnpm; stray npm/yarn lockfiles only cause drift.
+package-lock.json
+**/package-lock.json
+yarn.lock
+**/yarn.lock
+
 # IDEs and editors
 /.idea
 .project
@@ -56,6 +62,8 @@ Thumbs.db
 
 # Environment files — these may contain secrets and must never be committed.
 # Copy .env.example (if provided) and fill in your own values locally.
+.env
+**/.env
 .env.local
 **/.env.local
 .env.*.local
