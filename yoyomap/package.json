@@ -45,7 +45,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.77.0",
     "react-leaflet": "^4.2.1",
-    "react-leaflet-cluster": "^2.1.0",
+    "react-leaflet-cluster": "^3.1.1",
     "resend": "^6.12.4",
     "vaul": "^1.1.2",
     "workflow": "^4.3.1",
