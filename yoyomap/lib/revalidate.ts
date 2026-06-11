@@ -19,7 +19,7 @@ export function revalidateEntryLocations(loc: {
   // Global views: /[locale]/map and /[locale]/players.
   // revalidatePath('/[locale]/path', 'page') uses the bracket syntax as a wildcard
   // so Next.js invalidates every locale variant (e.g. /en/map, /ja/map).
-  revalidateTag('public-entries');
+  revalidateTag('public-entries', 'max');
   revalidatePath('/[locale]/map', 'page');
   revalidatePath('/[locale]/players', 'page');
   revalidatePath('/sitemap.xml');
