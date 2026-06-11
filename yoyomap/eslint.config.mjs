@@ -1,7 +1,19 @@
-import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { FlatCompat } from '@eslint/eslintrc';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+});
 
 const eslintConfig = [
-  ...nextCoreWebVitals,
+  {
+    ignores: ['.next/**', 'out/**', 'build/**'],
+  },
+  ...compat.extends('next/core-web-vitals'),
   {
     rules: {
       // These React Compiler-oriented rules were introduced by the newer Next flat config

@@ -39,7 +39,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^1.17.0",
     "marked": "^18.0.5",
-    "next": "^16.2.9",
+    "next": "^15.5.18",
     "next-intl": "^4.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -62,7 +62,7 @@
     "adm-zip": "^0.5.16",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.12.0",
-    "eslint-config-next": "16.2.9",
+    "eslint-config-next": "^15.5.18",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.3"
