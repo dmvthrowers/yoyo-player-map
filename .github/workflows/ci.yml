@@ -24,9 +24,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # No pinned version here — the action reads "packageManager" from the
+      # root package.json so there is a single source of truth for pnpm.
       - uses: pnpm/action-setup@v6
-        with:
-          version: 9.15.4
 
       - uses: actions/setup-node@v6
         with:
@@ -53,9 +53,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # No pinned version here — the action reads "packageManager" from the
+      # root package.json so there is a single source of truth for pnpm.
       - uses: pnpm/action-setup@v6
-        with:
-          version: 9.15.4
 
       - uses: actions/setup-node@v6
         with:
@@ -92,9 +92,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # No pinned version here — the action reads "packageManager" from the
+      # root package.json so there is a single source of truth for pnpm.
       - uses: pnpm/action-setup@v6
-        with:
-          version: 9.15.4
 
       - uses: actions/setup-node@v6
         with:
@@ -124,9 +124,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      # No pinned version here — the action reads "packageManager" from the
+      # root package.json so there is a single source of truth for pnpm.
       - uses: pnpm/action-setup@v6
-        with:
-          version: 9.15.4
 
       - uses: actions/setup-node@v6
         with:
