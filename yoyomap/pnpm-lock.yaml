@@ -86,8 +86,8 @@ importers:
         specifier: ^1.17.0
         version: 1.17.0(react@18.3.1)
       marked:
-        specifier: ^18.0.3
-        version: 18.0.3
+        specifier: ^18.0.5
+        version: 18.0.5
       next:
         specifier: ^15.5.18
         version: 15.5.18(@babel/core@7.29.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -2468,44 +2468,44 @@ packages:
     peerDependencies:
       zod: 4.3.6
 
-  '@xhmikosr/archive-type@8.0.1':
-    resolution: {integrity: sha512-toXuiWChyfOpEiCPsIw6HGHaNji5LVkvB6EREL548vGWr+hGaehwxG4LzN20vm9aGFXwnA/Jty8yW2/SmV+1zQ==}
+  '@xhmikosr/archive-type@8.1.0':
+    resolution: {integrity: sha512-EXOjEbnZFE5c/nFMf4FOrEURVanzHpnkPYmnmr78u02/8hAhE0FMq8p9TK1IM0/bFr5VcyBUY0gfLm8f7dKy+Q==}
     engines: {node: '>=20'}
 
   '@xhmikosr/bin-check@8.2.1':
     resolution: {integrity: sha512-DNruLq+kalxcE7JeDxtqrN9kyWjLW8VqsQPLRTwD1t9ck/1rF4qBL0mX5Fe2/xLOMjo5wPb67BNX2kSAhzfLjA==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/bin-wrapper@14.2.3':
-    resolution: {integrity: sha512-F8Sr2O2aqwYfoXTafemRNAYDG4xwBTaHJpAo9YVnnnRXHLP9gkb+HYDsFoCAsCneS3/J7BOfeYnxxlUCicLqjg==}
+  '@xhmikosr/bin-wrapper@14.3.0':
+    resolution: {integrity: sha512-rDYWjJ/xmH2vhcGUj6ZdUBmJghKPAlQNhzQY2LxI/6CTE2W/TMhnnrTlpET3TfYql6koTYD2sUiO/t9ew1JaCQ==}
     engines: {node: '>=20'}
 
   '@xhmikosr/decompress-tar@9.0.1':
     resolution: {integrity: sha512-4AkVR1SoqTxYY22IRRYKDeLirPIDGqMqYsqgjKYuwhgRcBb+yDP4t5Xph33UCzL/nahK/aADmlMEjTNstbX7kw==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/decompress-tarbz2@9.0.1':
-    resolution: {integrity: sha512-aFONnsbqEOuXudvK7V7wB8dcEAKR389oUYQfZhrQZA8OtogJpDjrUAvEH3Qlc9yFqTU6r5/svTEcRwtXhoIJbQ==}
+  '@xhmikosr/decompress-tarbz2@9.0.2':
+    resolution: {integrity: sha512-m0DvZhE7remCxtS8xY2iHSjivT4v+iyYDdfNoeuu8Nm+7g8xEXdLKSyDEicu4u1ImJLLGEfjMuTLera/F6UGWw==}
     engines: {node: '>=20'}
 
   '@xhmikosr/decompress-targz@9.0.1':
     resolution: {integrity: sha512-1JXu2b6yrpm5EuBoOzMU57B4qrHXJKWQQ7LlMynNEiz85mEjDciO3ayf//GXaTLLCEKiHjWlU3q3THjgf7uODA==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/decompress-unzip@8.1.1':
-    resolution: {integrity: sha512-/B+Z0qJflGn5UEtmMZ2qeKeXwexOycxaibYhMOyLcRPJriXs4IkoSngVUVZXLYViu9TdHyFWynC6NB4EWBg8cg==}
+  '@xhmikosr/decompress-unzip@8.2.0':
+    resolution: {integrity: sha512-ciiD6OsxR053GE6Bs72NBVGkm1oZoES06gTfMnm4xRtZUbN1IKDE/EbuBL4tYrMrzX1ZgjNlxcQ1WgL+/CGZcQ==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/decompress@11.1.2':
-    resolution: {integrity: sha512-f2hlnMN1ChbifAfdzWns6mssojjr3lgJm6MtT4ttVAClx85QEIQAdGXN22bPqy/qKxbvDf93GdqbR6+xIO/a4A==}
+  '@xhmikosr/decompress@11.1.3':
+    resolution: {integrity: sha512-NiyhJq6z7ERsYghcnXZUI6ooDXgZtoB+G9eUsYhfSM4VLp2rKx9UxhKI1NEf1PqosrNPxG3bnSsr2UBVbNurlg==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/downloader@16.1.2':
-    resolution: {integrity: sha512-31KQzQ6p4Rwnbo/gwTe4/Z+hVRcC8YoH/8f5xl+so1Oqqah5u1R3CGte8od+wOyNVfZ77DFijwy1umHk2NT6ZQ==}
+  '@xhmikosr/downloader@16.2.0':
+    resolution: {integrity: sha512-5vFLFTOFdDyuPJ6DDaqFPviMnMLrjWvpvbTp+go+JDoyzUBLd4dTjb+1PXIRiUMvJSvlxjpC8GIVN8mYVhQfhg==}
     engines: {node: '>=20'}
 
-  '@xhmikosr/os-filter-obj@4.0.0':
-    resolution: {integrity: sha512-CBJYipR5lrtQQZl9ylarWyh1qhcs/tMy9ydSHte/Hefn3ev8NMvS3ss+eqiXEoBr2wBVgKj2qjcViXO9P/8K4A==}
+  '@xhmikosr/os-filter-obj@4.1.0':
+    resolution: {integrity: sha512-y5ArHvQ7BVule/+L9yE2nYMhceiJhgsqo58lOfnisQ7bg+Kjfmkgr7JBuVFiTkl+ErdShpp829QstZQyLugl8g==}
     engines: {node: '>=20'}
 
   accepts@1.3.8:
@@ -2559,9 +2559,6 @@ packages:
   ansis@3.17.0:
     resolution: {integrity: sha512-0qWUglt9JEqLFr3w1I1pbrChn1grhaiAR2ocX1PP/flRmxgtwTzPFFFnfIlD6aMOLQZgSuCRlidD70lvx8yhzg==}
     engines: {node: '>=14'}
-
-  arch@3.0.0:
-    resolution: {integrity: sha512-AmIAC+Wtm2AU8lGfTtHsw0Y9Qtftx2YXEEtiBP10xFUtMOA+sHHx6OAddyL52mUKh1vsXQ6/w1mVDptZCyUt4Q==}
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -2704,6 +2701,9 @@ packages:
   brace-expansion@2.1.0:
     resolution: {integrity: sha512-TN1kCZAgdgweJhWWpgKYrQaMNHcDULHkWwQIspdtjV4Y5aurRdZpjAqn6yX3FPqTA9ngHCc4hJxMAMgGfve85w==}
 
+  brace-expansion@2.1.1:
+    resolution: {integrity: sha512-WR1cURNjuvBLMZBMbqM0UoE+WAfdUcEV1ccD8PVBVOI+Z3ND4+SZbN8RsfT2bMuG1qwz5RFvPukSZm5fF2D5eA==}
+
   brace-expansion@5.0.6:
     resolution: {integrity: sha512-kLpxurY4Z4r9sgMsyG0Z9uzsBlgiU/EFKhj/h91/8yHu0edo7XuixOIH3VcJ8kkxs6/jPzoI6U9Vj3WqbMQ94g==}
     engines: {node: 18 || 20 || >=22}
@@ -2716,9 +2716,6 @@ packages:
     resolution: {integrity: sha512-48xSriZYYg+8qXna9kwqjIVzuQxi+KYWp2+5nCYnYKPTr0LvD89Jqk2Or5ogxz0NUMfIjhh2lIUX/LyX9B4oIg==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
-
-  buffer-crc32@0.2.13:
-    resolution: {integrity: sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==}
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
@@ -2875,8 +2872,8 @@ packages:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
     engines: {node: '>= 0.6'}
 
-  content-disposition@1.1.0:
-    resolution: {integrity: sha512-5jRCH9Z/+DRP7rkvY83B+yGIGX96OYdJmzngqnw2SBSxqCFPd0w2km3s5iawpGX8krnwSGmF0FW5Nhr0Hfai3g==}
+  content-disposition@2.0.1:
+    resolution: {integrity: sha512-e+H0ZXHSWYrENhQzw1LPuP4oF5MzVKmDU6d3hxlvaPEYLLg62MxtQNPRx4SYSuYJSBUgnQIG4HIN2tEtNv7Dog==}
     engines: {node: '>=18'}
 
   content-type@1.0.5:
@@ -3997,8 +3994,8 @@ packages:
     resolution: {integrity: sha512-ayF7iT+44LXdxJLTrTd3TLQpFDDvPCBxXxbv+pMUSuHA5Q8zyAfwkRP6aHHwNVFBUFWtxAHqwNJxF8vMZLAbVg==}
     engines: {node: '>=18'}
 
-  marked@18.0.3:
-    resolution: {integrity: sha512-7VT90JOkDeaRWpfjOReRGPEKn0ecdARBkDGL+tT1wZY0efPPqkUxLUSmzy/C7TIylQYJC9STISEsCHrqb/7VIA==}
+  marked@18.0.5:
+    resolution: {integrity: sha512-S6GcvALHg6K4ohtu4E7x0a1AqhAjp6cV8KhLSyN9qVapnzJkusVBxZRcIU9AeYsbe6P1hKDusSbEOzGyyuce6w==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -4620,6 +4617,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   send@0.19.2:
     resolution: {integrity: sha512-VMbMxbDeehAxpOtWJXlcUS5E8iXh6QmN+BkRX1GARS3wRaXEEgzCcB10gTQazO42tpNIya8xIyNx8fll1OFPrg==}
     engines: {node: '>= 0.8.0'}
@@ -4818,6 +4820,10 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  system-architecture@1.0.0:
+    resolution: {integrity: sha512-0OJWD12D7XX3KUg1DYkMaTTjSTo2k/mhIYI3HlBlceXSMcJhW/1qO735fPKS5prcyjvn57Ub151vvASYXpQrEw==}
+    engines: {node: '>=18'}
+
   tailwindcss@4.3.0:
     resolution: {integrity: sha512-y6nxMGB1nMW9R6k96e5gdIFzcfL/gTJRNaqGes1YvkLnPVXzWgbqFF2yLC0T8G774n24cx3Pe8XrKoniCOAH+Q==}
 
@@ -4848,6 +4854,10 @@ packages:
 
   tinyglobby@0.2.16:
     resolution: {integrity: sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg==}
+    engines: {node: '>=12.0.0'}
+
+  tinyglobby@0.2.17:
+    resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
   to-regex-range@5.0.1:
@@ -5127,8 +5137,8 @@ packages:
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
 
-  yauzl@3.3.1:
-    resolution: {integrity: sha512-RNPCUkiE/ZgO4w8i9U5yDQVHaFDdnzaFANElRvpJteCspvmv2VqrRb9lvS6odVD+jqI/zDsxAHJVsafpcheVQQ==}
+  yauzl@3.4.0:
+    resolution: {integrity: sha512-jIH9yLR9wqr0wOS0TpBvo/g/2UgZH5qePVbjgRliiF0BYvOZyaBknKsF+x9Iht0O6sqgnB93rCICdOZFecJuDw==}
     engines: {node: '>=12'}
 
   yocto-queue@0.1.0:
@@ -6849,14 +6859,14 @@ snapshots:
     dependencies:
       '@swc/core': 1.15.33
       '@swc/counter': 0.1.3
-      '@xhmikosr/bin-wrapper': 14.2.3
+      '@xhmikosr/bin-wrapper': 14.3.0
       commander: 8.3.0
       minimatch: 9.0.9
       piscina: 4.9.2
-      semver: 7.8.1
+      semver: 7.8.4
       slash: 3.0.0
       source-map: 0.7.6
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       chokidar: 5.0.0
     transitivePeerDependencies:
@@ -7563,7 +7573,7 @@ snapshots:
       ulid: 3.0.2
       zod: 4.3.6
 
-  '@xhmikosr/archive-type@8.0.1':
+  '@xhmikosr/archive-type@8.1.0':
     dependencies:
       file-type: 21.3.4
     transitivePeerDependencies:
@@ -7574,11 +7584,11 @@ snapshots:
       execa: 9.6.1
       isexe: 4.0.0
 
-  '@xhmikosr/bin-wrapper@14.2.3':
+  '@xhmikosr/bin-wrapper@14.3.0':
     dependencies:
       '@xhmikosr/bin-check': 8.2.1
-      '@xhmikosr/downloader': 16.1.2
-      '@xhmikosr/os-filter-obj': 4.0.0
+      '@xhmikosr/downloader': 16.2.0
+      '@xhmikosr/os-filter-obj': 4.1.0
       binary-version-check: 6.1.0
     transitivePeerDependencies:
       - bare-abort-controller
@@ -7595,7 +7605,7 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@xhmikosr/decompress-tarbz2@9.0.1':
+  '@xhmikosr/decompress-tarbz2@9.0.2':
     dependencies:
       '@xhmikosr/decompress-tar': 9.0.1
       file-type: 21.3.4
@@ -7617,20 +7627,19 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@xhmikosr/decompress-unzip@8.1.1':
+  '@xhmikosr/decompress-unzip@8.2.0':
     dependencies:
       file-type: 21.3.4
-      get-stream: 9.0.1
-      yauzl: 3.3.1
+      yauzl: 3.4.0
     transitivePeerDependencies:
       - supports-color
 
-  '@xhmikosr/decompress@11.1.2':
+  '@xhmikosr/decompress@11.1.3':
     dependencies:
       '@xhmikosr/decompress-tar': 9.0.1
-      '@xhmikosr/decompress-tarbz2': 9.0.1
+      '@xhmikosr/decompress-tarbz2': 9.0.2
       '@xhmikosr/decompress-targz': 9.0.1
-      '@xhmikosr/decompress-unzip': 8.1.1
+      '@xhmikosr/decompress-unzip': 8.2.0
       graceful-fs: 4.2.11
       strip-dirs: 3.0.0
     transitivePeerDependencies:
@@ -7638,24 +7647,23 @@ snapshots:
       - react-native-b4a
       - supports-color
 
-  '@xhmikosr/downloader@16.1.2':
+  '@xhmikosr/downloader@16.2.0':
     dependencies:
-      '@xhmikosr/archive-type': 8.0.1
-      '@xhmikosr/decompress': 11.1.2
-      content-disposition: 1.1.0
+      '@xhmikosr/archive-type': 8.1.0
+      '@xhmikosr/decompress': 11.1.3
+      content-disposition: 2.0.1
       ext-name: 5.0.0
       file-type: 21.3.4
       filenamify: 7.0.1
-      get-stream: 9.0.1
       got: 14.6.6
     transitivePeerDependencies:
       - bare-abort-controller
       - react-native-b4a
       - supports-color
 
-  '@xhmikosr/os-filter-obj@4.0.0':
+  '@xhmikosr/os-filter-obj@4.1.0':
     dependencies:
-      arch: 3.0.0
+      system-architecture: 1.0.0
 
   accepts@1.3.8:
     dependencies:
@@ -7700,8 +7708,6 @@ snapshots:
   ansi-styles@6.2.3: {}
 
   ansis@3.17.0: {}
-
-  arch@3.0.0: {}
 
   argparse@2.0.1: {}
 
@@ -7826,7 +7832,7 @@ snapshots:
   binary-version-check@6.1.0:
     dependencies:
       binary-version: 7.1.0
-      semver: 7.8.1
+      semver: 7.8.4
       semver-truncate: 3.0.0
 
   binary-version@7.1.0:
@@ -7873,6 +7879,10 @@ snapshots:
     dependencies:
       balanced-match: 1.0.2
 
+  brace-expansion@2.1.1:
+    dependencies:
+      balanced-match: 1.0.2
+
   brace-expansion@5.0.6:
     dependencies:
       balanced-match: 4.0.4
@@ -7888,8 +7898,6 @@ snapshots:
       electron-to-chromium: 1.5.344
       node-releases: 2.0.38
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
-
-  buffer-crc32@0.2.13: {}
 
   buffer@5.7.1:
     dependencies:
@@ -8050,7 +8058,7 @@ snapshots:
     dependencies:
       safe-buffer: 5.2.1
 
-  content-disposition@1.1.0: {}
+  content-disposition@2.0.1: {}
 
   content-type@1.0.5: {}
 
@@ -9321,7 +9329,7 @@ snapshots:
       type-fest: 4.41.0
       web-worker: 1.5.0
 
-  marked@18.0.3: {}
+  marked@18.0.5: {}
 
   math-intrinsics@1.1.0: {}
 
@@ -9370,7 +9378,7 @@ snapshots:
 
   minimatch@9.0.9:
     dependencies:
-      brace-expansion: 2.1.0
+      brace-expansion: 2.1.1
 
   minimist@1.2.8: {}
 
@@ -9888,7 +9896,7 @@ snapshots:
 
   semver-truncate@3.0.0:
     dependencies:
-      semver: 7.8.1
+      semver: 7.8.4
 
   semver@6.3.1: {}
 
@@ -9898,6 +9906,8 @@ snapshots:
     optional: true
 
   semver@7.8.1: {}
+
+  semver@7.8.4: {}
 
   send@0.19.2:
     dependencies:
@@ -10176,6 +10186,8 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
+  system-architecture@1.0.0: {}
+
   tailwindcss@4.3.0: {}
 
   tapable@2.3.3: {}
@@ -10212,6 +10224,11 @@ snapshots:
       picomatch: 4.0.4
 
   tinyglobby@0.2.16:
+    dependencies:
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
+
+  tinyglobby@0.2.17:
     dependencies:
       fdir: 6.5.0(picomatch@4.0.4)
       picomatch: 4.0.4
@@ -10570,9 +10587,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yauzl@3.3.1:
+  yauzl@3.4.0:
     dependencies:
-      buffer-crc32: 0.2.13
       pend: 1.2.0
 
   yocto-queue@0.1.0: {}
