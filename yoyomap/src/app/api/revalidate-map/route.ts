@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  revalidateTag('public-entries', 'max');
+  revalidateTag('public-entries');
   revalidatePath('/[locale]/map', 'page');
   revalidatePath('/[locale]/players', 'page');
   return NextResponse.json({ revalidated: true });
