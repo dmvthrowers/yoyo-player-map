@@ -53,6 +53,10 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     .eq('token', await hashToken(parsed.data.token))
     .maybeSingle();
 
+  // edit_link tokens are deliberately multi-use within their 1 h TTL: the same
+  // token authenticates the verify-link load, this update, and any follow-up
+  // corrections, so nothing ever sets used_at for them. The used_at check stays
+  // as defense-in-depth in case a token is ever revoked administratively.
   if (!tok || tok.purpose !== 'edit_link' || tok.used_at || new Date(tok.expires_at) < new Date()) {
     return apiError('unauthorized', 'Link invalid or expired.', requestId);
   }

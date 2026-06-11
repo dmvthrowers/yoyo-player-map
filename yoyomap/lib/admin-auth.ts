@@ -8,6 +8,21 @@ import { checkRateLimit, getClientIp } from './rate-limit';
 const ADMIN_RATE_LIMIT_MAX = 30;
 const ADMIN_RATE_LIMIT_WINDOW_MINUTES = 15;
 
+// Fail closed if ADMIN_PASSWORD is unset or trivially brute-forceable. The
+// static password is the only thing guarding admin routes (which expose user
+// emails), so a weak or missing value must reject everything rather than
+// silently degrade.
+const ADMIN_PASSWORD_MIN_LENGTH = 16;
+
+function adminPassword(): string | null {
+  const pw = process.env.ADMIN_PASSWORD ?? '';
+  if (pw.length < ADMIN_PASSWORD_MIN_LENGTH) {
+    console.error(`[admin-auth] ADMIN_PASSWORD is unset or shorter than ${ADMIN_PASSWORD_MIN_LENGTH} chars; rejecting all admin requests.`);
+    return null;
+  }
+  return pw;
+}
+
 function timingSafeEq(a: string, b: string): boolean {
   const ta = Buffer.from(a);
   const tb = Buffer.from(b);
@@ -31,7 +46,7 @@ export async function requireAdmin(req: NextRequest): Promise<NextResponse | nul
   if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
 
   const token = req.headers.get('x-admin-token') ?? '';
-  const expected = process.env.ADMIN_PASSWORD ?? '';
+  const expected = adminPassword();
   if (!token || !expected || !timingSafeEq(token, expected)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -48,7 +63,7 @@ export async function requireAdminOrCron(req: NextRequest): Promise<NextResponse
   const allowed = await checkRateLimit(ip, 'admin.access', ADMIN_RATE_LIMIT_MAX, ADMIN_RATE_LIMIT_WINDOW_MINUTES);
   if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
 
-  const adminExpected = process.env.ADMIN_PASSWORD ?? '';
+  const adminExpected = adminPassword();
   const cronExpected = process.env.CRON_SECRET ?? '';
 
   const adminToken = req.headers.get('x-admin-token') ?? '';
