@@ -87,9 +87,9 @@ const shopSchema = z.object({
   addressLine: z.string().trim().min(5).max(200),
   postalCode: z.string().trim().max(20).optional().or(z.literal('')),
   hours: z.string().trim().max(500).transform(stripControls).optional().or(z.literal('')),
-  contactName: z.string().trim().transform(stripControls).pipe(z.string().max(100)),
-  authorizedRep: z.literal(true, { 
-    error: 'You must confirm you are authorized to list this business' 
+  contactName: z.string().trim().transform(stripControls).pipe(z.string().min(1, 'Contact name is required').max(100)),
+  authorizedRep: z.literal(true, {
+    error: 'You must confirm you are authorized to list this business'
   }),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
@@ -114,9 +114,9 @@ const clubSchema = z.object({
   // Only required if venue is public
   venueAddressLine: z.string().trim().max(200).optional().or(z.literal('')),
   venuePostalCode: z.string().trim().max(20).optional().or(z.literal('')),
-  contactName: z.string().trim().transform(stripControls).pipe(z.string().max(100)),
-  authorizedRep: z.literal(true, { 
-    error: 'You must confirm you are authorized to list this club' 
+  contactName: z.string().trim().transform(stripControls).pipe(z.string().min(1, 'Contact name is required').max(100)),
+  authorizedRep: z.literal(true, {
+    error: 'You must confirm you are authorized to list this club'
   }),
   ...consentCheckboxes,
   honeypot: honeypotSchema,
