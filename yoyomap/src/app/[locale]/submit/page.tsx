@@ -182,7 +182,7 @@ export default function SubmitPage() {
     if ((form.entityType === 'shop' || form.entityType === 'club') &&!form.authorizedRep) errors.authorizedRep = t('submit.errorAuthorizedRep', { type: form.entityType === 'shop'? t('submit.business') : t('submit.club') });
     if (form.entityType === 'shop' &&!form.addressLine.trim()) errors.addressLine = t('submit.errorAddressLine');
     if (form.entityType === 'shop' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
-    if (form.entityType === 'club' &&!form.clubMeetingInfo.trim()) errors.clubMeetingInfo = t('submit.errorMeetingInfo');
+    if (form.entityType === 'club' && form.clubMeetingInfo.trim().length < 10) errors.clubMeetingInfo = t('submit.errorMeetingInfo');
     if (form.entityType === 'club' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
     if (isMinor) {
       if (!form.parentName.trim()) errors.parentName = t('submit.errorParentName');

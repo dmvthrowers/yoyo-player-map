@@ -72,8 +72,17 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     if (legacyParsed.success) {
       data = { ...legacyParsed.data, entityType: 'person' } as PersonInput;
     } else {
-      const firstError = parsed.error.issues[0];
-      return apiError('bad_request', firstError?.message || 'Invalid submission.', requestId);
+      // In Zod v4, discriminatedUnion root errors say "Invalid input" when the
+      // discriminator doesn't match. Prefer a field-level error (path.length > 0)
+      // over the generic root error so the user sees something actionable.
+      const issues = parsed.error.issues;
+      const fieldIssue = issues.find(i => i.path.length > 0);
+      const best = fieldIssue ?? issues[0];
+      const message = (best?.message && best.message !== 'Invalid input')
+        ? best.message
+        : 'Please check all required fields and try again.';
+      console.error(`[api] validation failed [${requestId}]:`, JSON.stringify(issues.slice(0, 3)));
+      return apiError('bad_request', message, requestId);
     }
   }
 
