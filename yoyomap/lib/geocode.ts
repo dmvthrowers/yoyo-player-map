@@ -203,6 +203,55 @@ export async function geocodeCity(params: CityGeocodeParams): Promise<GeocodeRes
   }
 }
 
+/**
+ * Fallback geocoder when city-level lookup fails.
+ * Tries region then country — accepts any Nominatim addresstype since we only
+ * need approximate coords (used for privacy-jittered private-venue entries).
+ */
+export async function geocodeFallback(params: {
+  region?: string;
+  country: string;
+}): Promise<GeocodeResult | null> {
+  const { region, country } = params;
+
+  const queries: { label: string; q: string; hashParts: (string | undefined)[] }[] = [];
+  if (region) queries.push({ label: 'region', q: `${region}, ${country}`, hashParts: [undefined, region, country] });
+  queries.push({ label: 'country', q: country, hashParts: [undefined, undefined, country] });
+
+  for (const { q, hashParts } of queries) {
+    const queryHash = await hashQuery('city', hashParts);
+    const cached = await readCache(queryHash);
+    if (cached) return cached;
+
+    const url = new URL('https://nominatim.openstreetmap.org/search');
+    url.searchParams.set('q', q);
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('limit', '1');
+    url.searchParams.set('addressdetails', '1');
+
+    try {
+      const data = await fetchNominatim(url);
+      if (Array.isArray(data) && data.length > 0) {
+        const hit = data[0] as NominatimHit;
+        const result: GeocodeResult = {
+          lat: parseFloat(hit.lat),
+          lng: parseFloat(hit.lon),
+          displayName: hit.display_name,
+          city: hit.address?.city || hit.address?.town || hit.address?.state || hit.address?.country || q,
+          region: hit.address?.state || region,
+          country: hit.address?.country_code?.toUpperCase() || country,
+        };
+        await writeCache(queryHash, 'city', result);
+        return result;
+      }
+    } catch (e) {
+      console.error(`Geocode fallback (${q}) error:`, e);
+    }
+  }
+
+  return null;
+}
+
 export interface AddressGeocodeParams {
   addressLine: string;
   city: string;

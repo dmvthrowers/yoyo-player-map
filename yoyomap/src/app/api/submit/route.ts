@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitSchema, legacySubmitSchema, type SubmitInput, type PersonInput, type ShopInput, type ClubInput } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
+import { geocodeCity, geocodeAddress, geocodeFallback, jitterCoords } from '@/lib/geocode';
 import { generateToken, hashToken } from '@/lib/tokens';
 import {
   sendEntryVerificationEmail,
@@ -295,8 +295,12 @@ async function preparePersonEntry(
   const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
   if (!loc) return { error: "We couldn't resolve your location. Please try again." };
 
-  const geo = await geocodeCity({
+  const cityGeo = await geocodeCity({
     city: loc.cityName,
+    region: loc.regionName || undefined,
+    country: loc.countryCode,
+  });
+  const geo = cityGeo ?? await geocodeFallback({
     region: loc.regionName || undefined,
     country: loc.countryCode,
   });
@@ -401,11 +405,18 @@ async function prepareClubEntry(
   const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
   if (!loc) return { error: "We couldn't resolve your location. Please try again." };
 
-  const cityGeo = await geocodeCity({
+  const cityGeoExact = await geocodeCity({
     city: loc.cityName,
     region: loc.regionName || undefined,
     country: loc.countryCode,
   });
+  // For private-venue clubs the pin is jittered anyway, so fall back to
+  // region/country coords rather than blocking the submission entirely.
+  const cityGeo = cityGeoExact ?? (
+    !data.clubVenuePublic
+      ? await geocodeFallback({ region: loc.regionName || undefined, country: loc.countryCode })
+      : null
+  );
   if (!cityGeo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }
