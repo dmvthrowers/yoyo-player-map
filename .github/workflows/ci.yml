@@ -26,7 +26,7 @@ jobs:
 
       # No pinned version here — the action reads "packageManager" from the
       # root package.json so there is a single source of truth for pnpm.
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
 
       - uses: actions/setup-node@v6
         with:
@@ -55,7 +55,7 @@ jobs:
 
       # No pinned version here — the action reads "packageManager" from the
       # root package.json so there is a single source of truth for pnpm.
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
 
       - uses: actions/setup-node@v6
         with:
@@ -94,7 +94,7 @@ jobs:
 
       # No pinned version here — the action reads "packageManager" from the
       # root package.json so there is a single source of truth for pnpm.
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
 
       - uses: actions/setup-node@v6
         with:
@@ -126,7 +126,7 @@ jobs:
 
       # No pinned version here — the action reads "packageManager" from the
       # root package.json so there is a single source of truth for pnpm.
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v6.0.9
 
       - uses: actions/setup-node@v6
         with:
