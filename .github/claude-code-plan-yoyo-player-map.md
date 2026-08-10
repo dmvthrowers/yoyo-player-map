@@ -2,6 +2,23 @@
 
 > Hand this file to Claude Code one task at a time. Each task names its branch, files, steps, acceptance criteria, and commit message.
 
+## Status (2026-08-10)
+
+**Stale — audit before resuming.** This doc's "Repo context" section below says migrations
+are at v23, next is v24. The actual repo is at **v31** as of 2026-08-10 — real work has
+moved well past what this plan describes. Phase 1–3 content here may already be done, done
+differently, or superseded; don't trust it as current state without checking the real
+migration history and current app code first.
+
+**Priority: queued last** of three active efforts, per Brandon's explicit 2026-08-10 call —
+after Local-AI infra (MCP servers first) and Mission Control. See
+`mission-control/Mission_Control_Planning_Roadmap.md`'s Status block for the full
+sequencing and reasoning. Phase 4 (the events app, coordinating with `dmvt-event-hub` via
+shared Supabase `entries`/`auth` and new `events`/`event_attendees`/`event_hosts` tables)
+and Phase 5 (optional Supabase Realtime map updates) are the parts of this plan still
+actually relevant when this gets picked back up — audit and likely rewrite Phases 1-3
+against real current state first.
+
 ## Repo context
 
 - **Path:** `C:\GIT\yoyo-player-map`
