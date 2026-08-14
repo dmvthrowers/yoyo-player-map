@@ -11,12 +11,14 @@ shops/clubs that opt in get a precise location. No accounts, no messaging, no GP
 sales — that's a product constraint, not just a README claim, so don't add anything that would
 narrow the blur radius or expose exact locations without deliberately revisiting that design.
 
-**There's already a broader, cross-repo maintainer doc**: `.agents/AGENTS.md` in this repo
-covers dmvthrowers.github.io, this repo, `dmvt-event-hub`, and `DMVT-Design` together (brand
-voice, color/typography system, contact info, cross-repo workflows). Read it too — this file
-only covers what's specific to *this* repo. Note: that file says "Next.js 14" for this repo;
-the real version is Next.js 15 (`git log`: "Pin yoyomap to Next.js 15" — a stale detail worth
-fixing if you're in `.agents/AGENTS.md` for another reason, not fixed here to stay in scope).
+**There's already a broader, cross-repo maintainer doc**: [`MULTI-REPO-AGENTS.md`](MULTI-REPO-AGENTS.md)
+(a root-level symlink to `.agents/AGENTS.md`, added 2026-08-14 so it's actually discoverable
+instead of sitting undiscovered in a dot-dir) covers dmvthrowers.github.io, this repo,
+`dmvt-event-hub`, and `DMVT-Design` together (brand voice, color/typography system, contact
+info, cross-repo workflows). Read it too — this file only covers what's specific to *this*
+repo. Note: that file says "Next.js 14" for this repo; the real version is Next.js 15
+(`git log`: "Pin yoyomap to Next.js 15" — a stale detail worth fixing if you're in there for
+another reason, not fixed here to stay in scope).
 
 ## Layout
 
