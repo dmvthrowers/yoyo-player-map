@@ -25,7 +25,7 @@
     "@radix-ui/react-menubar": "^1.1.17",
     "@radix-ui/react-slot": "^1.2.5",
     "@react-email/render": "^2.0.8",
-    "@supabase/ssr": "^0.10.3",
+    "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.1",
     "@upstash/ratelimit": "^2.0.5",
     "@upstash/redis": "^1.38.0",
