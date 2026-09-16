@@ -37,7 +37,7 @@
     "deepmerge": "^4.3.1",
     "input-otp": "^1.4.2",
     "leaflet": "^1.9.4",
-    "lucide-react": "^1.17.0",
+    "lucide-react": "^1.31.0",
     "marked": "^18.0.5",
     "next": "^15.5.18",
     "next-intl": "^4.13.0",
