@@ -45,6 +45,7 @@ export default async function Layout({ children, params }: { children: React.Rea
                 <ul className="space-y-1">
                   <li><a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.home')}</a></li>
                   <li><a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.vsyc')}</a></li>
+                  <li><a href="https://dmvthrowers.club/resources.html#links" target="_blank" rel="noopener noreferrer" className="hover:text-brand-red">{t('footer.resources')}</a></li>
                 </ul>
               </div>
               <div>
