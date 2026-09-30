@@ -329,7 +329,7 @@ export const sendReportNotificationEmail = (
   entryDisplayName: string | null,
 ) => {
   const to =
-    process.env.ADMIN_NOTIFICATION_EMAIL || "dmvthrowers@gmail.com";
+    process.env.ADMIN_NOTIFICATION_EMAIL || "contact@dmvthrowers.club";
   return sendOrQueue({
     template: "report_notification",
     to,
