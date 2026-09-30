@@ -43,7 +43,7 @@
       {
         "title": "100%",
         "subtitle": "Privacy First",
-        "description": "City-level only. No tracking. Delete anytime."
+        "description": "Player pins are city-level and blurred. No tracking. Delete anytime."
       },
       {
         "title": "24/7",
@@ -53,7 +53,7 @@
       {
         "title": "∞",
         "subtitle": "Global Reach",
-        "description": "Players from every continent. Growing daily."
+        "description": "Players, shops, and clubs around the world."
       }
     ],
     "how": {
@@ -111,7 +111,7 @@
     "serviceStatus": "Service Status",
     "project": "Project",
     "github": "GitHub",
-    "copyright": "© 2024 DMV Throwers. All rights reserved.",
+    "copyright": "© 2026 DMV Throwers · Est. 2021",
     "all_welcome": "सभी स्तरों का स्वागत है।",
     "contact": "Contact"
   },
@@ -207,7 +207,7 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas",
-    "underservedDescription": "Areas with fewer than 3 players highlighted in red.",
+    "underservedDescription": "Players more than 50 miles from both the nearest shop and the nearest club get a red ring.",
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
@@ -310,8 +310,10 @@
           "list": [
             "Vercel (hosting)",
             "Supabase (database)",
-            "OpenStreetMap (mapping)",
-            "Resend (email, optional)"
+            "Esri (map tiles, built on OpenStreetMap data)",
+            "OpenStreetMap Nominatim (city and address lookup)",
+            "Upstash (rate limiting)",
+            "Resend (email)"
           ]
         },
         {
@@ -324,7 +326,7 @@
         },
         {
           "title": "Contact Us",
-          "body": "Questions? Email dmvthrowers@gmail.com"
+          "body": "Questions? Email contact@dmvthrowers.club"
         }
       ]
     },
@@ -397,7 +399,7 @@
         },
         {
           "title": "Contact",
-          "body": "Questions? Email dmvthrowers@gmail.com"
+          "body": "Questions? Email contact@dmvthrowers.club"
         }
       ]
     },
@@ -405,7 +407,7 @@
       "title": "Security",
       "description": "Security information and vulnerability disclosures for YoYo Map.",
       "reportTitle": "Reporting a Vulnerability",
-      "reportBody": "To report a security vulnerability, please email dmvthrowers@gmail.com with a description of the issue. We will respond within 72 hours.",
+      "reportBody": "To report a security vulnerability, please email contact@dmvthrowers.club with a description of the issue. We will respond within 72 hours.",
       "bulletinsTitle": "Security Bulletins",
       "noBulletins": "No active security bulletins at this time."
     }

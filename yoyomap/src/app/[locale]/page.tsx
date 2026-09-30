@@ -69,6 +69,82 @@ const HowItWorks = async () => {
 };
 
 
+const REPO_BLOB = 'https://github.com/dmvthrowers/yoyo-player-map/blob/main/yoyomap';
+
+/** Facts here must match the code they cite: jitterCoords() in lib/geocode.ts, UNDERSERVED_THRESHOLD_MI in lib/geo.ts. */
+const MAP_SOURCES = [
+  { key: 'blur', href: `${REPO_BLOB}/lib/geocode.ts` },
+  { key: 'underserved', href: `${REPO_BLOB}/lib/geo.ts` },
+  { key: 'nominatim', href: 'https://operations.osmfoundation.org/policies/nominatim/' },
+  { key: 'osm', href: 'https://www.openstreetmap.org/copyright' },
+  { key: 'esri', href: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer' },
+  { key: 'unlicense', href: 'https://unlicense.org/' },
+] as const;
+
+const MapWorks = async () => {
+  const t = await getTranslations();
+  const items = [0, 1, 2, 3].map((i) => ({
+    title: t(`home.mapWorks.items.${i}.title`),
+    body: t(`home.mapWorks.items.${i}.body`),
+  }));
+  return (
+    <section className="pb-20">
+      <SectionTitle eyebrow={t('home.mapWorks.eyebrow')}>{t('home.mapWorks.title')}</SectionTitle>
+      <div className="grid md:grid-cols-2 gap-6">
+        {items.map(({ title, body }) => (
+          <div key={title} className="card border-l-4 border-l-navy">
+            <h3 className="text-xl mb-2 text-navy-deep">{title}</h3>
+            <p className="text-sm text-text-body">{body}</p>
+          </div>
+        ))}
+      </div>
+      <p className="mt-6 text-xs text-text-body leading-relaxed break-words">
+        <span className="eyebrow mr-2">{t('home.mapWorks.sourcesLabel')}</span>
+        {MAP_SOURCES.map(({ key, href }, i) => (
+          <span key={key}>
+            {i > 0 && ' · '}
+            <a href={href} target="_blank" rel="noopener noreferrer" className="text-brand-red underline hover:opacity-80">
+              {t(`home.mapWorks.sources.${key}`)}
+            </a>
+          </span>
+        ))}
+      </p>
+    </section>
+  );
+};
+
+/** Mirrors the "Keep Exploring" block on the club site's guide pages (same order and blurbs). */
+const CLUB_GUIDES = [
+  'https://dmvthrowers.club/learn-yoyo.html',
+  'https://dmvthrowers.club/yoyo-gear.html',
+  'https://dmvthrowers.club/yoyo-science.html',
+  'https://dmvthrowers.club/yoyo-history.html',
+  'https://dmvthrowers.club/filipino-yoyo-history.html',
+  'https://dmvthrowers.club/yoyo-collecting.html',
+  'https://dmvthrowers.club/resources.html',
+];
+
+const KeepExploring = async () => {
+  const t = await getTranslations();
+  return (
+    <section className="bg-cream border-t-4 border-navy">
+      <div className="max-w-6xl mx-auto px-4 py-16">
+        <p className="eyebrow">{t('home.explore.eyebrow')}</p>
+        <h2 className="mt-3 text-3xl text-navy-deep">{t('home.explore.title')}</h2>
+        <hr className="rule-red" />
+        <ul className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {CLUB_GUIDES.map((href, i) => (
+            <li key={href} className="bg-white border border-hairline border-l-4 border-l-brand-red px-4 py-3">
+              <a href={href} className="block font-bold text-navy-deep hover:text-brand-red">{t(`home.explore.items.${i}.title`)}</a>
+              <span className="text-sm text-text-body">{t(`home.explore.items.${i}.body`)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+};
+
 export default async function Home() {
   const t = await getTranslations();
   return (
@@ -97,6 +173,7 @@ export default async function Home() {
       <div className="max-w-6xl mx-auto px-4">
         <TrustRow />
         <HowItWorks />
+        <MapWorks />
       </div>
 
       {/* What we don't do — navy block with dot pattern */}
@@ -124,6 +201,8 @@ export default async function Home() {
           <Link href="/submit" className="btn-primary">{t('home.ctaBand.button')}</Link>
         </div>
       </section>
+
+      <KeepExploring />
     </>
   );
 }

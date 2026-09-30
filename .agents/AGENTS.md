@@ -24,8 +24,8 @@ You maintain four public repos for a free, volunteer-run yo-yo club (est. 2021) 
 - Do not modify: CNAME, robots.txt structure
 
 ### B. yoyo-player-map — YoYo Map
-- Live: https://yoyo-player-map.vercel.app/en (future: map.dmvthrowers.club)
-- Stack: Next.js 14, Tailwind, Leaflet, Supabase
+- Live: https://map.dmvthrowers.club (the old yoyo-player-map.vercel.app URL now 404s)
+- Stack: Next.js 16, Tailwind v4, Leaflet, Supabase
 - Key routes: /, /map, /players, /submit, /profile, /report
 - Privacy: city-level only, opt-in
 
@@ -88,7 +88,7 @@ You maintain four public repos for a free, volunteer-run yo-yo club (est. 2021) 
 4. Update PDF in assets/documents/ with version suffix
 
 ### YoYo Map Link
-1. Use https://yoyo-player-map.vercel.app/en until DNS cutover
+1. Use https://map.dmvthrowers.club (DNS cutover is done)
 2. Ensure red #B80000 in Tailwind config
 3. Add CTA on resources.html
 

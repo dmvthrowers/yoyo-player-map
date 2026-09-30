@@ -133,7 +133,7 @@ function SubmitToast({ onClose }: { onClose: () => void }) {
   const t = useTranslations();
   useEffect(() => { const f = setTimeout(() => setFading(true), 5000); const c = setTimeout(onClose, 6000); return () => { clearTimeout(f); clearTimeout(c); }; }, [onClose]);
   return (
-    <div className={`fixed top-4 right-4 z-50 w-80 bg-white border-l-4 border-brand-red shadow-xl p-4 transition-opacity ${fading?'opacity-0':'opacity-100'}`}>
+    <div className={`fixed top-4 right-4 z-50 w-80 bg-white border-l-4 border-brand-red p-4 transition-opacity ${fading?'opacity-0':'opacity-100'}`}>
       <p className="font-bold text-sm">{t('submit.toastCheckEmail')}</p>
       <p className="text-xs">{t('submit.toastVerifyLink')}</p>
       <button onClick={onClose} className="absolute top-1 right-2">×</button>

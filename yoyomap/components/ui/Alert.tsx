@@ -19,7 +19,7 @@ export const Alert = React.forwardRef<HTMLDivElement, AlertProps>(
       ref={ref}
       role="alert"
       className={cn(
-        "border rounded px-4 py-3 text-sm",
+        "border px-4 py-3 text-sm",
         variantClasses[variant],
         className
       )}
