@@ -152,7 +152,7 @@ function render(q: QueuedEmail): RenderedEmail {
            </ul>
            <p>What we do NOT show publicly: email address, age, real name, or exact location.</p>
            <p>There is no messaging feature on the site. Other users cannot contact ${escapeHtml(q.minorDisplayName)} through the map.</p>
-           <p>You can withdraw consent at any time by replying to this email or contacting contact@dmvthrowers.club, and the entry will be removed.</p>
+           <p>You can withdraw consent at any time by replying to this email or contacting dmvthrowers@gmail.com, and the entry will be removed.</p>
            <p style="margin:20px 0;"><a href="${link}" style="background:#C8102E;color:#ffffff;padding:12px 24px;text-decoration:none;font-weight:bold;text-transform:uppercase;letter-spacing:1px;font-size:13px;display:inline-block;">I Consent — Publish the Entry</a></p>
            <p style="font-size:12px;color:#555;">Or paste this link into your browser:<br><span style="word-break:break-all;">${link}</span></p>
            <p style="font-size:12px;color:#555;">This consent link expires in 7 days. If you do nothing, the entry will not be published.</p>

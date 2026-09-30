@@ -221,7 +221,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   if (verifyOutcome.status === 'failed') {
     // Entry exists but we couldn't email. Tell the user so they can contact support rather than waiting forever.
     return NextResponse.json({
-      message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact contact@dmvthrowers.club and we'll sort it out manually.",
+      message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact dmvthrowers@gmail.com and we'll sort it out manually.",
       emailStatus: 'failed',
     });
   }
@@ -229,7 +229,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const messages = {
     person: isMinor
       ? (consentOutcome?.status === 'failed'
-          ? "Thanks! Check your email to verify your address. We had trouble sending the parent consent email — please contact contact@dmvthrowers.club so we can resend it."
+          ? "Thanks! Check your email to verify your address. We had trouble sending the parent consent email — please contact dmvthrowers@gmail.com so we can resend it."
           : 'Thanks! Check your email to verify your address. We also sent a consent link to your parent or guardian.')
       : 'Thanks! Check your email to verify your address. Your entry will appear on the map once verified.',
     shop: 'Thanks for registering your shop! Check your email to verify. Your listing will appear on the map once verified.',
