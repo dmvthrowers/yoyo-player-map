@@ -25,7 +25,7 @@ export default function MapInfoPanel({ counts }: Props) {
     .join(', ');
 
   return (
-    <div className="absolute top-4 left-4 z-500 bg-cream border-2 border-navy shadow-lg max-w-xs">
+    <div className="absolute top-4 left-4 z-500 bg-cream border-2 border-navy max-w-xs">
       <button
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"

@@ -5,7 +5,7 @@ Orientation for any AI agent (Claude, Codex, or otherwise) landing in this repo 
 ## What this is
 
 The public player/club/shop map for DMV Throwers Yo-Yo & Skill Toy Club — live at
-[dmvthrowers.club](https://dmvthrowers.club) (target: `map.dmvthrowers.club`). Privacy-first by
+[map.dmvthrowers.club](https://map.dmvthrowers.club). Privacy-first by
 design: players submit a display name + city and appear as a jittered pin (~10 mile blur); only
 shops/clubs that opt in get a precise location. No accounts, no messaging, no GPS, no data
 sales — that's a product constraint, not just a README claim, so don't add anything that would
@@ -16,15 +16,17 @@ narrow the blur radius or expose exact locations without deliberately revisiting
 instead of sitting undiscovered in a dot-dir) covers dmvthrowers.github.io, this repo,
 `dmvt-event-hub`, and `DMVT-Design` together (brand voice, color/typography system, contact
 info, cross-repo workflows). Read it too — this file only covers what's specific to *this*
-repo. Note: that file says "Next.js 14" for this repo; the real version is Next.js 15
-(`git log`: "Pin yoyomap to Next.js 15" — a stale detail worth fixing if you're in there for
-another reason, not fixed here to stay in scope).
+repo. Both files now say Next.js 16, matching `yoyomap/package.json`.
+
+Public copy follows the club-site rule: facts about how the map works cite their source.
+The home page "How the Map Works" section links the code it describes (`lib/geocode.ts` blur
+radius, `lib/geo.ts` underserved distance). Change the copy if you change those constants.
 
 ## Layout
 
 ```
 yoyomap/                 the actual app -- standalone pnpm project, NOT part of the root workspace
-yoyomap/src/app/          Next.js 15 App Router
+yoyomap/src/app/          Next.js 16 App Router
 yoyomap/supabase/migrations/   v2 through v31 (forward-only, never edit a shipped one)
 yoyomap/messages/         next-intl locale files (11 languages: en es fr de pt ja ko zh ar ru hi)
 yoyomap/components/, lib/ shared UI + Supabase client code
@@ -33,7 +35,7 @@ skills/, .agents/         agent skill definitions for AI-assisted maintenance (s
 docs/                     VSYC26_Registration_Phase2_Handoff.md and similar handoff notes
 ```
 
-Stack: Next.js 15 (App Router) + Supabase (`@supabase/ssr`) + Leaflet/react-leaflet + Upstash
+Stack: Next.js 16 (App Router) + Supabase (`@supabase/ssr`) + Leaflet/react-leaflet + Upstash
 (rate limiting) + Resend (email) + react-hook-form + next-intl.
 
 ## Current state (verified 2026-08-14, not assumed)

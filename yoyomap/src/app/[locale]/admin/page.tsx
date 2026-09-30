@@ -669,7 +669,7 @@ function EntityTypeBadge({ type, verified }: { type: AdminEntry['entity_type']; 
   };
   
   return (
-    <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded ${colors[entityType]}`}>
+    <span className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 ${colors[entityType]}`}>
       {entityType}
       {entityType === 'shop' && verified && (
         <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
@@ -734,7 +734,7 @@ function StatusChip({
   };
 
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ring-1 ${colors[tone]}`}>
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold ring-1 ${colors[tone]}`}>
       {children}
       {label}
     </span>
