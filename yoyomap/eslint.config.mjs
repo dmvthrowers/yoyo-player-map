@@ -1,19 +1,12 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { FlatCompat } from '@eslint/eslintrc';
+import nextVitals from 'eslint-config-next/core-web-vitals';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
+// eslint-config-next 16 ships native flat config, so it is spread directly
+// (the FlatCompat bridge used with v15 no longer loads it).
 const eslintConfig = [
   {
     ignores: ['.next/**', 'out/**', 'build/**'],
   },
-  ...compat.extends('next/core-web-vitals'),
+  ...nextVitals,
   {
     rules: {
       // These React Compiler-oriented rules were introduced by the newer Next flat config
