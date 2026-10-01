@@ -10,6 +10,19 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
+    # Group non-breaking npm updates into one prod PR + one dev PR (same
+    # patch+minor rule as the github-actions group); majors stay individual.
+    groups:
+      npm-prod:
+        dependency-type: production
+        update-types:
+          - patch
+          - minor
+      npm-dev:
+        dependency-type: development
+        update-types:
+          - patch
+          - minor
 
   # ── yoyomap standalone Next.js app ─────────────────────────────────────
   # npm — yoyomap standalone app.
@@ -21,6 +34,19 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - dependencies
+    # Group non-breaking npm updates into one prod PR + one dev PR (same
+    # patch+minor rule as the github-actions group); majors stay individual.
+    groups:
+      npm-prod:
+        dependency-type: production
+        update-types:
+          - patch
+          - minor
+      npm-dev:
+        dependency-type: development
+        update-types:
+          - patch
+          - minor
 
   # ── GitHub Actions ──────────────────────────────────────────────────────
   - package-ecosystem: github-actions
