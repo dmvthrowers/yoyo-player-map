@@ -44,7 +44,7 @@ export default function LanguageSwitcher() {
       </label>
       <select
         id="language-switcher"
-        className="text-xs border rounded px-2 py-1 bg-white text-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red"
+        className="text-xs border px-2 py-1 bg-white text-brand-red focus:outline-none focus:ring-2 focus:ring-brand-red"
         onChange={handleChange}
         value={currentLocale}
       >

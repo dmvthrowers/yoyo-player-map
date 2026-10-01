@@ -114,12 +114,13 @@ const SERVICES: ServiceCard[] = [
     statusUrl: 'https://wiki.openstreetmap.org/Platform_Status',
   },
   {
-    name: 'CARTO basemaps',
+    name: 'Esri basemaps',
     category: 'Mapping',
     description: 'Provides the tile basemap layer rendered under the YoYo Map markers.',
-    impact: 'If CARTO tiles fail, the map background can appear blank or incomplete while entry data and API routes still work.',
-    linkLabel: 'CARTO status',
-    statusUrl: 'https://status.carto.com/',
+    impact: 'If Esri tiles fail, the map background can appear blank or incomplete while entry data and API routes still work.',
+    linkLabel: 'Esri ArcGIS Online status',
+    statusUrl: 'https://doc.arcgis.com/en/arcgis-online/reference/known-limitations.htm',
+    notes: 'This page links to Esri’s ArcGIS Online status resources rather than polling a machine-readable feed.',
   },
   {
     name: 'Downdetector',
@@ -259,7 +260,7 @@ export default async function StatusPage({ params }: { params: Promise<{ locale:
           return (
             <section
               key={service.name}
-              className="border border-navy/10 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+              className="border border-navy/10 bg-white p-5"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

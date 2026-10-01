@@ -24,7 +24,7 @@
       "ko": "한국어"
     },
     "dmvThrowers": "DMV Throwers",
-    "clubEvents": "Events",
+    "clubEvents": "US Events",
     "brand": "YoYo Map",
     "donateTitle": "Support DMV Throwers on Ko-fi",
     "openMenu": "Open menu",
@@ -43,7 +43,7 @@
       {
         "title": "100%",
         "subtitle": "Privacy First",
-        "description": "City-level only. No tracking. Delete anytime."
+        "description": "Player pins are city-level and blurred. No tracking. Delete anytime."
       },
       {
         "title": "24/7",
@@ -53,7 +53,7 @@
       {
         "title": "∞",
         "subtitle": "Global Reach",
-        "description": "Players from every continent. Growing daily."
+        "description": "Players, shops, and clubs around the world."
       }
     ],
     "how": {
@@ -94,6 +94,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "Behind the Pins",
+      "title": "How the Map Works",
+      "items": [
+        {
+          "title": "Blurred on purpose",
+          "body": "Player pins land at a random spot up to 10 miles from your city, so nobody can find your home. Shops, and clubs that meet at a public venue, aren’t blurred, so people can find them."
+        },
+        {
+          "title": "No GPS, ever",
+          "body": "You pick your city from a list. We look it up with OpenStreetMap’s Nominatim service. We never ask for your device location."
+        },
+        {
+          "title": "Underserved areas",
+          "body": "Turn on the filter to ring players who are more than 50 miles from both the nearest shop and the nearest club. That’s where a new club could help most."
+        },
+        {
+          "title": "Open source",
+          "body": "The code is public on GitHub and released into the public domain. Read exactly how your pin is placed."
+        }
+      ],
+      "sourcesLabel": "Sources:",
+      "sources": {
+        "blur": "YoYo Map code: location blur",
+        "underserved": "YoYo Map code: underserved distance",
+        "nominatim": "OpenStreetMap Foundation: Nominatim Usage Policy",
+        "osm": "OpenStreetMap: Copyright and License",
+        "esri": "Esri: Light Gray Canvas basemap",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "From the Club",
+      "title": "Keep Exploring",
+      "items": [
+        {
+          "title": "How to Yo-Yo",
+          "body": "Throws, first 100 tricks, contests, glossary"
+        },
+        {
+          "title": "Gear & Maintenance",
+          "body": "Bearings, pads, string, styles, lingo"
+        },
+        {
+          "title": "Yo-Yo Science",
+          "body": "Physics, shapes, materials, patents, DIY"
+        },
+        {
+          "title": "Yo-Yo History",
+          "body": "From ancient Greece to today’s contests"
+        },
+        {
+          "title": "Filipino Yo-Yo History",
+          "body": "Pedro Flores and the demonstrators"
+        },
+        {
+          "title": "Collecting Yo-Yos",
+          "body": "Vintage, limited runs, value, museums"
+        },
+        {
+          "title": "Resources",
+          "body": "Downloads, tutorials, apps, links"
+        }
+      ]
     }
   },
   "footer": {
@@ -102,6 +167,7 @@
     "dmvThrowers": "DMV Throwers",
     "home": "Home",
     "vsyc": "VSYC-26",
+    "resources": "Yo-Yo Resources",
     "legal": "Legal",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
@@ -110,7 +176,7 @@
     "serviceStatus": "Service Status",
     "project": "Project",
     "github": "GitHub",
-    "copyright": "© 2024 DMV Throwers. All rights reserved.",
+    "copyright": "© 2026 DMV Throwers · Est. 2021",
     "all_welcome": "All skill levels welcome.",
     "contact": "Contact"
   },
@@ -220,7 +286,7 @@
     "shops": "Shops",
     "clubs": "Clubs",
     "highlightUnderserved": "Highlight underserved areas",
-    "underservedDescription": "Areas with fewer than 3 players highlighted in red.",
+    "underservedDescription": "Players more than 50 miles from both the nearest shop and the nearest club get a red ring.",
     "searchPlaceholder": "Search name, city, region…",
     "searchAriaLabel": "Search players, shops, and clubs",
     "clearSearch": "Clear search",
@@ -311,8 +377,10 @@
           "list": [
             "Vercel (hosting)",
             "Supabase (database)",
-            "OpenStreetMap (mapping)",
-            "Resend (email, optional)"
+            "Esri (map tiles, built on OpenStreetMap data)",
+            "OpenStreetMap Nominatim (city and address lookup)",
+            "Upstash (rate limiting)",
+            "Resend (email)"
           ]
         },
         {
@@ -325,7 +393,7 @@
         },
         {
           "title": "Contact Us",
-          "body": "Questions? Email dmvthrowers@gmail.com"
+          "body": "Questions? Email contact@dmvthrowers.club"
         }
       ]
     },
@@ -398,7 +466,7 @@
         },
         {
           "title": "Contact",
-          "body": "Questions? Email dmvthrowers@gmail.com"
+          "body": "Questions? Email contact@dmvthrowers.club"
         }
       ]
     },
@@ -406,7 +474,7 @@
       "title": "Security",
       "description": "Security information and vulnerability disclosures for YoYo Map.",
       "reportTitle": "Reporting a Vulnerability",
-      "reportBody": "To report a security vulnerability, please email dmvthrowers@gmail.com with a description of the issue. We will respond within 72 hours.",
+      "reportBody": "To report a security vulnerability, please email contact@dmvthrowers.club with a description of the issue. We will respond within 72 hours.",
       "bulletinsTitle": "Security Bulletins",
       "noBulletins": "No active security bulletins at this time."
     }

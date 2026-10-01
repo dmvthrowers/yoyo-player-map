@@ -23,19 +23,15 @@ export default function Navigation() {
         <div className="max-w-6xl mx-auto px-4 py-1.5 flex items-center justify-end gap-5">
           <a
             href="https://dmvthrowers.club/"
-            target="_blank"
-            rel="noopener noreferrer"
             className="topbar-link"
           >
-            {t('nav.dmvThrowers')} ↗
+            {t('nav.dmvThrowers')}
           </a>
           <a
             href="https://dmvthrowers.club/vsyc26.html"
-            target="_blank"
-            rel="noopener noreferrer"
             className="topbar-link"
           >
-            {t('nav.vsyc')} ↗
+            {t('nav.vsyc')}
           </a>
           <a
             href="https://yoyoarchive.org/yya-events"
@@ -123,13 +119,13 @@ export default function Navigation() {
                 </a>
               </li>
               <li>
-                <a href="https://dmvthrowers.club/" target="_blank" rel="noopener noreferrer" className="nav-link block py-2" onClick={close}>
-                  {t('nav.dmvThrowers')} ↗
+                <a href="https://dmvthrowers.club/" className="nav-link block py-2" onClick={close}>
+                  {t('nav.dmvThrowers')}
                 </a>
               </li>
               <li>
-                <a href="https://dmvthrowers.club/vsyc26.html" target="_blank" rel="noopener noreferrer" className="nav-link text-brand-red block py-2" onClick={close}>
-                  {t('nav.vsyc')} ↗
+                <a href="https://dmvthrowers.club/vsyc26.html" className="nav-link text-brand-red block py-2" onClick={close}>
+                  {t('nav.vsyc')}
                 </a>
               </li>
             </ul>

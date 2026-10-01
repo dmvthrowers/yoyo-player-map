@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   if (authError) return authError;
 
   try {
-    revalidateTag('public-entries');
+    revalidateTag('public-entries', { expire: 0 });
     revalidatePath('/[locale]/map', 'page');
     revalidatePath('/[locale]/players', 'page');
     return NextResponse.json({ success: true, message: 'Map refresh triggered.' });

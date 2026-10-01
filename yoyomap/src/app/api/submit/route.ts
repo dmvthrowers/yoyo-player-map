@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { submitSchema, legacySubmitSchema, type SubmitInput, type PersonInput, type ShopInput, type ClubInput } from '@/lib/validation';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
+import { geocodeCity, geocodeAddress, geocodeFallback, jitterCoords } from '@/lib/geocode';
 import { generateToken, hashToken } from '@/lib/tokens';
 import {
   sendEntryVerificationEmail,
@@ -72,8 +72,17 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     if (legacyParsed.success) {
       data = { ...legacyParsed.data, entityType: 'person' } as PersonInput;
     } else {
-      const firstError = parsed.error.issues[0];
-      return apiError('bad_request', firstError?.message || 'Invalid submission.', requestId);
+      // In Zod v4, discriminatedUnion root errors say "Invalid input" when the
+      // discriminator doesn't match. Prefer a field-level error (path.length > 0)
+      // over the generic root error so the user sees something actionable.
+      const issues = parsed.error.issues;
+      const fieldIssue = issues.find(i => i.path.length > 0);
+      const best = fieldIssue ?? issues[0];
+      const message = (best?.message && best.message !== 'Invalid input')
+        ? best.message
+        : 'Please check all required fields and try again.';
+      console.error(`[api] validation failed [${requestId}]:`, JSON.stringify(issues.slice(0, 3)));
+      return apiError('bad_request', message, requestId);
     }
   }
 
@@ -212,7 +221,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   if (verifyOutcome.status === 'failed') {
     // Entry exists but we couldn't email. Tell the user so they can contact support rather than waiting forever.
     return NextResponse.json({
-      message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact dmvthrowers@gmail.com and we'll sort it out manually.",
+      message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact contact@dmvthrowers.club and we'll sort it out manually.",
       emailStatus: 'failed',
     });
   }
@@ -220,7 +229,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   const messages = {
     person: isMinor
       ? (consentOutcome?.status === 'failed'
-          ? "Thanks! Check your email to verify your address. We had trouble sending the parent consent email — please contact dmvthrowers@gmail.com so we can resend it."
+          ? "Thanks! Check your email to verify your address. We had trouble sending the parent consent email — please contact contact@dmvthrowers.club so we can resend it."
           : 'Thanks! Check your email to verify your address. We also sent a consent link to your parent or guardian.')
       : 'Thanks! Check your email to verify your address. Your entry will appear on the map once verified.',
     shop: 'Thanks for registering your shop! Check your email to verify. Your listing will appear on the map once verified.',
@@ -286,8 +295,12 @@ async function preparePersonEntry(
   const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
   if (!loc) return { error: "We couldn't resolve your location. Please try again." };
 
-  const geo = await geocodeCity({
+  const cityGeo = await geocodeCity({
     city: loc.cityName,
+    region: loc.regionName || undefined,
+    country: loc.countryCode,
+  });
+  const geo = cityGeo ?? await geocodeFallback({
     region: loc.regionName || undefined,
     country: loc.countryCode,
   });
@@ -392,11 +405,18 @@ async function prepareClubEntry(
   const loc = await resolveLocationNames(supabase, data.city_id, data.region_id, data.country_id);
   if (!loc) return { error: "We couldn't resolve your location. Please try again." };
 
-  const cityGeo = await geocodeCity({
+  const cityGeoExact = await geocodeCity({
     city: loc.cityName,
     region: loc.regionName || undefined,
     country: loc.countryCode,
   });
+  // For private-venue clubs the pin is jittered anyway, so fall back to
+  // region/country coords rather than blocking the submission entirely.
+  const cityGeo = cityGeoExact ?? (
+    !data.clubVenuePublic
+      ? await geocodeFallback({ region: loc.regionName || undefined, country: loc.countryCode })
+      : null
+  );
   if (!cityGeo) {
     return { error: "We couldn't find that city. Please check the spelling or try a nearby larger town." };
   }

@@ -30,7 +30,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className={`px-4 py-2 rounded shadow text-white ${toast.type === "success" ? "bg-green-600" : toast.type === "error" ? "bg-red-600" : toast.type === "warning" ? "bg-yellow-600" : "bg-blue-600"}`}
+            className={`px-4 py-2 text-white ${toast.type === "success" ? "bg-green-600" : toast.type === "error" ? "bg-red-600" : toast.type === "warning" ? "bg-yellow-600" : "bg-blue-600"}`}
           >
             {toast.message}
           </div>

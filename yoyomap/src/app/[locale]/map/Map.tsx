@@ -276,10 +276,10 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
       <ZoomControl position="bottomleft" />
       <AttributionControl position="bottomleft" prefix={false} />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-        subdomains="abcd"
-        maxZoom={19}
+        attribution='Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community'
+        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+        maxZoom={17}
+        maxNativeZoom={16}
       />
       <MarkerClusterGroup chunkedLoading maxClusterRadius={60}>
         {clusterMarkers}

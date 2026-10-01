@@ -133,7 +133,7 @@ function SubmitToast({ onClose }: { onClose: () => void }) {
   const t = useTranslations();
   useEffect(() => { const f = setTimeout(() => setFading(true), 5000); const c = setTimeout(onClose, 6000); return () => { clearTimeout(f); clearTimeout(c); }; }, [onClose]);
   return (
-    <div className={`fixed top-4 right-4 z-50 w-80 bg-white border-l-4 border-brand-red shadow-xl p-4 transition-opacity ${fading?'opacity-0':'opacity-100'}`}>
+    <div className={`fixed top-4 right-4 z-50 w-80 bg-white border-l-4 border-brand-red p-4 transition-opacity ${fading?'opacity-0':'opacity-100'}`}>
       <p className="font-bold text-sm">{t('submit.toastCheckEmail')}</p>
       <p className="text-xs">{t('submit.toastVerifyLink')}</p>
       <button onClick={onClose} className="absolute top-1 right-2">×</button>
@@ -182,7 +182,7 @@ export default function SubmitPage() {
     if ((form.entityType === 'shop' || form.entityType === 'club') &&!form.authorizedRep) errors.authorizedRep = t('submit.errorAuthorizedRep', { type: form.entityType === 'shop'? t('submit.business') : t('submit.club') });
     if (form.entityType === 'shop' &&!form.addressLine.trim()) errors.addressLine = t('submit.errorAddressLine');
     if (form.entityType === 'shop' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
-    if (form.entityType === 'club' &&!form.clubMeetingInfo.trim()) errors.clubMeetingInfo = t('submit.errorMeetingInfo');
+    if (form.entityType === 'club' && form.clubMeetingInfo.trim().length < 10) errors.clubMeetingInfo = t('submit.errorMeetingInfo');
     if (form.entityType === 'club' &&!form.contactName.trim()) errors.contactName = t('submit.errorContactName');
     if (isMinor) {
       if (!form.parentName.trim()) errors.parentName = t('submit.errorParentName');
@@ -423,10 +423,16 @@ export default function SubmitPage() {
 
         <div className="card space-y-3">
           <label className="flex gap-2"><input type="checkbox" checked={form.consentPublic} onChange={e=>update('consentPublic',e.target.checked)} /> {t('submit.consentPublic')}</label>
+          {formErrors.consentPublic && <p className="text-red-600 text-sm">{formErrors.consentPublic}</p>}
           <label className="flex gap-2"><input type="checkbox" checked={form.consentPrivacy} onChange={e=>update('consentPrivacy',e.target.checked)} /> {t('submit.consentPrivacy')} <Link href="/legal/privacy" className="underline">{t('submit.privacyPolicy')}</Link></label>
+          {formErrors.consentPrivacy && <p className="text-red-600 text-sm">{formErrors.consentPrivacy}</p>}
           <label className="flex gap-2"><input type="checkbox" checked={form.consentTerms} onChange={e=>update('consentTerms',e.target.checked)} /> {t('submit.consentTerms')} <Link href="/legal/terms" className="underline">{t('submit.terms')}</Link></label>
+          {formErrors.consentTerms && <p className="text-red-600 text-sm">{formErrors.consentTerms}</p>}
           {(form.entityType==='shop'||form.entityType==='club') && (
-            <label className="flex gap-2"><input type="checkbox" checked={form.authorizedRep} onChange={e=>update('authorizedRep',e.target.checked)} /> {t('submit.authorizedRep')}</label>
+            <>
+              <label className="flex gap-2"><input type="checkbox" checked={form.authorizedRep} onChange={e=>update('authorizedRep',e.target.checked)} /> {t('submit.authorizedRep')}</label>
+              {formErrors.authorizedRep && <p className="text-red-600 text-sm">{formErrors.authorizedRep}</p>}
+            </>
           )}
         </div>
 
