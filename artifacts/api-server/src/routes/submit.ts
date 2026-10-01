@@ -81,7 +81,7 @@ router.post("/submit", async (req, res) => {
   const parsed = submitSchema.safeParse(normalized);
   if (!parsed.success) {
     return res.status(400).json({
-      error: parsed.error.errors[0]?.message || "Invalid submission.",
+      error: parsed.error.issues[0]?.message || "Invalid submission.",
     });
   }
   const data = parsed.data;

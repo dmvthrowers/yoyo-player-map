@@ -60,7 +60,7 @@ router.post("/profile/update", async (req, res) => {
   const ip = getClientIp(req as unknown as { headers: Record<string, string | string[] | undefined> });
   const parsed = updateSchema.safeParse(req.body);
   if (!parsed.success) {
-    return res.status(400).json({ error: parsed.error.errors[0]?.message || "Invalid input." });
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || "Invalid input." });
   }
 
   const tok = await resolveToken(parsed.data.token);
