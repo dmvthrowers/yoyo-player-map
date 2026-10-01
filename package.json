@@ -13,7 +13,7 @@
   "devDependencies": {
     "next": "^15.5.24",
     "typescript": "~5.9.2",
-    "prettier": "^3.8.4"
+    "prettier": "^3.9.9"
   },
   "pnpm": {
     "overrides": {
@@ -22,7 +22,8 @@
       "postcss": "^8.5.18",
       "js-yaml@>=4.0.0 <4.3.2": "^4.3.2",
       "nanoid@<3.3.18": "^3.3.18",
-      "browserslist": "^4.28.7"
+      "browserslist": "^4.28.7",
+      "undici@>=7.0.0 <7.29.1": "^7.29.1"
     }
   }
 }
