@@ -260,7 +260,7 @@ export default async function StatusPage({ params }: { params: Promise<{ locale:
           return (
             <section
               key={service.name}
-              className="border border-navy/10 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+              className="border border-navy/10 bg-white p-5"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>

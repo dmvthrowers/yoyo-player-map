@@ -39,7 +39,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^1.31.0",
     "marked": "^18.0.5",
-    "next": "^16.3.1",
+    "next": "^16.3.8",
     "next-intl": "^4.13.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -59,10 +59,10 @@
     "@types/node": "^25.9.3",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.12.0",
-    "eslint-config-next": "^15.5.18",
+    "eslint-config-next": "^16.3.8",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3"
@@ -75,7 +75,8 @@
       "esbuild": ">=0.25.0",
       "fast-xml-builder": ">=1.1.7",
       "fast-uri": ">=3.1.2",
-      "ws": ">=8.21.0"
+      "ws": ">=8.21.0",
+      "nanoid@>=4.0.0 <5.1.16": "^5.1.16"
     },
     "onlyBuiltDependencies": [
       "@swc/core",
