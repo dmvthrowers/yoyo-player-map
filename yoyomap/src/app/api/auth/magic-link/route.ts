@@ -91,5 +91,16 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
         : "Our email service is briefly throttled. Your link will arrive in a minute or two.",
     }, { headers: { 'x-request-id': requestId } });
   }
+  // Deferred: the link would expire before the limit resets, so nothing was
+  // queued. Ask them to come back rather than wait for an email that won't come.
+  if (outcome.status === 'deferred') {
+    return NextResponse.json({
+      ok: true,
+      requestId,
+      emailStatus: 'deferred',
+      retryAt: outcome.retryAt,
+      message: "We've hit today's email limit. Please request a new link after midnight UTC.",
+    }, { headers: { 'x-request-id': requestId } });
+  }
   return NextResponse.json({ ok: true, requestId }, { headers: { 'x-request-id': requestId } });
 });

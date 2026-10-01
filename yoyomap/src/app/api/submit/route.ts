@@ -194,7 +194,9 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
   // or queued. For minors, the parent consent email matters too — if either is
   // delayed, tell the user both will go out after the limit resets.
   const isMinor = data.entityType === 'person' && data.ageBand === '13-17';
-  const anyFailed = verifyOutcome.status === 'failed' || consentOutcome?.status === 'failed';
+  // 'deferred' means it wasn't queued either (only possible past the monthly cap).
+  const notSent = (o: typeof verifyOutcome | undefined | null) => o?.status === 'failed' || o?.status === 'deferred';
+  const anyFailed = notSent(verifyOutcome) || notSent(consentOutcome);
 
   const queuedOutcome = verifyOutcome.status === 'queued'
     ? verifyOutcome
@@ -218,7 +220,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     });
   }
 
-  if (verifyOutcome.status === 'failed') {
+  if (notSent(verifyOutcome)) {
     // Entry exists but we couldn't email. Tell the user so they can contact support rather than waiting forever.
     return NextResponse.json({
       message: "Thanks! Your entry is saved, but we hit a problem sending your verification email. Please contact contact@dmvthrowers.club and we'll sort it out manually.",

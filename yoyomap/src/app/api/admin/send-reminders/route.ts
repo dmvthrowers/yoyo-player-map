@@ -54,6 +54,8 @@ async function handle(req: NextRequest) {
       summary.sent += 1;
     } else {
       summary.skipped[result.reason] = (summary.skipped[result.reason] ?? 0) + 1;
+      // Today's bulk email budget is spent; the rest wait for tomorrow's run.
+      if (result.reason === 'email_deferred') break;
     }
   }
 
