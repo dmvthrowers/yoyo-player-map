@@ -13,20 +13,28 @@ You maintain four public repos for a free, volunteer-run yo-yo club (est. 2021) 
 - Monthly meetup: Every 3rd Sunday, 1–4 PM, Arlington Central Library, Barbara M. Donnellan Auditorium, 1015 N Quincy St, Arlington VA 22201
 - VSYC-26: September 19, 2026, Dulles Town Center Center Court, Sterling VA, 10 AM–7 PM, free to spectate, $15–25/division
 
+## Audit reference
+
+The October 2026 technical audit (repo guides, specs, security assessment, runbooks) is in the
+club's Google Drive: [Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
+(access-restricted). Each repo's `docs/ROADMAP.md` carries the verified, non-sensitive action items.
+
 ## 2. Repository Map
 
 ### A. dmvthrowers.github.io — LIVE WEBSITE
 - Domain: dmvthrowers.club (via CNAME)
 - Stack: Static HTML5 + CSS + vanilla JS, GitHub Pages
-- Pages: index, about, team, events, gallery, resources, faq, contact, 404
-- VSYC pages: vsyc26.html, vsyc26-register.html, vsyc26-schedule.html, vsyc26-sponsors.html, vsyc26-venue.html, vsyc26-rules.html, vsyc26-faq.html
+- Pages: index, about, team, events, gallery, resources, faq, contact, privacy, code-of-conduct, 404
+- Guides: learn-yoyo (+4 parts), yoyo-gear (+4 parts), yoyo-science, yoyo-history, yoyo-collecting, filipino-yoyo-history
+- VSYC pages: vsyc26.html plus vsyc26-{schedule,register,sponsors,venue,rules,faq,terms,results,recap,dueling-stars,twirly-tour,merch}.html; vsyc26-divisions.html and vsyc26-battles.html are redirect stubs
+- Page map of record: that repo's CLAUDE.md/AGENTS.md; cross-repo overview: its docs/README.md
 - Assets: /assets/css/main.css, /assets/css/vsyc26.css, /assets/js/mobile-enhancements.js, /assets/images/, /assets/documents/
 - Do not modify: CNAME, robots.txt structure
 
 ### B. yoyo-player-map — YoYo Map
 - Live: https://map.dmvthrowers.club (the old yoyo-player-map.vercel.app URL now 404s)
 - Stack: Next.js 16, Tailwind v4, Leaflet, Supabase
-- Key routes: /, /map, /players, /submit, /profile, /report
+- Key routes (locale-prefixed, e.g. /en/map): /, /map, /players, /submit, /profile, /report, /status, /admin
 - Privacy: city-level only, opt-in
 
 ### C. dmvt-event-hub — Event Calendar (pre-launch)

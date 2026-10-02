@@ -27,21 +27,33 @@ radius, `lib/geo.ts` underserved distance). Change the copy if you change those 
 ```
 yoyomap/                 the actual app -- standalone pnpm project, NOT part of the root workspace
 yoyomap/src/app/          Next.js 16 App Router
-yoyomap/supabase/migrations/   v2 through v31 (forward-only, never edit a shipped one)
+yoyomap/supabase/migrations/   v2 through v34 (forward-only, never edit a shipped one)
 yoyomap/messages/         next-intl locale files (11 languages: en es fr de pt ja ko zh ar ru hi)
 yoyomap/components/, lib/ shared UI + Supabase client code
 scripts/                  standalone TS utilities (e.g. location-data fixes)
 skills/, .agents/         agent skill definitions for AI-assisted maintenance (see above)
-docs/                     VSYC26_Registration_Phase2_Handoff.md and similar handoff notes
+docs/                     REPO_GUIDE.md (start here), ROADMAP.md (open work), EMAIL_QUEUE_PLAN.md
+yoyomap/docs/             launch checklist, egress validation, April 2026 incident bulletin,
+                          and historical handoff/plan notes
 ```
 
 Stack: Next.js 16 (App Router) + Supabase (`@supabase/ssr`) + Leaflet/react-leaflet + Upstash
-(rate limiting) + Resend (email) + react-hook-form + next-intl.
+(rate limiting, QStash) + Resend (email) + Cloudflare Turnstile + Sentry + react-hook-form +
+next-intl.
 
-## Current state (verified 2026-08-14, not assumed)
+## Current state (updated 2026-10-02)
 
-- **Migrations are at v31**, not v23 — confirmed directly against
-  `yoyomap/supabase/migrations/`. This matters because `.github/claude-code-plan-yoyo-player-map.md`
+The October 2026 technical audit was checked against the code; the results are in
+`docs/REPO_GUIDE.md` (how it works) and `docs/ROADMAP.md` (what's open). The full audit,
+including the security assessment kept out of this public repo, is in the club's Google Drive:
+[Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
+(access-restricted).
+
+### Earlier notes (2026-08-14)
+
+
+- **Migrations were at v31 then (v34 now)**, not v23 — confirmed directly against
+  `yoyomap/supabase/migrations/`. This matters because `.github/claude-code-plan-yoyo-player-map.md` (copy in `yoyomap/docs/`)
   (a Claude Code task plan) still describes the repo as being at v23→v24 in its "Repo context"
   section, even though its own Status block (added 2026-08-10) already flags itself as stale.
   **Don't trust that plan doc's Phase 1-3 content as current state without re-checking against
@@ -72,6 +84,6 @@ Stack: Next.js 16 (App Router) + Supabase (`@supabase/ssr`) + Leaflet/react-leaf
 
 ```bash
 cd yoyomap
-pnpm install
-pnpm typecheck && pnpm lint && pnpm build
+pnpm install --ignore-workspace
+pnpm typecheck && pnpm lint && pnpm test && pnpm i18n:parity --strict && pnpm build
 ```

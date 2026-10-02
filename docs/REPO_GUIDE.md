@@ -74,7 +74,7 @@ Inside `yoyomap/`:
 | `POST api/auth/magic-link` | Sends a manage-entry link; always returns success (no email enumeration) | 5/IP/hr |
 | `GET api/auth/verify-link` | Validates a manage-entry token for the profile editor | 10/IP/hr |
 | `GET/POST api/confirm-location` | Owner confirms or corrects a location from an admin outreach email | 20 / 10 per IP/hr |
-| `POST api/profile/update`, `api/profile/delete` | Edit / soft-delete via a valid magic token | 10/15 min, 5/hr |
+| `POST api/profile/update`, `api/profile/delete` | Edit, or permanently delete (with any parent-consent row), via a valid magic token | 10/15 min, 5/hr |
 | `GET api/entry/[id]` | Lazy popup details; CDN-cached 5 min so takedowns propagate quickly | 60/IP/min |
 | `GET/POST api/locations` | Country/region/city lists; add a city | 30/min, 10/hr |
 | `POST api/report` | Turnstile → report. `impersonation`, `fake_business`, `unauthorized_listing` auto-hide the entry and email the admin | 10/IP/hr |
@@ -99,7 +99,7 @@ doesn't hide changes.
 signing secret.
 
 **Admin.** `/[locale]/admin` asks for the password and sends it as `x-admin-token` on every call.
-Actions: flag/unflag, soft delete, resolve reports, clear auto-hide, re-geocode, reminders,
+Actions: flag/unflag, delete (permanent), resolve reports, clear auto-hide, re-geocode, reminders,
 bulk location status and outreach (≤ 500).
 
 **Failure UX.** If the pin query fails, the map shows an error banner (and the failure isn't
@@ -130,3 +130,6 @@ pnpm build
 - `docs/ROADMAP.md` — open work, in priority order.
 - `docs/EMAIL_QUEUE_PLAN.md` — how over-quota email is queued and drained.
 - `yoyomap/docs/LAUNCH-CHECKLIST.md` — Vercel and Supabase setup steps.
+- [Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
+  (Google Drive, access-restricted) — the full audit this guide came from, including the
+  security assessment and runbooks kept out of the public repo.

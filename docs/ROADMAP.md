@@ -15,6 +15,7 @@ re-checked against the code on 2026-10-02. Update it as items land.
 | Submit form shows an error when location lists fail to load (was silently empty); inline error instead of `alert()` when adding a city fails | this PR |
 | Map page shows an error banner when pins fail to load, and no longer caches a failed load as an empty map for 24h; screen-reader `<h1>` added | this PR |
 | Every page has a default `<title>`, description and Open Graph tags (the homepage had none); `metadataBase` set | this PR |
+| `SECURITY.md` (root and `.github/`) replaced: was GitHub's default template | this PR |
 | Existing `node:test` file runs in CI (`pnpm test`); `i18n:parity --strict` gates CI | this PR |
 | Dead config removed: `ENTRY_SECRET` (no code reads it), `.eslintrc.json` (ignored by ESLint 9), the `eslint` key in `next.config.js` (removed in Next 16) | this PR |
 
@@ -52,9 +53,7 @@ re-checked against the code on 2026-10-02. Update it as items land.
     can't be focused with a keyboard. The `/players` directory is the accessible alternative —
     link to it from the map for keyboard and screen-reader users.
 11. **Split `src/app/[locale]/admin/page.tsx`** (~820 lines) into components.
-12. **SECURITY.md** is GitHub's default template (lists versions that don't exist). Replace it
-    with a real contact and scope, or delete it.
-13. **OSV-Scanner:** the club site's identical workflow fails at startup. Check this repo's
+12. **OSV-Scanner:** the club site's identical workflow fails at startup. Check this repo's
     Actions tab; if runs are red or noisy, delete `.github/workflows/osv-scanner.yml` —
     Dependabot, `dependency-review` and `pnpm audit` in CI already cover it.
 
@@ -67,6 +66,8 @@ re-checked against the code on 2026-10-02. Update it as items land.
 - Root workspace: `packageManager` still `pnpm@10.28.0`; root `next` is a dev-only tool dep.
 - ESLint 10 after the above.
 - `wouter` is a dependency nothing in the App Router should need — confirm and remove.
+- `@vercel/analytics` and `@vercel/speed-insights` are installed but never mounted — remove them,
+  or mount them and update the privacy policy (the README promises no analytics).
 
 ## Accepted
 
