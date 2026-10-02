@@ -10,12 +10,16 @@ our community members are young people.
 ## How to Contribute
 
 1. **Fork the repository** and create your branch from `main`.
-2. **Install dependencies** with `pnpm install` (or `npm install`).
-3. **Make your changes** and add tests where applicable.
-4. **Run lint and build checks:**
+2. **Install dependencies:** `cd yoyomap && pnpm install --ignore-workspace` (use pnpm; the
+   lockfile is `pnpm-lock.yaml`). Read `docs/REPO_GUIDE.md` first.
+3. **Make your changes** and add tests where applicable (`*.test.mjs`, run with `node:test`).
+4. **Run the same checks CI runs**, from `yoyomap/`:
    ```bash
-   pnpm run lint
-   pnpm run build
+   pnpm typecheck
+   pnpm lint
+   pnpm test
+   pnpm i18n:parity --strict
+   pnpm build
    ```
 5. **Open a Pull Request** with a clear description of your changes.
 

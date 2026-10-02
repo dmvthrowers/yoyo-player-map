@@ -3,18 +3,19 @@
 
 **A privacy-first community map for yo-yoers, by DMV Throwers Yo-Yo & Skill Toy Club.**
 
-🌐 **Website:** [dmvthrowers.club](https://dmvthrowers.club)
-📸 **Instagram:** [@dmv_throwers](https://instagram.com/dmv_throwers)
-🔗 **Linktree:** [linktr.ee/dmvthrowers](https://linktr.ee/dmvthrowers)
+**Live map:** [map.dmvthrowers.club](https://map.dmvthrowers.club)
+**Website:** [dmvthrowers.club](https://dmvthrowers.club)
+**Instagram:** [@dmv_throwers](https://instagram.com/dmv_throwers)
+**Linktree:** [linktr.ee/dmvthrowers](https://linktr.ee/dmvthrowers)
 ☕ **Support us:** [ko-fi.com/dmvthrowers](https://ko-fi.com/dmvthrowers)
 
-Last updated: 2026-04-23
+Last updated: 2026-10-02. For the architecture walkthrough see [`../docs/REPO_GUIDE.md`](../docs/REPO_GUIDE.md); for open work, [`../docs/ROADMAP.md`](../docs/ROADMAP.md).
 
 ---
 
 ## About the Project
 
-YoYo Map helps yo-yoers find each other by letting users submit a display name, city, and (optionally) socials and a short bio. Pins appear on a public map showing only an approximate area (blurred ~10 miles). No messaging, no GPS, no data sales. Built for privacy, safety, and community.
+YoYo Map helps yo-yoers find each other by letting users submit a display name, city, and (optionally) socials and a short bio. Players, shops and clubs can all be listed. Person pins show only an approximate area (jittered ~10 miles). No messaging, no GPS, no data sales. Available in 11 languages. Built for privacy, safety, and community.
 
 ---
 
@@ -34,13 +35,20 @@ YoYo Map helps yo-yoers find each other by letting users submit a display name, 
 
 | Page | URL |
 | --- | --- |
-| Home | [map.dmvthrowers.club](https://map.dmvthrowers.club) |
-| Submit | [map.dmvthrowers.club/submit](https://map.dmvthrowers.club/submit) |
-| Map | [map.dmvthrowers.club/map](https://map.dmvthrowers.club/map) |
-| Profile | [map.dmvthrowers.club/profile](https://map.dmvthrowers.club/profile) |
-| Admin | [map.dmvthrowers.club/admin](https://map.dmvthrowers.club/admin) |
-| Legal: Privacy | [map.dmvthrowers.club/legal/privacy](https://map.dmvthrowers.club/legal/privacy) |
-| Legal: Terms | [map.dmvthrowers.club/legal/terms](https://map.dmvthrowers.club/legal/terms) |
+All pages are locale-prefixed (`/en/…`, `/es/…`); bare paths redirect to `/en/…`.
+
+| Page | URL |
+| --- | --- |
+| Home | [map.dmvthrowers.club/en](https://map.dmvthrowers.club/en) |
+| Map | [map.dmvthrowers.club/en/map](https://map.dmvthrowers.club/en/map) |
+| Players directory | [map.dmvthrowers.club/en/players](https://map.dmvthrowers.club/en/players) |
+| Submit | [map.dmvthrowers.club/en/submit](https://map.dmvthrowers.club/en/submit) |
+| Profile | [map.dmvthrowers.club/en/profile](https://map.dmvthrowers.club/en/profile) |
+| Report | [map.dmvthrowers.club/en/report](https://map.dmvthrowers.club/en/report) |
+| Status | [map.dmvthrowers.club/en/status](https://map.dmvthrowers.club/en/status) |
+| Admin | [map.dmvthrowers.club/en/admin](https://map.dmvthrowers.club/en/admin) |
+| Legal: Privacy | [map.dmvthrowers.club/en/legal/privacy](https://map.dmvthrowers.club/en/legal/privacy) |
+| Legal: Terms | [map.dmvthrowers.club/en/legal/terms](https://map.dmvthrowers.club/en/legal/terms) |
 | Contact | [dmvthrowers.club/contact.html](https://dmvthrowers.club/contact.html) |
 | Main Club Site | [dmvthrowers.club](https://dmvthrowers.club) |
 
@@ -49,56 +57,35 @@ YoYo Map helps yo-yoers find each other by letting users submit a display name, 
 ## File Structure
 
 ```text
-/ (root)
-├── yoyomap/
-│   ├── app/
-│   │   ├── page.tsx
-│   │   ├── submit/page.tsx
-│   │   ├── map/
-│   │   │   ├── page.tsx
-│   │   │   ├── MapClient.tsx
-│   │   │   └── Map.tsx
-│   │   ├── profile/page.tsx
-│   │   ├── admin/page.tsx
-│   │   ├── report/page.tsx
-│   │   ├── legal/
-│   │   │   ├── privacy/page.tsx
-│   │   │   └── terms/page.tsx
-│   │   └── api/
-│   │       └── ...
-│   ├── lib/
-│   │   ├── supabase/client.ts
-│   │   ├── supabase/admin.ts
-│   │   ├── geocode.ts
-│   │   ├── email.ts
-│   │   ├── validation.ts
-│   │   ├── tokens.ts
-│   │   └── rate-limit.ts
-│   ├── supabase/
-│   │   ├── schema.sql
-│   │   └── migrations/
-│   ├── docs/
-│   ├── public/
-│   ├── README.md
-│   ├── LICENSE
-│   ├── CONTRIBUTING.md
-│   ├── CODE_OF_CONDUCT.md
-│   ├── SECURITY.md
-│   ├── sitemap.xml
-│   └── robots.txt
-└── ...
+yoyomap/
+├── src/
+│   ├── middleware.ts          locale routing (next-intl)
+│   └── app/
+│       ├── [locale]/          pages: map, submit, players, profile, report, status,
+│       │                      contact, admin, confirm-location, legal/*
+│       └── api/               route handlers (see ../docs/REPO_GUIDE.md)
+├── lib/                       supabase, geocode, email, validation, tokens,
+│                              rate-limit, turnstile, admin-auth, api-error
+├── i18n/, messages/           next-intl config + one JSON file per locale
+├── supabase/                  schema.sql, migrations/, seeds
+├── scripts/                   i18n parity and maintenance scripts
+├── docs/                      launch checklist, egress validation, historical plans
+└── public/                    favicon, OG image, bulletins
 ```
 
 ---
 
 ## Stack
 
-- **Next.js 15** (App Router) + **TypeScript** + **Tailwind CSS**
-- **Supabase** — Postgres, Row-Level Security, auth-ready
-- **Resend** — Transactional email
+- **Next.js 16** (App Router) + **TypeScript** + **Tailwind CSS 4**, React 18
+- **next-intl** — 11 locales
+- **Supabase** — Postgres, Row-Level Security
+- **Resend** — Transactional email, with a queue for over-quota sends
+- **Upstash Redis** — rate limiting; **Cloudflare Turnstile** — bot check on submit/report
+- **Sentry** — error reporting (optional)
 - **Leaflet + OpenStreetMap** — Map rendering (no Google Maps key needed)
 - **Nominatim** — City geocoding (free, no key)
-- **Vercel** — Hosting
+- **Vercel** — Hosting (`main` only; previews off)
 
 Total monthly cost at launch-day scale: **$0** (all free tiers).
 
@@ -118,17 +105,18 @@ Specifically, a lawyer should confirm:
 
 ## Local setup
 
-### 1. Install Node.js 20+ and npm
+### 1. Install Node.js 22 and pnpm
 
 ```bash
-node --version  # should be 20+
+node --version  # should be 22.x
+corepack enable # provides the pnpm version pinned in package.json
 ```
 
 ### 2. Install dependencies
 
 ```bash
 cd yoyomap
-npm install
+pnpm install --ignore-workspace   # yoyomap is standalone, not a workspace member
 ```
 
 ### 3. Set up Supabase
@@ -139,8 +127,8 @@ npm install
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
    - `anon` public key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `service_role` secret key → `SUPABASE_SERVICE_ROLE_KEY` (⚠️ keep this secret)
-4. Go to **SQL Editor → New query**, paste the contents of `supabase/schema.sql`, and run it.
-5. Verify: the `Table Editor` should now show `entries`, `parent_consents`, `verification_tokens`, `reports`, `audit_log` tables, and a `map_entries` view.
+4. Apply the schema and migrations: `supabase link` to the project, then `supabase db push` (production gets them automatically from `.github/workflows/migrate.yml` on push to `main`). For a scratch project you can instead paste `supabase/schema.sql` into the SQL editor and then each file in `supabase/migrations/` in order.
+5. Verify: the `Table Editor` should show `entries`, `parent_consents`, `verification_tokens`, `reports`, `audit_log` and the location tables, and a `map_entries` view.
 
 ### 4. Set up Resend (email)
 
@@ -159,18 +147,16 @@ Copy `.env.local.example` to `.env.local` and fill in:
 cp .env.local.example .env.local
 ```
 
-Generate a random `ENTRY_SECRET`:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
-```
+Generate `CRON_SECRET` and `REVALIDATE_SECRET` with `openssl rand -hex 32`.
+(Verification tokens are random values stored SHA-256 hashed; there is no
+`ENTRY_SECRET` any more — delete it from Vercel if it's still set.)
 
 Set `ADMIN_PASSWORD` to something strong — this is how you log into `/admin`.
 
 ### 6. Run it
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Visit <http://localhost:3000>
@@ -179,11 +165,13 @@ Visit <http://localhost:3000>
 
 ## Deploy to Vercel
 
-1. Push this repo to GitHub (private repo recommended — the service role key should never leak)
-2. Go to <https://vercel.com> and import the GitHub repo
-3. In **Environment Variables**, add every key from `.env.local`
-4. Deploy
-5. Point your domain: in Vercel project settings, add `map.dmvthrowers.club` and update your DNS CNAME to point there
+Production is already set up: the Vercel project deploys `main` to `map.dmvthrowers.club` (root directory `yoyomap`). To stand up a new copy:
+
+1. Import the GitHub repo in Vercel and set the root directory to `yoyomap`.
+2. In **Environment Variables**, add every key from `.env.local.example`. Mark secrets (service-role key, Resend key, `ADMIN_PASSWORD`, `CRON_SECRET`, `REVALIDATE_SECRET`, Turnstile secret) as **Sensitive**.
+3. Deploy, then add the domain and point its DNS CNAME at Vercel.
+
+The repo is public, so never commit `.env.local` — a service-role key committed in May 2026 had to be treated as exposed. See `docs/LAUNCH-CHECKLIST.md`.
 
 ---
 
@@ -197,52 +185,13 @@ Visit <http://localhost:3000>
 
 **Row-Level Security.** Direct table access is revoked for the `anon` role. All writes go through server-side API routes using the service role key, which runs only in Vercel's serverless functions — never in the browser bundle.
 
-**Parental consent.** Under-18 submissions are not visible until the parent clicks a unique link sent to the email provided. We log IP and user-agent at consent time as an audit trail. Consent can be revoked by email.
+**Parental consent.** The service isn't for children under 13. Submissions from 13–17-year-olds are not visible until both the teen verifies their email and a parent clicks a unique consent link sent to the email provided. We log IP and user-agent at consent time as an audit trail. Consent can be revoked by email.
 
 **No direct messaging.** The site deliberately does not implement messaging. Any user contact happens through whatever social handles each user chose to share.
 
-**Honeypot + rate limiting.** A hidden form field catches naive bots. IP-based rate limiting (via the audit log) throttles submission and magic-link requests.
+**Bot and abuse controls.** Cloudflare Turnstile on submit and report, a hidden honeypot field, and per-IP Upstash rate limits on every public write route. Email verification is the publishing gate — there is no manual approval queue; moderation happens through reports and the admin dashboard.
 
-### File structure
-
-```text
-app/
-  page.tsx                    Landing
-  submit/page.tsx             Submit form (client)
-  map/
-    page.tsx                  Server wrapper
-    MapClient.tsx             Dynamic import wrapper
-    Map.tsx                   Leaflet component
-  profile/page.tsx            Edit/delete entry
-  admin/page.tsx              Admin dashboard
-  report/page.tsx             Abuse report
-  legal/
-    privacy/page.tsx
-    terms/page.tsx
-  api/
-    submit/                   POST new entry
-    verify-parent/            GET verify entry or consent
-    auth/
-      magic-link/             POST send edit link
-      verify-link/            GET exchange token → entry
-    profile/
-      update/                 POST edit entry
-      delete/                 POST hard delete
-    admin/
-      data/                   GET admin dashboard data
-      action/                 POST admin mod actions
-    report/                   POST abuse report
-lib/
-  supabase/client.ts          Browser client
-  supabase/admin.ts           Service-role server client
-  geocode.ts                  Nominatim + jitter
-  email.ts                    Resend templates
-  validation.ts               Zod schemas
-  tokens.ts                   Secure token generation
-  rate-limit.ts               IP rate limit + audit
-supabase/
-  schema.sql                  Full DB schema
-```
+The full file and route map is in [`../docs/REPO_GUIDE.md`](../docs/REPO_GUIDE.md).
 
 ---
 
@@ -262,9 +211,9 @@ supabase/
 
 Visit `/admin`, enter the `ADMIN_PASSWORD`, and you get:
 
-- Stats (total, visible, pending, flagged, minors, open reports)
+- Stats (total, visible, pending, flagged, auto-hidden, minors, open reports, counts by type and location status)
 - Open reports with action buttons (hide, delete, resolve)
-- Full entry list with flag/unflag/delete controls
+- Full entry list with flag/unflag/delete (permanent) controls, re-geocode, reminders and location outreach
 
 ### Data retention
 
@@ -276,7 +225,7 @@ The schema supports cleanup, but doesn't auto-run it. Consider setting up a week
 
 ### Monitoring
 
-Supabase gives you the DB logs. Vercel gives you serverless function logs. If you want to get fancy later, plug in Sentry for error tracking.
+Supabase gives you the DB logs. Vercel gives you serverless function logs. Sentry captures errors when `NEXT_PUBLIC_SENTRY_DSN` is set, and scheduled jobs check in to Healthchecks.io when `HEALTHCHECKS_PING_KEY` is set. Most API error responses carry an `x-request-id` to match against the logs (the rest are on the roadmap). `.github/workflows/db-backup.yml` takes a nightly encrypted database dump once its secrets are set.
 
 ### COPPA audit trail
 
@@ -286,10 +235,10 @@ Every consent grant logs IP, user-agent, timestamp, and consent token. If you ev
 
 ## What's intentionally NOT built
 
-- **User accounts.** Auth is magic-link only. No passwords.
+- **User accounts.** Entry owners manage their listing through emailed magic links. No passwords (the admin dashboard uses one shared password).
 - **Image uploads.** Fewer attack surfaces.
 - **Direct messaging.** Safety over feature count.
-- **Analytics.** Privacy over optimization.
+- **Analytics.** Privacy over optimization. (`@vercel/analytics` is installed but not mounted — see the roadmap.)
 - **Payment.** Always free.
 - **Mobile apps.** The web is responsive. Mobile is for later.
 

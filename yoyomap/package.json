@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test 'src/**/*.test.mjs' 'lib/**/*.test.mjs'",
     "i18n:parity": "node scripts/i18n-parity.mjs"
   },
   "dependencies": {

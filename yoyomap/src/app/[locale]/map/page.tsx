@@ -69,30 +69,33 @@ export interface MapEntryDetail extends MapEntry {
 // Only select columns needed for initial map render (P0-2)
 // unstable_cache collapses all 11 locale variants into one Supabase query per
 // revalidation cycle instead of firing 11 concurrent requests simultaneously.
-const getEntries = unstable_cache(
+// It throws on failure so an error is never cached as an empty map for 24h.
+const getCachedEntries = unstable_cache(
   async (): Promise<MapEntry[]> => {
-    try {
-      const { data, error } = await supabase
-        .from(MAP_TABLE)
-        .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
-      if (error) {
-        console.error('Failed to load map entries:', error);
-        return [];
-      }
-      return (data ?? []);
-    } catch (e) {
-      console.error('Map fetch error:', e);
-      return [];
-    }
+    const { data, error } = await supabase
+      .from(MAP_TABLE)
+      .select('id, display_name, city, region, country, lat, lng, entity_type, verified_owner');
+    if (error) throw new Error(`map_entries query failed: ${error.message}`);
+    return data ?? [];
   },
   ['map-entries'],
   { revalidate: 86400, tags: ['public-entries'] },
 );
 
+async function getEntries(): Promise<{ entries: MapEntry[]; failed: boolean }> {
+  try {
+    return { entries: await getCachedEntries(), failed: false };
+  } catch (e) {
+    console.error('Failed to load map entries:', e);
+    return { entries: [], failed: true };
+  }
+}
+
 export default async function MapPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const entries = await getEntries();
+  const { entries, failed } = await getEntries();
+  const t = await getTranslations({ locale });
 
   // Count by entity type
   const counts = {
@@ -103,6 +106,12 @@ export default async function MapPage({ params }: { params: Promise<{ locale: st
 
   return (
     <div className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-88px)] relative isolate">
+      <h1 className="sr-only">{t('map.pageTitle')}</h1>
+      {failed && (
+        <p role="alert" className="absolute top-2 left-1/2 -translate-x-1/2 z-[1000] bg-white border border-red-600 text-red-700 text-sm px-4 py-2">
+          {t('map.loadFailed')}
+        </p>
+      )}
       <MapInfoPanel counts={counts} />
       <Suspense fallback={<div className="p-8">Loading map...</div>}>
         <MapClient entries={entries} />

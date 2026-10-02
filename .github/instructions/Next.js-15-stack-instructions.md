@@ -38,7 +38,7 @@ lib/
   geocode.ts // geocodeCity() + jitterCoords() ~10 miles
   email.ts // Resend wrapper
   validation.ts // Zod schemas for all inputs
-  tokens.ts // secure token generation/verification using ENTRY_SECRET
+  tokens.ts // random tokens; only the SHA-256 hash is stored
   rate-limit.ts // IP rate limit using audit_log
 
 supabase/
@@ -63,7 +63,7 @@ supabase/
 
 ## 6. Auth model – magic-link only
 - No passwords, no Supabase Auth users for public editors.
-- Tokens stored in verification_tokens, hashed with ENTRY_SECRET via lib/tokens.ts.
+- Tokens stored in verification_tokens as SHA-256 hashes via lib/tokens.ts (no secret key).
 - Under-18: insert entry with visible = false, create parent_consents row, send email, set visible = true only after /api/verify-parent succeeds. Log IP + user-agent to parent_consents and audit_log.
 - Admin: /admin checks ADMIN_PASSWORD env var. Do not replace with Supabase Auth.
 
@@ -88,7 +88,6 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY // server only
 RESEND_API_KEY // server only
-ENTRY_SECRET // for token signing
 ADMIN_PASSWORD // for /admin
 
 ## 11. DO and DO NOT

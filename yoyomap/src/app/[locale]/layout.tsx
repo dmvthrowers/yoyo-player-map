@@ -7,9 +7,24 @@ import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
 
-export const metadata: Metadata = {
-  icons: { icon: '/favicon.svg' },
-};
+// Site-wide defaults. Pages that set their own title/description override
+// these; without them the homepage shipped with no <title> at all.
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'map' });
+  return {
+    metadataBase: new URL('https://map.dmvthrowers.club'),
+    title: t('pageTitle'),
+    description: t('pageDescription'),
+    openGraph: {
+      title: t('pageTitle'),
+      description: t('pageDescription'),
+      siteName: 'YoYo Player Map',
+      type: 'website',
+    },
+    icons: { icon: '/favicon.svg' },
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

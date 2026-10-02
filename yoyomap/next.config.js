@@ -38,12 +38,6 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: path.join(__dirname, '..'),
-  // ESLint is run separately in CI (eslint .) so skip it during `next build`
-  // to avoid the deprecated `next lint` path and @rushstack/eslint-patch
-  // incompatibility with ESLint 9.x.
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   async redirects() {
     return [
       // Browsers and bots always request these; serve the SVG favicon we have.
