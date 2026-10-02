@@ -80,6 +80,14 @@ jobs:
         working-directory: yoyomap
         run: pnpm lint
 
+      - name: Unit tests
+        working-directory: yoyomap
+        run: pnpm test
+
+      - name: i18n parity (fails below 95%)
+        working-directory: yoyomap
+        run: pnpm i18n:parity --strict
+
       - name: Security audit
         working-directory: yoyomap
         run: pnpm audit --audit-level=high --ignore-workspace
