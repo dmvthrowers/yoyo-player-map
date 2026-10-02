@@ -46,8 +46,8 @@ next-intl.
 The October 2026 technical audit was checked against the code; the results are in
 `docs/REPO_GUIDE.md` (how it works) and `docs/ROADMAP.md` (what's open). The full audit,
 including the security assessment kept out of this public repo, is in the club's Google Drive:
-[Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
-(access-restricted).
+"Technical docs - Oct 2026"
+(ask the coordinator for access).
 
 ### Earlier notes (2026-08-14)
 

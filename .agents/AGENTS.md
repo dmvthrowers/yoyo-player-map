@@ -16,8 +16,8 @@ You maintain four public repos for a free, volunteer-run yo-yo club (est. 2021) 
 ## Audit reference
 
 The October 2026 technical audit (repo guides, specs, security assessment, runbooks) is in the
-club's Google Drive: [Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
-(access-restricted). Each repo's `docs/ROADMAP.md` carries the verified, non-sensitive action items.
+club's Google Drive: "Technical docs - Oct 2026"
+(ask the coordinator for access). Each repo's `docs/ROADMAP.md` carries the verified, non-sensitive action items.
 
 ## 2. Repository Map
 

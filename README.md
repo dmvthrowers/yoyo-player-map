@@ -40,7 +40,7 @@ Checks (all run in CI): `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm i18n:p
 - [`docs/ROADMAP.md`](docs/ROADMAP.md) — open work and owner actions
 - [`yoyomap/docs/LAUNCH-CHECKLIST.md`](yoyomap/docs/LAUNCH-CHECKLIST.md) — Vercel/Supabase setup
 - Cross-repo overview: [dmvthrowers.github.io/docs/README.md](https://github.com/dmvthrowers/dmvthrowers.github.io/blob/main/docs/README.md)
-- Full October 2026 audit (Google Drive, access-restricted): [Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
+- Full October 2026 audit (club Google Drive — ask the coordinator for access): "Technical docs - Oct 2026"
 
 ## Contact
 

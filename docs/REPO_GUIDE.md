@@ -130,6 +130,6 @@ pnpm build
 - `docs/ROADMAP.md` — open work, in priority order.
 - `docs/EMAIL_QUEUE_PLAN.md` — how over-quota email is queued and drained.
 - `yoyomap/docs/LAUNCH-CHECKLIST.md` — Vercel and Supabase setup steps.
-- [Technical docs - Oct 2026](https://drive.google.com/drive/folders/1Jt7amThKNkeVJenksPtA87cBtR-nwZiq)
-  (Google Drive, access-restricted) — the full audit this guide came from, including the
+- "Technical docs - Oct 2026"
+  (club Google Drive — ask the coordinator for access) — the full audit this guide came from, including the
   security assessment and runbooks kept out of the public repo.
