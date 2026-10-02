@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { Turnstile } from '@/components/Turnstile';
 
 type EntityType = '' | 'person' | 'shop' | 'club';
 
@@ -161,6 +162,8 @@ export default function SubmitPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileReset, setTurnstileReset] = useState(0);
   const update = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm(f => ({...f, [k]: v}));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
   const countries = useCountries();
@@ -199,7 +202,7 @@ export default function SubmitPage() {
     if (form.discord) socials.discord = form.discord.trim();
     if (form.website) socials.website = form.website.includes('://')? form.website : `https://${form.website}`;
 
-    const payload = {...form,...(Object.keys(socials).length? { socials } : {}) };
+    const payload = {...form,...(Object.keys(socials).length? { socials } : {}), turnstileToken };
     delete (payload as any).instagram; delete (payload as any).youtube; delete (payload as any).discord; delete (payload as any).website;
 
     try {
@@ -208,7 +211,7 @@ export default function SubmitPage() {
       if (!res.ok) setResult({ ok: false, message: data.error?.message });
       else { setShowToast(true); setResult({ ok: true, message: data.message, isMinor, emailStatus: data.emailStatus, retryAt: data.retryAt }); }
     } catch { setResult({ ok: false, message: t('submit.errorNetwork') }); }
-    finally { setSubmitting(false); }
+    finally { setSubmitting(false); setTurnstileReset(n => n + 1); }
   }
 
   if (result?.ok) {
@@ -436,6 +439,7 @@ export default function SubmitPage() {
           )}
         </div>
 
+        <Turnstile onToken={setTurnstileToken} resetKey={turnstileReset} />
         <button type="submit" disabled={submitting} className="btn-primary w-full">{submitting? t('submit.submitting') : t('submit.submit')}</button>
       </form>
     </div>

@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { Turnstile } from '@/components/Turnstile';
 
 function ReportInner() {
   const params = useSearchParams();
@@ -15,6 +16,8 @@ function ReportInner() {
   const [done, setDone] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -23,11 +26,11 @@ function ReportInner() {
       const res = await fetch('/api/report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ entryId, reason, details, reporterEmail: email }),
+        body: JSON.stringify({ entryId, reason, details, reporterEmail: email, turnstileToken }),
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || t('errorFailed'));
+        setError(data.error?.message || t('errorFailed'));
       } else {
         setDone(true);
       }
@@ -35,6 +38,7 @@ function ReportInner() {
       setError(t('errorNetwork'));
     } finally {
       setLoading(false);
+      setTurnstileReset((n) => n + 1);
     }
   }
 
@@ -91,6 +95,8 @@ function ReportInner() {
           placeholder={t('yourEmailPlaceholder')}
         />
       </div>
+
+      <Turnstile onToken={setTurnstileToken} resetKey={turnstileReset} />
 
       {error && <div className="border-2 border-brand-red bg-brand-red/10 p-3 text-sm">{error}</div>}
 

@@ -1,15 +1,18 @@
 const path = require('path');
 const createNextIntlPlugin = require('next-intl/plugin');
+const { withSentryConfig } = require('@sentry/nextjs/config');
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://server.arcgisonline.com https://unpkg.com",
-  "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com",
+  "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  // Cloudflare Turnstile renders its challenge in an iframe.
+  "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -97,4 +100,10 @@ const nextConfig = {
   },
 };
 
-module.exports = withNextIntl(nextConfig);
+// Source maps upload only when SENTRY_AUTH_TOKEN, SENTRY_ORG and
+// SENTRY_PROJECT are set; builds without them skip the upload.
+module.exports = withSentryConfig(withNextIntl(nextConfig), {
+  silent: !process.env.CI,
+  telemetry: false,
+  widenClientFileUpload: true,
+});

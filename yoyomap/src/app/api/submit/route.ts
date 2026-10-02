@@ -9,6 +9,7 @@ import {
 } from '@/lib/email';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -58,6 +59,11 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     body = await req.json();
   } catch {
     return apiError('bad_request', 'Invalid request body.', requestId);
+  }
+
+  const turnstileToken = (body as { turnstileToken?: unknown } | null)?.turnstileToken;
+  if (!(await verifyTurnstile(turnstileToken, ip))) {
+    return apiError('forbidden', 'Please complete the security check and try again.', requestId);
   }
 
   // Try new discriminated union schema first, fall back to legacy for backwards compatibility

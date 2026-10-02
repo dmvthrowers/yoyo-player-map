@@ -5,6 +5,7 @@
 // global-error.tsx for that). Server errors and client errors both land here.
 
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
@@ -21,6 +22,7 @@ export default function Error({
     // Vercel captures console.error into function logs; digest correlates
     // back to the server-rendered request.
     console.error('Route error:', error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
