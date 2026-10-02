@@ -11,9 +11,14 @@ at **00:00 UTC**, which is 8 PM Eastern in summer and 7 PM Eastern in winter. It
 calendar day, not a rolling 24 hours. Inbound mail counts toward the cap too.
 ([Resend: account quotas and limits](https://resend.com/docs/knowledge-base/account-quotas-and-limits))
 
-The quota belongs to the Resend **account**, not the app. If both apps send from the same
-Resend account, they share the 100. Set `EMAIL_DAILY_LIMIT` in each app so the two add
-up to 100 or less.
+The quota belongs to the Resend **account**, and both apps share one account, so they
+share the 100. Every Resend send response includes `x-resend-daily-quota`, the account's
+usage so far today. Each app records the higher of that and its own count, so each one
+sees the other's sends as of its own most recent send. `EMAIL_DAILY_LIMIT` defaults to
+**90** in both apps. The last 10 are a buffer for inbound mail and for sends the other
+app made since our last look. Resend's per-second limit is 10 requests per account. Each
+app's drain sends at most 2 a second, so even both draining at once stays far below it.
+([Resend: usage limits](https://resend.com/docs/api-reference/rate-limit))
 
 So a queue has to do two jobs:
 
@@ -26,12 +31,12 @@ So a queue has to do two jobs:
 | --- | --- |
 | Queue table | One row per email that couldn't go out right away. Holds the template payload, `priority`, `not_before`, `attempts`, `expires_at`, `claimed_at`, `sent_at`, `dead_at`. |
 | Priority | `0` someone is waiting (verify link, magic link, registration confirmation). `1` admin alert. `2` bulk (reminders, outreach, surveys). The drain sends lowest number first. |
-| Daily budget | `email_daily_usage` counts sends per UTC day. Bulk email stops at `EMAIL_DAILY_LIMIT - EMAIL_PRIORITY_RESERVE` (default 100 - 30 = 70), so 30 sends are always left for priority 0. |
+| Daily budget | `email_daily_usage` tracks account-wide sends per UTC day (Resend's header, or our own count when absent). Bulk email stops at `EMAIL_DAILY_LIMIT - EMAIL_PRIORITY_RESERVE` (default 90 - 30 = 60), so 30 sends are always left for priority 0. |
 | Claiming | `claim_*` Postgres function uses `FOR UPDATE SKIP LOCKED`, so two drains running at once never send the same email. A claim older than 5 minutes is reclaimed. |
 | Retries | Throttling, 5xx and network errors back off 1, 2, 4, 8 minutes. After 5 attempts the row is marked dead. Quota waits don't use up attempts. |
 | Expiry | A row whose link has expired is marked dead instead of being sent. Emails whose link would expire before midnight UTC aren't queued at all; the person is told to try again after the reset. |
-| Drain triggers | Vercel cron at 00:05 UTC for the post-reset backlog, plus a small drain after every successful send (`after()`), so short delays clear within minutes whenever the site has traffic. |
-| Optional | Supabase `pg_cron` + `pg_net` calling the drain route every 5 minutes, if the after-send drain proves too slow on quiet days. Needs `CRON_SECRET` stored in Supabase Vault. |
+| Drain triggers | Supabase `pg_cron` every 5 minutes, calling the app only when a row is due (no calls while the queue is empty). Vercel cron at 00:05 UTC. A small drain after every successful send (`after()`). Each drain sends at most 2/second and stops starting new sends after 40 s. |
+| Setup | Store the app's `CRON_SECRET` in Supabase Vault once (see the migration header). Until then the 5-minute job gets 401s and the other two triggers still work. |
 
 ## Phase 1: Map app (this PR)
 
@@ -85,9 +90,12 @@ the result is discarded, so a slow Resend means a lost confirmation with no reco
   process, mark processed. Gives a full record of every payment event and makes
   replays a no-op.
 - **Duplicate payment detection.** If a paid event arrives for an already-paid
-  registration, record it as `duplicate_payment`, alert the admin (priority 1), and
-  either refund automatically or leave it for the treasurer.
-  **Decision needed: auto-refund or flag only.**
+  registration, record it in `vsyc_payment_flags`, alert the admin (priority 1), and
+  leave the refund to the treasurer.
+- **Delayed confirmation.** One `applyPaidSession()` path is used by the webhook, by the
+  confirm page (which asks Stripe directly while the webhook catches up), and by a
+  reconcile sweep every 15 minutes for open checkouts. Whichever sees the payment first
+  marks the registration paid. The others are no-ops.
 - **Payment confirmation email** from the webhook through the outbox, with
   `dedupe_key = payment:<registration_id>`.
 
@@ -97,10 +105,12 @@ the result is discarded, so a slow Resend means a lost confirmation with no reco
   `redeem_comp_code()` (`UPDATE … WHERE uses_count < max_uses RETURNING`), run
   before the registration insert, so codes can't go past `max_uses`.
 
-## Open questions
+## Decisions (2026-10-02)
 
-1. Do the map and registration apps share one Resend account? If so, split the 100
-   (for example map 40, registration 60 during registration season).
-2. Duplicate payments: auto-refund, or flag for the treasurer?
-3. Is a 5-minute `pg_cron` drain wanted, or are the after-send drain plus the
-   nightly cron enough?
+1. Both apps share one Resend, Supabase organization, Upstash and Vercel account. The
+   budget is shared through Resend's quota header, with a 10-email buffer.
+2. Duplicate payments are **flagged**, never auto-refunded.
+3. The queue drains on a schedule, paced under the free-tier limits with a buffer.
+4. Payments get a confirmation step that tolerates Stripe delays. The confirm page checks
+   Stripe directly while the webhook catches up, and a scheduled sweep reconciles any
+   registration whose checkout finished but wasn't marked paid.

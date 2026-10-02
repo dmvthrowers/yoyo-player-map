@@ -14,7 +14,7 @@
 --     spend the whole day's quota before anyone signed up. priority orders
 --     the drain (0 = someone is waiting on it, 1 = admin alert, 2 = bulk), and
 --     email_daily_usage lets the app hold back a reserve for priority 0.
---   * expires_at lets the drain drop an email whose link has already expired
+--   * expires_at lets the drain skip an email whose link has already expired
 --     instead of spending quota on a dead link.
 --
 -- All of this stays service-role only, like email_queue and email_send_log.
@@ -26,9 +26,10 @@ ALTER TABLE public.email_queue
   ADD COLUMN IF NOT EXISTS dead_at    timestamptz,
   ADD COLUMN IF NOT EXISTS expires_at timestamptz;
 
--- Drain order: highest priority first, then oldest not_before.
-DROP INDEX IF EXISTS public.email_queue_drain_idx;
-CREATE INDEX IF NOT EXISTS email_queue_drain_idx
+-- Drain order: highest priority first, then oldest not_before. A new index
+-- name rather than replacing v9's email_queue_drain_idx, which stays (still
+-- valid for its own queries, and the table is small).
+CREATE INDEX IF NOT EXISTS email_queue_priority_drain_idx
   ON public.email_queue (priority, not_before)
   WHERE sent_at IS NULL AND dead_at IS NULL;
 

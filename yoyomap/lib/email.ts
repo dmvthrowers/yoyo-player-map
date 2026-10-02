@@ -14,12 +14,17 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://map.dmvthrowers.club
 // =============================================================================
 // Outcomes, priority, and the daily budget
 // =============================================================================
-// Resend's free tier allows 100 emails per UTC day (inbound mail counts too)
-// and resets at 00:00 UTC. We count our own accepted sends in
-// email_daily_usage and hold EMAIL_PRIORITY_RESERVE of them back for emails a
-// person is waiting on, so a bulk job can't spend the day before a new
-// sign-up's verify link goes out. Our count can only undercount Resend's, so
-// Resend's own 429 stays the backstop.
+// Resend's free tier allows 100 emails per UTC day and resets at 00:00 UTC.
+// The quota is per Resend account, which this app shares with the VSYC
+// registration app, and inbound mail counts too. Every send response carries
+// x-resend-daily-quota (the account's usage so far today), so
+// email_daily_usage tracks the higher of that and our own count.
+//
+// EMAIL_DAILY_LIMIT defaults to 90, leaving 10 as a buffer for inbound mail
+// and the other app's sends we haven't seen yet. EMAIL_PRIORITY_RESERVE of
+// those are held back for emails a person is waiting on, so a bulk job can't
+// spend the day before a new sign-up's verify link goes out. Resend's own 429
+// stays the backstop.
 // =============================================================================
 
 export type EmailSendOutcome =
@@ -66,7 +71,7 @@ function intEnv(name: string, fallback: number): number {
   return Number.isFinite(n) && n >= 0 ? n : fallback;
 }
 
-const DAILY_LIMIT = intEnv('EMAIL_DAILY_LIMIT', 100);
+const DAILY_LIMIT = intEnv('EMAIL_DAILY_LIMIT', 90);
 const PRIORITY_RESERVE = intEnv('EMAIL_PRIORITY_RESERVE', 30);
 
 function budgetCap(template: Template): number {
@@ -117,7 +122,11 @@ async function shouldSkipAsDuplicate(toEmail: string, template: Template): Promi
   }
 }
 
-async function recordSend(toEmail: string, template: Template): Promise<void> {
+/**
+ * Log a delivered email. `quotaUsed` is Resend's account-wide count from the
+ * response header; without it we add one to our own count.
+ */
+async function recordSend(toEmail: string, template: Template, quotaUsed: number | null): Promise<void> {
   try {
     const supabase = createAdminClient();
     await Promise.all([
@@ -127,7 +136,9 @@ async function recordSend(toEmail: string, template: Template): Promise<void> {
           { to_email: toEmail, template, last_sent_at: new Date().toISOString() },
           { onConflict: 'to_email,template' }
         ),
-      supabase.rpc('record_email_send', { p_count: 1 }),
+      quotaUsed === null
+        ? supabase.rpc('record_email_send', { p_count: 1 })
+        : supabase.rpc('observe_email_usage', { p_used: quotaUsed }),
     ]);
   } catch (e) {
     console.error('email send bookkeeping failed:', e);
@@ -143,7 +154,7 @@ async function recordSend(toEmail: string, template: Template): Promise<void> {
 // =============================================================================
 
 type SendResult =
-  | { kind: 'sent' }
+  | { kind: 'sent'; quotaUsed: number | null }
   | { kind: 'quota'; retryAt: Date; error: string } // daily/monthly cap
   | { kind: 'retry'; error: string }                // throttle, 5xx, network
   | { kind: 'failed'; error: string };              // retrying won't help
@@ -189,11 +200,20 @@ function retryDelayMs(attempts: number): number {
   return Math.min(60_000 * 2 ** attempts, HOUR_MS);
 }
 
+/** Resend's x-resend-daily-quota header: emails the whole account has used today. */
+function dailyQuotaUsed(headers: Record<string, string> | null): number | null {
+  if (!headers) return null;
+  const key = Object.keys(headers).find((k) => k.toLowerCase() === 'x-resend-daily-quota');
+  const n = key ? Number.parseInt(headers[key], 10) : Number.NaN;
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
 async function attemptSend(r: RenderedEmail): Promise<SendResult> {
   // One quick in-place retry for the per-second throttle, which clears in
   // about a second; anything longer goes through the queue.
   for (let attempt = 0; ; attempt++) {
     let error: ResendError | null = null;
+    let headers: Record<string, string> | null = null;
     try {
       const result = await getResend().emails.send({
         from: FROM,
@@ -202,10 +222,11 @@ async function attemptSend(r: RenderedEmail): Promise<SendResult> {
         html: r.html,
       });
       error = result.error ?? null;
+      headers = result.headers ?? null;
     } catch (e) {
       error = { name: 'network_error', message: String(e) };
     }
-    if (!error) return { kind: 'sent' };
+    if (!error) return { kind: 'sent', quotaUsed: dailyQuotaUsed(headers) };
 
     const classified = classifyError(error);
     if (attempt === 0 && error.name === 'rate_limit_exceeded' && classified.kind === 'retry') {
@@ -391,7 +412,7 @@ async function sendOrQueue(q: QueuedEmail): Promise<EmailSendOutcome> {
   const result = await attemptSend(rendered);
   switch (result.kind) {
     case 'sent':
-      await recordSend(rendered.to, q.template);
+      await recordSend(rendered.to, q.template, result.quotaUsed);
       kickDrain();
       return { status: 'sent' };
     case 'quota':
@@ -481,8 +502,19 @@ type QueueRow = {
   expires_at: string | null;
 };
 
-export async function drainEmailQueue(limit = 100): Promise<DrainSummary> {
+// Resend allows 10 requests/second per account, shared with the registration
+// app. Draining at 2/second per app leaves plenty of room for live sends.
+const DRAIN_SEND_SPACING_MS = 500;
+
+/**
+ * @param timeBudgetMs stop starting new sends after this long; unprocessed
+ *   rows are released for the next run so the function never times out
+ *   holding claims.
+ */
+export async function drainEmailQueue(limit = 100, timeBudgetMs = 40_000): Promise<DrainSummary> {
   const supabase = createAdminClient();
+  const deadline = Date.now() + timeBudgetMs;
+  let lastSendAt = 0;
   const summary: DrainSummary = { processed: 0, sent: 0, requeued: 0, failed: 0, dead: 0 };
 
   const { data: rows, error } = await supabase.rpc('claim_email_queue', { p_limit: limit });
@@ -502,6 +534,10 @@ export async function drainEmailQueue(limit = 100): Promise<DrainSummary> {
 
   for (const row of rows as QueueRow[]) {
     const q = row.payload;
+    if (Date.now() >= deadline) {
+      await release(row.id, {});
+      continue;
+    }
     try {
       if (row.expires_at && new Date(row.expires_at).getTime() <= Date.now()) {
         await markDead(row.id, 'expired: link no longer valid');
@@ -525,11 +561,15 @@ export async function drainEmailQueue(limit = 100): Promise<DrainSummary> {
         continue;
       }
 
+      const wait = lastSendAt + DRAIN_SEND_SPACING_MS - Date.now();
+      if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+      lastSendAt = Date.now();
+
       const result = await attemptSend(rendered);
       if (result.kind === 'sent') {
         await supabase.from('email_queue').update({ sent_at: new Date().toISOString() }).eq('id', row.id);
-        await recordSend(rendered.to, q.template);
-        used += 1;
+        await recordSend(rendered.to, q.template, result.quotaUsed);
+        used = result.quotaUsed ?? used + 1;
         summary.sent += 1;
       } else if (result.kind === 'quota') {
         quotaUntil = result.retryAt;
