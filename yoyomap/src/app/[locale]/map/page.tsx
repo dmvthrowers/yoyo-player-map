@@ -102,7 +102,7 @@ export default async function MapPage({ params }: { params: Promise<{ locale: st
   };
 
   return (
-    <div className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-88px)] relative">
+    <div className="h-[calc(100dvh-56px)] md:h-[calc(100dvh-88px)] relative isolate">
       <MapInfoPanel counts={counts} />
       <Suspense fallback={<div className="p-8">Loading map...</div>}>
         <MapClient entries={entries} />
