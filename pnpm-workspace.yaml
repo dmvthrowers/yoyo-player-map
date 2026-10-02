@@ -25,7 +25,7 @@ catalog:
   react-dom: 19.1.0
   tailwind-merge: ^3.6.0
   tailwindcss: ^4.3.0
-  tsx: ^4.21.0
+  tsx: ^4.23.15
   vite: ^8.3.1
   wouter: ^3.3.5
   zod: 4.6.5
@@ -73,3 +73,14 @@ overrides:
   uuid@<14.0.0: ^14.0.0
   # devalue: prototype pollution / XSS (GHSA-cfw5-2vxh-hr84, GHSA-mwv9-gp5h-frr4)
   devalue@<5.8.0: ^5.8.0
+  # --- OSV-Scanner findings on main (root lockfile) ---
+  # @babel/core: GHSA-4x5r-pxfx-6jf8; needs >=7.29.6
+  '@babel/core@<7.29.6': ^7.29.6
+  # body-parser (express): GHSA-v422-hmwv-36x6; needs >=2.3.0
+  body-parser@>=2.0.0 <2.3.0: ^2.3.0
+  # qs (express, body-parser): GHSA-4mjr-xmp4-gh2g, -q8mj-m7cp-5q26, -x5fp-wj9c-mxmx; needs >=6.16.0
+  qs@>=6.0.0 <6.16.0: ^6.16.0
+  # esbuild 0.18 (drizzle-kit->@esbuild-kit/core-utils): GHSA-67mh-4wv8-2f99; needs >=0.25.0
+  esbuild@<0.25.0: ^0.25.0
+  # tsx 4.21 pins esbuild ~0.27 (GHSA-g7r4-m6w7-qqqr); tsx 4.23 uses ~0.28
+  tsx@<4.23.0: ^4.23.15
