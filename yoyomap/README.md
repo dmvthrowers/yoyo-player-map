@@ -159,11 +159,9 @@ Copy `.env.local.example` to `.env.local` and fill in:
 cp .env.local.example .env.local
 ```
 
-Generate a random `ENTRY_SECRET`:
-
-```bash
-node -e "console.log(require('crypto').randomBytes(48).toString('base64'))"
-```
+Generate `CRON_SECRET` and `REVALIDATE_SECRET` with `openssl rand -hex 32`.
+(Verification tokens are random values stored SHA-256 hashed; there is no
+`ENTRY_SECRET` any more — delete it from Vercel if it's still set.)
 
 Set `ADMIN_PASSWORD` to something strong — this is how you log into `/admin`.
 
