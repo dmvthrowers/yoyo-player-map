@@ -29,6 +29,8 @@ function RequestMagicLink() {
   const t = useTranslations();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  // Server note when the email couldn't go out right away (daily limit).
+  const [sentNote, setSentNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -46,6 +48,10 @@ function RequestMagicLink() {
         const data = await res.json();
         setError(data.error || t('profile.errorSomethingWrong'));
       } else {
+        const data = await res.json().catch(() => ({}));
+        if (data.emailStatus === 'queued' || data.emailStatus === 'deferred') {
+          setSentNote(data.message ?? '');
+        }
         setSent(true);
       }
     } catch {
@@ -60,7 +66,7 @@ function RequestMagicLink() {
       <div className="card text-center">
         <h1 className="text-3xl mb-4">{t('profile.checkEmail')}</h1>
         <p className="text-navy/80">
-          {t('profile.checkEmailHelp')}
+          {sentNote || t('profile.checkEmailHelp')}
         </p>
       </div>
     );
