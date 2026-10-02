@@ -3,6 +3,7 @@ import { drainEmailQueue } from '@/lib/email';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdminOrCron } from '@/lib/admin-auth';
 import { isSignedByQstash } from '@/lib/qstash';
+import { heartbeat } from '@/lib/heartbeat';
 
 export const runtime = 'nodejs';
 // Sends are paced at 2/second; the drain stops starting new ones after 40s.
@@ -26,7 +27,14 @@ async function handle(req: NextRequest) {
     if (authError) return authError;
   }
 
-  const summary = await drainEmailQueue(60);
+  let summary;
+  try {
+    summary = await drainEmailQueue(60);
+  } catch (e) {
+    await heartbeat('map-drain-email', 'fail');
+    throw e;
+  }
+  await heartbeat('map-drain-email', summary.claimFailed ? 'fail' : 'ok');
   await logAudit('admin.drain_email_queue', {
     actor: viaQstash ? 'qstash' : 'admin',
     meta: { ip: getClientIp(req.headers), ...summary },

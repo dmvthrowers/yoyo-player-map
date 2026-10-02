@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { heartbeat } from '@/lib/heartbeat';
 
 export const runtime = 'nodejs';
 
@@ -13,11 +14,18 @@ export async function GET(req) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-  const res = await fetch(`${baseUrl}/api/admin/send-reminders`, {
-    method: 'GET',
-    headers: { authorization: `Bearer ${cronSecret}` },
-  });
+  let res;
+  try {
+    res = await fetch(`${baseUrl}/api/admin/send-reminders`, {
+      method: 'GET',
+      headers: { authorization: `Bearer ${cronSecret}` },
+    });
+  } catch (e) {
+    await heartbeat('map-reminders', 'fail');
+    throw e;
+  }
 
   const body = await res.json().catch(() => ({}));
+  await heartbeat('map-reminders', res.ok ? 'ok' : 'fail');
   return NextResponse.json({ ok: res.ok, status: res.status, ...body });
 }
