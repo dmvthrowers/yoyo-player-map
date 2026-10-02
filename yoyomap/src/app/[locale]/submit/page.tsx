@@ -38,41 +38,50 @@ type FormState = {
   honeypot: string;
 };
 
+// Location lists come from /api/locations. A failed load used to be swallowed,
+// leaving an empty dropdown and a form nobody could finish; the hooks now
+// report `failed` so the form can say so.
+async function fetchLocations(query: string) {
+  const r = await fetch(`/api/locations?${query}`);
+  if (!r.ok) throw new Error(`locations ${r.status}`);
+  return r.json();
+}
+
 function useCountries() {
   const [countries, setCountries] = useState<{ id: number; code: string; name: string }[]>([]);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
-    fetch('/api/locations?type=countries')
-     .then(r => r.json())
-     .then(d => setCountries(d.countries || []))
-     .catch(() => {});
+    fetchLocations('type=countries')
+     .then(d => { setCountries(d.countries || []); setFailed(false); })
+     .catch(() => setFailed(true));
   }, []);
-  return countries;
+  return { countries, failed };
 }
 
 function useRegions(countryId: number | null) {
   const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
-    if (!countryId) { setRegions([]); return; }
-    fetch(`/api/locations?type=regions&countryId=${countryId}`)
-     .then(r => r.json())
-     .then(d => setRegions(d.regions || []))
-     .catch(() => {});
+    if (!countryId) { setRegions([]); setFailed(false); return; }
+    fetchLocations(`type=regions&countryId=${countryId}`)
+     .then(d => { setRegions(d.regions || []); setFailed(false); })
+     .catch(() => setFailed(true));
   }, [countryId]);
-  return regions;
+  return { regions, failed };
 }
 
 function useAllCities(countryId: number | null, regionId: number | null, refreshKey = 0) {
   const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
-    if (!countryId) { setCities([]); return; }
+    if (!countryId) { setCities([]); setFailed(false); return; }
     const params = new URLSearchParams({ type: 'cities', countryId: String(countryId) });
     if (regionId) params.set('regionId', String(regionId));
-    fetch(`/api/locations?${params}`)
-     .then(r => r.json())
-     .then(d => setCities(d.cities || []))
-     .catch(() => {});
+    fetchLocations(params.toString())
+     .then(d => { setCities(d.cities || []); setFailed(false); })
+     .catch(() => setFailed(true));
   }, [countryId, regionId, refreshKey]);
-  return cities;
+  return { cities, failed };
 }
 
 function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
@@ -80,10 +89,11 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
 }) {
   const t = useTranslations();
   const [refreshKey, setRefreshKey] = useState(0);
-  const allCities = useAllCities(countryId, regionId, refreshKey);
+  const { cities: allCities, failed: citiesFailed } = useAllCities(countryId, regionId, refreshKey);
   const [input, setInput] = useState('');
   const [show, setShow] = useState(false);
   const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState('');
   const selected = allCities.find(c => c.id === cityId);
 
   useEffect(() => { if (selected) setInput(selected.name); else if (!cityId) setInput(''); }, [selected, cityId]);
@@ -94,11 +104,14 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
   async function addCity() {
     if (!countryId) return;
     setAdding(true);
+    setAddError('');
     try {
       const res = await fetch('/api/locations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: input.trim(), countryId, regionId }) });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok && data.city?.id) { setCityId(data.city.id); setInput(data.city.name); setShow(false); setRefreshKey(k => k+1); }
-      else alert(data.error?.message || 'Failed');
+      else setAddError(data.error?.message || t('profile.errorNetworkConnection'));
+    } catch {
+      setAddError(t('profile.errorNetworkConnection'));
     } finally { setAdding(false); }
   }
 
@@ -124,6 +137,9 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
             {adding ? t('submit.addCityAdding') : t('submit.addCityButton', { city: input.trim() })}
           </button>
         </div>
+      )}
+      {(addError || citiesFailed) && (
+        <p role="alert" className="text-red-600 text-sm mt-2">{addError || t('profile.errorNetworkConnection')}</p>
       )}
     </div>
   );
@@ -166,8 +182,8 @@ export default function SubmitPage() {
   const [turnstileReset, setTurnstileReset] = useState(0);
   const update = <K extends keyof FormState>(k: K, v: FormState[K]) => setForm(f => ({...f, [k]: v}));
   const isMinor = form.entityType === 'person' && form.ageBand === '13-17';
-  const countries = useCountries();
-  const regions = useRegions(form.country_id);
+  const { countries, failed: countriesFailed } = useCountries();
+  const { regions, failed: regionsFailed } = useRegions(form.country_id);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -297,6 +313,9 @@ export default function SubmitPage() {
             {countries.map(c=> <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           {formErrors.country_id && <p className="text-red-600 text-sm">{formErrors.country_id}</p>}
+          {(countriesFailed || regionsFailed) && (
+            <p role="alert" className="text-red-600 text-sm">{t('profile.errorNetworkConnection')}</p>
+          )}
 
           <label htmlFor="region_id" className="sr-only">{t('submit.selectRegion')}</label>
           <select 

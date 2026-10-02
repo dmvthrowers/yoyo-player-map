@@ -239,6 +239,7 @@
     "title": "Yo-Yo Player Map",
     "pageTitle": "Yo-Yo Player Map — Find Throwers, Shops & Clubs Near You",
     "pageDescription": "Browse the global community map of yo-yo players, shops, and clubs. Privacy-first, opt-in, city-level locations only.",
+    "loadFailed": "Couldn't load the map pins right now. Refresh the page to try again.",
     "description": "Find yo-yo players, shops, and clubs near you.",
     "loading": "Loading map...",
     "loadingFallback": "Loading map…",
