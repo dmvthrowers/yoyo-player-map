@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { sendReportNotificationEmail } from '@/lib/email';
 import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
+import { verifyTurnstile } from '@/lib/turnstile';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
@@ -22,6 +23,11 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     return apiError('bad_request', 'Request body too large.', requestId);
   }
   try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body.', requestId); }
+
+  const turnstileToken = (body as { turnstileToken?: unknown } | null)?.turnstileToken;
+  if (!(await verifyTurnstile(turnstileToken, ip))) {
+    return apiError('forbidden', 'Please complete the security check and try again.', requestId);
+  }
   const parsed = reportSchema.safeParse(body);
   if (!parsed.success) return apiError('bad_request', 'Invalid report.', requestId);
 

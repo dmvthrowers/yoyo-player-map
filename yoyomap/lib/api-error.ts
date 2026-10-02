@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 
 /**
  * Returns true when the Content-Length header exceeds maxBytes.
@@ -89,6 +90,7 @@ export function withErrorHandling<Args extends unknown[]>(
       return res;
     } catch (e) {
       console.error(`[api] unhandled error [${requestId}]:`, e);
+      Sentry.captureException(e, { tags: { request_id: requestId } });
       return apiError('internal_error', 'Something went wrong on our end.', requestId);
     }
   };

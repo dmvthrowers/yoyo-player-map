@@ -4,6 +4,7 @@
 // error.tsx can't mount because it lives inside the layout). Must render
 // <html> and <body> because the normal layout is bypassed.
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
 export default function GlobalError({
   error,
@@ -14,6 +15,7 @@ export default function GlobalError({
 }) {
   useEffect(() => {
     console.error('Global error:', error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (

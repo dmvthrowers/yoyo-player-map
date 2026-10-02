@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import * as Sentry from '@sentry/nextjs';
 import { after } from 'next/server';
 import { createAdminClient } from './supabase/admin';
 
@@ -492,6 +493,8 @@ export interface DrainSummary {
   requeued: number;
   failed: number;
   dead: number;
+  /** Set when the database couldn't be asked for due rows. */
+  claimFailed?: boolean;
 }
 
 type QueueRow = {
@@ -505,6 +508,11 @@ type QueueRow = {
 // Resend allows 10 requests/second per account, shared with the registration
 // app. Draining at 2/second per app leaves plenty of room for live sends.
 const DRAIN_SEND_SPACING_MS = 500;
+
+// Ids and template only: the error text and row can hold addresses.
+function reportGaveUp(id: string, template: string, reason: string) {
+  Sentry.captureMessage('Email gave up', { level: 'error', tags: { queue_id: id, template, reason } });
+}
 
 /**
  * @param timeBudgetMs stop starting new sends after this long; unprocessed
@@ -520,7 +528,8 @@ export async function drainEmailQueue(limit = 100, timeBudgetMs = 40_000): Promi
   const { data: rows, error } = await supabase.rpc('claim_email_queue', { p_limit: limit });
   if (error || !rows) {
     console.error('Drain claim failed:', error);
-    return summary;
+    Sentry.captureException(error ?? new Error('claim_email_queue returned no rows'));
+    return { ...summary, claimFailed: true };
   }
 
   const release = (id: string, fields: Record<string, unknown>) =>
@@ -582,6 +591,7 @@ export async function drainEmailQueue(limit = 100, timeBudgetMs = 40_000): Promi
             .update({ attempts, dead_at: new Date().toISOString(), last_error: result.error })
             .eq('id', row.id);
           summary.dead += 1;
+          reportGaveUp(row.id, q.template, 'retries_exhausted');
         } else {
           await release(row.id, {
             attempts,
@@ -595,10 +605,12 @@ export async function drainEmailQueue(limit = 100, timeBudgetMs = 40_000): Promi
           .update({ attempts: (row.attempts ?? 0) + 1, dead_at: new Date().toISOString(), last_error: result.error })
           .eq('id', row.id);
         summary.failed += 1;
+        reportGaveUp(row.id, q.template, 'permanent_error');
       }
     } catch (e) {
       // Leave the row for the next drain rather than holding the claim.
       console.error('Drain row failed:', row.id, e);
+      Sentry.captureException(e, { tags: { queue_id: row.id } });
       await release(row.id, {});
     }
   }
