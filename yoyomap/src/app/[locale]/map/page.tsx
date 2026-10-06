@@ -8,6 +8,7 @@ import MapClient from './MapClient';
 import MapInfoPanel from './MapInfoPanel';
 import { supabase } from '@/lib/supabase';
 import { MAP_TABLE } from '@/lib/supabase/client';
+import { localeAlternates } from '@/lib/seo';
 
 
 export async function generateMetadata({
@@ -20,7 +21,7 @@ export async function generateMetadata({
   return {
     title: t('pageTitle'),
     description: t('pageDescription'),
-    alternates: { canonical: '/map' },
+    alternates: localeAlternates(locale, '/map'),
     openGraph: {
       title: t('pageTitle'),
       description: t('pageDescription'),

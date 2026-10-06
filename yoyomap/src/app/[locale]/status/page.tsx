@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
+import { localeAlternates } from '@/lib/seo';
 
 type StatusLevel = 'operational' | 'degraded' | 'outage' | 'monitor';
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: t('title'),
     description: t('description'),
-    alternates: { canonical: '/status' },
+    alternates: localeAlternates(locale, '/status'),
   };
 }
 

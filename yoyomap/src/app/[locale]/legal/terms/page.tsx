@@ -2,12 +2,16 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import type { Metadata } from 'next';
+import { localeAlternates } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
   title: 'Terms of Service',
   description: 'Terms of service for YoYo Map, a community project of DMV Throwers.',
-  alternates: { canonical: '/legal/terms' },
-};
+  alternates: localeAlternates(locale, '/legal/terms'),
+  };
+}
 
 export default async function TermsPage() {
   const t = await getTranslations();

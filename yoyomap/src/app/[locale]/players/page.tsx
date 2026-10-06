@@ -5,15 +5,19 @@ import { fetchLeanEntries, canonicalCountryName } from '@/lib/locations';
 import { slugify } from '@/lib/locationSlug';
 import { getTranslations } from 'next-intl/server';
 import PlayersTable from './PlayersTable';
+import { localeAlternates } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const revalidate = 86400;
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
   title: 'Yo-Yo Players Worldwide — Browse by Location',
   description: 'Browse the YoYo Map by country, state, and city. Find local yo-yo players, shops, and clubs in your area.',
-  alternates: { canonical: '/players' },
-};
+  alternates: localeAlternates(locale, '/players'),
+  };
+}
 
 export default async function Page() {
   const t = await getTranslations();

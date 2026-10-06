@@ -2,12 +2,16 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
 import type { Metadata } from 'next';
+import { localeAlternates } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
   title: 'Contact — YoYo Map',
   description: 'Get in touch with DMV Throwers Yo-Yo & Skill Toy Club.',
-  alternates: { canonical: '/contact' },
-};
+  alternates: localeAlternates(locale, '/contact'),
+  };
+}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));

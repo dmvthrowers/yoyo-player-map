@@ -6,10 +6,14 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/api/', '/admin', '/profile', '/report'],
+        disallow: [
+          '/api/',
+          '/admin', '/profile', '/report', '/confirm-location',
+          // Every page lives under a locale prefix (/en/admin), so match those too.
+          '/*/admin', '/*/profile', '/*/report', '/*/confirm-location',
+        ],
       },
     ],
     sitemap: 'https://map.dmvthrowers.club/sitemap.xml',
-    host: 'https://map.dmvthrowers.club',
   };
 }

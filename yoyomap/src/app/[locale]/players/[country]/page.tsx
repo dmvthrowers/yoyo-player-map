@@ -6,6 +6,7 @@ import { slugify } from '@/lib/locationSlug';
 import { Counts, MapCta, NotListed, EntryCard } from '../EntryList';
 import { getTranslations } from 'next-intl/server';
 import PlayersTable from '../PlayersTable';
+import { localeAlternates } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const revalidate = 86400;
@@ -27,14 +28,14 @@ export async function generateStaticParams() {
   return out;
 }
 
-export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country } = await params;
+export async function generateMetadata({ params }: { params: Promise<Params & { locale: string }> }): Promise<Metadata> {
+  const { locale, country } = await params;
   const entries = await leanEntriesInCountry(country);
   const name = canonicalName(entries, 'country') ?? country;
   return {
     title: `Yo-Yo Players in ${name}`,
     description: `Browse yo-yo players, shops, and clubs in ${name}. Privacy-first, opt-in community map.`,
-    alternates: { canonical: `/players/${country}` },
+    alternates: localeAlternates(locale, `/players/${country}`),
   };
 }
 

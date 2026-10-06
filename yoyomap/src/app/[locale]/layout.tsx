@@ -21,10 +21,37 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: t('pageDescription'),
       siteName: 'YoYo Player Map',
       type: 'website',
+      locale: locale.replace('-', '_'),
+      images: [{ url: '/opengraph.jpg', width: 1280, height: 720, alt: 'YoYo Player Map: find yo-yo players, shops and clubs near you' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@dmv_throwers',
+      title: t('pageTitle'),
+      description: t('pageDescription'),
+      images: ['/opengraph.jpg'],
     },
     icons: { icon: '/favicon.svg' },
   };
 }
+
+// Site-wide structured data: who runs the map and what the site is.
+const siteJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'YoYo Player Map',
+    url: 'https://map.dmvthrowers.club/',
+    publisher: { '@type': 'Organization', name: 'DMV Throwers', url: 'https://dmvthrowers.club/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'DMV Throwers',
+    url: 'https://dmvthrowers.club/',
+    logo: 'https://dmvthrowers.club/assets/images/logo.png',
+  },
+];
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -42,6 +69,7 @@ export default async function Layout({ children, params }: { children: React.Rea
   return (
     <html lang={locale}>
       <body className="min-h-screen flex flex-col">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <header className="sticky top-0 z-40">
             <Navigation />
