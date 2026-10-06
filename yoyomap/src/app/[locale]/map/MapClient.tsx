@@ -3,6 +3,7 @@
 import { Suspense, useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import type { MapEntry } from './page';
 
 export interface MapFilters {
@@ -102,9 +103,13 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
                 </button>
               )}
             </div>
-            <p className="text-[10px] text-navy/60 mt-1" aria-live="polite">
+            <p className="text-xs text-navy/70 mt-1" aria-live="polite">
               {t('map.resultCount', { count: filteredEntries.length })}
             </p>
+            {/* Keyboard and screen reader users can't reach the player pins, so offer the list. */}
+            <Link href="/players" className="inline-block mt-1 text-xs font-semibold text-brand-red underline">
+              {t('map.viewAsList')}
+            </Link>
             <hr className="my-2 border-navy/20" />
             <div className="space-y-1">
               <label className="flex items-center gap-2 text-sm cursor-pointer">

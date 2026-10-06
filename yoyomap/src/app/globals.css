@@ -284,6 +284,11 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   z-index: 100;
+  /* Off-screen until it gets keyboard focus. */
+  transform: translateY(-120%);
+}
+.skip-link:focus {
+  transform: none;
 }
 
 /* Subtle radial-dot pattern for dark hero sections */

@@ -80,8 +80,8 @@ function RequestMagicLink() {
       </p>
       <form onSubmit={onSubmit} className="card space-y-4">
         <div>
-          <label className="label">{t('profile.emailLabel')}</label>
-          <input
+          <label className="label" htmlFor="pf-1">{t('profile.emailLabel')}</label>
+          <input id="pf-1"
             className="input"
             type="email"
             required
@@ -232,39 +232,39 @@ function ManageEntry({ token }: { token: string }) {
 
       <div className="card space-y-4">
         <div>
-          <label className="label">{t('profile.displayName')}</label>
-          <input className="input" value={entry.display_name} onChange={(e) => setEntry({ ...entry, display_name: e.target.value })} title={t('profile.displayName')} />
+          <label className="label" htmlFor="pf-2">{t('profile.displayName')}</label>
+          <input id="pf-2" className="input" value={entry.display_name} onChange={(e) => setEntry({ ...entry, display_name: e.target.value })} title={t('profile.displayName')} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">{t('profile.city')}</label>
-            <input className="input" value={entry.city} onChange={(e) => setEntry({ ...entry, city: e.target.value })} title={t('profile.city')} />
+            <label className="label" htmlFor="pf-3">{t('profile.city')}</label>
+            <input id="pf-3" className="input" value={entry.city} onChange={(e) => setEntry({ ...entry, city: e.target.value })} title={t('profile.city')} />
           </div>
           <div>
-            <label className="label">{t('profile.region')}</label>
-            <input className="input" value={entry.region || ''} onChange={(e) => setEntry({ ...entry, region: e.target.value })} title={t('profile.region')} />
+            <label className="label" htmlFor="pf-4">{t('profile.region')}</label>
+            <input id="pf-4" className="input" value={entry.region || ''} onChange={(e) => setEntry({ ...entry, region: e.target.value })} title={t('profile.region')} />
           </div>
         </div>
         <div>
-          <label className="label">{t('profile.bio')}</label>
-          <textarea className="input" rows={3} maxLength={280} value={entry.bio || ''} onChange={(e) => setEntry({ ...entry, bio: e.target.value })} title={t('profile.bio')} />
+          <label className="label" htmlFor="pf-5">{t('profile.bio')}</label>
+          <textarea id="pf-5" className="input" rows={3} maxLength={280} value={entry.bio || ''} onChange={(e) => setEntry({ ...entry, bio: e.target.value })} title={t('profile.bio')} />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="label">{t('profile.instagram')}</label>
-            <input className="input" value={entry.socials?.instagram || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, instagram: e.target.value } })} title={t('profile.instagram')} />
+            <label className="label" htmlFor="pf-6">{t('profile.instagram')}</label>
+            <input id="pf-6" className="input" value={entry.socials?.instagram || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, instagram: e.target.value } })} title={t('profile.instagram')} />
           </div>
           <div>
-            <label className="label">{t('profile.youtube')}</label>
-            <input className="input" value={entry.socials?.youtube || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, youtube: e.target.value } })} title={t('profile.youtube')} />
+            <label className="label" htmlFor="pf-7">{t('profile.youtube')}</label>
+            <input id="pf-7" className="input" value={entry.socials?.youtube || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, youtube: e.target.value } })} title={t('profile.youtube')} />
           </div>
           <div>
-            <label className="label">{t('profile.discord')}</label>
-            <input className="input" value={entry.socials?.discord || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, discord: e.target.value } })} title={t('profile.discord')} />
+            <label className="label" htmlFor="pf-8">{t('profile.discord')}</label>
+            <input id="pf-8" className="input" value={entry.socials?.discord || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, discord: e.target.value } })} title={t('profile.discord')} />
           </div>
           <div>
-            <label className="label">{t('profile.website')}</label>
-            <input className="input" value={entry.socials?.website || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, website: e.target.value } })} title={t('profile.website')} />
+            <label className="label" htmlFor="pf-9">{t('profile.website')}</label>
+            <input id="pf-9" className="input" value={entry.socials?.website || ''} onChange={(e) => setEntry({ ...entry, socials: { ...entry.socials, website: e.target.value } })} title={t('profile.website')} />
           </div>
         </div>
 
@@ -274,20 +274,20 @@ function ManageEntry({ token }: { token: string }) {
             <hr className="border-navy/10" />
             <p className="font-semibold text-sm uppercase tracking-wide">🏪 {t('profile.shopDetails')}</p>
             <div>
-              <label className="label">{t('profile.contactName')}</label>
-              <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
+              <label className="label" htmlFor="pf-10">{t('profile.contactName')}</label>
+              <input id="pf-10" className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
             </div>
             <div>
-              <label className="label">{t('profile.addressLine')}</label>
-              <input className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.addressLine')} />
+              <label className="label" htmlFor="pf-11">{t('profile.addressLine')}</label>
+              <input id="pf-11" className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.addressLine')} />
             </div>
             <div>
-              <label className="label">{t('profile.postalCode')}</label>
-              <input className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.postalCode')} />
+              <label className="label" htmlFor="pf-12">{t('profile.postalCode')}</label>
+              <input id="pf-12" className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.postalCode')} />
             </div>
             <div>
-              <label className="label">{t('profile.hours')}</label>
-              <textarea className="input" rows={3} value={entry.hours || ''} onChange={(e) => setEntry({ ...entry, hours: e.target.value })} title={t('profile.hours')} />
+              <label className="label" htmlFor="pf-13">{t('profile.hours')}</label>
+              <textarea id="pf-13" className="input" rows={3} value={entry.hours || ''} onChange={(e) => setEntry({ ...entry, hours: e.target.value })} title={t('profile.hours')} />
             </div>
           </>
         )}
@@ -298,12 +298,12 @@ function ManageEntry({ token }: { token: string }) {
             <hr className="border-navy/10" />
             <p className="font-semibold text-sm uppercase tracking-wide">🎲 {t('profile.clubDetails')}</p>
             <div>
-              <label className="label">{t('profile.contactName')}</label>
-              <input className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
+              <label className="label" htmlFor="pf-14">{t('profile.contactName')}</label>
+              <input id="pf-14" className="input" value={entry.contact_name || ''} onChange={(e) => setEntry({ ...entry, contact_name: e.target.value })} title={t('profile.contactName')} />
             </div>
             <div>
-              <label className="label">{t('profile.meetingInfo')}</label>
-              <textarea className="input" rows={4} value={entry.club_meeting_info || ''} onChange={(e) => setEntry({ ...entry, club_meeting_info: e.target.value })} title={t('profile.meetingInfo')} />
+              <label className="label" htmlFor="pf-15">{t('profile.meetingInfo')}</label>
+              <textarea id="pf-15" className="input" rows={4} value={entry.club_meeting_info || ''} onChange={(e) => setEntry({ ...entry, club_meeting_info: e.target.value })} title={t('profile.meetingInfo')} />
             </div>
             <label className="flex items-center gap-2">
               <input type="checkbox" checked={entry.club_venue_public} onChange={(e) => setEntry({ ...entry, club_venue_public: e.target.checked })} />
@@ -312,12 +312,12 @@ function ManageEntry({ token }: { token: string }) {
             {entry.club_venue_public && (
               <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
                 <div>
-                  <label className="label">{t('profile.venueAddressLine')}</label>
-                  <input className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.venueAddressLine')} />
+                  <label className="label" htmlFor="pf-16">{t('profile.venueAddressLine')}</label>
+                  <input id="pf-16" className="input" value={entry.address_line || ''} onChange={(e) => setEntry({ ...entry, address_line: e.target.value })} title={t('profile.venueAddressLine')} />
                 </div>
                 <div>
-                  <label className="label">{t('profile.venuePostalCode')}</label>
-                  <input className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.venuePostalCode')} />
+                  <label className="label" htmlFor="pf-17">{t('profile.venuePostalCode')}</label>
+                  <input id="pf-17" className="input" value={entry.postal_code || ''} onChange={(e) => setEntry({ ...entry, postal_code: e.target.value })} title={t('profile.venuePostalCode')} />
                 </div>
               </div>
             )}

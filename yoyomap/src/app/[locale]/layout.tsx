@@ -53,6 +53,9 @@ const siteJsonLd = [
   },
 ];
 
+// Right-to-left scripts: without dir="rtl" Arabic pages lay out left to right.
+const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur']);
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -67,10 +70,11 @@ export default async function Layout({ children, params }: { children: React.Rea
   const t = await getTranslations();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'}>
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }} />
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <a href="#main-content" className="skip-link">{t('nav.skipToContent')}</a>
           <header className="sticky top-0 z-40">
             <Navigation />
           </header>
