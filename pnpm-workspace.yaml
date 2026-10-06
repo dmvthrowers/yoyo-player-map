@@ -46,6 +46,11 @@ onlyBuiltDependencies:
 # while package.json also had "pnpm.overrides" (that block won). Security pins
 # are scoped to the vulnerable range so they can't force another major.
 overrides:
+  # --- audit fixes ---
+  # proxy-addr (express): GHSA-jqcg-44mw-7w3h; needs >=2.0.8
+  proxy-addr@<2.0.8: ^2.0.8
+  # source-map-js (@tailwindcss/node): GHSA-68fv-2mgg-jv7q; needs >=1.2.2
+  source-map-js@<1.2.2: ^1.2.2
   # --- carried over from package.json (already in effect) ---
   fast-uri: '>=3.1.2'
   fast-xml-builder: '>=1.1.7'
@@ -84,3 +89,9 @@ overrides:
   esbuild@<0.25.0: ^0.25.0
   # tsx 4.21 pins esbuild ~0.27 (GHSA-g7r4-m6w7-qqqr); tsx 4.23 uses ~0.28
   tsx@<4.23.0: ^4.23.15
+
+# braces <=3.0.3 (fast-glob->micromatch): GHSA-vfj7-8cjw-p6xm has no patched release
+# and is reachable only through dev-time globbing, so it is allow-listed.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm

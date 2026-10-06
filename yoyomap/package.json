@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@react-email/render": "^2.0.8",
-    "@sentry/nextjs": "^11.3.0",
+    "@sentry/nextjs": "^11.4.0",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.117.2",
     "@upstash/qstash": "^2.12.0",
@@ -26,14 +26,14 @@
     "@vercel/sandbox": "^3.5.1",
     "deepmerge": "^4.3.1",
     "leaflet": "^1.9.4",
-    "marked": "^18.0.14",
-    "next": "^16.3.8",
+    "marked": "^18.1.0",
+    "next": "^16.4.0",
     "next-intl": "^4.14.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
     "react-leaflet-cluster": "^3.1.1",
-    "resend": "^6.32.0",
+    "resend": "^6.32.1",
     "workflow": "^4.4.0",
     "zod": "^4.4.3"
   },
@@ -47,21 +47,28 @@
     "adm-zip": "^0.6.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.12.0",
-    "eslint-config-next": "^16.3.8",
-    "postcss": "^8.5.15",
+    "eslint-config-next": "^16.4.0",
+    "postcss": "^8.5.29",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3"
   },
   "pnpm": {
     "overrides": {
       "undici": ">=7.25.0",
-      "postcss": ">=8.5.13",
+      "postcss": "^8.5.29",
       "devalue": "^5.9.3",
       "esbuild": ">=0.25.0",
       "fast-xml-builder": ">=1.1.7",
       "fast-uri": ">=3.1.2",
       "ws": ">=8.21.0",
+      "source-map-js": ">=1.2.2",
+      "sharp": ">=0.35.5",
       "nanoid@>=4.0.0 <5.1.16": "^5.1.16"
+    },
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-vfj7-8cjw-p6xm"
+      ]
     },
     "onlyBuiltDependencies": [
       "@swc/core",
