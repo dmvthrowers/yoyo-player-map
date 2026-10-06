@@ -238,7 +238,7 @@ Every consent grant logs IP, user-agent, timestamp, and consent token. If you ev
 - **User accounts.** Entry owners manage their listing through emailed magic links. No passwords (the admin dashboard uses one shared password).
 - **Image uploads.** Fewer attack surfaces.
 - **Direct messaging.** Safety over feature count.
-- **Analytics.** Privacy over optimization. (`@vercel/analytics` is installed but not mounted — see the roadmap.)
+- **Analytics.** Privacy over optimization. No analytics package is installed.
 - **Payment.** Always free.
 - **Mobile apps.** The web is responsive. Mobile is for later.
 

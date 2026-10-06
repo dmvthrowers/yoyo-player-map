@@ -19,9 +19,10 @@
   --color-cream-light: #fdfaf5;
 
   /* Font families */
-  --font-display: Georgia, serif;
-  --font-playfair: Georgia, 'Times New Roman', serif;
-  --font-sans: system-ui, -apple-system, sans-serif;
+  /* Playfair Display and DM Sans are self-hosted by next/font in the locale layout. */
+  --font-display: var(--font-playfair-display), Georgia, serif;
+  --font-playfair: var(--font-playfair-display), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
 }
 
 /* Custom border color for TrustRow and similar components */

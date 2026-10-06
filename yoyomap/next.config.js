@@ -6,11 +6,11 @@ const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 /** @type {import('next').NextConfig} */
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://challenges.cloudflare.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://server.arcgisonline.com https://unpkg.com",
-  "connect-src 'self' https://*.supabase.co https://vitals.vercel-insights.com https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  "connect-src 'self' https://*.supabase.co https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
   // Cloudflare Turnstile renders its challenge in an iframe.
   "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",

@@ -2,10 +2,15 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { Playfair_Display, DM_Sans } from 'next/font/google';
 import { Link } from '@/i18n/navigation';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
+
+// Brand fonts, self-hosted at build time (no request to Google when a visitor loads the page).
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-playfair-display', display: 'swap' });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' });
 
 // Site-wide defaults. Pages that set their own title/description override
 // these; without them the homepage shipped with no <title> at all.
@@ -70,7 +75,7 @@ export default async function Layout({ children, params }: { children: React.Rea
   const t = await getTranslations();
 
   return (
-    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'}>
+    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'} className={`${playfair.variable} ${dmSans.variable}`}>
       <body className="min-h-screen flex flex-col">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }} />
         <NextIntlClientProvider locale={locale} messages={messages}>
