@@ -1,4 +1,6 @@
 import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
+import { localeAlternates } from '@/lib/seo';
 import { Link } from '@/i18n/navigation';
 
 const TrustRow = async () => {
@@ -144,6 +146,17 @@ const KeepExploring = async () => {
     </section>
   );
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
+  return {
+    // Distinct from /map, which uses map.pageTitle.
+    title: t('home.title'),
+    description: t('home.hero.description'),
+    alternates: localeAlternates(locale, '/'),
+  };
+}
 
 export default async function Home() {
   const t = await getTranslations();

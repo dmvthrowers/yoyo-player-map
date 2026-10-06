@@ -5,6 +5,7 @@ import { entriesInCity, leanEntriesInCity, listLocations, canonicalName, REGION_
 import { slugify } from '@/lib/locationSlug';
 import { Counts, EntryCard, MapCta, NotListed } from '../../../EntryList';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { localeAlternates } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 export const revalidate = 86400;
@@ -30,7 +31,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<Params> }): Promise<Metadata> {
-  const { country, region, city } = await params;
+  const { locale, country, region, city } = await params;
   const entries = await leanEntriesInCity(country, region, city);
   const countryName = canonicalName(entries, 'country') ?? country;
   const regionName = canonicalName(entries, 'region') ?? (region === '_other' ? '' : region);
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   return {
     title: `Yo-Yo Players in ${locationLabel}`,
     description: `${count} yo-yo player${count === 1 ? '' : 's'}, shop${count === 1 ? '' : 's'}, and club${count === 1 ? '' : 's'} in ${locationLabel}, ${countryName}. Connect with the local community.`,
-    alternates: { canonical: `/players/${country}/${region}/${city}` },
+    alternates: localeAlternates(locale, `/players/${country}/${region}/${city}`),
   };
 }
 

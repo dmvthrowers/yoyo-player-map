@@ -2,10 +2,15 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { Playfair_Display, DM_Sans } from 'next/font/google';
 import { Link } from '@/i18n/navigation';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
+
+// Brand fonts, self-hosted at build time (no request to Google when a visitor loads the page).
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-playfair-display', display: 'swap' });
+const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' });
 
 // Site-wide defaults. Pages that set their own title/description override
 // these; without them the homepage shipped with no <title> at all.
@@ -21,10 +26,40 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       description: t('pageDescription'),
       siteName: 'YoYo Player Map',
       type: 'website',
+      locale: locale.replace('-', '_'),
+      images: [{ url: '/opengraph.jpg', width: 1280, height: 720, alt: 'YoYo Player Map: find yo-yo players, shops and clubs near you' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: '@dmv_throwers',
+      title: t('pageTitle'),
+      description: t('pageDescription'),
+      images: ['/opengraph.jpg'],
     },
     icons: { icon: '/favicon.svg' },
   };
 }
+
+// Site-wide structured data: who runs the map and what the site is.
+const siteJsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'YoYo Player Map',
+    url: 'https://map.dmvthrowers.club/',
+    publisher: { '@type': 'Organization', name: 'DMV Throwers', url: 'https://dmvthrowers.club/' },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'DMV Throwers',
+    url: 'https://dmvthrowers.club/',
+    logo: 'https://dmvthrowers.club/assets/images/logo.png',
+  },
+];
+
+// Right-to-left scripts: without dir="rtl" Arabic pages lay out left to right.
+const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur']);
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -40,9 +75,11 @@ export default async function Layout({ children, params }: { children: React.Rea
   const t = await getTranslations();
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={RTL_LOCALES.has(locale) ? 'rtl' : 'ltr'} className={`${playfair.variable} ${dmSans.variable}`}>
       <body className="min-h-screen flex flex-col">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }} />
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <a href="#main-content" className="skip-link">{t('nav.skipToContent')}</a>
           <header className="sticky top-0 z-40">
             <Navigation />
           </header>

@@ -2,12 +2,16 @@ import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 
 import type { Metadata } from 'next';
+import { localeAlternates } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return {
   title: 'Privacy Policy',
   description: 'How YoYo Map handles your data: no tracking, city-level only, opt-in always, deletable anytime.',
-  alternates: { canonical: '/legal/privacy' },
-};
+  alternates: localeAlternates(locale, '/legal/privacy'),
+  };
+}
 
 export default async function PrivacyPage() {
   const t = await getTranslations();

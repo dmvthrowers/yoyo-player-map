@@ -28,7 +28,8 @@
     "brand": "YoYo Map",
     "donateTitle": "Support DMV Throwers on Ko-fi",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "skipToContent": "跳到主要内容"
   },
   "home": {
     "title": "找到你的伙伴。",
@@ -223,7 +224,8 @@
       "meetings": "活动时间：",
       "reportPin": "举报此标记",
       "website": "网站"
-    }
+    },
+    "viewAsList": "以列表查看"
   },
   "legal": {
     "privacy": {
@@ -503,7 +505,7 @@
     "selectRelationship": "Select relationship",
     "parent": "Parent",
     "guardian": "Legal Guardian",
-    "consentPublic": "I consent to my information being publicly displayed on the map.",
+    "consentPublic": "I consent to my information being shown on the public map. Player pins are placed at a random spot up to about 10 miles from your city. Shop and club addresses you mark public are shown exactly.",
     "consentPrivacy": "I have read and accept the",
     "privacyPolicy": "Privacy Policy",
     "consentTerms": "I agree to the",

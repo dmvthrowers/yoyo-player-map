@@ -10,8 +10,18 @@ const BASE = 'https://map.dmvthrowers.club';
 export const revalidate = 86400;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
+  // Fixed date: a build-time `new Date()` made every page look changed on every render.
+  // Update when public content changes.
+  const lastModified = new Date('2026-10-06');
+  const now = lastModified;
   const locales = routing.locales;
+  // hreflang alternates for a path under every locale (plus x-default).
+  const alternatesFor = (suffix: string) => ({
+    languages: {
+      ...Object.fromEntries(locales.map((l) => [l, `${BASE}/${l}${suffix}`])),
+      'x-default': `${BASE}/${routing.defaultLocale}${suffix}`,
+    },
+  });
 
   // Static pages — one entry per locale since localePrefix is 'always'
   const staticPaths = [
@@ -55,27 +65,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     }
 
-    // Location pages are the same content in all locales; list English canonical only
-    // to avoid duplicate-content penalties. Alternate locale links for these pages
-    // are handled at the page level via Next.js metadata alternates configuration.
+    // Location pages are the same content in all locales; list the English URL with hreflang
+    // alternates for every locale (the pages declare the same alternates in their metadata).
     locationEntries = [
       ...[...countries].map((c) => ({
         url: `${BASE}/en/players/${c}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.7,
+        alternates: alternatesFor(`/players/${c}`),
       })),
       ...[...regions].map((r) => ({
         url: `${BASE}/en/players/${r}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.6,
+        alternates: alternatesFor(`/players/${r}`),
       })),
       ...cities.map((c) => ({
         url: `${BASE}/en/players/${c.country}/${c.region}/${c.city}`,
         lastModified: now,
         changeFrequency: 'weekly' as const,
         priority: 0.5,
+        alternates: alternatesFor(`/players/${c.country}/${c.region}/${c.city}`),
       })),
     ];
   } catch (e) {

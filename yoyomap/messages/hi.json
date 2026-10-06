@@ -28,7 +28,8 @@
     "brand": "YoYo Map",
     "donateTitle": "Support DMV Throwers on Ko-fi",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "skipToContent": "मुख्य सामग्री पर जाएं"
   },
   "home": {
     "title": "अपना समुदाय खोजें।",
@@ -223,7 +224,8 @@
       "meetings": "बैठकें:",
       "reportPin": "इस पिन की रिपोर्ट करें",
       "website": "वेबसाइट"
-    }
+    },
+    "viewAsList": "सूची के रूप में देखें"
   },
   "legal": {
     "privacy": {
@@ -503,7 +505,7 @@
     "selectRelationship": "Select relationship",
     "parent": "Parent",
     "guardian": "Legal Guardian",
-    "consentPublic": "I consent to my information being publicly displayed on the map.",
+    "consentPublic": "I consent to my information being shown on the public map. Player pins are placed at a random spot up to about 10 miles from your city. Shop and club addresses you mark public are shown exactly.",
     "consentPrivacy": "I have read and accept the",
     "privacyPolicy": "Privacy Policy",
     "consentTerms": "I agree to the",

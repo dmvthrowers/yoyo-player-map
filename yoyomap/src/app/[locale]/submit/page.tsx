@@ -292,7 +292,7 @@ export default function SubmitPage() {
               <label><input type="radio" checked={form.ageBand==='13-17'} onChange={()=>update('ageBand','13-17')} /> {t('submit.age13to17')}</label>
             </div>
           )}
-          {formErrors.ageBand && <p className="text-red-600 text-sm">{formErrors.ageBand}</p>}
+          {formErrors.ageBand && <p role="alert" className="text-red-600 text-sm">{formErrors.ageBand}</p>}
         </div>
 
         <div className="card space-y-4">
@@ -312,7 +312,7 @@ export default function SubmitPage() {
             <option value="">{t('submit.selectCountry')}</option>
             {countries.map(c=> <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
-          {formErrors.country_id && <p className="text-red-600 text-sm">{formErrors.country_id}</p>}
+          {formErrors.country_id && <p role="alert" className="text-red-600 text-sm">{formErrors.country_id}</p>}
           {(countriesFailed || regionsFailed) && (
             <p role="alert" className="text-red-600 text-sm">{t('profile.errorNetworkConnection')}</p>
           )}
@@ -332,7 +332,7 @@ export default function SubmitPage() {
           </select>
 
           <CityAutocomplete countryId={form.country_id} regionId={form.region_id} cityId={form.city_id} setCityId={id=>{update('city_id',id); if(id) setFormErrors(e=>{const n={...e}; delete n.city_id; return n;});}} />
-          {formErrors.city_id && <p className="text-red-600 text-sm">{formErrors.city_id}</p>}
+          {formErrors.city_id && <p role="alert" className="text-red-600 text-sm">{formErrors.city_id}</p>}
         </div>
 
         {isMinor && (
@@ -361,18 +361,18 @@ export default function SubmitPage() {
           <div className="card space-y-4">
             <h2 className="font-semibold text-lg">🏪 {t('submit.shopDetails')}</h2>
             <div>
-              <label className="label">{t('submit.contactName')}</label>
-              <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
-              {formErrors.contactName && <p className="text-red-600 text-sm">{formErrors.contactName}</p>}
+              <label className="label" htmlFor="sf-1">{t('submit.contactName')}</label>
+              <input id="sf-1" className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
+              {formErrors.contactName && <p role="alert" className="text-red-600 text-sm">{formErrors.contactName}</p>}
             </div>
             <div>
-              <label className="label">{t('submit.addressLine')}</label>
-              <input className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.addressLine} onChange={e=>update('addressLine',e.target.value)} />
-              {formErrors.addressLine && <p className="text-red-600 text-sm">{formErrors.addressLine}</p>}
+              <label className="label" htmlFor="sf-2">{t('submit.addressLine')}</label>
+              <input id="sf-2" className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.addressLine} onChange={e=>update('addressLine',e.target.value)} />
+              {formErrors.addressLine && <p role="alert" className="text-red-600 text-sm">{formErrors.addressLine}</p>}
             </div>
             <div>
-              <label className="label">{t('submit.postalCode')}</label>
-              <input 
+              <label className="label" htmlFor="sf-3">{t('submit.postalCode')}</label>
+              <input id="sf-3" 
                 className="input" 
                 value={form.postalCode} 
                 onChange={e=>update('postalCode',e.target.value)} 
@@ -382,8 +382,8 @@ export default function SubmitPage() {
               />
             </div>
             <div>
-              <label className="label">{t('submit.hours')}</label>
-              <textarea className="input" rows={3} placeholder={t('submit.hoursPlaceholder')} value={form.hours} onChange={e=>update('hours',e.target.value)} />
+              <label className="label" htmlFor="sf-4">{t('submit.hours')}</label>
+              <textarea id="sf-4" className="input" rows={3} placeholder={t('submit.hoursPlaceholder')} value={form.hours} onChange={e=>update('hours',e.target.value)} />
             </div>
           </div>
         )}
@@ -393,14 +393,14 @@ export default function SubmitPage() {
           <div className="card space-y-4">
             <h2 className="font-semibold text-lg">🎲 {t('submit.clubDetails')}</h2>
             <div>
-              <label className="label">{t('submit.contactName')}</label>
-              <input className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
-              {formErrors.contactName && <p className="text-red-600 text-sm">{formErrors.contactName}</p>}
+              <label className="label" htmlFor="sf-5">{t('submit.contactName')}</label>
+              <input id="sf-5" className="input" placeholder={t('submit.contactNamePlaceholder')} value={form.contactName} onChange={e=>update('contactName',e.target.value)} />
+              {formErrors.contactName && <p role="alert" className="text-red-600 text-sm">{formErrors.contactName}</p>}
             </div>
             <div>
-              <label className="label">{t('submit.meetingInfo')}</label>
-              <textarea className="input" rows={4} placeholder={t('submit.meetingInfoPlaceholder')} value={form.clubMeetingInfo} onChange={e=>update('clubMeetingInfo',e.target.value)} />
-              {formErrors.clubMeetingInfo && <p className="text-red-600 text-sm">{formErrors.clubMeetingInfo}</p>}
+              <label className="label" htmlFor="sf-6">{t('submit.meetingInfo')}</label>
+              <textarea id="sf-6" className="input" rows={4} placeholder={t('submit.meetingInfoPlaceholder')} value={form.clubMeetingInfo} onChange={e=>update('clubMeetingInfo',e.target.value)} />
+              {formErrors.clubMeetingInfo && <p role="alert" className="text-red-600 text-sm">{formErrors.clubMeetingInfo}</p>}
             </div>
             <label className="flex items-center gap-2">
               <input type="checkbox" checked={form.clubVenuePublic} onChange={e=>update('clubVenuePublic',e.target.checked)} />
@@ -409,12 +409,12 @@ export default function SubmitPage() {
             {form.clubVenuePublic && (
               <div className="space-y-3 pl-4 border-l-2 border-brand-red/30">
                 <div>
-                  <label className="label">{t('submit.venueAddressLine')}</label>
-                  <input className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.venueAddressLine} onChange={e=>update('venueAddressLine',e.target.value)} />
+                  <label className="label" htmlFor="sf-7">{t('submit.venueAddressLine')}</label>
+                  <input id="sf-7" className="input" placeholder={t('submit.addressLinePlaceholder')} value={form.venueAddressLine} onChange={e=>update('venueAddressLine',e.target.value)} />
                 </div>
                 <div>
-                  <label className="label">{t('submit.venuePostalCode')}</label>
-                  <input 
+                  <label className="label" htmlFor="sf-8">{t('submit.venuePostalCode')}</label>
+                  <input id="sf-8" 
                     className="input" 
                     value={form.venuePostalCode} 
                     onChange={e=>update('venuePostalCode',e.target.value)} 
@@ -431,8 +431,8 @@ export default function SubmitPage() {
         {/* Bio & Social Links */}
         <div className="card space-y-4">
           <div>
-            <label className="label">{t('submit.bio')}</label>
-            <textarea className="input" rows={3} maxLength={280} placeholder={t('submit.bioPlaceholder')} value={form.bio} onChange={e=>update('bio',e.target.value)} />
+            <label className="label" htmlFor="sf-9">{t('submit.bio')}</label>
+            <textarea id="sf-9" className="input" rows={3} maxLength={280} placeholder={t('submit.bioPlaceholder')} value={form.bio} onChange={e=>update('bio',e.target.value)} />
           </div>
           <p className="font-semibold text-sm">{t('submit.socialLinks')}</p>
           <div className="grid grid-cols-2 gap-3">
@@ -445,15 +445,15 @@ export default function SubmitPage() {
 
         <div className="card space-y-3">
           <label className="flex gap-2"><input type="checkbox" checked={form.consentPublic} onChange={e=>update('consentPublic',e.target.checked)} /> {t('submit.consentPublic')}</label>
-          {formErrors.consentPublic && <p className="text-red-600 text-sm">{formErrors.consentPublic}</p>}
+          {formErrors.consentPublic && <p role="alert" className="text-red-600 text-sm">{formErrors.consentPublic}</p>}
           <label className="flex gap-2"><input type="checkbox" checked={form.consentPrivacy} onChange={e=>update('consentPrivacy',e.target.checked)} /> {t('submit.consentPrivacy')} <Link href="/legal/privacy" className="underline">{t('submit.privacyPolicy')}</Link></label>
-          {formErrors.consentPrivacy && <p className="text-red-600 text-sm">{formErrors.consentPrivacy}</p>}
+          {formErrors.consentPrivacy && <p role="alert" className="text-red-600 text-sm">{formErrors.consentPrivacy}</p>}
           <label className="flex gap-2"><input type="checkbox" checked={form.consentTerms} onChange={e=>update('consentTerms',e.target.checked)} /> {t('submit.consentTerms')} <Link href="/legal/terms" className="underline">{t('submit.terms')}</Link></label>
-          {formErrors.consentTerms && <p className="text-red-600 text-sm">{formErrors.consentTerms}</p>}
+          {formErrors.consentTerms && <p role="alert" className="text-red-600 text-sm">{formErrors.consentTerms}</p>}
           {(form.entityType==='shop'||form.entityType==='club') && (
             <>
               <label className="flex gap-2"><input type="checkbox" checked={form.authorizedRep} onChange={e=>update('authorizedRep',e.target.checked)} /> {t('submit.authorizedRep')}</label>
-              {formErrors.authorizedRep && <p className="text-red-600 text-sm">{formErrors.authorizedRep}</p>}
+              {formErrors.authorizedRep && <p role="alert" className="text-red-600 text-sm">{formErrors.authorizedRep}</p>}
             </>
           )}
         </div>
