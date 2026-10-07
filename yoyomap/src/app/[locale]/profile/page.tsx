@@ -2,6 +2,7 @@
 import { useTranslations } from 'next-intl';
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { apiErrorMessage } from '@/lib/api-error-message';
 function ProfileInner() {
   const searchParams = useSearchParams();
   const token = searchParams?.get('token');
@@ -46,7 +47,7 @@ function RequestMagicLink() {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || t('profile.errorSomethingWrong'));
+        setError(apiErrorMessage(data, t('profile.errorSomethingWrong')));
       } else {
         const data = await res.json().catch(() => ({}));
         if (data.emailStatus === 'queued' || data.emailStatus === 'deferred') {
@@ -132,7 +133,7 @@ function ManageEntry({ token }: { token: string }) {
         const res = await fetch(`/api/auth/verify-link?token=${encodeURIComponent(token)}`);
         const data = await res.json();
         if (!res.ok) {
-          setError(data.error || t('profile.errorLinkExpired'));
+          setError(apiErrorMessage(data, t('profile.errorLinkExpired')));
         } else {
           setEntry(data.entry);
         }
@@ -169,7 +170,7 @@ function ManageEntry({ token }: { token: string }) {
           hours: entry.hours,
         }),
       });
-      let data: { error?: string } = {};
+      let data: unknown = {};
       try {
         data = await res.json();
       } catch (e) {
@@ -177,7 +178,7 @@ function ManageEntry({ token }: { token: string }) {
         return;
       }
       if (!res.ok) {
-        setError(data.error || t('profile.errorUpdateFailed'));
+        setError(apiErrorMessage(data, t('profile.errorUpdateFailed')));
       } else {
         setMessage(t('profile.saved'));
         // Reload fresh from server so the form reflects exactly what was persisted
@@ -209,7 +210,7 @@ function ManageEntry({ token }: { token: string }) {
       });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || t('profile.errorDeleteFailed'));
+        setError(apiErrorMessage(data, t('profile.errorDeleteFailed')));
       } else {
         setEntry(null);
         setMessage(t('profile.deletedMessage'));

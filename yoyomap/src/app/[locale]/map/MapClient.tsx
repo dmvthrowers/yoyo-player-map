@@ -1,10 +1,11 @@
 'use client';
 
-import { Suspense, useMemo, useState, useEffect } from 'react';
+import { Suspense, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { MapEntry } from './page';
+import { useMediaQuery } from '@/lib/use-media-query';
 
 export interface MapFilters {
   showPerson: boolean;
@@ -17,13 +18,13 @@ export interface MapFilters {
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 export default function MapClient({ entries }: { entries: MapEntry[] }) {
-  const [filterOpen, setFilterOpen] = useState(true);
+  // Collapsed by default on phones, open on wider screens, until the person toggles it.
+  const isNarrow = useMediaQuery('(max-width: 767px)');
+  const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const filterOpen = userOpen ?? !isNarrow;
   const [search, setSearch] = useState('');
   const t = useTranslations();
 
-  useEffect(() => {
-    if (window.innerWidth < 768) setFilterOpen(false);
-  }, []);
 
   const [filters, setFilters] = useState<MapFilters>({
     showPerson: true,
@@ -58,7 +59,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
       {/* Filter panel */}
       <div className="absolute bottom-4 right-4 z-500 bg-cream border-2 border-navy">
         <button
-          onClick={() => setFilterOpen((o) => !o)}
+          onClick={() => setUserOpen(!filterOpen)}
           className="flex items-center gap-2 px-3 py-2 w-full text-left"
           aria-expanded={filterOpen}
           aria-controls="filter-panel"
