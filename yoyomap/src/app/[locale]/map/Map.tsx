@@ -159,7 +159,7 @@ PersonMarker.displayName = 'PersonMarker';
 const ShopMarker = memo(({ entry }: { entry: MapEntry }) => {
   if (!Number.isFinite(entry.lat) ||!Number.isFinite(entry.lng)) return null;
   return (
-    <Marker position={[entry.lat, entry.lng]} icon={entry.verified_owner? shopVerifiedIcon : shopIcon}>
+    <Marker position={[entry.lat, entry.lng]} icon={entry.verified_owner? shopVerifiedIcon : shopIcon} title={entry.display_name}>
       <Popup><ShopPopup entry={entry} /></Popup>
     </Marker>
   );
@@ -169,7 +169,7 @@ ShopMarker.displayName = 'ShopMarker';
 const ClubMarker = memo(({ entry }: { entry: MapEntry }) => {
   if (!Number.isFinite(entry.lat) ||!Number.isFinite(entry.lng)) return null;
   return (
-    <Marker position={[entry.lat, entry.lng]} icon={clubIcon}>
+    <Marker position={[entry.lat, entry.lng]} icon={clubIcon} title={entry.display_name}>
       <Popup><ClubPopup entry={entry} /></Popup>
     </Marker>
   );
@@ -183,6 +183,7 @@ interface MapProps {
 }
 
 export default function Map({ entries, allEntries, filters }: MapProps) {
+  const t = useTranslations('map');
   const [center] = useState<[number, number]>([39.5, -98.35]);
   const [zoom] = useState(4);
 
@@ -261,6 +262,15 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
 
   return (
     <MapContainer
+      // Leaflet makes the container focusable but leaves it unnamed; give screen readers a name.
+      // Shop and club pins are focusable buttons named by their title; the "View as list" link in
+      // the filter panel covers the blurred player pins.
+      ref={(map: L.Map | null) => {
+        const el = map?.getContainer();
+        if (!el) return;
+        el.setAttribute('role', 'region');
+        el.setAttribute('aria-label', t('pageTitle'));
+      }}
       center={center}
       zoom={zoom}
       minZoom={3}
