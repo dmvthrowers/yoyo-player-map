@@ -36,38 +36,30 @@ re-checked against the code on 2026-10-02. Update it as items land.
 
 ## Next (code)
 
-6. **Error envelope everywhere.** 8 of 19 API routes use `withErrorHandling`
-   (`{error:{code,message,requestId}}`). The `admin/*` routes, `auth/verify-link`,
-   `verify-parent`, `revalidate-map`, `health` and `cron/route.js` return bare
-   `{ error: 'string' }` with no request id, so their failures can't be matched to logs.
-7. **hreflang and canonicals.** No page declares `alternates.languages` for the 11 locales, so
-   search engines may treat `/en/map`, `/es/map`… as duplicates. Add them (plus a per-page
-   canonical) in each page's `generateMetadata`.
-8. **Idempotency and dedupe on `POST /api/submit`.** A double-click or retry creates duplicate
-   hidden entries. Accept an `Idempotency-Key` header and dedupe identical submissions for 24h
-   in Redis (same pattern as the VA-States idea-board spec).
-9. **React Compiler lint rules.** `eslint.config.mjs` turns off `react-hooks/purity` and
-   `react-hooks/set-state-in-effect` repo-wide. Fix the flagged code, or disable per file with a
-   reason.
-10. **Map accessibility.** The Leaflet container has no `aria-label`, and `divIcon` markers
-    can't be focused with a keyboard. The `/players` directory is the accessible alternative —
-    link to it from the map for keyboard and screen-reader users.
-11. **Split `src/app/[locale]/admin/page.tsx`** (~820 lines) into components.
-12. **OSV-Scanner:** the club site's identical workflow fails at startup. Check this repo's
-    Actions tab; if runs are red or noisy, delete `.github/workflows/osv-scanner.yml` —
-    Dependabot, `dependency-review` and `pnpm audit` in CI already cover it.
+All of the October 2026 "Next" items are done or in review:
+
+| # | Item | Where |
+|---|---|---|
+| 6 | Error envelope on every API route; clients read it with `lib/api-error-message.ts` | #258 |
+| 7 | hreflang and per-page canonicals (`lib/seo.ts` `localeAlternates`) | already done in `5587eb2` |
+| 8 | Submit dedupe: form fingerprint + `Idempotency-Key`, 24h replay (`lib/submit-dedupe.ts`) | #259 |
+| 9 | React Compiler lint rules on; two reasoned per-line disables in the admin page | #261 |
+| 10 | Map accessibility: named map region and pins, cluster opens with Enter, list link | #260 |
+| 11 | Admin page split into `admin/_components/` | #269 |
+| 12 | OSV-Scanner workflow removed | #262 |
+| — | Cluster badges were invisible (no cluster CSS); brand square badges | #268 |
+| — | Optional OpenFreeMap vector tiles (`NEXT_PUBLIC_MAP_TILES=openfreemap`), off by default | #265 |
 
 ## Later
 
 - **React 19 + react-leaflet 5 + react-leaflet-cluster 4** — one atomic PR. Grep for
   `LeafletProvider` first; smoke-test cluster rendering by hand (previews are off, so test
   locally). Until then, the reason to stay on React 18 is that react-leaflet 4 requires it.
-- `@types/node` is on 25.x while the runtime is Node 22 — move to `@types/node@22`.
+- ~~`@types/node` on 25.x while the runtime is Node 22~~ — done in #263 (Dependabot now skips its majors).
 - Root workspace: `packageManager` still `pnpm@10.28.0`; root `next` is a dev-only tool dep.
 - ESLint 10 after the above.
-- `wouter` is a dependency nothing in the App Router should need — confirm and remove.
-- `@vercel/analytics` and `@vercel/speed-insights` are installed but never mounted — remove them,
-  or mount them and update the privacy policy (the README promises no analytics).
+- ~~`wouter`, `@vercel/analytics`, `@vercel/speed-insights` in `yoyomap`~~ — already removed;
+  `wouter` in `artifacts/yoyomap` is real usage.
 
 ## Accepted
 
