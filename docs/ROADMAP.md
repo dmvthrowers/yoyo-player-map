@@ -49,9 +49,9 @@ re-checked against the code on 2026-10-02. Update it as items land.
 9. **React Compiler lint rules.** `eslint.config.mjs` turns off `react-hooks/purity` and
    `react-hooks/set-state-in-effect` repo-wide. Fix the flagged code, or disable per file with a
    reason.
-10. **Map accessibility.** The Leaflet container has no `aria-label`, and `divIcon` markers
-    can't be focused with a keyboard. The `/players` directory is the accessible alternative —
-    link to it from the map for keyboard and screen-reader users.
+10. ~~**Map accessibility.**~~ Done: the map container is a named region, shop and club pins
+    (focusable buttons in Leaflet) are named after the entry, clusters open with Enter, and the
+    filter panel links to `/players` for the blurred player pins.
 11. **Split `src/app/[locale]/admin/page.tsx`** (~820 lines) into components.
 12. **OSV-Scanner:** the club site's identical workflow fails at startup. Check this repo's
     Actions tab; if runs are red or noisy, delete `.github/workflows/osv-scanner.yml` —
