@@ -48,7 +48,7 @@ yoyo-player-map/
 ├── lib/, artifacts/, scripts/   Root workspace packages and utilities — not used by the app
 ├── skills/, .agents/   Agent skill definitions and cross-repo maintainer notes
 ├── docs/               This guide, ROADMAP.md, EMAIL_QUEUE_PLAN.md
-└── .github/workflows/  ci, migrate, db-backup, dependency-review, osv-scanner, hygiene bots
+└── .github/workflows/  ci, migrate, db-backup, dependency-review, hygiene bots
 ```
 
 Inside `yoyomap/`:
