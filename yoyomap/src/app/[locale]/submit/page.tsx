@@ -58,30 +58,35 @@ function useCountries() {
   return { countries, failed };
 }
 
+type Place = { id: number; name: string };
+
+// Each result remembers which country/region it was loaded for, so a list for the previous
+// pick is never shown (or selectable) while the next one loads.
 function useRegions(countryId: number | null) {
-  const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
-  const [failed, setFailed] = useState(false);
+  const [result, setResult] = useState<{ key: string; regions: Place[]; failed: boolean } | null>(null);
+  const key = String(countryId);
   useEffect(() => {
-    if (!countryId) { setRegions([]); setFailed(false); return; }
+    if (!countryId) return;
     fetchLocations(`type=regions&countryId=${countryId}`)
-     .then(d => { setRegions(d.regions || []); setFailed(false); })
-     .catch(() => setFailed(true));
-  }, [countryId]);
-  return { regions, failed };
+     .then(d => setResult({ key, regions: d.regions || [], failed: false }))
+     .catch(() => setResult({ key, regions: [], failed: true }));
+  }, [countryId, key]);
+  return result?.key === key && countryId ? result : { regions: [], failed: false };
 }
 
 function useAllCities(countryId: number | null, regionId: number | null, refreshKey = 0) {
-  const [cities, setCities] = useState<{ id: number; name: string }[]>([]);
-  const [failed, setFailed] = useState(false);
+  const [result, setResult] = useState<{ key: string; cities: Place[]; failed: boolean } | null>(null);
+  // refreshKey isn't part of the key: after adding a city, the current list stays up while it reloads.
+  const key = `${countryId}:${regionId}`;
   useEffect(() => {
-    if (!countryId) { setCities([]); setFailed(false); return; }
+    if (!countryId) return;
     const params = new URLSearchParams({ type: 'cities', countryId: String(countryId) });
     if (regionId) params.set('regionId', String(regionId));
     fetchLocations(params.toString())
-     .then(d => { setCities(d.cities || []); setFailed(false); })
-     .catch(() => setFailed(true));
-  }, [countryId, regionId, refreshKey]);
-  return { cities, failed };
+     .then(d => setResult({ key, cities: d.cities || [], failed: false }))
+     .catch(() => setResult({ key, cities: [], failed: true }));
+  }, [countryId, regionId, refreshKey, key]);
+  return result?.key === key && countryId ? result : { cities: [], failed: false };
 }
 
 function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
@@ -96,7 +101,14 @@ function CityAutocomplete({ countryId, regionId, cityId, setCityId }: {
   const [addError, setAddError] = useState('');
   const selected = allCities.find(c => c.id === cityId);
 
-  useEffect(() => { if (selected) setInput(selected.name); else if (!cityId) setInput(''); }, [selected, cityId]);
+  // Keep the text box in step with the chosen city, adjusting state during render
+  // (https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes).
+  const syncKey = selected ? `city:${selected.id}:${selected.name}` : `id:${cityId ?? ''}`;
+  const [lastSyncKey, setLastSyncKey] = useState<string | null>(null);
+  if (syncKey !== lastSyncKey) {
+    setLastSyncKey(syncKey);
+    if (selected) setInput(selected.name); else if (!cityId) setInput('');
+  }
 
   const filtered = input? allCities.filter(c => c.name.toLowerCase().includes(input.toLowerCase())) : allCities;
   const isNew = input.trim().length > 1 &&!filtered.some(c => c.name.toLowerCase() === input.trim().toLowerCase());

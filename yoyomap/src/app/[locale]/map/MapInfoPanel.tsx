@@ -1,20 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
+import { useMediaQuery } from '@/lib/use-media-query';
 
 interface Props {
   counts: { person: number; shop: number; club: number };
 }
 
 export default function MapInfoPanel({ counts }: Props) {
-  const [open, setOpen] = useState(true);
+  // Collapsed by default on phones, open on wider screens, until the person toggles it.
+  const isNarrow = useMediaQuery('(max-width: 767px)');
+  const [userOpen, setUserOpen] = useState<boolean | null>(null);
+  const open = userOpen ?? !isNarrow;
   const t = useTranslations();
 
-  useEffect(() => {
-    if (window.innerWidth < 768) setOpen(false);
-  }, []);
 
   const summary = [
     t('map.countThrowers', { count: counts.person }),
@@ -27,7 +28,7 @@ export default function MapInfoPanel({ counts }: Props) {
   return (
     <div className="absolute top-4 left-4 z-500 bg-cream border-2 border-navy max-w-xs">
       <button
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => setUserOpen(!open)}
         className="flex items-center gap-2 w-full px-3 py-2 text-left"
         aria-expanded={open}
         aria-controls="map-info-panel"
