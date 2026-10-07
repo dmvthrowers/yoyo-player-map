@@ -3,7 +3,8 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { createAdminClient } from './supabase/admin';
 
-const redis =
+// Shared with lib/submit-dedupe (via the submit route). null when Upstash isn't configured.
+export const redis =
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
     ? new Redis({
         url: process.env.UPSTASH_REDIS_REST_URL,

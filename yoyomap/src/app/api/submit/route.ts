@@ -10,9 +10,22 @@ import {
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { apiError, withErrorHandling, bodyTooLarge } from '@/lib/api-error';
 import { verifyTurnstile } from '@/lib/turnstile';
+import { redis } from '@/lib/rate-limit';
+import { claimSubmission, dedupeKeys, type DedupeStore } from '@/lib/submit-dedupe';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
+
+// Upstash's set() options are a union type; this narrows them for submit-dedupe.
+function makeDedupeStore(r: NonNullable<typeof redis>): DedupeStore {
+  return {
+    set: (key, value, opts) =>
+      opts.nx ? r.set(key, value, { nx: true, ex: opts.ex }) : r.set(key, value, { ex: opts.ex }),
+    get: (key) => r.get(key),
+    del: (...keys) => r.del(...keys),
+  };
+}
+const dedupeStore = redis ? makeDedupeStore(redis) : null;
 
 /**
  * Check if shop owner email domain matches website domain.
@@ -100,6 +113,30 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     });
   }
 
+  // A double-click, a retry or a resent form replays the first response
+  // instead of creating a second hidden entry and a second email.
+  const claim = await claimSubmission(dedupeStore, await dedupeKeys(data, req.headers.get('idempotency-key')));
+  if (claim.kind === 'replay') {
+    return NextResponse.json(claim.body, { headers: { 'x-request-id': requestId, 'idempotent-replayed': 'true' } });
+  }
+  if (claim.kind === 'in_progress') {
+    return apiError('conflict', 'This submission is already being processed. Check your email in a minute.', requestId);
+  }
+
+  let res: NextResponse;
+  try {
+    res = await processSubmission(requestId, data, ip);
+  } catch (e) {
+    await claim.release();
+    throw e;
+  }
+  if (res.ok) await claim.finish(await res.clone().json());
+  else await claim.release();
+  return res;
+});
+
+/** Everything after validation: save the entry, create tokens, send emails. */
+async function processSubmission(requestId: string, data: SubmitInput, ip: string): Promise<NextResponse> {
   const supabase = createAdminClient();
 
   // Branch based on entity type
@@ -260,7 +297,7 @@ export const POST = withErrorHandling(async (requestId: string, req: NextRequest
     },
     { headers: { 'x-request-id': requestId } },
   );
-});
+}
 
 // =============================================================================
 // Entry preparation functions

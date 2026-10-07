@@ -176,6 +176,8 @@ export default function SubmitPage() {
   });
   const [result, setResult] = useState<any>(null);
   const [submitting, setSubmitting] = useState(false);
+  // One key per filled-in form, reused on retries, so the server can spot a repeat (see lib/submit-dedupe.ts).
+  const submitKey = useRef<string | null>(null);
   const [showToast, setShowToast] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [turnstileToken, setTurnstileToken] = useState('');
@@ -222,7 +224,8 @@ export default function SubmitPage() {
     delete (payload as any).instagram; delete (payload as any).youtube; delete (payload as any).discord; delete (payload as any).website;
 
     try {
-      const res = await fetch('/api/submit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      submitKey.current ??= crypto.randomUUID();
+      const res = await fetch('/api/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': submitKey.current }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (!res.ok) setResult({ ok: false, message: data.error?.message });
       else { setShowToast(true); setResult({ ok: true, message: data.message, isMinor, emailStatus: data.emailStatus, retryAt: data.retryAt }); }
