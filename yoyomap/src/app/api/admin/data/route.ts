@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { requireAdmin } from '@/lib/admin-auth';
+import { withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
-export async function GET(req: NextRequest) {
-  const authError = await requireAdmin(req);
+export const GET = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const authError = await requireAdmin(req, requestId);
   if (authError) return authError;
 
   const supabase = createAdminClient();
@@ -108,4 +109,4 @@ export async function GET(req: NextRequest) {
   };
 
   return NextResponse.json({ entries: entries ?? [], reports: reports ?? [], stats });
-}
+});

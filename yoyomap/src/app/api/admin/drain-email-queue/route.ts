@@ -4,6 +4,7 @@ import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdminOrCron } from '@/lib/admin-auth';
 import { isSignedByQstash } from '@/lib/qstash';
 import { heartbeat } from '@/lib/heartbeat';
+import { withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 // Sends are paced at 2/second; the drain stops starting new ones after 40s.
@@ -20,10 +21,10 @@ export const maxDuration = 60;
  * due, and the Vercel cron runs it once just after the 00:00 UTC reset.
  */
 
-async function handle(req: NextRequest) {
+async function handle(requestId: string, req: NextRequest) {
   const viaQstash = await isSignedByQstash(req);
   if (!viaQstash) {
-    const authError = await requireAdminOrCron(req);
+    const authError = await requireAdminOrCron(req, requestId);
     if (authError) return authError;
   }
 
@@ -43,10 +44,6 @@ async function handle(req: NextRequest) {
   return NextResponse.json({ ok: true, ...summary });
 }
 
-export async function GET(req: NextRequest) {
-  return handle(req);
-}
+export const GET = withErrorHandling(handle);
 
-export async function POST(req: NextRequest) {
-  return handle(req);
-}
+export const POST = withErrorHandling(handle);

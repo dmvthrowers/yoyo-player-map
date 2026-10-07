@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { withErrorHandling } from '@/lib/api-error';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +18,7 @@ function isAuthorizedHealthProbe(req: NextRequest): boolean {
   return headerToken === token || queryToken === token;
 }
 
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const headers = { 'Cache-Control': 'no-store' };
   const deep = req.nextUrl.searchParams.get('deep') === '1';
 
@@ -30,7 +31,11 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ ok: true, db: 'connected', ts: new Date().toISOString() }, { headers });
   } catch (e) {
-    console.error('[health] deep check failed:', e);
-    return NextResponse.json({ ok: false, db: 'error' }, { status: 503, headers });
+    console.error(`[health] deep check failed [${requestId}]:`, e);
+    // Uptime monitors read `ok` and the status; the envelope adds the request id.
+    return NextResponse.json(
+      { ok: false, db: 'error', error: { code: 'upstream_error', message: 'Database check failed.', requestId } },
+      { status: 503, headers },
+    );
   }
-}
+});

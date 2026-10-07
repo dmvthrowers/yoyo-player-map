@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { apiErrorMessage } from '@/lib/api-error-message';
 
 interface AdminEntry {
   id: string;
@@ -98,6 +99,9 @@ const AdminPage = () => {
         setData(json);
         setAuthed(true);
         setError('');
+      } else {
+        const body = await res.json().catch(() => null);
+        setError(apiErrorMessage(body, 'Could not load admin data.'));
       }
     } catch {
       setError('Network error.');
@@ -132,7 +136,7 @@ const AdminPage = () => {
       load(pass);
     } else {
       const body = await res.json().catch(() => null);
-      setError(body?.error || 'Action failed.');
+      setError(apiErrorMessage(body, 'Action failed.'));
     }
   }
 
@@ -156,7 +160,7 @@ const AdminPage = () => {
         );
         load(pass);
       } else {
-        setError(body?.error || 'Bulk send failed.');
+        setError(apiErrorMessage(body, 'Bulk send failed.'));
       }
     } catch {
       setError('Network error during bulk send.');
@@ -177,7 +181,7 @@ const AdminPage = () => {
       if (res.ok && body?.success) {
         setError('Map refresh triggered.');
       } else {
-        setError(body?.error || 'Map refresh failed.');
+        setError(apiErrorMessage(body, 'Map refresh failed.'));
       }
     } catch {
       setError('Network error during map refresh.');
@@ -202,7 +206,7 @@ const AdminPage = () => {
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) {
-        setError(body?.error || 'Bulk status update failed.');
+        setError(apiErrorMessage(body, 'Bulk status update failed.'));
       } else {
         setError(`Updated ${body?.updated ?? ids.length} entries.`);
         load(pass);
@@ -230,7 +234,7 @@ const AdminPage = () => {
       });
       const body = await res.json().catch(() => null);
       if (!res.ok) {
-        setError(body?.error || 'Outreach send failed.');
+        setError(apiErrorMessage(body, 'Outreach send failed.'));
       } else {
         setError(`Outreach complete — sent: ${body?.sent ?? 0}, queued: ${body?.queued ?? 0}, failed: ${body?.failed ?? 0}`);
         load(pass);
@@ -262,7 +266,7 @@ const AdminPage = () => {
         });
         const body = await res.json().catch(() => null);
         if (!res.ok || !body) {
-          setError(body?.error || 'Bulk re-geocode failed.');
+          setError(apiErrorMessage(body, 'Bulk re-geocode failed.'));
           break;
         }
 

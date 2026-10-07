@@ -36,10 +36,9 @@ re-checked against the code on 2026-10-02. Update it as items land.
 
 ## Next (code)
 
-6. **Error envelope everywhere.** 8 of 19 API routes use `withErrorHandling`
-   (`{error:{code,message,requestId}}`). The `admin/*` routes, `auth/verify-link`,
-   `verify-parent`, `revalidate-map`, `health` and `cron/route.js` return bare
-   `{ error: 'string' }` with no request id, so their failures can't be matched to logs.
+6. ~~**Error envelope everywhere.**~~ Done: all 19 API routes use `withErrorHandling`, so every
+   error is `{error:{code,message,requestId}}` with a matching `x-request-id` header. Clients
+   read messages through `lib/api-error-message.ts`, which accepts both shapes.
 7. **hreflang and canonicals.** No page declares `alternates.languages` for the 11 locales, so
    search engines may treat `/en/map`, `/es/map`… as duplicates. Add them (plus a per-page
    canonical) in each page's `generateMetadata`.

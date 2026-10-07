@@ -2,16 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 import { hashToken } from '@/lib/tokens';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
-export async function GET(req: NextRequest) {
+export const GET = withErrorHandling(async (requestId: string, req: NextRequest) => {
   const ip = getClientIp(req.headers);
   const allowed = await checkRateLimit(ip, 'verify_link.get', 10, 60);
-  if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+  if (!allowed) return apiError('rate_limited', 'Too many requests.', requestId);
 
   const token = req.nextUrl.searchParams.get('token');
-  if (!token) return NextResponse.json({ error: 'Missing token' }, { status: 400 });
+  if (!token) return apiError('bad_request', 'Missing token', requestId);
 
   const supabase = createAdminClient();
   const { data: tok, error } = await supabase
@@ -21,9 +22,9 @@ export async function GET(req: NextRequest) {
     .eq('purpose', 'edit_link')
     .maybeSingle();
 
-  if (error || !tok) return NextResponse.json({ error: 'Link invalid.' }, { status: 401 });
-  if (tok.used_at) return NextResponse.json({ error: 'Link already used.' }, { status: 401 });
-  if (new Date(tok.expires_at) < new Date()) return NextResponse.json({ error: 'Link expired. Request a new one.' }, { status: 401 });
+  if (error || !tok) return apiError('unauthorized', 'Link invalid.', requestId);
+  if (tok.used_at) return apiError('unauthorized', 'Link already used.', requestId);
+  if (new Date(tok.expires_at) < new Date()) return apiError('unauthorized', 'Link expired. Request a new one.', requestId);
 
   const entry = tok.entries as {
     id: string; display_name: string; city: string; region: string | null; country: string;
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
     postal_code: string | null;
     hours: string | null;
   };
-  if (!entry || entry.deleted_at) return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
+  if (!entry || entry.deleted_at) return apiError('not_found', 'Entry not found.', requestId);
 
   // Note: we do NOT mark the token used yet — we need it valid through the edit/save flow.
   // Token stays valid until expires_at.
@@ -61,4 +62,4 @@ export async function GET(req: NextRequest) {
       hours: entry.hours,
     },
   });
-}
+});

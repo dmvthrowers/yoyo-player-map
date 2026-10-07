@@ -3,11 +3,14 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, logAudit, getClientIp } from '@/lib/rate-limit';
 import { hashToken } from '@/lib/tokens';
 import { revalidateEntryLocations } from '@/lib/revalidate';
+import { withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'edge';
 export const preferredRegion = 'iad1';
 
-export async function GET(req: NextRequest) {
+// Every outcome is a redirect back to the site with a reason in the query string.
+// The wrapper adds an x-request-id header and turns a thrown error into the standard envelope.
+export const GET = withErrorHandling(async (_requestId: string, req: NextRequest) => {
   const type = req.nextUrl.searchParams.get('type');
   const token = req.nextUrl.searchParams.get('token');
   const ip = getClientIp(req.headers);
@@ -31,7 +34,7 @@ export async function GET(req: NextRequest) {
   } else {
     return redirectTo(req, '/', { error: 'invalid_type' });
   }
-}
+});
 
 async function verifyEntry(
   req: NextRequest,

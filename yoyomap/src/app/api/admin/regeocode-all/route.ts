@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { geocodeCity, geocodeAddress, jitterCoords } from '@/lib/geocode';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdmin } from '@/lib/admin-auth';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 // Bumped from the default (10s) because each entry hits Nominatim and we
@@ -22,8 +23,8 @@ interface Failure {
 }
 
 
-export async function POST(req: NextRequest) {
-  const authError = await requireAdmin(req);
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const authError = await requireAdmin(req, requestId);
   if (authError) return authError;
 
   const supabase = createAdminClient();
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
   const { data: batch, error: qErr } = await query;
 
   if (qErr) {
-    return NextResponse.json({ error: 'Query failed.' }, { status: 500 });
+    return apiError('upstream_error', 'Query failed.', requestId);
   }
 
   let countQuery = supabase
@@ -155,4 +156,4 @@ export async function POST(req: NextRequest) {
   });
 
   return NextResponse.json(result);
-}
+});
