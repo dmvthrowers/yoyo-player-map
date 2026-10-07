@@ -113,6 +113,9 @@ const AdminPage = () => {
   useEffect(() => {
     const saved = typeof window !== 'undefined' ? sessionStorage.getItem('admin_token') : null;
     if (saved) {
+      // Restoring the saved password from sessionStorage on mount is a one-time sync with the
+      // browser; load() is the data fetch. Item 3.6 (split this page) can revisit both.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPass(saved);
       load(saved);
     }
@@ -122,6 +125,8 @@ const AdminPage = () => {
   // Reload on page/sort/search change
   useEffect(() => {
     if (!authed || !pass) return;
+    // A data fetch: load() flips its loading flag before awaiting the request.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load(pass, { page, pageSize, sort, direction, search });
     // eslint-disable-next-line
   }, [page, pageSize, sort, direction, search]);

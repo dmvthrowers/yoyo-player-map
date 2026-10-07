@@ -17,8 +17,10 @@ const ToastContext = React.createContext<ToastContextType | undefined>(undefined
 
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = React.useState<Toast[]>([]);
+  // A counter, not Date.now(): render stays pure and two toasts in the same millisecond get different ids.
+  const nextId = React.useRef(0);
   const showToast = (message: string, type?: Toast["type"]) => {
-    const id = Date.now();
+    const id = ++nextId.current;
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => removeToast(id), 4000);
   };

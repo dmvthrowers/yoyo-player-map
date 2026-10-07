@@ -52,9 +52,7 @@ function useEntryDetail(id: string) {
     abortRef.current = controller;
     const timeout = setTimeout(() => controller.abort(), 8000);
 
-    setLoading(true);
-    setError(false);
-
+    // loading starts true when nothing is cached, and retry() resets both flags.
     fetch(`/api/entry/${id}`, { signal: controller.signal })
      .then(async (r) => {
         if (!r.ok) throw new Error(`status ${r.status}`);
@@ -79,7 +77,12 @@ function useEntryDetail(id: string) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, attempt]);
 
-  return { detail, loading, error, retry: () => setAttempt((n) => n + 1) };
+  const retry = () => {
+    setLoading(true);
+    setError(false);
+    setAttempt((n) => n + 1);
+  };
+  return { detail, loading, error, retry };
 }
 
 function PopupSkeleton() {
