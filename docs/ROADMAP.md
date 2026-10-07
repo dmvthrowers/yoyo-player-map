@@ -46,9 +46,9 @@ re-checked against the code on 2026-10-02. Update it as items land.
 8. **Idempotency and dedupe on `POST /api/submit`.** A double-click or retry creates duplicate
    hidden entries. Accept an `Idempotency-Key` header and dedupe identical submissions for 24h
    in Redis (same pattern as the VA-States idea-board spec).
-9. ~~**React Compiler lint rules.**~~ Done: `react-hooks/purity` and
-   `react-hooks/set-state-in-effect` are on. Seven of the nine findings were fixed in code; the
-   two in the admin page are disabled per line with a reason until item 11 splits it.
+9. **React Compiler lint rules.** `eslint.config.mjs` turns off `react-hooks/purity` and
+   `react-hooks/set-state-in-effect` repo-wide. Fix the flagged code, or disable per file with a
+   reason.
 10. **Map accessibility.** The Leaflet container has no `aria-label`, and `divIcon` markers
     can't be focused with a keyboard. The `/players` directory is the accessible alternative —
     link to it from the map for keyboard and screen-reader users.
