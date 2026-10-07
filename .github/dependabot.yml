@@ -8,6 +8,10 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 10
+    # @types/node tracks the runtime (Node 22: engines, CI, Vercel). Raise it with the runtime.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     labels:
       - dependencies
     # Group non-breaking npm updates into one prod PR + one dev PR (same
@@ -32,6 +36,10 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 10
+    # @types/node tracks the runtime (Node 22: engines, CI, Vercel). Raise it with the runtime.
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     labels:
       - dependencies
     # Group non-breaking npm updates into one prod PR + one dev PR (same
