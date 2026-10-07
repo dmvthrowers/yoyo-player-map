@@ -8,6 +8,7 @@ import { generateToken, hashToken } from '@/lib/tokens';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdmin } from '@/lib/admin-auth';
 import { revalidateEntryLocations } from '@/lib/revalidate';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
@@ -85,14 +86,14 @@ async function sendOutreachForEntry(
   return { status: 'failed', entryId: entry.id };
 }
 
-export async function POST(req: NextRequest) {
-  const authError = await requireAdmin(req);
+export const POST = withErrorHandling(async (requestId: string, req: NextRequest) => {
+  const authError = await requireAdmin(req, requestId);
   if (authError) return authError;
 
   let body: unknown;
-  try { body = await req.json(); } catch { return NextResponse.json({ error: 'Invalid body' }, { status: 400 }); }
+  try { body = await req.json(); } catch { return apiError('bad_request', 'Invalid body', requestId); }
   const parsed = schema.safeParse(body);
-  if (!parsed.success) return NextResponse.json({ error: 'Invalid' }, { status: 400 });
+  if (!parsed.success) return apiError('bad_request', 'Invalid', requestId);
 
   const supabase = createAdminClient();
   const action = parsed.data.action;
@@ -105,7 +106,7 @@ export async function POST(req: NextRequest) {
       .update({ location_status: locationStatus })
       .in('id', ids)
       .is('deleted_at', null);
-    if (error) return NextResponse.json({ error: 'Bulk location status update failed.' }, { status: 500 });
+    if (error) return apiError('upstream_error', 'Bulk location status update failed.', requestId);
     await logAudit('admin.set_location_status_bulk', {
       actor: 'admin',
       meta: { ip, idsCount: ids.length, locationStatus },
@@ -120,7 +121,7 @@ export async function POST(req: NextRequest) {
       .select('id, email, display_name, city, region, country')
       .in('id', ids)
       .is('deleted_at', null);
-    if (error) return NextResponse.json({ error: 'Could not load entries for outreach.' }, { status: 500 });
+    if (error) return apiError('upstream_error', 'Could not load entries for outreach.', requestId);
 
     let sent = 0;
     let queued = 0;
@@ -221,7 +222,7 @@ export async function POST(req: NextRequest) {
         .eq('id', id)
         .maybeSingle();
       if (!entry) {
-        return NextResponse.json({ error: 'Entry not found.' }, { status: 404 });
+        return apiError('not_found', 'Entry not found.', requestId);
       }
 
 
@@ -237,7 +238,7 @@ export async function POST(req: NextRequest) {
           country: entry.country,
         });
         if (!exactGeo) {
-          return NextResponse.json({ error: "Couldn't locate that address." }, { status: 400 });
+          return apiError('bad_request', "Couldn't locate that address.", requestId);
         }
         updates.exact_lat = exactGeo.lat;
         updates.exact_lng = exactGeo.lng;
@@ -252,7 +253,7 @@ export async function POST(req: NextRequest) {
         country: entry.country,
       });
       if (!cityGeo) {
-        return NextResponse.json({ error: "Couldn't locate that city." }, { status: 400 });
+        return apiError('bad_request', "Couldn't locate that city.", requestId);
       }
       const needsJitter =
         entry.entity_type === 'person' ||
@@ -263,7 +264,7 @@ export async function POST(req: NextRequest) {
 
       const { error: updErr } = await supabase.from('entries').update(updates).eq('id', id);
       if (updErr) {
-        return NextResponse.json({ error: 'Update failed.' }, { status: 500 });
+        return apiError('upstream_error', 'Update failed.', requestId);
       }
       await logAudit('admin.regeocode_entry', { actor: 'admin', targetId: id, meta: { ip } });
       break;
@@ -272,7 +273,7 @@ export async function POST(req: NextRequest) {
       // Admin manual send — bypass the rate-limit gates.
       const result = await sendReminderForEntry(supabase, id, { force: true });
       if (!result.ok) {
-        return NextResponse.json({ error: `Reminder not sent: ${result.reason}` }, { status: 400 });
+        return apiError('bad_request', `Reminder not sent: ${result.reason}`, requestId);
       }
       await logAudit('admin.send_reminder', { actor: 'admin', targetId: id, meta: { ip } });
       break;
@@ -280,4 +281,4 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ ok: true });
-}
+});

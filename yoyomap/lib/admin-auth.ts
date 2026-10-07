@@ -2,6 +2,7 @@ import 'server-only';
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { checkRateLimit, getClientIp } from './rate-limit';
+import { apiError, newRequestId } from './api-error';
 
 // 30 requests per 15 minutes per IP — generous for a human admin session
 // but harsh enough to block automated brute-force attacks.
@@ -44,31 +45,32 @@ function timingSafeEq(a: string, b: string): boolean {
 export { timingSafeEq };
 
 /**
- * Rate-limit + verify admin token. Returns a 429/401 NextResponse on
- * failure, null on success. Use for admin-only routes.
+ * Rate-limit + verify admin token. Returns a 429/401 error envelope on
+ * failure, null on success. Use for admin-only routes; pass the route's
+ * requestId so the error can be matched to its log line.
  */
-export async function requireAdmin(req: NextRequest): Promise<NextResponse | null> {
+export async function requireAdmin(req: NextRequest, requestId: string = newRequestId()): Promise<NextResponse | null> {
   const ip = getClientIp(req.headers);
   const allowed = await checkRateLimit(ip, 'admin.access', ADMIN_RATE_LIMIT_MAX, ADMIN_RATE_LIMIT_WINDOW_MINUTES);
-  if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+  if (!allowed) return apiError('rate_limited', 'Too many requests.', requestId);
 
   const token = req.headers.get('x-admin-token') ?? '';
   const expected = adminPassword();
   if (!token || !expected || !timingSafeEq(token, expected)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return apiError('unauthorized', 'Unauthorized', requestId);
   }
   return null;
 }
 
 /**
  * Rate-limit + verify admin token OR Vercel cron secret. Returns a 429/401
- * NextResponse on failure, null on success. Use for routes that accept both
+ * error envelope on failure, null on success. Use for routes that accept both
  * admin UI requests and Vercel cron calls.
  */
-export async function requireAdminOrCron(req: NextRequest): Promise<NextResponse | null> {
+export async function requireAdminOrCron(req: NextRequest, requestId: string = newRequestId()): Promise<NextResponse | null> {
   const ip = getClientIp(req.headers);
   const allowed = await checkRateLimit(ip, 'admin.access', ADMIN_RATE_LIMIT_MAX, ADMIN_RATE_LIMIT_WINDOW_MINUTES);
-  if (!allowed) return NextResponse.json({ error: 'Too many requests.' }, { status: 429 });
+  if (!allowed) return apiError('rate_limited', 'Too many requests.', requestId);
 
   const adminExpected = adminPassword();
   const cronExpected = process.env.CRON_SECRET ?? '';
@@ -80,5 +82,5 @@ export async function requireAdminOrCron(req: NextRequest): Promise<NextResponse
   const bearer = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : '';
   if (bearer && cronExpected && timingSafeEq(bearer, cronExpected)) return null;
 
-  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  return apiError('unauthorized', 'Unauthorized', requestId);
 }

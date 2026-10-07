@@ -7,6 +7,7 @@ import {
 } from '@/lib/reminders';
 import { logAudit, getClientIp } from '@/lib/rate-limit';
 import { requireAdminOrCron } from '@/lib/admin-auth';
+import { apiError, withErrorHandling } from '@/lib/api-error';
 
 export const runtime = 'nodejs';
 
@@ -19,8 +20,8 @@ export const runtime = 'nodejs';
  * at least MIN_HOURS_BETWEEN_REMINDERS since the last send.
  */
 
-async function handle(req: NextRequest) {
-  const authError = await requireAdminOrCron(req);
+async function handle(requestId: string, req: NextRequest) {
+  const authError = await requireAdminOrCron(req, requestId);
   if (authError) return authError;
 
   const supabase = createAdminClient();
@@ -39,7 +40,7 @@ async function handle(req: NextRequest) {
     .limit(500);
 
   if (error) {
-    return NextResponse.json({ error: 'Query failed.' }, { status: 500 });
+    return apiError('upstream_error', 'Query failed.', requestId);
   }
 
   const summary: {
@@ -67,10 +68,6 @@ async function handle(req: NextRequest) {
   return NextResponse.json({ ok: true, ...summary });
 }
 
-export async function GET(req: NextRequest) {
-  return handle(req);
-}
+export const GET = withErrorHandling(handle);
 
-export async function POST(req: NextRequest) {
-  return handle(req);
-}
+export const POST = withErrorHandling(handle);
