@@ -43,9 +43,9 @@ re-checked against the code on 2026-10-02. Update it as items land.
 7. **hreflang and canonicals.** No page declares `alternates.languages` for the 11 locales, so
    search engines may treat `/en/map`, `/es/map`… as duplicates. Add them (plus a per-page
    canonical) in each page's `generateMetadata`.
-8. **Idempotency and dedupe on `POST /api/submit`.** A double-click or retry creates duplicate
-   hidden entries. Accept an `Idempotency-Key` header and dedupe identical submissions for 24h
-   in Redis (same pattern as the VA-States idea-board spec).
+8. ~~**Idempotency and dedupe on `POST /api/submit`.**~~ Done: `lib/submit-dedupe.ts` claims a
+   hash of the validated form plus the `Idempotency-Key` header in Redis and replays the first
+   response for 24h. Fails open without Redis, like rate limiting.
 9. **React Compiler lint rules.** `eslint.config.mjs` turns off `react-hooks/purity` and
    `react-hooks/set-state-in-effect` repo-wide. Fix the flagged code, or disable per file with a
    reason.
