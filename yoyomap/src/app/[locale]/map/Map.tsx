@@ -5,11 +5,17 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
-import { useState, memo, useMemo, useEffect, useRef } from 'react';
+import { useState, memo, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslations } from 'next-intl';
 import type { MapEntry, MapEntryDetail } from './page';
 import type { MapFilters } from './MapClient';
 import { haversineMiles, UNDERSERVED_THRESHOLD_MI } from '@/lib/geo';
+
+// Base map tiles. Default: Esri's light gray raster canvas. NEXT_PUBLIC_MAP_TILES=openfreemap
+// switches to OpenFreeMap vector tiles (MapLibre GL, loaded as its own chunk only in that case;
+// next.config.js opens the matching CSP hosts).
+const USE_OPENFREEMAP = process.env.NEXT_PUBLIC_MAP_TILES === 'openfreemap';
+const VectorTiles = lazy(() => import('./VectorTiles'));
 
 // Fix Leaflet's default icon URLs for Next.js (no static assets from node_modules)
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -288,12 +294,18 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
     >
       <ZoomControl position="bottomleft" />
       <AttributionControl position="bottomleft" prefix={false} />
-      <TileLayer
-        attribution='Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community'
-        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
-        maxZoom={17}
-        maxNativeZoom={16}
-      />
+      {USE_OPENFREEMAP ? (
+        <Suspense fallback={null}>
+          <VectorTiles />
+        </Suspense>
+      ) : (
+        <TileLayer
+          attribution='Tiles &copy; Esri &mdash; Esri, HERE, Garmin, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, and the GIS user community'
+          url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+          maxZoom={17}
+          maxNativeZoom={16}
+        />
+      )}
       <MarkerClusterGroup chunkedLoading maxClusterRadius={60}>
         {clusterMarkers}
       </MarkerClusterGroup>

@@ -8,6 +8,9 @@
 .next/
 out/
 
+# Copied from node_modules at build time (scripts/copy-maplibre-worker.mjs)
+public/vendor/maplibre/
+
 # Dependencies
 node_modules/
 

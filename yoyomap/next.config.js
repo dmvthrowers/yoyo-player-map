@@ -3,6 +3,10 @@ const createNextIntlPlugin = require('next-intl/plugin');
 const { withSentryConfig } = require('@sentry/nextjs/config');
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts');
 
+// NEXT_PUBLIC_MAP_TILES=openfreemap (see src/app/[locale]/map/Map.tsx) loads styles, tiles, fonts
+// and sprites from OpenFreeMap and runs MapLibre's worker from /vendor/maplibre/.
+const openFreeMap = process.env.NEXT_PUBLIC_MAP_TILES === 'openfreemap';
+
 /** @type {import('next').NextConfig} */
 const csp = [
   "default-src 'self'",
@@ -10,7 +14,8 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https://server.arcgisonline.com https://unpkg.com",
-  "connect-src 'self' https://*.supabase.co https://*.ingest.sentry.io https://*.ingest.us.sentry.io",
+  `connect-src 'self' https://*.supabase.co https://*.ingest.sentry.io https://*.ingest.us.sentry.io${openFreeMap ? ' https://tiles.openfreemap.org' : ''}`,
+  ...(openFreeMap ? ["worker-src 'self'"] : []),
   // Cloudflare Turnstile renders its challenge in an iframe.
   "frame-src https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
