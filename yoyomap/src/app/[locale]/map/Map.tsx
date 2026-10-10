@@ -3,7 +3,7 @@
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, Marker, ZoomControl, AttributionControl, useMap } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { useState, memo, useMemo, useEffect, useRef, lazy, Suspense } from 'react';
 import { useTranslations } from 'next-intl';
@@ -111,7 +111,7 @@ const shopIcon = L.divIcon({
 const shopVerifiedIcon = L.divIcon({
   className: 'shop-marker-verified',
   html: `<div style="width:14px;height:14px;background:#2E8B57;border:2px solid #1a5a36;position:relative;">
-    <svg style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;background:#fff;border-radius:50%;" viewBox="0 0 24 24" fill="#2E8B57">
+    <svg style="position:absolute;top:-5px;right:-5px;width:11px;height:11px;background:#fff;" viewBox="0 0 24 24" fill="#2E8B57">
       <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41z"/>
     </svg>
   </div>`,
@@ -121,7 +121,7 @@ const shopVerifiedIcon = L.divIcon({
 
 const clubIcon = L.divIcon({
   className: 'club-marker',
-  html: `<div style="width:16px;height:16px;border:3px solid #1B2A49;border-radius:50%;background:transparent;"></div>`,
+  html: `<div style="width:16px;height:16px;border:3px solid #102040;background:#fffdfa;"></div>`,
   iconSize: [16, 16],
   iconAnchor: [8, 8],
 });
@@ -189,9 +189,29 @@ interface MapProps {
   entries: MapEntry[];
   allEntries: MapEntry[];
   filters: MapFilters;
+  /** Trimmed search text. When it changes to something non-empty, the map zooms to the matches. */
+  search: string;
 }
 
-export default function Map({ entries, allEntries, filters }: MapProps) {
+// Zoom to the search matches, but never closer than city level, like the pins' blur allows.
+function FitToResults({ entries, search }: { entries: MapEntry[]; search: string }) {
+  const map = useMap();
+  const entriesRef = useRef(entries);
+  useEffect(() => {
+    entriesRef.current = entries;
+  }, [entries]);
+  useEffect(() => {
+    if (!search) return;
+    const points = entriesRef.current
+      .filter((e) => Number.isFinite(e.lat) && Number.isFinite(e.lng))
+      .map((e) => [e.lat, e.lng] as [number, number]);
+    if (points.length === 0) return;
+    map.fitBounds(L.latLngBounds(points), { maxZoom: 9, padding: [48, 48] });
+  }, [search, map]);
+  return null;
+}
+
+export default function Map({ entries, allEntries, filters, search }: MapProps) {
   const t = useTranslations('map');
   const [center] = useState<[number, number]>([39.5, -98.35]);
   const [zoom] = useState(4);
@@ -292,6 +312,7 @@ export default function Map({ entries, allEntries, filters }: MapProps) {
       zoomControl={false}
       attributionControl={false}
     >
+      <FitToResults entries={entries} search={search} />
       <ZoomControl position="bottomleft" />
       <AttributionControl position="bottomleft" prefix={false} />
       {USE_OPENFREEMAP ? (

@@ -304,6 +304,58 @@
   width: 100%;
 }
 
+/* Flatten Leaflet's rounded, shadowed controls and popups to the brand: square, hairline-flat. */
+.leaflet-bar,
+.leaflet-bar a,
+.leaflet-bar a:first-child,
+.leaflet-bar a:last-child,
+.leaflet-touch .leaflet-bar a:first-child,
+.leaflet-touch .leaflet-bar a:last-child,
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-control-attribution {
+  border-radius: 0;
+  box-shadow: none;
+}
+.leaflet-bar,
+.leaflet-touch .leaflet-bar {
+  border: 2px solid var(--color-navy);
+}
+.leaflet-bar a {
+  background: var(--color-cream);
+  color: var(--color-navy);
+  border-bottom-color: var(--color-navy);
+}
+.leaflet-bar a:hover,
+.leaflet-bar a:focus-visible {
+  background: var(--color-navy);
+  color: var(--color-cream);
+}
+.leaflet-touch .leaflet-bar a {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+}
+.leaflet-popup-content-wrapper {
+  background: var(--color-cream);
+  color: var(--color-navy);
+  border: 2px solid var(--color-navy);
+}
+.leaflet-popup-tip {
+  background: var(--color-cream);
+  border: 2px solid var(--color-navy);
+}
+.leaflet-container a.leaflet-popup-close-button {
+  color: var(--color-navy);
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  line-height: 32px;
+}
+.leaflet-container {
+  font-family: var(--font-sans);
+}
+
 /* Shop/club cluster badges (react-leaflet-cluster). The plugin's default CSS isn't loaded, so
    without these rules a cluster was an invisible 40px box. Square and flat, like the pins. */
 .marker-cluster {
