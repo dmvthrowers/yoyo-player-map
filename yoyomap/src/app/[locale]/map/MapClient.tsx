@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
@@ -23,6 +23,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
   const [userOpen, setUserOpen] = useState<boolean | null>(null);
   const filterOpen = userOpen ?? !isNarrow;
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const t = useTranslations();
 
 
@@ -32,6 +33,31 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
     showClub: true,
     showUnderserved: false,
   });
+
+  // Shareable links: /map?q=arlington opens the map already searched. Read once after mount so
+  // the static page hydrates cleanly, then keep the address bar in step with the box.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('q');
+    if (q) {
+      // Browser-only value that can't be read during the static render; setting it once here
+      // is the safe way to avoid a hydration mismatch.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSearch(q.slice(0, 80));
+      setDebouncedSearch(q.trim().slice(0, 80));
+    }
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      const q = search.trim();
+      setDebouncedSearch(q);
+      const url = new URL(window.location.href);
+      if (q) url.searchParams.set('q', q);
+      else url.searchParams.delete('q');
+      window.history.replaceState(null, '', url);
+    }, 400);
+    return () => clearTimeout(id);
+  }, [search]);
 
   const memoEntries = useMemo(() => entries, [entries]);
 
@@ -169,7 +195,7 @@ export default function MapClient({ entries }: { entries: MapEntry[] }) {
           <p className="font-display text-2xl">{t('map.loadingFallback')}</p>
         </div>
       }>
-        <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} />
+        <Map entries={filteredEntries} allEntries={memoEntries} filters={filters} search={debouncedSearch} />
       </Suspense>
     </>
   );
