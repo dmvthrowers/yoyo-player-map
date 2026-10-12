@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "ピンのしくみ",
+      "title": "マップのしくみ",
+      "items": [
+        {
+          "title": "あえてぼかしています",
+          "body": "プレイヤーのピンは、あなたの街から最大10マイル離れたランダムな地点に置かれるので、誰もあなたの家を特定できません。ショップと公共の場所で集まるクラブは、見つけてもらえるようにぼかしません。"
+        },
+        {
+          "title": "GPSは一切使いません",
+          "body": "街はリストから選びます。場所はOpenStreetMapのNominatimサービスで調べます。端末の位置情報を求めることはありません。"
+        },
+        {
+          "title": "空白地帯",
+          "body": "フィルターをオンにすると、最寄りのショップとクラブのどちらからも50マイル以上離れたプレイヤーを丸で囲みます。新しいクラブが最も役立つ場所です。"
+        },
+        {
+          "title": "オープンソース",
+          "body": "コードはGitHubで公開され、パブリックドメインです。ピンがどう置かれるのか、そのまま読めます。"
+        }
+      ],
+      "sourcesLabel": "出典:",
+      "sources": {
+        "blur": "YoYo Mapのコード: 位置のぼかし",
+        "underserved": "YoYo Mapのコード: 空白地帯の距離",
+        "nominatim": "OpenStreetMap Foundation: Nominatim利用ポリシー",
+        "osm": "OpenStreetMap: 著作権とライセンス",
+        "esri": "Esri: Light Gray Canvas ベースマップ",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "クラブから",
+      "title": "もっと見る",
+      "items": [
+        {
+          "title": "ヨーヨーの始め方",
+          "body": "投げ方、最初の100トリック、大会、用語集"
+        },
+        {
+          "title": "ギアとメンテナンス",
+          "body": "ベアリング、パッド、ストリング、スタイル、用語"
+        },
+        {
+          "title": "ヨーヨーの科学",
+          "body": "物理、形状、素材、特許、DIY"
+        },
+        {
+          "title": "ヨーヨーの歴史",
+          "body": "古代ギリシャから現代の大会まで"
+        },
+        {
+          "title": "フィリピンのヨーヨー史",
+          "body": "ペドロ・フローレスとデモンストレーターたち"
+        },
+        {
+          "title": "ヨーヨー収集",
+          "body": "ヴィンテージ、限定品、価値、博物館"
+        },
+        {
+          "title": "リソース",
+          "body": "ダウンロード、チュートリアル、アプリ、リンク"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "このピンを報告",
       "website": "ウェブサイト"
     },
-    "viewAsList": "リストで見る"
+    "viewAsList": "リストで見る",
+    "pageTitle": "ヨーヨープレイヤーマップ — 近くのプレイヤー、ショップ、クラブを探そう",
+    "pageDescription": "世界中のヨーヨープレイヤー、ショップ、クラブのコミュニティマップ。プライバシー優先、参加は任意、位置は市区町村レベルのみ。",
+    "loadFailed": "マップのピンを読み込めませんでした。ページを再読み込みしてもう一度お試しください。"
   },
   "legal": {
     "privacy": {

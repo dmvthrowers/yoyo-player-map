@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "Detrás de los pines",
+      "title": "Cómo funciona el mapa",
+      "items": [
+        {
+          "title": "Difuminado a propósito",
+          "body": "Los pines de jugadores caen en un punto aleatorio hasta 10 millas de tu ciudad, así nadie puede encontrar tu casa. Las tiendas y los clubes que se reúnen en un lugar público no se difuminan, para que la gente pueda encontrarlos."
+        },
+        {
+          "title": "Nunca usamos GPS",
+          "body": "Eliges tu ciudad de una lista. La buscamos con el servicio Nominatim de OpenStreetMap. Nunca pedimos la ubicación de tu dispositivo."
+        },
+        {
+          "title": "Zonas desatendidas",
+          "body": "Activa el filtro para marcar a los jugadores que están a más de 50 millas de la tienda y del club más cercanos. Ahí es donde un club nuevo ayudaría más."
+        },
+        {
+          "title": "Código abierto",
+          "body": "El código es público en GitHub y está en el dominio público. Lee exactamente cómo se coloca tu pin."
+        }
+      ],
+      "sourcesLabel": "Fuentes:",
+      "sources": {
+        "blur": "Código de YoYo Map: difuminado de ubicación",
+        "underserved": "Código de YoYo Map: distancia de zonas desatendidas",
+        "nominatim": "OpenStreetMap Foundation: política de uso de Nominatim",
+        "osm": "OpenStreetMap: derechos de autor y licencia",
+        "esri": "Esri: mapa base Light Gray Canvas",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "Del club",
+      "title": "Sigue explorando",
+      "items": [
+        {
+          "title": "Cómo usar un yoyo",
+          "body": "Lanzamientos, los primeros 100 trucos, competencias, glosario"
+        },
+        {
+          "title": "Equipo y mantenimiento",
+          "body": "Rodamientos, pads, cuerda, estilos, jerga"
+        },
+        {
+          "title": "Ciencia del yoyo",
+          "body": "Física, formas, materiales, patentes, hazlo tú mismo"
+        },
+        {
+          "title": "Historia del yoyo",
+          "body": "De la antigua Grecia a las competencias de hoy"
+        },
+        {
+          "title": "Historia filipina del yoyo",
+          "body": "Pedro Flores y los demostradores"
+        },
+        {
+          "title": "Coleccionar yoyos",
+          "body": "Antiguos, ediciones limitadas, valor, museos"
+        },
+        {
+          "title": "Recursos",
+          "body": "Descargas, tutoriales, apps, enlaces"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "Reportar este marcador",
       "website": "Sitio web"
     },
-    "viewAsList": "Ver como lista"
+    "viewAsList": "Ver como lista",
+    "pageTitle": "Mapa de jugadores de yoyo — Encuentra jugadores, tiendas y clubes cerca de ti",
+    "pageDescription": "Explora el mapa mundial de la comunidad de jugadores, tiendas y clubes de yoyo. Privacidad primero, participación voluntaria, solo ubicaciones a nivel de ciudad.",
+    "loadFailed": "No pudimos cargar los pines del mapa. Actualiza la página para intentarlo de nuevo."
   },
   "legal": {
     "privacy": {
