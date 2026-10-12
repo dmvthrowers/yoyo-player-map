@@ -19,7 +19,7 @@
   --color-cream-light: #fdfaf5;
 
   /* Font families */
-  /* Playfair Display and DM Sans are self-hosted by next/font in the locale layout. */
+  /* Playfair Display and DM Sans are self-hosted from src/app/fonts via next/font/local in the locale layout. */
   --font-display: var(--font-playfair-display), Georgia, serif;
   --font-playfair: var(--font-playfair-display), Georgia, 'Times New Roman', serif;
   --font-sans: var(--font-dm-sans), system-ui, -apple-system, sans-serif;
