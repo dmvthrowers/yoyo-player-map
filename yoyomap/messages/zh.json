@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "图钉背后",
+      "title": "地图如何运作",
+      "items": [
+        {
+          "title": "刻意模糊",
+          "body": "玩家图钉会落在距你所在城市最多 10 英里的随机位置，因此没人能找到你的住处。商店以及在公共场所聚会的俱乐部不做模糊处理，方便大家找到。"
+        },
+        {
+          "title": "绝不使用 GPS",
+          "body": "你从列表中选择城市，我们通过 OpenStreetMap 的 Nominatim 服务查找。我们从不请求你的设备位置。"
+        },
+        {
+          "title": "服务不足地区",
+          "body": "打开筛选，即可圈出距离最近商店和最近俱乐部都超过 50 英里的玩家。新俱乐部在那里最能发挥作用。"
+        },
+        {
+          "title": "开源",
+          "body": "代码在 GitHub 上公开，并已贡献到公有领域。你可以亲自查看图钉的放置方式。"
+        }
+      ],
+      "sourcesLabel": "来源：",
+      "sources": {
+        "blur": "YoYo Map 代码：位置模糊",
+        "underserved": "YoYo Map 代码：服务不足距离",
+        "nominatim": "OpenStreetMap 基金会：Nominatim 使用政策",
+        "osm": "OpenStreetMap：版权与许可",
+        "esri": "Esri：Light Gray Canvas 底图",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "来自俱乐部",
+      "title": "继续探索",
+      "items": [
+        {
+          "title": "如何玩溜溜球",
+          "body": "出手、前 100 个花式、比赛、术语表"
+        },
+        {
+          "title": "装备与保养",
+          "body": "轴承、垫片、绳子、风格、行话"
+        },
+        {
+          "title": "溜溜球科学",
+          "body": "物理、形状、材料、专利、自制"
+        },
+        {
+          "title": "溜溜球历史",
+          "body": "从古希腊到今天的比赛"
+        },
+        {
+          "title": "菲律宾溜溜球史",
+          "body": "佩德罗·弗洛雷斯与表演者们"
+        },
+        {
+          "title": "收藏溜溜球",
+          "body": "古董、限量款、价值、博物馆"
+        },
+        {
+          "title": "资源",
+          "body": "下载、教程、应用、链接"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "举报此标记",
       "website": "网站"
     },
-    "viewAsList": "以列表查看"
+    "viewAsList": "以列表查看",
+    "pageTitle": "溜溜球玩家地图 — 查找你附近的玩家、商店和俱乐部",
+    "pageDescription": "浏览全球溜溜球玩家、商店和俱乐部社区地图。隐私优先，自愿加入，仅显示城市级位置。",
+    "loadFailed": "暂时无法加载地图图钉。请刷新页面重试。"
   },
   "legal": {
     "privacy": {

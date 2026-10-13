@@ -2,15 +2,27 @@ import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getMessages, setRequestLocale, getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { Playfair_Display, DM_Sans } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Link } from '@/i18n/navigation';
 import Navigation from '@/components/Navigation';
 import { routing } from '@/i18n/routing';
 import '../globals.css';
 
-// Brand fonts, self-hosted at build time (no request to Google when a visitor loads the page).
-const playfair = Playfair_Display({ subsets: ['latin'], weight: ['700', '900'], variable: '--font-playfair-display', display: 'swap' });
-const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans', display: 'swap' });
+// Brand fonts, committed to the repo (src/app/fonts, SIL OFL; same files as dmvthrowers.club).
+// No request to Google at build time or when a visitor loads the page. next/font/google
+// broke the build on 2026-10-12 when Google's CSS response tripped a Turbopack resolver bug.
+const playfair = localFont({
+  src: '../fonts/playfair-display-latin-61a963.woff2',
+  weight: '400 900',
+  variable: '--font-playfair-display',
+  display: 'swap',
+});
+const dmSans = localFont({
+  src: '../fonts/dm-sans-latin-002a94.woff2',
+  weight: '400 700',
+  variable: '--font-dm-sans',
+  display: 'swap',
+});
 
 // Site-wide defaults. Pages that set their own title/description override
 // these; without them the homepage shipped with no <title> at all.

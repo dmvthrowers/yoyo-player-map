@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "Derrière les épingles",
+      "title": "Comment fonctionne la carte",
+      "items": [
+        {
+          "title": "Flouté exprès",
+          "body": "Les épingles des joueurs tombent à un endroit aléatoire jusqu’à 10 miles de votre ville, pour que personne ne puisse trouver votre domicile. Les boutiques et les clubs qui se réunissent dans un lieu public ne sont pas floutés, pour qu’on puisse les trouver."
+        },
+        {
+          "title": "Jamais de GPS",
+          "body": "Vous choisissez votre ville dans une liste. Nous la recherchons avec le service Nominatim d’OpenStreetMap. Nous ne demandons jamais la position de votre appareil."
+        },
+        {
+          "title": "Zones mal desservies",
+          "body": "Activez le filtre pour entourer les joueurs situés à plus de 50 miles de la boutique et du club les plus proches. C’est là qu’un nouveau club aiderait le plus."
+        },
+        {
+          "title": "Open source",
+          "body": "Le code est public sur GitHub et versé dans le domaine public. Lisez exactement comment votre épingle est placée."
+        }
+      ],
+      "sourcesLabel": "Sources :",
+      "sources": {
+        "blur": "Code de YoYo Map : floutage de la position",
+        "underserved": "Code de YoYo Map : distance des zones mal desservies",
+        "nominatim": "OpenStreetMap Foundation : politique d’utilisation de Nominatim",
+        "osm": "OpenStreetMap : droits d’auteur et licence",
+        "esri": "Esri : fond de carte Light Gray Canvas",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "Du club",
+      "title": "Continuez à explorer",
+      "items": [
+        {
+          "title": "Apprendre le yo-yo",
+          "body": "Lancers, 100 premières figures, compétitions, glossaire"
+        },
+        {
+          "title": "Matériel et entretien",
+          "body": "Roulements, pads, ficelle, styles, jargon"
+        },
+        {
+          "title": "Science du yo-yo",
+          "body": "Physique, formes, matériaux, brevets, DIY"
+        },
+        {
+          "title": "Histoire du yo-yo",
+          "body": "De la Grèce antique aux compétitions d’aujourd’hui"
+        },
+        {
+          "title": "Histoire philippine du yo-yo",
+          "body": "Pedro Flores et les démonstrateurs"
+        },
+        {
+          "title": "Collectionner les yo-yos",
+          "body": "Vintage, éditions limitées, valeur, musées"
+        },
+        {
+          "title": "Ressources",
+          "body": "Téléchargements, tutoriels, applis, liens"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "Signaler ce marqueur",
       "website": "Site web"
     },
-    "viewAsList": "Voir sous forme de liste"
+    "viewAsList": "Voir sous forme de liste",
+    "pageTitle": "Carte des joueurs de yo-yo — Trouvez joueurs, boutiques et clubs près de chez vous",
+    "pageDescription": "Parcourez la carte mondiale de la communauté des joueurs, boutiques et clubs de yo-yo. Confidentialité d’abord, participation volontaire, positions au niveau de la ville uniquement.",
+    "loadFailed": "Impossible de charger les épingles de la carte pour le moment. Actualisez la page pour réessayer."
   },
   "legal": {
     "privacy": {

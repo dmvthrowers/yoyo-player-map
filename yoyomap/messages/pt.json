@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "Por trás dos pinos",
+      "title": "Como o mapa funciona",
+      "items": [
+        {
+          "title": "Embaçado de propósito",
+          "body": "Os pinos dos jogadores ficam em um ponto aleatório a até 10 milhas da sua cidade, para que ninguém encontre sua casa. Lojas e clubes que se reúnem em um local público não são embaçados, para que as pessoas possam encontrá-los."
+        },
+        {
+          "title": "Nunca usamos GPS",
+          "body": "Você escolhe sua cidade em uma lista. Nós a buscamos com o serviço Nominatim do OpenStreetMap. Nunca pedimos a localização do seu dispositivo."
+        },
+        {
+          "title": "Áreas pouco atendidas",
+          "body": "Ative o filtro para destacar jogadores a mais de 50 milhas da loja e do clube mais próximos. É ali que um novo clube ajudaria mais."
+        },
+        {
+          "title": "Código aberto",
+          "body": "O código é público no GitHub e está em domínio público. Veja exatamente como seu pino é posicionado."
+        }
+      ],
+      "sourcesLabel": "Fontes:",
+      "sources": {
+        "blur": "Código do YoYo Map: embaçamento da localização",
+        "underserved": "Código do YoYo Map: distância de áreas pouco atendidas",
+        "nominatim": "OpenStreetMap Foundation: política de uso do Nominatim",
+        "osm": "OpenStreetMap: direitos autorais e licença",
+        "esri": "Esri: mapa base Light Gray Canvas",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "Do clube",
+      "title": "Continue explorando",
+      "items": [
+        {
+          "title": "Como jogar ioiô",
+          "body": "Arremessos, os primeiros 100 truques, competições, glossário"
+        },
+        {
+          "title": "Equipamento e manutenção",
+          "body": "Rolamentos, pads, cordas, estilos, gírias"
+        },
+        {
+          "title": "Ciência do ioiô",
+          "body": "Física, formatos, materiais, patentes, faça você mesmo"
+        },
+        {
+          "title": "História do ioiô",
+          "body": "Da Grécia antiga às competições de hoje"
+        },
+        {
+          "title": "História filipina do ioiô",
+          "body": "Pedro Flores e os demonstradores"
+        },
+        {
+          "title": "Colecionar ioiôs",
+          "body": "Vintage, edições limitadas, valor, museus"
+        },
+        {
+          "title": "Recursos",
+          "body": "Downloads, tutoriais, apps, links"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "Denunciar este marcador",
       "website": "Website"
     },
-    "viewAsList": "Ver como lista"
+    "viewAsList": "Ver como lista",
+    "pageTitle": "Mapa de jogadores de ioiô — Encontre jogadores, lojas e clubes perto de você",
+    "pageDescription": "Explore o mapa global da comunidade de jogadores, lojas e clubes de ioiô. Privacidade em primeiro lugar, participação opcional, apenas localizações em nível de cidade.",
+    "loadFailed": "Não foi possível carregar os pinos do mapa agora. Atualize a página para tentar novamente."
   },
   "legal": {
     "privacy": {

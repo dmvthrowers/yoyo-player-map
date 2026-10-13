@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "Hinter den Pins",
+      "title": "So funktioniert die Karte",
+      "items": [
+        {
+          "title": "Absichtlich unscharf",
+          "body": "Spieler-Pins landen an einem zufälligen Punkt bis zu 10 Meilen von deiner Stadt entfernt, damit niemand dein Zuhause finden kann. Shops und Clubs, die sich an einem öffentlichen Ort treffen, werden nicht verschoben, damit man sie finden kann."
+        },
+        {
+          "title": "Niemals GPS",
+          "body": "Du wählst deine Stadt aus einer Liste. Wir suchen sie über den Nominatim-Dienst von OpenStreetMap. Wir fragen nie nach dem Standort deines Geräts."
+        },
+        {
+          "title": "Unterversorgte Gebiete",
+          "body": "Schalte den Filter ein, um Spieler zu markieren, die mehr als 50 Meilen vom nächsten Shop und vom nächsten Club entfernt sind. Dort würde ein neuer Club am meisten helfen."
+        },
+        {
+          "title": "Open Source",
+          "body": "Der Code ist öffentlich auf GitHub und gemeinfrei. Lies genau nach, wie dein Pin platziert wird."
+        }
+      ],
+      "sourcesLabel": "Quellen:",
+      "sources": {
+        "blur": "YoYo-Map-Code: Standortverschleierung",
+        "underserved": "YoYo-Map-Code: Entfernung für unterversorgte Gebiete",
+        "nominatim": "OpenStreetMap Foundation: Nominatim-Nutzungsrichtlinie",
+        "osm": "OpenStreetMap: Urheberrecht und Lizenz",
+        "esri": "Esri: Light-Gray-Canvas-Basiskarte",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "Aus dem Club",
+      "title": "Weiter entdecken",
+      "items": [
+        {
+          "title": "Jojo lernen",
+          "body": "Würfe, die ersten 100 Tricks, Wettbewerbe, Glossar"
+        },
+        {
+          "title": "Ausrüstung und Pflege",
+          "body": "Kugellager, Pads, Schnur, Stile, Fachbegriffe"
+        },
+        {
+          "title": "Jojo-Wissenschaft",
+          "body": "Physik, Formen, Materialien, Patente, Selbstbau"
+        },
+        {
+          "title": "Jojo-Geschichte",
+          "body": "Vom antiken Griechenland bis zu heutigen Wettbewerben"
+        },
+        {
+          "title": "Philippinische Jojo-Geschichte",
+          "body": "Pedro Flores und die Vorführer"
+        },
+        {
+          "title": "Jojos sammeln",
+          "body": "Vintage, limitierte Auflagen, Wert, Museen"
+        },
+        {
+          "title": "Ressourcen",
+          "body": "Downloads, Tutorials, Apps, Links"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "Diesen Pin melden",
       "website": "Website"
     },
-    "viewAsList": "Als Liste anzeigen"
+    "viewAsList": "Als Liste anzeigen",
+    "pageTitle": "Jojo-Spielerkarte — Finde Spieler, Shops und Clubs in deiner Nähe",
+    "pageDescription": "Durchsuche die weltweite Community-Karte mit Jojo-Spielern, Shops und Clubs. Datenschutz zuerst, freiwillig, nur Standorte auf Stadtebene.",
+    "loadFailed": "Die Karten-Pins konnten gerade nicht geladen werden. Lade die Seite neu, um es erneut zu versuchen."
   },
   "legal": {
     "privacy": {

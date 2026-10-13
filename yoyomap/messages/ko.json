@@ -95,6 +95,71 @@
       "title": "Add Yourself to the Map",
       "description": "Help grow the yo-yo community. It only takes a minute.",
       "button": "Get Started"
+    },
+    "mapWorks": {
+      "eyebrow": "핀의 원리",
+      "title": "지도는 이렇게 작동해요",
+      "items": [
+        {
+          "title": "일부러 흐리게",
+          "body": "플레이어 핀은 도시에서 최대 10마일 떨어진 임의의 지점에 놓이므로 아무도 집을 찾을 수 없어요. 매장과 공공장소에서 모이는 클럽은 사람들이 찾을 수 있도록 흐리게 하지 않아요."
+        },
+        {
+          "title": "GPS는 절대 쓰지 않아요",
+          "body": "목록에서 도시를 고르면 OpenStreetMap의 Nominatim 서비스로 찾아요. 기기 위치는 절대 묻지 않아요."
+        },
+        {
+          "title": "소외 지역",
+          "body": "필터를 켜면 가장 가까운 매장과 클럽 모두에서 50마일 넘게 떨어진 플레이어를 표시해요. 새 클럽이 가장 도움이 될 곳이에요."
+        },
+        {
+          "title": "오픈 소스",
+          "body": "코드는 GitHub에 공개되어 있고 퍼블릭 도메인이에요. 핀이 어떻게 놓이는지 그대로 읽어 보세요."
+        }
+      ],
+      "sourcesLabel": "출처:",
+      "sources": {
+        "blur": "YoYo Map 코드: 위치 흐리기",
+        "underserved": "YoYo Map 코드: 소외 지역 거리",
+        "nominatim": "OpenStreetMap Foundation: Nominatim 이용 정책",
+        "osm": "OpenStreetMap: 저작권 및 라이선스",
+        "esri": "Esri: Light Gray Canvas 베이스맵",
+        "unlicense": "The Unlicense"
+      }
+    },
+    "explore": {
+      "eyebrow": "클럽에서",
+      "title": "더 둘러보기",
+      "items": [
+        {
+          "title": "요요 시작하기",
+          "body": "던지기, 첫 100가지 트릭, 대회, 용어집"
+        },
+        {
+          "title": "장비와 관리",
+          "body": "베어링, 패드, 줄, 스타일, 용어"
+        },
+        {
+          "title": "요요 과학",
+          "body": "물리, 모양, 소재, 특허, DIY"
+        },
+        {
+          "title": "요요의 역사",
+          "body": "고대 그리스부터 오늘날의 대회까지"
+        },
+        {
+          "title": "필리핀 요요의 역사",
+          "body": "페드로 플로레스와 시연자들"
+        },
+        {
+          "title": "요요 수집",
+          "body": "빈티지, 한정판, 가치, 박물관"
+        },
+        {
+          "title": "자료",
+          "body": "다운로드, 튜토리얼, 앱, 링크"
+        }
+      ]
     }
   },
   "footer": {
@@ -225,7 +290,10 @@
       "reportPin": "이 핀 신고하기",
       "website": "웹사이트"
     },
-    "viewAsList": "목록으로 보기"
+    "viewAsList": "목록으로 보기",
+    "pageTitle": "요요 플레이어 지도 — 주변의 플레이어, 매장, 클럽 찾기",
+    "pageDescription": "전 세계 요요 플레이어, 매장, 클럽 커뮤니티 지도를 둘러보세요. 개인정보 우선, 자발적 참여, 도시 단위 위치만 표시해요.",
+    "loadFailed": "지금은 지도 핀을 불러올 수 없어요. 페이지를 새로고침해 다시 시도해 주세요."
   },
   "legal": {
     "privacy": {
