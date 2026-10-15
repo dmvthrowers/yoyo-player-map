@@ -19,7 +19,7 @@ catalog:
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
   drizzle-orm: ^0.45.3
-  framer-motion: ^13.4.4
+  framer-motion: ^14.0.0
   lucide-react: ^0.545.0
   react: 19.3.0
   react-dom: 19.3.0
