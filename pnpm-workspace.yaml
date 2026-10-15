@@ -18,7 +18,7 @@ catalog:
   '@vitejs/plugin-react': ^5.0.4
   class-variance-authority: ^0.7.1
   clsx: ^2.1.1
-  drizzle-orm: ^0.45.3
+  drizzle-orm: ^0.45.4
   framer-motion: ^13.4.4
   lucide-react: ^0.545.0
   react: 19.3.0
@@ -26,7 +26,7 @@ catalog:
   tailwind-merge: ^3.7.0
   tailwindcss: ^4.3.3
   tsx: ^4.23.15
-  vite: ^8.3.2
+  vite: ^8.3.4
   wouter: ^3.13.0
   zod: 4.6.5
 
