@@ -28,7 +28,7 @@ catalog:
   tsx: ^4.23.15
   vite: ^8.3.3
   wouter: ^3.13.0
-  zod: 4.6.5
+  zod: 4.6.6
 
 minimumReleaseAge: 1440
 
