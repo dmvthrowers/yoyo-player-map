@@ -50,15 +50,15 @@
     "adm-zip": "^0.6.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^9.12.0",
-    "eslint-config-next": "^16.4.0",
-    "postcss": "^8.5.29",
+    "eslint-config-next": "^16.4.2",
+    "postcss": "^8.5.31",
     "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3"
   },
   "pnpm": {
     "overrides": {
       "undici": ">=7.25.0",
-      "postcss": "^8.5.29",
+      "postcss": "^8.5.31",
       "devalue": "^5.9.3",
       "esbuild": ">=0.25.0",
       "fast-xml-builder": ">=1.1.7",
