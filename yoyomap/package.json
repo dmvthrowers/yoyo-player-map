@@ -48,15 +48,15 @@
     "adm-zip": "^0.6.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^10.13.0",
-    "eslint-config-next": "^16.4.0",
-    "postcss": "^8.5.29",
+    "eslint-config-next": "^16.4.3",
+    "postcss": "^8.5.31",
     "tailwindcss": "^4.3.1",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "pnpm": {
     "overrides": {
       "undici": ">=7.25.0",
-      "postcss": "^8.5.29",
+      "postcss": "^8.5.31",
       "devalue": "^5.9.3",
       "esbuild": ">=0.25.0",
       "fast-xml-builder": ">=1.1.7",
