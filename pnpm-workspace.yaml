@@ -20,7 +20,7 @@ catalog:
   clsx: ^2.1.1
   drizzle-orm: ^0.45.3
   framer-motion: ^13.4.4
-  lucide-react: ^0.545.0
+  lucide-react: ^1.52.0
   react: 19.3.0
   react-dom: 19.3.0
   tailwind-merge: ^3.7.0
@@ -59,8 +59,8 @@ overrides:
   js-yaml@>=4.0.0 <4.3.2: ^4.3.2
   nanoid@<3.3.18: ^3.3.18
   browserslist: ^4.28.7
-  # undici: WebSocket DoS, BalancedPool TLS bypass (and earlier GHSA-f269, -v9p9, -vrm6)
-  undici@>=7.0.0 <7.29.1: ^7.29.1
+  # undici: WebSocket DoS, BalancedPool TLS bypass, GHSA-xjj6-f33q-929c (and earlier GHSA-f269, -v9p9, -vrm6)
+  undici@>=7.0.0 <7.30.1: ^7.30.1
   # --- security pins previously defined here but never applied ---
   # picomatch 2.x (micromatch->picomatch, used by fast-glob): needs >=2.3.2
   picomatch@<2.3.2: ^2.3.2
@@ -81,8 +81,8 @@ overrides:
   # --- OSV-Scanner findings on main (root lockfile) ---
   # @babel/core: GHSA-4x5r-pxfx-6jf8; needs >=7.29.6
   '@babel/core@<7.29.6': ^7.29.6
-  # body-parser (express): GHSA-v422-hmwv-36x6; needs >=2.3.0
-  body-parser@>=2.0.0 <2.3.0: ^2.3.0
+  # body-parser (express): GHSA-v422-hmwv-36x6, GHSA-27r3-jxmh-p828; needs >=2.4.0
+  body-parser@>=2.0.0 <2.4.0: ^2.4.0
   # qs (express, body-parser): GHSA-4mjr-xmp4-gh2g, -q8mj-m7cp-5q26, -x5fp-wj9c-mxmx; needs >=6.16.0
   qs@>=6.0.0 <6.16.0: ^6.16.0
   # esbuild 0.18 (drizzle-kit->@esbuild-kit/core-utils): GHSA-67mh-4wv8-2f99; needs >=0.25.0
