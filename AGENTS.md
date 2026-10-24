@@ -87,3 +87,8 @@ cd yoyomap
 pnpm install --ignore-workspace
 pnpm typecheck && pnpm lint && pnpm test && pnpm i18n:parity --strict && pnpm build
 ```
+
+TypeScript is installed twice in `yoyomap/` on purpose: `tsc` is TypeScript 7 (`@typescript/native`),
+and the `typescript` package is the TypeScript 6 API (`@typescript/typescript6`) for typescript-eslint,
+Next's build-time type check and editors. TypeScript 7.0 has no API yet; drop the alias once
+typescript-eslint supports 7.x.
