@@ -56,7 +56,7 @@ All of the October 2026 "Next" items are done or in review:
   `LeafletProvider` first; smoke-test cluster rendering by hand (previews are off, so test
   locally). Until then, the reason to stay on React 18 is that react-leaflet 4 requires it.
 - ~~`@types/node` on 25.x while the runtime is Node 22~~ — done in #263 (Dependabot now skips its majors).
-- Root workspace: `packageManager` still `pnpm@10.28.0`; root `next` is a dev-only tool dep.
+- Root workspace: root `next` is a dev-only tool dep. (`packageManager` moved to `pnpm@10.34.7`; 10.28.0 dropped `libc` lockfile markers, see #290.)
 - ESLint 10 after the above.
 - ~~`wouter`, `@vercel/analytics`, `@vercel/speed-insights` in `yoyomap`~~ — already removed;
   `wouter` in `artifacts/yoyomap` is real usage.
