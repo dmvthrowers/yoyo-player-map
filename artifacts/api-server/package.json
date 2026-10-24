@@ -18,7 +18,7 @@
     "express": "^5",
     "pino": "^10",
     "pino-http": "^11",
-    "resend": "^6.32.0",
+    "resend": "^6.34.1",
     "zod": "catalog:"
   },
   "devDependencies": {
