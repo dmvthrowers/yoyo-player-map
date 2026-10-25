@@ -116,7 +116,11 @@ export default function MapClient({ entries }: Props) {
     markersRef.current = L.layerGroup().addTo(lMap.current);
 
     return () => {
-      lMap.current?.remove();
+      const map = lMap.current;
+      map?.remove();
+      // Drag inertia schedules panBy in a requestAnimationFrame that remove() doesn't cancel.
+      // If the map unmounts mid-flick, that frame would touch the deleted map pane and throw.
+      if (map) map.panBy = () => map;
       lMap.current = null;
       markersRef.current = null;
     };
