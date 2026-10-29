@@ -193,6 +193,21 @@ interface MapProps {
   search: string;
 }
 
+// Drag inertia schedules panBy in a requestAnimationFrame that map.remove() doesn't cancel.
+// If the map unmounts mid-flick (locale switch, navigating away), that frame touches the deleted
+// map pane and throws "t.classList" in panBy. Make panBy a no-op once the map is torn down.
+// Setup restores Leaflet's own panBy, so StrictMode's mount/unmount/mount leaves the map working.
+function DisarmInertiaOnUnmount() {
+  const map = useMap();
+  useEffect(() => {
+    Reflect.deleteProperty(map, 'panBy');
+    return () => {
+      map.panBy = () => map;
+    };
+  }, [map]);
+  return null;
+}
+
 // Zoom to the search matches, but never closer than city level, like the pins' blur allows.
 function FitToResults({ entries, search }: { entries: MapEntry[]; search: string }) {
   const map = useMap();
@@ -312,6 +327,7 @@ export default function Map({ entries, allEntries, filters, search }: MapProps) 
       zoomControl={false}
       attributionControl={false}
     >
+      <DisarmInertiaOnUnmount />
       <FitToResults entries={entries} search={search} />
       <ZoomControl position="bottomleft" />
       <AttributionControl position="bottomleft" prefix={false} />
