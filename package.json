@@ -11,7 +11,7 @@
   },
   "private": true,
   "devDependencies": {
-    "next": "^16.4.2",
+    "next": "^16.4.3",
     "typescript": "~7.0.2",
     "prettier": "^3.9.10"
   }
