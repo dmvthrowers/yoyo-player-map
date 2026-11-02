@@ -28,7 +28,7 @@ export default function Navigation() {
             {t('nav.dmvThrowers')}
           </a>
           <a
-            href="https://dmvthrowers.club/vsyc26.html"
+            href="https://dmvthrowers.club/vsyc27.html"
             className="topbar-link"
           >
             {t('nav.vsyc')}
@@ -124,7 +124,7 @@ export default function Navigation() {
                 </a>
               </li>
               <li>
-                <a href="https://dmvthrowers.club/vsyc26.html" className="nav-link text-brand-red block py-2" onClick={close}>
+                <a href="https://dmvthrowers.club/vsyc27.html" className="nav-link text-brand-red block py-2" onClick={close}>
                   {t('nav.vsyc')}
                 </a>
               </li>
