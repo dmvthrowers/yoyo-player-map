@@ -53,22 +53,26 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 // Site-wide structured data: who runs the map and what the site is.
-const siteJsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'YoYo Player Map',
-    url: 'https://map.dmvthrowers.club/',
-    publisher: { '@type': 'Organization', name: 'DMV Throwers', url: 'https://dmvthrowers.club/' },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'DMV Throwers',
-    url: 'https://dmvthrowers.club/',
-    logo: 'https://dmvthrowers.club/assets/images/logo.png',
-  },
-];
+// Single object with @graph (not a top-level array): naive JSON-LD readers
+// do data["@context"].toLowerCase(), which throws on an array because
+// ["@context"] is undefined there. Sentry YOYO-PLAYER-MAP-2/MAP-3.
+const siteJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'YoYo Player Map',
+      url: 'https://map.dmvthrowers.club/',
+      publisher: { '@type': 'Organization', name: 'DMV Throwers', url: 'https://dmvthrowers.club/' },
+    },
+    {
+      '@type': 'Organization',
+      name: 'DMV Throwers',
+      url: 'https://dmvthrowers.club/',
+      logo: 'https://dmvthrowers.club/assets/images/logo.png',
+    },
+  ],
+};
 
 // Right-to-left scripts: without dir="rtl" Arabic pages lay out left to right.
 const RTL_LOCALES = new Set(['ar', 'he', 'fa', 'ur']);
