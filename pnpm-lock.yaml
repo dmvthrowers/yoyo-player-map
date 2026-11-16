@@ -102,8 +102,8 @@ importers:
         specifier: ^16.4.6
         version: 16.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       prettier:
-        specifier: ^3.10.0
-        version: 3.10.0
+        specifier: ^3.10.1
+        version: 3.10.1
       typescript:
         specifier: ~7.0.2
         version: 7.0.2
@@ -313,8 +313,8 @@ importers:
         specifier: ^7.92.0
         version: 7.92.0(@types/react@19.3.0)(react@19.3.1)
       react-resizable-panels:
-        specifier: ^4.21.0
-        version: 4.21.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        specifier: ^4.22.0
+        version: 4.22.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       recharts:
         specifier: ^3.10.1
         version: 3.10.1(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(redux@5.0.1)
@@ -429,7 +429,7 @@ importers:
     devDependencies:
       orval:
         specifier: ^8.47.0
-        version: 8.47.0(@tanstack/react-query@5.106.1(@types/react@19.3.0)(react@19.3.1))(prettier@3.10.0)(zod@4.6.7)
+        version: 8.47.0(@tanstack/react-query@5.106.1(@types/react@19.3.0)(react@19.3.1))(prettier@3.10.1)(zod@4.6.7)
 
   lib/api-zod:
     dependencies:
@@ -3366,8 +3366,8 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  prettier@3.10.0:
-    resolution: {integrity: sha512-mBi4765LgjO1PFjlEs7pUeK0nb1bw71c+N4/ItfeUWNdY5cV2pRKaFpbbFRYmDJMO+5ZwzGxHRqHxFZna7iv5w==}
+  prettier@3.10.1:
+    resolution: {integrity: sha512-70vp3ZUYoPlFbF9uiTdXHUUCGEIp7d4+6p+8DYbkm2jP7x/3i/paXVF6dopSI3zd/CEitrZN1rc4i85xWmmXlg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -3460,8 +3460,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@4.21.0:
-    resolution: {integrity: sha512-SzNEQNH/xIn3aKKLSdv48h0eu1gF1bkvozIVStow2hRmh/d9jkyoZR7dF8GUx39Wc2TAJTmfSUr4y/wwtvMoRQ==}
+  react-resizable-panels@4.22.0:
+    resolution: {integrity: sha512-PX2AvTRqThh1GDJnB0NNdHICMX3Gu22Kij35tUnan6pfXRXDRDAnRqceQv60SAO+0nZFso+7m5hu+iCAO9S0Tw==}
     peerDependencies:
       '@types/react': ^18.2.6 || ^19.0.0
       react: ^18.0.0 || ^19.0.0
@@ -6157,7 +6157,7 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  orval@8.47.0(@tanstack/react-query@5.106.1(@types/react@19.3.0)(react@19.3.1))(prettier@3.10.0)(zod@4.6.7):
+  orval@8.47.0(@tanstack/react-query@5.106.1(@types/react@19.3.0)(react@19.3.1))(prettier@3.10.1)(zod@4.6.7):
     dependencies:
       '@commander-js/extra-typings': 15.1.0(commander@15.1.0)
       '@orval/angular': 8.47.0
@@ -6186,7 +6186,7 @@ snapshots:
       json5: 2.2.3
       string-argv: 0.3.2
     optionalDependencies:
-      prettier: 3.10.0
+      prettier: 3.10.1
     transitivePeerDependencies:
       - '@faker-js/faker'
       - '@modelcontextprotocol/server'
@@ -6327,7 +6327,7 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  prettier@3.10.0: {}
+  prettier@3.10.1: {}
 
   pretty-ms@9.3.1:
     dependencies:
@@ -6410,7 +6410,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
-  react-resizable-panels@4.21.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
+  react-resizable-panels@4.22.0(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1):
     dependencies:
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
