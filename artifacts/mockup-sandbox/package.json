@@ -60,7 +60,7 @@
     "react-day-picker": "^10.0.1",
     "react-dom": "catalog:",
     "react-hook-form": "^7.92.0",
-    "react-resizable-panels": "^4.21.0",
+    "react-resizable-panels": "^4.22.0",
     "recharts": "^3.10.1",
     "sonner": "^2.0.8",
     "tailwind-merge": "catalog:",
