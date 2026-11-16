@@ -39,7 +39,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.4",
+    "@tailwindcss/postcss": "^4.3.5",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^22.19.0",
     "@types/react": "^19.3.0",
@@ -48,9 +48,9 @@
     "adm-zip": "^0.6.1",
     "autoprefixer": "^10.6.2",
     "eslint": "^10.14.0",
-    "eslint-config-next": "^16.4.5",
+    "eslint-config-next": "^16.4.6",
     "postcss": "^8.5.32",
-    "tailwindcss": "^4.3.4",
+    "tailwindcss": "^4.3.5",
     "typescript": "npm:@typescript/typescript6@^6.0.2"
   },
   "pnpm": {
